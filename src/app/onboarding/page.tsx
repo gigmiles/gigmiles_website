@@ -6,9 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Select } from '@/components/ui/Select'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
+import { getEstimatedMPG } from '@/utils/api/external'
+import { toast } from 'sonner'
 
 const step1Schema = z.object({
     full_name: z.string().min(2, 'Name is required'),
@@ -54,7 +56,13 @@ export default function OnboardingPage() {
     })
 
     // Step 2 Form
-    const { register: register2, handleSubmit: handleSubmit2, formState: { errors: errors2 } } = useForm({
+    const {
+        register: register2,
+        handleSubmit: handleSubmit2,
+        formState: { errors: errors2 },
+        getValues: getValues2,
+        setValue: setValue2
+    } = useForm({
         resolver: zodResolver(step2Schema),
         defaultValues: { make: '', model: '', year: '', mpg: '' }
     })
@@ -186,7 +194,36 @@ export default function OnboardingPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <Input label="Year" type="number" {...register2('year')} error={errors2.year?.message as string} />
-                            <Input label="Est. MPG" type="number" step="0.1" {...register2('mpg')} error={errors2.mpg?.message as string} />
+                            <div className="relative">
+                                <Input
+                                    label="Est. MPG"
+                                    type="number"
+                                    step="0.1"
+                                    {...register2('mpg')}
+                                    error={errors2.mpg?.message as string}
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-0 top-0 text-xs text-emerald-600 hover:text-emerald-700 font-medium px-1 py-1"
+                                    onClick={async () => {
+                                        const { year, make, model } = getValues2() // access form values
+                                        if (!year || !make || !model) {
+                                            toast.error("Please fill Year, Make, and Model first")
+                                            return
+                                        }
+                                        const toastId = toast.loading("Fetching MPG...")
+                                        const mpg = await getEstimatedMPG(year, make, model)
+                                        if (mpg) {
+                                            setValue2('mpg', mpg.toString())
+                                            toast.success(`Found MPG: ${mpg}`, { id: toastId })
+                                        } else {
+                                            toast.error("Could not find MPG, please enter manually", { id: toastId })
+                                        }
+                                    }}
+                                >
+                                    Auto-Fill
+                                </button>
+                            </div>
                         </div>
                         <div className="flex gap-3 mt-6">
                             <Button type="button" variant="secondary" onClick={() => setStep(1)} className="flex-1">Back</Button>
@@ -206,8 +243,8 @@ export default function OnboardingPage() {
                                     key={platform}
                                     onClick={() => togglePlatform(platform)}
                                     className={`p-3 rounded-lg border cursor-pointer transition-all ${formData.platforms.includes(platform)
-                                            ? 'border-emerald-500 bg-emerald-50 text-emerald-700 font-medium'
-                                            : 'border-slate-200 hover:border-emerald-300'
+                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700 font-medium'
+                                        : 'border-slate-200 hover:border-emerald-300'
                                         }`}
                                 >
                                     {platform}

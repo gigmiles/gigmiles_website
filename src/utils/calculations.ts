@@ -18,66 +18,73 @@ interface CalculationInput {
     expenses: number
     miles: number
     stateCode: string
+    mpg?: number
+    gasPrice?: number
+    wearRate?: number // Price per mile for wear & tear
 }
 
-export function calculateFinancials({ grossEarnings, expenses, miles, stateCode }: CalculationInput) {
-    // 1. Deductible Expenses
-    // Actual expenses + Mileage Deduction
-    const mileageDeduction = miles * IRS_STANDARD_MILEAGE_RATE_2025
-    const totalDeductions = expenses + mileageDeduction
+export function calculateFinancials({
+    grossEarnings,
+    expenses,
+    miles,
+    stateCode,
+    mpg = 25,
+    gasPrice = 4.50, // Updated standard baseline
+    wearRate = 0.35
+}: CalculationInput) {
+    // Ensure numeric parity (Sanitize inputs)
+    const safeMiles = Number(miles) || 0
+    const safeMpg = Number(mpg) || 25
+    const safeGasPrice = Number(gasPrice) || 4.50
+    const safeGross = Number(grossEarnings) || 0
+    const safeExpenses = Number(expenses) || 0
 
-    // 2. Taxable Income
-    // Can't be less than 0 for tax purposes
-    const taxableIncome = Math.max(0, grossEarnings - totalDeductions)
+    // 1. Tax Logic
+    const mileageDeduction = safeMiles * IRS_STANDARD_MILEAGE_RATE_2025
+    const totalDeductions = safeExpenses + mileageDeduction
+    const taxableIncome = Math.max(0, safeGross - totalDeductions)
 
-    // 3. Estimated Taxes
     const stateRate = STATE_TAX_RATES[stateCode] ?? STATE_TAX_RATES['DEFAULT']
-
-    // SE Tax is fully applicable to net earnings from self-employment (simplified)
-    // Income Tax (State) applies to taxable income
-    // Note: SE Tax calculation is actually on 92.35% of net earnings, but for estimation 15.3% of total is a safe buffer.
-
     const estimatedFederalTax = taxableIncome * FEDERAL_SE_TAX_RATE
     const estimatedStateTax = taxableIncome * stateRate
     const totalEstimatedTax = estimatedFederalTax + estimatedStateTax
 
-    // 4. Net Profit (Take Home)
-    // Gross - Actual Cash Expenses - Taxes
-    // Note: Mileage deduction is a non-cash expense for tax reduction, but depreciation is real.
-    // For "Cash in Hand" (Net Profit), we subtract actual expenses (gas, etc) and taxes.
-    // The user prompt formula: NET KAR = Gross - Expenses - Fuel - Depreciation - Insurance/30 - Tax
-    // But wait, "Depreciation" is the mileage rate in our simplified model?
-    // If we subtract Mileage Rate as a cost, we shouldn't also subtract Fuel (usually rate covers fuel).
-    // IRS Rate covers: Gas, Insurance, Repairs, Depreciation.
-    // So if we use IRS Rate, we shouldn't subtract Gas separately for "Profit" calculation if we want "Economic Profit".
-    // BUT the user wants to track Fuel separately.
+    // 2. Real-World Business Profit logic
+    // Fuel Cost = (Miles / MPG) * GasPrice
+    const fuelCost = safeMpg > 0 ? (safeMiles / safeMpg) * safeGasPrice : 0
 
-    // Let's refine based on prompt: "NET KAR = Toplam Günlük Gelir - Yakıt Maliyeti - Araç Aşınma Payı - Günlük Sigorta Payı - Ek Giderler - Tahmini Vergi"
-    // Here "Araç Aşınma Payı" (Depreciation) is likely distinct from Fuel if they want to enter Fuel manually.
-    // However, usually IRS Rate includes fuel.
-    // Strategy: For the "Net Profit" display, we will use the IRS Rate as a proxy for ALL vehicle costs (Fuel + Depr + Maint) to be safe/simple, OR we use Actual Fuel + Estimated Depr.
-    // PROMPT SAYS: Formül: `Toplam Mile × $0.70 = Aşınma Maliyeti`
-    // AND `(Toplam Mile / MPG) × Benzin Fiyatı = Günlük Yakıt Maliyeti`
-    // This is double counting if $0.70 is the IRS rate (which includes gas).
-    // BUT, maybe the user wants "Depreciation" specifically.
-    // Let's treat $0.70 as the TOTAL vehicle cost per mile for simplicity in this version, OR custom logic.
+    // Wear & Tear
+    const wearCost = safeMiles * wearRate
 
-    // Let's stick to the Prompt's exact request if possible, but $0.70/mi purely for "Wear & Tear" is too high (IRS rate includes gas).
-    // Let's use a lower custom rate for "Depreciation Only" or assume the user wants the IRS deduction amount shown.
+    // Daily Insurance
+    const dailyInsurance = 5.00
 
-    // Decision: I will use the IRS deduction for *Taxable Income* calculation.
-    // For *True Net Profit*, I will subtract: Expenses + Tax + (Miles * IRS_RATE). 
-    // This is a conservative "Economic Profit".
-
-
-    // Let's return the components so the UI can decide how to sum them.
+    const totalRealCosts = safeExpenses + fuelCost + wearCost + dailyInsurance
 
     return {
-        grossEarnings,
-        totalExpenses: expenses, // Cash expenses entered manually
-        mileageDeduction,
-        taxableIncome,
+        grossEarnings: safeGross,
+        cashExpenses: safeExpenses,
+        fuelCost,
+        wearCost,
+        totalRealCosts,
         estimatedTax: totalEstimatedTax,
-        netProfit: grossEarnings - expenses - totalEstimatedTax - mileageDeduction // Conservative Take Home
+        netProfit: safeGross - totalRealCosts - totalEstimatedTax,
+        mileageDeduction
     }
+}
+
+// --- Bolt Migration Helpers ---
+export function calculateHourlyRate(netProfit: number, hours: number): number {
+    if (hours === 0) return 0
+    return Number((netProfit / hours).toFixed(2))
+}
+
+export function calculatePerMile(amount: number, miles: number): number {
+    if (miles === 0) return 0
+    return Number((amount / miles).toFixed(2))
+}
+
+export function calculateProfitMargin(netProfit: number, grossIncome: number): number {
+    if (grossIncome === 0) return 0
+    return Number(((netProfit / grossIncome) * 100).toFixed(2))
 }

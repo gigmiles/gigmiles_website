@@ -1,14 +1,27 @@
 'use client'
 
+import { createDailyEntry } from '../../actions'
 import { useState, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Select } from '@/components/ui/Select'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import {
+    Plus,
+    Trash2,
+    ChevronLeft,
+    Calendar as CalendarIcon,
+    DollarSign,
+    Car,
+    Clock,
+    Briefcase
+} from 'lucide-react'
+import { cn } from "@/lib/utils"
 
 const schema = z.object({
     date: z.string().min(1, 'Date is required'),
@@ -43,7 +56,6 @@ export default function NewEntryPage() {
     })
 
     useEffect(() => {
-        // Fetch user's active platforms
         async function fetchPlatforms() {
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
@@ -64,134 +76,177 @@ export default function NewEntryPage() {
     const onSubmit = async (data: any) => {
         setLoading(true)
         try {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (!user) throw new Error('Not authenticated')
-
-            // 1. Create Daily Entry
-            const { data: entry, error: entryError } = await supabase
-                .from('daily_entries')
-                .insert({
-                    user_id: user.id,
-                    date: data.date,
-                    notes: data.notes
-                })
-                .select()
-                .single()
-
-            if (entryError) throw entryError
-
-            // 2. Create Platform Earnings
+            // Prepare data for server action
             const earningsData = data.platforms.map((p: any) => ({
-                entry_id: entry.id,
                 platform_name: p.platform_name,
-                amount: parseFloat(p.amount),
-                tips: p.tips ? parseFloat(p.tips) : 0,
-                miles: p.miles ? parseFloat(p.miles) : 0,
-                hours: p.hours ? parseFloat(p.hours) : 0,
+                amount: p.amount,
+                tips: p.tips,
+                miles: p.miles,
+                hours: p.hours,
             }))
 
-            const { error: earningsError } = await supabase
-                .from('platform_earnings')
-                .insert(earningsData)
+            await createDailyEntry({
+                date: data.date,
+                notes: data.notes
+            }, earningsData)
 
-            if (earningsError) throw earningsError
-
+            // Success feedback
             router.push('/dashboard')
             router.refresh()
-
         } catch (error: any) {
             console.error('Error:', error)
-            alert(error.message)
+            alert(`Error saving entry: ${error.message}`)
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <div className="max-w-2xl mx-auto space-y-8">
-            <div>
-                <h1 className="text-2xl font-bold text-slate-900">New Daily Entry</h1>
-                <p className="text-slate-500">Log your earnings for the day.</p>
+        <div className="max-w-4xl mx-auto space-y-10 animate-fade-in pb-20">
+            {/* Header */}
+            <div className="flex flex-col gap-4">
+                <Link href="/dashboard" className="text-muted-foreground hover:text-slate-900 flex items-center gap-1 text-sm transition-colors w-fit">
+                    <ChevronLeft className="size-4" />
+                    Back to Dashboard
+                </Link>
+                <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Log Shift Activity</h1>
+                <p className="text-muted-foreground">Keep your records up-to-date for accurate tax projections.</p>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 space-y-4">
-                    <Input type="date" label="Date" {...register('date')} error={errors.date?.message as string} />
-                    <Input label="Notes (Optional)" {...register('notes')} />
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                {/* General Info */}
+                <Card className="shadow-premium border-border/50">
+                    <CardHeader>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                            <CalendarIcon className="size-5 text-emerald-600" />
+                            Session Details
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid md:grid-cols-2 gap-6">
+                        <Input
+                            type="date"
+                            label="Date of Shift"
+                            {...register('date')}
+                            error={errors.date?.message as string}
+                            className="rounded-xl"
+                        />
+                        <Input
+                            label="Notes (Optional)"
+                            placeholder="Rainy day, high demand..."
+                            {...register('notes')}
+                            className="rounded-xl"
+                        />
+                    </CardContent>
+                </Card>
+
+                {/* Platform Earnings */}
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                            <Briefcase className="size-5 text-blue-600" />
+                            Platform Earnings
+                        </h2>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => append({ platform_name: '', amount: '', tips: '', miles: '', hours: '' })}
+                            className="rounded-full border-slate-200 hover:border-emerald-500 hover:text-emerald-600"
+                        >
+                            <Plus className="mr-2 size-4" />
+                            Add Platform
+                        </Button>
+                    </div>
+
+                    <div className="grid gap-6">
+                        {fields.map((field, index) => (
+                            <Card key={field.id} className="shadow-premium border-border/50 relative group overflow-hidden">
+                                <CardHeader className="flex flex-row items-center justify-between bg-slate-50/50 dark:bg-slate-900/50 py-3">
+                                    <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Entry #{index + 1}</span>
+                                    {fields.length > 1 && (
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => remove(index)}
+                                            className="text-ruby-500 hover:text-ruby-600 hover:bg-ruby-50 rounded-full"
+                                        >
+                                            <Trash2 className="size-4" />
+                                        </Button>
+                                    )}
+                                </CardHeader>
+                                <CardContent className="pt-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                                        <div className="md:col-span-1 space-y-1.5">
+                                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Platform</label>
+                                            <select
+                                                {...register(`platforms.${index}.platform_name`)}
+                                                className={cn(
+                                                    "flex h-10 w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-900/50 px-3 py-2 text-sm transition-all focus:ring-2 focus:ring-emerald-500/20 outline-none",
+                                                    errors.platforms?.[index]?.platform_name && "border-ruby-500"
+                                                )}
+                                            >
+                                                <option value="">Select app</option>
+                                                {availablePlatforms.map(p => (
+                                                    <option key={p} value={p}>{p}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="relative">
+                                            <Input
+                                                label="Earnings ($)"
+                                                type="number" step="0.01"
+                                                placeholder="0.00"
+                                                {...register(`platforms.${index}.amount`)}
+                                                error={errors.platforms?.[index]?.amount?.message as string}
+                                            />
+                                        </div>
+
+                                        <Input
+                                            label="Tips ($)"
+                                            type="number" step="0.01"
+                                            placeholder="0.00"
+                                            {...register(`platforms.${index}.tips`)}
+                                        />
+
+                                        <Input
+                                            label="Miles"
+                                            type="number" step="0.1"
+                                            placeholder="0.0"
+                                            {...register(`platforms.${index}.miles`)}
+                                        />
+
+                                        <Input
+                                            label="Hours"
+                                            type="number" step="0.1"
+                                            placeholder="0.0"
+                                            {...register(`platforms.${index}.hours`)}
+                                        />
+                                    </div>
+                                </CardContent>
+                                {/* Subtle side indicator */}
+                                <div className="absolute left-0 top-0 h-full w-1 bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Card>
+                        ))}
+                    </div>
                 </div>
 
-                <div className="space-y-4">
-                    <h2 className="text-lg font-semibold text-slate-900">Platform Earnings</h2>
-                    {fields.map((field, index) => (
-                        <div key={field.id} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 space-y-4 relative">
-                            <div className="flex justify-between items-center">
-                                <h3 className="font-medium">Platform {index + 1}</h3>
-                                {fields.length > 1 && (
-                                    <button type="button" onClick={() => remove(index)} className="text-red-500 text-sm hover:text-red-600">
-                                        Remove
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="col-span-2">
-                                    <label className="block text-sm font-medium text-slate-700 mb-1">Platform</label>
-                                    <select
-                                        {...register(`platforms.${index}.platform_name`)}
-                                        className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
-                                    >
-                                        <option value="">Select Platform</option>
-                                        {availablePlatforms.map(p => (
-                                            <option key={p} value={p}>{p}</option>
-                                        ))}
-                                    </select>
-                                    {errors.platforms?.[index]?.platform_name && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.platforms[index]?.platform_name?.message as string}</p>
-                                    )}
-                                </div>
-
-                                <Input
-                                    label="Earnings ($)"
-                                    type="number" step="0.01"
-                                    {...register(`platforms.${index}.amount`)}
-                                    error={errors.platforms?.[index]?.amount?.message as string}
-                                />
-
-                                <Input
-                                    label="Tips ($)"
-                                    type="number" step="0.01"
-                                    {...register(`platforms.${index}.tips`)}
-                                />
-
-                                <Input
-                                    label="Miles"
-                                    type="number" step="0.1"
-                                    {...register(`platforms.${index}.miles`)}
-                                />
-
-                                <Input
-                                    label="Hours"
-                                    type="number" step="0.1"
-                                    {...register(`platforms.${index}.hours`)}
-                                />
-                            </div>
-                        </div>
-                    ))}
-
+                <div className="flex items-center justify-end gap-4 pt-6">
                     <Button
                         type="button"
-                        variant="secondary"
-                        onClick={() => append({ platform_name: '', amount: '', tips: '', miles: '', hours: '' })}
-                        className="w-full"
+                        variant="ghost"
+                        className="rounded-full px-8"
+                        onClick={() => router.back()}
                     >
-                        + Add Another Platform
+                        Cancel
                     </Button>
-                </div>
-
-                <div className="flex gap-4 pt-4">
-                    <Button type="button" variant="outline" className="flex-1" onClick={() => router.back()}>Cancel</Button>
-                    <Button type="submit" className="flex-1" disabled={loading}>
-                        {loading ? 'Saving...' : 'Save Entry'}
+                    <Button
+                        type="submit"
+                        className="rounded-full px-10 bg-slate-900 text-white hover:bg-slate-800 shadow-xl"
+                        disabled={loading}
+                    >
+                        {loading ? 'Processing...' : 'Save Shift Records'}
                     </Button>
                 </div>
             </form>

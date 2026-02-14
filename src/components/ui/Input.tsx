@@ -1,28 +1,45 @@
-import React from 'react'
+import * as React from "react"
+import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    label?: string
-    error?: string
+interface InputProps extends React.ComponentProps<"input"> {
+  label?: string;
+  error?: string;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ className = '', label, error, ...props }, ref) => {
-        return (
-            <div className="w-full">
-                {label && (
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                        {label}
-                    </label>
-                )}
-                <input
-                    ref={ref}
-                    className={`flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 ${error ? 'border-red-500 focus:ring-red-500' : ''
-                        } ${className}`}
-                    {...props}
-                />
-                {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-            </div>
-        )
-    }
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, label, error, id, ...props }, ref) => {
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
+
+    return (
+      <div className="grid w-full items-center gap-1.5">
+        {label && (
+          <Label htmlFor={inputId} className={cn(error && "text-destructive")}>
+            {label}
+          </Label>
+        )}
+        <input
+          type={type}
+          id={inputId}
+          ref={ref}
+          className={cn(
+            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-slate-900/50 border-input h-10 w-full min-w-0 rounded-xl border bg-transparent px-3 py-1 text-base shadow-sm transition-all outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20 focus-visible:ring-offset-0",
+            error && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20",
+            className
+          )}
+          {...props}
+        />
+        {error && (
+          <p className="text-[0.8rem] font-medium text-destructive animate-fade-in">
+            {error}
+          </p>
+        )}
+      </div>
+    )
+  }
 )
-Input.displayName = 'Input'
+Input.displayName = "Input"
+
+export { Input }

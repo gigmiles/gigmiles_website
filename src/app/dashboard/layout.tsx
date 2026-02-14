@@ -1,6 +1,14 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
+import { AppSidebar } from '@/components/dashboard/AppSidebar'
+import {
+    SidebarProvider,
+    SidebarTrigger,
+    SidebarInset,
+} from '@/components/ui/sidebar'
+import { Search, Bell, HelpCircle } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 export default async function DashboardLayout({
     children,
@@ -28,46 +36,48 @@ export default async function DashboardLayout({
         redirect('/onboarding')
     }
 
-    return (
-        <div className="flex h-screen bg-slate-50">
-            {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col">
-                <div className="p-6 border-b border-slate-100">
-                    <h1 className="text-xl font-bold text-emerald-600">GigTracker</h1>
-                </div>
-                <nav className="flex-1 p-4 space-y-1">
-                    <Link href="/dashboard" className="flex items-center px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-lg group">
-                        <span className="font-medium">Dashboard</span>
-                    </Link>
-                    <Link href="/dashboard/reports" className="flex items-center px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-lg group">
-                        <span className="font-medium">Reports</span>
-                    </Link>
-                    <Link href="/dashboard/tax" className="flex items-center px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-lg group">
-                        <span className="font-medium">Tax Center</span>
-                    </Link>
-                    <Link href="/settings" className="flex items-center px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-lg group">
-                        <span className="font-medium">Settings</span>
-                    </Link>
-                </nav>
-                <div className="p-4 border-t border-slate-100">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">
-                            {profile.full_name.charAt(0)}
-                        </div>
-                        <div className="text-sm">
-                            <p className="font-medium text-slate-900">{profile.full_name}</p>
-                            <p className="text-slate-500 text-xs">Free Plan</p>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+    const userData = {
+        full_name: profile.full_name,
+        email: user.email,
+    }
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 p-6">
-                    {children}
-                </main>
+    return (
+        <SidebarProvider>
+            <div className="flex h-screen w-full overflow-hidden bg-background">
+                <AppSidebar user={userData} />
+                <SidebarInset className="flex flex-col">
+                    {/* Premium Header */}
+                    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-border/50 bg-background/70 px-4 backdrop-blur-xl md:px-6">
+                        <div className="flex items-center gap-4">
+                            <SidebarTrigger className="-ml-1" />
+                            <div className="hidden md:flex h-9 w-64 items-center gap-2 rounded-full border border-border/50 bg-slate-50 px-3 text-muted-foreground transition-all focus-within:ring-2 focus-within:ring-ring/20 focus-within:ring-offset-0">
+                                <Search className="size-4" />
+                                <Input
+                                    placeholder="Search everything..."
+                                    className="h-full border-0 bg-transparent p-0 text-sm focus-visible:ring-0"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 md:gap-4">
+                            <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground">
+                                <HelpCircle className="size-5" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="relative rounded-full text-muted-foreground">
+                                <Bell className="size-5" />
+                                <span className="absolute right-2 top-2 flex h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-background" />
+                            </Button>
+                        </div>
+                    </header>
+
+                    {/* Main Content Area */}
+                    <main className="flex-1 overflow-y-auto p-4 md:p-8 animate-fade-in">
+                        <div className="mx-auto max-w-7xl">
+                            {children}
+                        </div>
+                    </main>
+                </SidebarInset>
             </div>
-        </div>
+        </SidebarProvider>
     )
 }

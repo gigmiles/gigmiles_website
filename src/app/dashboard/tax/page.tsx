@@ -1,9 +1,18 @@
 import { getTaxOverview, addTaxPayment } from './actions'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { IRS_STANDARD_MILEAGE_RATE_2025 } from '@/utils/calculations'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import {
+    ShieldCheck,
+    Clock,
+    ArrowUpCircle,
+    AlertCircle,
+    Calendar,
+    DollarSign
+} from 'lucide-react'
 
 export default async function TaxPage() {
     const quarters = await getTaxOverview()
@@ -25,85 +34,135 @@ export default async function TaxPage() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-10 animate-fade-in">
+            {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold text-slate-900">Tax Center (2025)</h1>
-                <p className="text-slate-500">Track your estimated quarterly taxes and payments.</p>
+                <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Tax Center (2025)</h1>
+                <p className="mt-2 text-muted-foreground">Manage your quarterly estimated taxes and track your payment history.</p>
             </div>
 
-            {/* Yearly Summary */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-slate-900 text-white p-6 rounded-xl shadow-lg">
-                    <h3 className="text-sm font-medium opacity-70 uppercase">Total Estimated Tax</h3>
-                    <p className="text-3xl font-bold mt-2">${totalEstimated.toFixed(2)}</p>
+            {/* Yearly Financial Summary */}
+            <div className="grid gap-6 md:grid-cols-3">
+                <Card className="border-none shadow-premium bg-slate-900 text-white overflow-hidden">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Estimated Tax</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-bold font-display">${totalEstimated.toFixed(2)}</div>
+                        <p className="text-xs text-slate-500 mt-2 italic">Based on log history</p>
+                    </CardContent>
+                </Card>
+
+                <Card className="border-none shadow-premium bg-emerald-600 text-white">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-emerald-100 uppercase tracking-wider text-opacity-80">Total Payments</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-bold font-display">${totalPaid.toFixed(2)}</div>
+                        <div className="mt-2 flex items-center gap-1 text-[10px] text-emerald-100/70">
+                            <ShieldCheck className="size-3" />
+                            <span>Verified payments</span>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="border-border/50 bg-white dark:bg-slate-900/50 shadow-premium">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Remaining Balance</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className={`text-3xl font-bold font-display ${totalDue > 0 ? 'text-ruby-600' : 'text-emerald-600'}`}>
+                            ${Math.max(0, totalDue).toFixed(2)}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">Due by year-end</p>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Quarterly Timeline */}
+            <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                    <Calendar className="size-5 text-slate-400" />
+                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200">Quarterly Breakdown</h2>
                 </div>
-                <div className="bg-emerald-600 text-white p-6 rounded-xl shadow-lg">
-                    <h3 className="text-sm font-medium opacity-70 uppercase">Total Paid</h3>
-                    <p className="text-3xl font-bold mt-2">${totalPaid.toFixed(2)}</p>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 className="text-sm font-medium text-slate-500 uppercase">Remaining Due</h3>
-                    <p className={`text-3xl font-bold mt-2 ${totalDue > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
-                        ${Math.max(0, totalDue).toFixed(2)}
-                    </p>
+
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                    {quarters.map((q) => (
+                        <Card
+                            key={q.id}
+                            className={`group border-border/50 transition-all hover:shadow-lg ${q.isCurrent ? 'ring-2 ring-emerald-500 ring-offset-2' : ''}`}
+                        >
+                            <CardHeader className="pb-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <CardTitle className="text-lg font-bold">{q.name}</CardTitle>
+                                        <CardDescription className="text-xs flex items-center gap-1">
+                                            <Clock className="size-3" />
+                                            Due {q.due}
+                                        </CardDescription>
+                                    </div>
+                                    {q.isCurrent && (
+                                        <span className="flex h-6 items-center rounded-full bg-emerald-100 px-2 text-[10px] font-bold text-emerald-700 uppercase tracking-tighter shadow-sm">
+                                            Active
+                                        </span>
+                                    )}
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Estimated</span>
+                                        <span className="font-semibold text-slate-900 dark:text-slate-100">${q.estimatedTax.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Paid</span>
+                                        <span className="font-semibold text-emerald-600">-${q.paid.toFixed(2)}</span>
+                                    </div>
+                                    <div className="pt-3 border-t flex justify-between items-baseline">
+                                        <span className="text-xs font-bold uppercase text-slate-400">Due</span>
+                                        <span className={`text-lg font-bold ${q.remaining > 0 ? 'text-amber-600' : 'text-slate-300'}`}>
+                                            ${q.remaining.toFixed(2)}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <form action={handlePayment} className="flex gap-2 pt-2">
+                                    <input type="hidden" name="quarter" value={q.id} />
+                                    <div className="relative flex-1">
+                                        <DollarSign className="absolute left-2.5 top-2.5 size-4 text-slate-400" />
+                                        <Input
+                                            name="amount"
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="0.00"
+                                            className="h-9 pl-8 text-xs rounded-lg"
+                                            min="0.01"
+                                            required
+                                        />
+                                    </div>
+                                    <Button type="submit" size="sm" variant="secondary" className="h-9 rounded-lg">
+                                        Pay
+                                    </Button>
+                                </form>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
             </div>
 
-            <h2 className="text-xl font-bold text-slate-800">Quarterly Breakdown</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {quarters.map((q) => (
-                    <div
-                        key={q.id}
-                        className={`p-6 rounded-xl border ${q.isCurrent ? 'border-emerald-500 ring-1 ring-emerald-500 bg-emerald-50/10' : 'border-slate-200 bg-white'}`}
-                    >
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 className="font-bold text-slate-900">{q.name}</h3>
-                                <p className="text-xs text-slate-500">Due: {q.due}</p>
-                            </div>
-                            {q.isCurrent && <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-medium">Current</span>}
-                        </div>
-
-                        <div className="space-y-3 mb-6">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-slate-600">Estimated:</span>
-                                <span className="font-medium">${q.estimatedTax.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-slate-600">Paid:</span>
-                                <span className="font-medium text-emerald-600">-${q.paid.toFixed(2)}</span>
-                            </div>
-                            <div className="pt-3 border-t flex justify-between font-bold">
-                                <span>Due:</span>
-                                <span className={q.remaining > 0 ? 'text-red-600' : 'text-slate-400'}>
-                                    ${q.remaining.toFixed(2)}
-                                </span>
-                            </div>
-                        </div>
-
-                        <form action={handlePayment} className="space-y-2">
-                            <input type="hidden" name="quarter" value={q.id} />
-                            <div className="flex gap-2">
-                                <input
-                                    name="amount"
-                                    type="number"
-                                    step="0.01"
-                                    placeholder="Amount"
-                                    className="flex-1 h-9 rounded-md border border-slate-300 px-3 text-sm"
-                                    min="0.01"
-                                    required
-                                />
-                                <Button type="submit" size="sm" variant="secondary">Pay</Button>
-                            </div>
-                        </form>
+            {/* Disclaimer & Context */}
+            <Card className="bg-slate-50 dark:bg-slate-900/20 border-border/50">
+                <CardContent className="p-4 flex items-start gap-3">
+                    <AlertCircle className="size-5 text-blue-500 shrink-0 mt-0.5" />
+                    <div className="text-sm text-blue-800 dark:text-blue-300">
+                        <p className="font-semibold">Professional Disclaimer</p>
+                        <p className="mt-1 opacity-80">
+                            Estimates are calculated using the 2025 Standard Mileage Rate of <strong>${IRS_STANDARD_MILEAGE_RATE_2025.toFixed(2)}/mi</strong>.
+                            These values are for tracking purposes only and do not constitute professional tax advice. Always verify with a certified public accountant.
+                        </p>
                     </div>
-                ))}
-            </div>
-
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg text-sm text-blue-800">
-                <strong>Note:</strong> These are estimates based on your logged income and expenses using 2025 Standard Mileage Rates (${IRS_STANDARD_MILEAGE_RATE_2025.toFixed(2)}/mi) and approx. tax rates. Always consult a tax professional.
-            </div>
+                </CardContent>
+            </Card>
         </div>
     )
 }
