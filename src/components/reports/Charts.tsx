@@ -34,7 +34,7 @@ export function Charts({ dailyData, platformData }: ChartsProps) {
                     >
                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
                         <XAxis dataKey="date" />
-                        <YAxis prefix="$" />
+                        <YAxis tickFormatter={(value) => `$${value}`} />
                         <Tooltip
                             formatter={(value) => [`$${value}`, 'Earnings']}
                             contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}

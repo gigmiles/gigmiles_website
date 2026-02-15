@@ -81,13 +81,51 @@ export default async function ProfileSettingsPage() {
                     />
                 </div>
 
-                <div className="pt-4 border-t border-border/50 flex justify-end">
-                    <Button type="submit" className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 px-8 shadow-xl">
-                        <Save className="mr-2 size-4" />
-                        Save Changes
-                    </Button>
+                <div className="pt-4 border-t border-border/50 flex justify-between items-center">
+                    <div className="text-sm text-muted-foreground">
+                        <p className="font-medium text-slate-900 dark:text-slate-200">Weekly Reports</p>
+                        <p>Receive a weekly summary of your earnings.</p>
+                    </div>
+                    <div className="flex gap-2">
+                        {/* 
+                            NOTE: This button needs to be a Client Component to handle onClick / pending state nicely.
+                            For now, we will use a simple form action for the MVP verification.
+                        */}
+                        <Button formAction={async () => {
+                            'use server'
+                            // We need to import dynamically or handling this better in a real client component
+                            // But for quick MVP, let's just make a new client component button
+                        }} disabled className="hidden">
+                            Hidden
+                        </Button>
+
+                        <Button type="submit" className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 px-8 shadow-xl">
+                            <Save className="mr-2 size-4" />
+                            Save Changes
+                        </Button>
+                    </div>
                 </div>
             </form>
+
+            {/* Email Test Section - Temporary for Verification */}
+            <div className="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-500/20">
+                <h3 className="font-bold text-indigo-900 dark:text-indigo-100 flex items-center gap-2">
+                    <span className="bg-indigo-500 text-white text-xs px-2 py-0.5 rounded-full">BETA</span>
+                    Email Notifications
+                </h3>
+                <p className="text-sm text-indigo-700 dark:text-indigo-300 mt-1 mb-4">
+                    Test the new weekly summary email integration.
+                </p>
+                <form action={async () => {
+                    'use server'
+                    const { sendWeeklyReport } = await import('@/app/dashboard/actions/email')
+                    await sendWeeklyReport()
+                }}>
+                    <Button variant="outline" className="bg-white hover:bg-indigo-50 border-indigo-200 text-indigo-700">
+                        Send Test Report Now
+                    </Button>
+                </form>
+            </div>
         </div>
     )
 }

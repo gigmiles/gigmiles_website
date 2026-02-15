@@ -112,7 +112,13 @@ export async function getGasPrice(stateCode: string): Promise<number> {
         )
 
         if (!response.ok) {
-            console.error('[GasPrice] API Error:', response.statusText)
+            // Handle Rate Limiting gracefully
+            if (response.status === 429) {
+                console.warn('[GasPrice] Rate Limit Exceeded. Using fallback/cached value.')
+            } else {
+                console.error('[GasPrice] API Error:', response.statusText)
+            }
+
             // Fallback if cache exists (even if stale)
             if (cached) return cached.price
             return 3.50

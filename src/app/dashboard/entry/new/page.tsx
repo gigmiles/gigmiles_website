@@ -32,7 +32,12 @@ const schema = z.object({
         tips: z.string().optional().refine(val => !val || !isNaN(parseFloat(val)), 'Must be a number'),
         miles: z.string().optional().refine(val => !val || !isNaN(parseFloat(val)), 'Must be a number'),
         hours: z.string().optional().refine(val => !val || !isNaN(parseFloat(val)), 'Must be a number'),
-    })).min(1, 'Add at least one platform')
+    })).min(1, 'Add at least one platform'),
+    expenses: z.array(z.object({
+        category: z.string().min(1, 'Category is required'),
+        amount: z.string().refine(val => !isNaN(parseFloat(val)), 'Must be a number'),
+        description: z.string().optional()
+    })).optional()
 })
 
 export default function NewEntryPage() {
@@ -41,19 +46,49 @@ export default function NewEntryPage() {
     const router = useRouter()
     const supabase = createClient()
 
-    const { register, control, handleSubmit, formState: { errors } } = useForm({
+    const { register, control, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
             date: new Date().toISOString().split('T')[0],
             notes: '',
-            platforms: [{ platform_name: '', amount: '', tips: '', miles: '', hours: '' }]
+            platforms: [{ platform_name: '', amount: '', tips: '', miles: '', hours: '' }],
+            expenses: [] // Start empty
         }
     })
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields: platformFields, append: appendPlatform, remove: removePlatform } = useFieldArray({
         control,
         name: "platforms"
     })
+
+    const { fields: expenseFields, append: appendExpense, remove: removeExpense } = useFieldArray({
+        control,
+        name: "expenses"
+    })
+
+    // Check for scanned receipt data on mount
+    useEffect(() => {
+        const scannedData = sessionStorage.getItem('scannedReceipt')
+        if (scannedData) {
+            try {
+                const data = JSON.parse(scannedData)
+                // Pre-fill date if scanned
+                if (data.date) setValue('date', data.date)
+
+                // Add expense
+                appendExpense({
+                    category: data.category || 'Other',
+                    amount: data.total_amount?.toString() || '',
+                    description: `Receipt from ${data.merchant}`
+                })
+
+                // Clear after using
+                sessionStorage.removeItem('scannedReceipt')
+            } catch (e) {
+                console.error("Failed to parse receipt data", e)
+            }
+        }
+    }, [appendExpense, setValue])
 
     useEffect(() => {
         async function fetchPlatforms() {
@@ -85,10 +120,16 @@ export default function NewEntryPage() {
                 hours: p.hours,
             }))
 
+            const expensesData = data.expenses?.map((e: any) => ({
+                category: e.category,
+                amount: e.amount,
+                description: e.description
+            })) || []
+
             await createDailyEntry({
                 date: data.date,
                 notes: data.notes
-            }, earningsData)
+            }, earningsData, expensesData)
 
             // Success feedback
             router.push('/dashboard')
@@ -150,7 +191,7 @@ export default function NewEntryPage() {
                             type="button"
                             variant="outline"
                             size="sm"
-                            onClick={() => append({ platform_name: '', amount: '', tips: '', miles: '', hours: '' })}
+                            onClick={() => appendPlatform({ platform_name: '', amount: '', tips: '', miles: '', hours: '' })}
                             className="rounded-full border-slate-200 hover:border-emerald-500 hover:text-emerald-600"
                         >
                             <Plus className="mr-2 size-4" />
@@ -159,16 +200,16 @@ export default function NewEntryPage() {
                     </div>
 
                     <div className="grid gap-6">
-                        {fields.map((field, index) => (
+                        {platformFields.map((field, index) => (
                             <Card key={field.id} className="shadow-premium border-border/50 relative group overflow-hidden">
                                 <CardHeader className="flex flex-row items-center justify-between bg-slate-50/50 dark:bg-slate-900/50 py-3">
                                     <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Entry #{index + 1}</span>
-                                    {fields.length > 1 && (
+                                    {platformFields.length > 1 && (
                                         <Button
                                             type="button"
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => remove(index)}
+                                            onClick={() => removePlatform(index)}
                                             className="text-ruby-500 hover:text-ruby-600 hover:bg-ruby-50 rounded-full"
                                         >
                                             <Trash2 className="size-4" />
@@ -225,10 +266,78 @@ export default function NewEntryPage() {
                                         />
                                     </div>
                                 </CardContent>
-                                {/* Subtle side indicator */}
                                 <div className="absolute left-0 top-0 h-full w-1 bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </Card>
                         ))}
+                    </div>
+                </div>
+
+                {/* Expenses Section */}
+                <div className="space-y-6 pt-8 border-t border-dashed border-slate-200">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                            <DollarSign className="size-5 text-rose-500" />
+                            Expenses
+                        </h2>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => appendExpense({ category: 'Other', amount: '', description: '' })}
+                            className="rounded-full border-slate-200 hover:border-rose-500 hover:text-rose-600"
+                        >
+                            <Plus className="mr-2 size-4" />
+                            Add Expense
+                        </Button>
+                    </div>
+
+                    <div className="grid gap-6">
+                        {expenseFields.map((field, index) => (
+                            <Card key={field.id} className="shadow-sm border-border/50 relative group">
+                                <CardContent className="pt-6 flex gap-4 items-end">
+                                    <div className="w-1/3 space-y-1.5">
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Category</label>
+                                        <select
+                                            {...register(`expenses.${index}.category`)}
+                                            className="flex h-10 w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-900/50 px-3 py-2 text-sm outline-none"
+                                        >
+                                            <option value="Fuel">Fuel</option>
+                                            <option value="Food">Food</option>
+                                            <option value="Maintenance">Maintenance</option>
+                                            <option value="Supplies">Supplies</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div className="w-1/3">
+                                        <Input
+                                            label="Amount ($)"
+                                            type="number" step="0.01"
+                                            {...register(`expenses.${index}.amount`)}
+                                        />
+                                    </div>
+                                    <div className="w-1/3">
+                                        <Input
+                                            label="Description"
+                                            {...register(`expenses.${index}.description`)}
+                                        />
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => removeExpense(index)}
+                                        className="mb-1 text-slate-400 hover:text-rose-500"
+                                    >
+                                        <Trash2 className="size-4" />
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        ))}
+                        {expenseFields.length === 0 && (
+                            <div className="text-center p-8 border-2 border-dashed border-slate-100 rounded-xl text-muted-foreground text-sm">
+                                No expenses added for this shift.
+                            </div>
+                        )}
                     </div>
                 </div>
 

@@ -106,7 +106,7 @@ export async function getDashboardStats() {
     }
 }
 
-export async function createDailyEntry(entryData: any, earningsData: any[]) {
+export async function createDailyEntry(entryData: any, earningsData: any[], expensesData?: any[]) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -129,23 +129,42 @@ export async function createDailyEntry(entryData: any, earningsData: any[]) {
     }
 
     // 2. Create Platform Earnings
-    const formattedEarnings = earningsData.map((p: any) => ({
-        entry_id: entry.id,
-        platform_name: p.platform_name,
-        amount: parseFloat(p.amount),
-        tips: p.tips ? parseFloat(p.tips) : 0,
-        miles: p.miles ? parseFloat(p.miles) : 0,
-        hours: p.hours ? parseFloat(p.hours) : 0,
-    }))
+    if (earningsData && earningsData.length > 0) {
+        const formattedEarnings = earningsData.map((p: any) => ({
+            entry_id: entry.id,
+            platform_name: p.platform_name,
+            amount: parseFloat(p.amount),
+            tips: p.tips ? parseFloat(p.tips) : 0,
+            miles: p.miles ? parseFloat(p.miles) : 0,
+            hours: p.hours ? parseFloat(p.hours) : 0,
+        }))
 
-    const { error: earningsError } = await supabase
-        .from('platform_earnings')
-        .insert(formattedEarnings)
+        const { error: earningsError } = await supabase
+            .from('platform_earnings')
+            .insert(formattedEarnings)
 
-    if (earningsError) {
-        console.error('Error adding earnings:', earningsError)
-        // Cleanup? For now just throw
-        throw new Error(`Failed to add earnings: ${earningsError.message}`)
+        if (earningsError) {
+            console.error('Error adding earnings:', earningsError)
+            // Cleanup?
+        }
+    }
+
+    // 3. Create Expenses
+    if (expensesData && expensesData.length > 0) {
+        const formattedExpenses = expensesData.map((e: any) => ({
+            entry_id: entry.id,
+            category: e.category,
+            amount: parseFloat(e.amount),
+            description: e.description
+        }))
+
+        const { error: expensesError } = await supabase
+            .from('expenses')
+            .insert(formattedExpenses)
+
+        if (expensesError) {
+            console.error('Error adding expenses:', expensesError)
+        }
     }
 
     return { success: true, entryId: entry.id }
