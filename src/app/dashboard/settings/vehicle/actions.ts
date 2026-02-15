@@ -1,53 +1,117 @@
+"use server"
+
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { getDepreciationRate } from '@/utils/vehicle-data'
 
-export async function updateVehicle(formData: FormData) {
+export async function saveVehicleAction(formData: FormData, vehicleId?: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-
-    // Fetch existing vehicle to get ID
-    const { data: vehicle } = await supabase
-        .from('vehicles')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('is_primary', true)
-        .single()
+    if (!user) return { success: false, error: 'Not authenticated' }
 
     const make = formData.get('make') as string
     const model = formData.get('model') as string
     const year = parseInt(formData.get('year') as string)
     const mpg = parseFloat(formData.get('mpg') as string)
+    const depreciation_rate = parseFloat(formData.get('depreciation_rate') as string)
+    const ownership_type = formData.get('ownership_type') as string || 'owned'
+    const monthly_payment = parseFloat(formData.get('monthly_payment') as string) || 0
+    const monthly_insurance = parseFloat(formData.get('monthly_insurance') as string) || 0
+    const payment_cycle = formData.get('payment_cycle') as string || 'monthly'
+    const fuel_type = formData.get('fuel_type') as string || 'gasoline'
+    const electricity_cost_per_kwh = parseFloat(formData.get('electricity_cost_per_kwh') as string) || 0.15
 
-    // User provided rate takes precedence, otherwise lookup
-    let depreciation_rate = parseFloat(formData.get('depreciation_rate') as string)
+    if (vehicleId) {
+        // Update existing
+        const { error } = await supabase
+            .from('vehicles')
+            .update({
+                make,
+                model,
+                year,
+                mpg,
+                depreciation_rate,
+                ownership_type,
+                monthly_payment,
+                monthly_insurance,
+                payment_cycle,
+                fuel_type,
+                electricity_cost_per_kwh
+            })
+            .eq('id', vehicleId)
+            .eq('user_id', user.id)
+        if (error) {
+            console.error('Save Vehicle ERROR (Update):', error)
+            throw error
+        }
+    } else {
+        // Check if this is the first vehicle
+        const { count } = await supabase
+            .from('vehicles')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
 
-    // If user didn't explicitly set it (or it's 0/default), or we want to enforce model-based:
-    // Logic: If the form sends a value, use it. If not (or if we want to be smart), look it up.
-    // For now, let's respect the form, but if the form value is the *default* (e.g. 0.15) and we have a better match, use the match?
-    // User request: "User inputs nothing extra... system knows Camry is $0.15". 
-    // So if the input is empty or default, we override.
-
-    const lookupRate = getDepreciationRate(make, model)
-    if (!depreciation_rate || depreciation_rate === 0.15) {
-        // If it's the generic default, try to find a specific one
-        if (lookupRate !== 0.20) { // 0.20 is our fallback in utility
-            depreciation_rate = lookupRate
+        // Insert new
+        const { error } = await supabase
+            .from('vehicles')
+            .insert({
+                user_id: user.id,
+                make,
+                model,
+                year,
+                mpg,
+                depreciation_rate,
+                ownership_type,
+                monthly_payment,
+                monthly_insurance,
+                payment_cycle,
+                fuel_type,
+                electricity_cost_per_kwh,
+                is_primary: count === 0 // Make primary if it's the first one
+            })
+        if (error) {
+            console.error('Save Vehicle ERROR (Insert):', error)
+            throw error
         }
     }
 
-    if (vehicle) {
-        await supabase
+    revalidatePath('/dashboard')
+    revalidatePath('/dashboard/settings/vehicle')
+    return { success: true }
+}
+
+export async function deleteVehicleAction(vehicleId: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'Not authenticated' }
+
+    // Don't delete if it's primary unless it's the only one
+    const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('is_primary')
+        .eq('id', vehicleId)
+        .single()
+
+    if (vehicle?.is_primary) {
+        const { count } = await supabase
             .from('vehicles')
-            .update({ make, model, year, mpg, depreciation_rate })
-            .eq('id', vehicle.id)
-    } else {
-        await supabase
-            .from('vehicles')
-            .insert({ user_id: user.id, make, model, year, mpg, depreciation_rate, is_primary: true })
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+
+        if (count && count > 1) {
+            return { success: false, error: 'Cannot delete primary vehicle. Switch to another vehicle first.' }
+        }
     }
 
-    revalidatePath('/dashboard/settings')
+    const { error } = await supabase
+        .from('vehicles')
+        .delete()
+        .eq('id', vehicleId)
+        .eq('user_id', user.id)
+
+    if (error) throw error
+
+    revalidatePath('/dashboard')
     revalidatePath('/dashboard/settings/vehicle')
+    return { success: true }
 }

@@ -61,36 +61,54 @@ export function ReportControls({ data }: ReportControlsProps) {
     }
 
     return (
-        <div className="flex flex-col md:flex-row gap-4 items-end md:items-center bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-border/50 shadow-sm">
-            <div className="flex-1 w-full grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground">Start Date</label>
-                    <Input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="h-9"
-                    />
+        <div className="flex flex-col md:flex-row gap-6 items-end md:items-center bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-2xl">
+            <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Start Date</label>
+                    <div className="relative group">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-emerald-500 transition-colors">
+                            <Calendar className="size-4" />
+                        </div>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-900/50 border border-white/5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                        />
+                    </div>
                 </div>
-                <div className="space-y-1">
-                    <label className="text-xs font-semibold text-muted-foreground">End Date</label>
-                    <Input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="h-9"
-                    />
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">End Date</label>
+                    <div className="relative group">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-emerald-500 transition-colors">
+                            <Calendar className="size-4" />
+                        </div>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-900/50 border border-white/5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                        />
+                    </div>
                 </div>
             </div>
 
-            <div className="flex gap-2 w-full md:w-auto">
-                <Button onClick={handleFilter} disabled={loading} size="sm" className="h-9">
+            <div className="flex gap-3 w-full md:w-auto mt-2 md:mt-6">
+                <Button
+                    onClick={handleFilter}
+                    disabled={loading}
+                    className="flex-1 md:flex-none h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-600/20 active:scale-95 transition-all"
+                >
                     {loading ? <RefreshCw className="mr-2 size-4 animate-spin" /> : <Calendar className="mr-2 size-4" />}
-                    Filter
+                    Update Period
                 </Button>
-                <Button onClick={handleExport} variant="outline" size="sm" className="h-9 border-slate-300">
+                <Button
+                    onClick={handleExport}
+                    variant="ghost"
+                    className="flex-1 md:flex-none h-11 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white font-bold active:scale-95 transition-all"
+                >
                     <Download className="mr-2 size-4" />
-                    Export CSV
+                    Export Data
                 </Button>
             </div>
         </div>

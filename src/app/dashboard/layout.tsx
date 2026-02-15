@@ -6,8 +6,8 @@ import {
     SidebarTrigger,
     SidebarInset,
 } from '@/components/ui/sidebar'
-import { Search, Bell, HelpCircle } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import { DashboardSearch } from '@/components/dashboard/DashboardSearch'
+import { Bell, HelpCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default async function DashboardLayout({
@@ -41,38 +41,51 @@ export default async function DashboardLayout({
         email: user.email,
     }
 
+    // Fetch vehicles for the sidebar
+    const { data: vehicles } = await supabase
+        .from('vehicles')
+        .select('id, make, model, year, is_primary')
+        .eq('user_id', user.id)
+        .order('is_primary', { ascending: false })
+        .order('created_at', { ascending: false })
+
+    const activeVehicleId = vehicles?.find(v => v.is_primary)?.id || vehicles?.[0]?.id || null
+
     return (
         <SidebarProvider>
             <div className="flex h-screen w-full overflow-hidden bg-background">
-                <AppSidebar user={userData} />
-                <SidebarInset className="flex flex-col">
-                    {/* Premium Header */}
-                    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-border/50 bg-background/70 px-4 backdrop-blur-xl md:px-6">
-                        <div className="flex items-center gap-4">
-                            <SidebarTrigger className="-ml-1" />
-                            <div className="hidden md:flex h-9 w-64 items-center gap-2 rounded-full border border-border/50 bg-slate-50 px-3 text-muted-foreground transition-all focus-within:ring-2 focus-within:ring-ring/20 focus-within:ring-offset-0">
-                                <Search className="size-4" />
-                                <Input
-                                    placeholder="Search everything..."
-                                    className="h-full border-0 bg-transparent p-0 text-sm focus-visible:ring-0"
-                                />
-                            </div>
-                        </div>
+                <AppSidebar user={userData} vehicles={vehicles || []} activeVehicleId={activeVehicleId} />
+                <SidebarInset className="relative overflow-hidden bg-white dark:bg-slate-950 flex flex-col">
+                    {/* Global Animated Mesh Gradient */}
+                    <div className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-20 overflow-hidden">
+                        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/30 rounded-full blur-[120px] animate-pulse" />
+                        <div className="absolute bottom-[10%] right-[-5%] w-[35%] h-[35%] bg-indigo-500/20 rounded-full blur-[100px] animate-pulse delay-700" />
+                        <div className="absolute top-[20%] right-[10%] w-[25%] h-[25%] bg-blue-500/10 rounded-full blur-[80px] animate-pulse delay-1000" />
+                    </div>
 
-                        <div className="flex items-center gap-2 md:gap-4">
-                            <Button variant="ghost" size="icon" className="rounded-full text-muted-foreground">
-                                <HelpCircle className="size-5" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="relative rounded-full text-muted-foreground">
-                                <Bell className="size-5" />
-                                <span className="absolute right-2 top-2 flex h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-background" />
-                            </Button>
+                    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center border-b border-white/5 bg-background/40 backdrop-blur-xl px-6 md:px-10">
+                        <div className="mx-auto max-w-[1600px] w-full flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-4">
+                                <SidebarTrigger className="-ml-1 text-slate-500 hover:text-emerald-500 transition-colors" />
+                                <div className="h-4 w-px bg-white/10" />
+                                <div className="hidden md:flex">
+                                    <DashboardSearch />
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-slate-500 hover:bg-white/5 active:scale-90 transition-all">
+                                    <Bell className="size-5" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-slate-500 hover:bg-white/5 active:scale-90 transition-all">
+                                    <HelpCircle className="size-5" />
+                                </Button>
+                            </div>
                         </div>
                     </header>
 
-                    {/* Main Content Area */}
-                    <main className="flex-1 overflow-y-auto p-4 md:p-8 animate-fade-in">
-                        <div className="mx-auto max-w-7xl">
+                    <main className="flex-1 p-6 md:p-10 relative z-0 overflow-y-auto">
+                        <div className="mx-auto max-w-[1600px] w-full">
                             {children}
                         </div>
                     </main>

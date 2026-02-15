@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
+import { getDepreciationRate } from '@/utils/vehicle-data'
 import { toast } from 'sonner'
 import { Wallet, CheckCircle2, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { US_STATES, CAR_MAKES } from '@/utils/constants'
@@ -52,8 +53,10 @@ export default function OnboardingPage() {
         platforms: [] as string[]
     })
 
+    const [checkingPersistence, setCheckingPersistence] = useState(true)
+
     // Step 1 Form
-    const { register: register1, handleSubmit: handleSubmit1, control: control1, setValue: setValue1, formState: { errors: errors1 } } = useForm({
+    const { register: register1, handleSubmit: handleSubmit1, control: control1, setValue: setValue1, reset: reset1, formState: { errors: errors1 } } = useForm({
         resolver: zodResolver(step1Schema),
         defaultValues: { full_name: '', state: '', city: '', zip_code: '' }
     })
@@ -66,11 +69,100 @@ export default function OnboardingPage() {
         formState: { errors: errors2 },
         getValues: getValues2,
         setValue: setValue2,
+        reset: reset2,
         watch: watch2
     } = useForm({
         resolver: zodResolver(step2Schema),
         defaultValues: { make: '', model: '', year: '', mpg: '' }
     })
+
+    // Persistence Check Logic
+    useEffect(() => {
+        async function checkPersistence() {
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (!user) {
+                    setCheckingPersistence(false)
+                    return
+                }
+
+                // 1. Fetch Profile
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single()
+
+                // 2. Fetch Vehicle
+                const { data: vehicle } = await supabase
+                    .from('vehicles')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('is_primary', true)
+                    .maybeSingle()
+
+                // 3. Fetch Platforms
+                const { data: platforms } = await supabase
+                    .from('user_platforms')
+                    .select('platform_name')
+                    .eq('user_id', user.id)
+
+                const hasProfile = !!(profile?.full_name && profile?.state_code && profile?.city && profile?.zip_code)
+                const hasVehicle = !!(vehicle?.make && vehicle?.model && vehicle?.year && vehicle?.mpg)
+                const hasPlatforms = !!(platforms && platforms.length > 0)
+
+                // Populate Forms initially with reset() to avoid validation errors on mount
+                if (profile) {
+                    reset1({
+                        full_name: profile.full_name || '',
+                        state: profile.state_code || '',
+                        city: profile.city || '',
+                        zip_code: profile.zip_code || ''
+                    })
+                }
+
+                if (vehicle) {
+                    reset2({
+                        make: vehicle.make || '',
+                        model: vehicle.model || '',
+                        year: vehicle.year?.toString() || '',
+                        mpg: vehicle.mpg || 25.5
+                    })
+                }
+
+                // Synchronize central formData state
+                setFormData({
+                    full_name: profile?.full_name || '',
+                    state: profile?.state_code || '',
+                    city: profile?.city || '',
+                    zip_code: profile?.zip_code || '',
+                    make: vehicle?.make || '',
+                    model: vehicle?.model || '',
+                    year: vehicle?.year?.toString() || '',
+                    mpg: vehicle?.mpg?.toString() || '',
+                    platforms: platforms?.map(p => p.platform_name) || []
+                })
+
+                // Redirection / Step Logic
+                if (hasProfile && hasVehicle && hasPlatforms) {
+                    router.push('/dashboard')
+                    return
+                } else if (hasProfile && hasVehicle) {
+                    setStep(3)
+                } else if (hasProfile) {
+                    setStep(2)
+                } else {
+                    setStep(1)
+                }
+
+            } catch (error) {
+                console.error("Persistence check failed", error)
+            } finally {
+                setCheckingPersistence(false)
+            }
+        }
+        checkPersistence()
+    }, [supabase, router, reset1, reset2])
 
     const selectedMake = watch2('make')
 
@@ -142,47 +234,71 @@ export default function OnboardingPage() {
 
             // 1. Update Profile
             console.log("Updating profile...")
-            const profileUpdate = await supabase.from('profiles').update({
+            const profileUpdate = await supabase.from('profiles').upsert({
+                id: user.id,
                 full_name: formData.full_name,
                 state_code: formData.state,
                 city: formData.city,
                 zip_code: formData.zip_code,
-            }).eq('id', user.id)
+            })
 
             if (profileUpdate.error) {
                 console.error("Profile update error:", profileUpdate.error)
                 throw new Error("Profile update failed: " + profileUpdate.error.message)
             }
 
-            // 2. Insert Vehicle
-            console.log("Inserting vehicle...")
-            const vehicleInsert = await supabase.from('vehicles').insert({
-                user_id: user.id,
-                make: formData.make,
-                model: formData.model,
-                year: parseInt(formData.year),
-                mpg: parseFloat(formData.mpg),
-                is_primary: true
-            })
+            // 2. Insert/Update Vehicle
+            console.log("Saving vehicle...")
+            const { data: existingVehicle } = await supabase
+                .from('vehicles')
+                .select('id')
+                .eq('user_id', user.id)
+                .eq('is_primary', true)
+                .single()
 
-            if (vehicleInsert.error) {
-                console.error("Vehicle insert error:", vehicleInsert.error)
-                throw new Error("Vehicle insert failed: " + vehicleInsert.error.message)
+            let vehicleResult;
+            if (existingVehicle) {
+                console.log("Updating existing vehicle:", existingVehicle.id)
+                const depreciation_rate = getDepreciationRate(formData.make, formData.model)
+                vehicleResult = await supabase.from('vehicles').update({
+                    make: formData.make,
+                    model: formData.model,
+                    year: parseInt(formData.year),
+                    mpg: parseFloat(formData.mpg),
+                    depreciation_rate: depreciation_rate
+                }).eq('id', existingVehicle.id)
+            } else {
+                console.log("Inserting new vehicle")
+                const depreciation_rate = getDepreciationRate(formData.make, formData.model)
+                vehicleResult = await supabase.from('vehicles').insert({
+                    user_id: user.id,
+                    make: formData.make,
+                    model: formData.model,
+                    year: parseInt(formData.year),
+                    mpg: parseFloat(formData.mpg),
+                    depreciation_rate: depreciation_rate,
+                    is_primary: true
+                })
             }
 
-            // 3. Insert Platforms
-            console.log("Inserting platforms...")
+            if (vehicleResult.error) {
+                console.error("Vehicle save error:", vehicleResult.error)
+                throw new Error("Vehicle setup failed: " + vehicleResult.error.message)
+            }
+
+            // 3. Insert/Update Platforms
+            console.log("Upserting platforms...")
             const platformInserts = formData.platforms.map(p => ({
                 user_id: user.id,
                 platform_name: p,
                 is_active: true
             }))
 
-            const platformsInsert = await supabase.from('user_platforms').insert(platformInserts)
+            const platformsInsert = await supabase.from('user_platforms').upsert(platformInserts, { onConflict: 'user_id,platform_name' })
 
             if (platformsInsert.error) {
-                console.error("Platforms insert error:", platformsInsert.error)
-                throw new Error("Platforms insert failed: " + platformsInsert.error.message)
+                console.error("Platforms upsert error:", platformsInsert.error)
+                throw new Error("Platforms setup failed: " + platformsInsert.error.message)
             }
 
             console.log("All operations successful. Redirecting...")
@@ -196,6 +312,17 @@ export default function OnboardingPage() {
         } finally {
             setLoading(false)
         }
+    }
+
+    if (checkingPersistence) {
+        return (
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
+                <div className="flex flex-col items-center gap-4">
+                    <Loader2 className="size-10 text-emerald-500 animate-spin" />
+                    <p className="text-sm font-medium text-slate-500 animate-pulse">Syncing your session...</p>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -309,7 +436,7 @@ export default function OnboardingPage() {
                                         {errors2.year && <p className="text-xs text-red-500">{errors2.year.message as string}</p>}
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Make</label>
+                                        <label className="text-sm font-medium">Brand</label>
                                         <Controller
                                             control={control2}
                                             name="make"
@@ -320,7 +447,7 @@ export default function OnboardingPage() {
                                                     setValue2('mpg', 0)    // Reset
                                                 }} value={field.value}>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder="Select Make" />
+                                                        <SelectValue placeholder="Select Brand" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         {CAR_MAKES.map((make) => (
@@ -363,7 +490,7 @@ export default function OnboardingPage() {
                                                 onClick={async () => {
                                                     const { year, make, model } = getValues2()
                                                     if (!year || !make || !model) {
-                                                        toast.error("Fill Year, Make, Model first")
+                                                        toast.error("Fill Year, Brand, Model first")
                                                         return
                                                     }
 
@@ -491,7 +618,7 @@ function VehicleModelSelect({ control, watch, setValue }: { control: Control<any
                     <SelectTrigger>
                         <SelectValue placeholder={
                             loading ? "Loading models..." :
-                                (!year || !make) ? "Select Year & Make first" :
+                                (!year || !make) ? "Select Year & Brand first" :
                                     "Select Model"
                         } />
                     </SelectTrigger>

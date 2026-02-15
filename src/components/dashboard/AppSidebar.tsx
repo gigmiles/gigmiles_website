@@ -12,10 +12,17 @@ import {
     CreditCard,
     Bell,
     Search,
+    Car,
+    ChevronsUpDown,
+    Trash2,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ModeToggle } from "@/components/mode-toggle";
+import { switchPrimaryVehicle } from "@/app/dashboard/actions";
+import { deleteVehicleAction } from "@/app/dashboard/settings/vehicle/actions";
+import { signOut } from "@/app/auth/actions";
+import { toast } from "sonner";
 
 import {
     Sidebar,
@@ -28,6 +35,7 @@ import {
     SidebarRail,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -44,6 +52,8 @@ interface AppSidebarProps {
         full_name: string;
         email?: string;
     };
+    vehicles: any[];
+    activeVehicleId: string | null;
 }
 
 const mainNav = [
@@ -72,53 +82,179 @@ const secondaryNav = [
     },
 ];
 
-export function AppSidebar({ user, ...props }: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
     const pathname = usePathname();
+    const activeVehicle = vehicles.find(v => v.id === activeVehicleId) || vehicles[0];
+
+    const handleSwitchVehicle = async (vehicleId: string) => {
+        if (vehicleId === activeVehicleId) return;
+
+        const toastId = toast.loading("Switching vehicle...");
+        try {
+            await switchPrimaryVehicle(vehicleId);
+            toast.success("Vehicle switched!", { id: toastId });
+        } catch (error) {
+            toast.error("Failed to switch vehicle", { id: toastId });
+        }
+    };
+
+    const handleDeleteVehicle = async (e: React.MouseEvent, vehicleId: string) => {
+        e.stopPropagation();
+        if (!confirm("Are you sure you want to delete this vehicle?")) return;
+
+        const toastId = toast.loading("Deleting vehicle...");
+        try {
+            const result = await deleteVehicleAction(vehicleId);
+            if (result.success) {
+                toast.success("Vehicle deleted!", { id: toastId });
+            } else {
+                toast.error(result.error || "Failed to delete", { id: toastId });
+            }
+        } catch (error) {
+            toast.error("Error deleting vehicle", { id: toastId });
+        }
+    };
 
     return (
-        <Sidebar collapsible="icon" {...props} className="border-r border-border/50 bg-sidebar">
-            <SidebarHeader className="h-16 border-b border-border/50 px-6 flex flex-row items-center gap-3">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-emerald-600 text-sidebar-primary-foreground group-data-[collapsible=icon]:hidden">
-                    <Calculator className="size-5" />
+        <Sidebar
+            collapsible="icon"
+            {...props}
+            className="border-r border-border/10 bg-background/40 backdrop-blur-xl overflow-hidden"
+        >
+            <SidebarHeader className="h-auto border-b border-border/10 p-4 bg-transparent flex flex-col gap-4">
+                <div className="flex items-center gap-3 px-2">
+                    <div className="flex aspect-square size-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20">
+                        <Calculator className="size-5" />
+                    </div>
+                    <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+                        <span className="truncate font-display font-bold text-slate-900 dark:text-slate-100 tracking-tight text-base">Gigcalculator</span>
+                        <span className="truncate text-[10px] uppercase tracking-widest font-semibold text-emerald-500/80">Premium Edition</span>
+                    </div>
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                    <span className="truncate font-display font-semibold text-sidebar-foreground">GigTracker</span>
-                    <span className="truncate text-xs text-sidebar-foreground/60">Professional Edition</span>
+
+                {/* Dashboard Vehicle Switcher */}
+                <div className="px-1 group-data-[collapsible=icon]:hidden">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <SidebarMenuButton
+                                size="lg"
+                                className="h-14 w-full justify-between rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/10 shadow-premium transition-all active:scale-[0.98] group/switcher"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 shadow-inner group-hover/switcher:bg-emerald-500/20 transition-colors">
+                                        <Car className="size-5" />
+                                    </div>
+                                    <div className="grid flex-1 text-left text-sm leading-tight">
+                                        <span className="truncate font-bold text-slate-900 dark:text-white">
+                                            {activeVehicle ? `${activeVehicle.make} ${activeVehicle.model}` : "No Vehicle"}
+                                        </span>
+                                        <span className="truncate text-[10px] text-slate-500 font-medium">
+                                            {activeVehicle ? `${activeVehicle.year} • Active` : "Please set vehicle"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <ChevronsUpDown className="size-4 text-slate-500" />
+                            </SidebarMenuButton>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-2xl shadow-premium backdrop-blur-2xl bg-slate-950/90 border-white/10 p-2"
+                            side="bottom"
+                            align="start"
+                            sideOffset={8}
+                        >
+                            <DropdownMenuLabel className="px-3 py-2 text-xs font-bold uppercase tracking-widest text-slate-500/80">
+                                Switch Vehicle
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator className="bg-white/5" />
+                            <div className="space-y-1 mt-1">
+                                {vehicles.map((v) => (
+                                    <div
+                                        key={v.id}
+                                        className={`rounded-xl py-2.5 px-3 transition-colors cursor-pointer flex items-center justify-between group/item ${v.id === activeVehicleId ? 'bg-emerald-500/10' : 'hover:bg-white/5'}`}
+                                        onClick={() => handleSwitchVehicle(v.id)}
+                                    >
+                                        <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 w-full">
+                                                <span className={`font-bold transition-colors truncate ${v.id === activeVehicleId ? 'text-emerald-500' : 'text-slate-200'}`}>
+                                                    {v.make} {v.model}
+                                                </span>
+                                                {v.id === activeVehicleId && (
+                                                    <div className="size-1.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                                )}
+                                            </div>
+                                            <span className="text-[10px] text-slate-500 font-medium tracking-wide italic truncate">
+                                                {v.year} • {v.id === activeVehicleId ? 'Current Driving' : 'Available'}
+                                            </span>
+                                        </div>
+
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="size-7 rounded-lg hover:bg-ruby-500/20 text-slate-500 hover:text-ruby-500 transition-all opacity-0 group-hover/item:opacity-100"
+                                            onClick={(e: React.MouseEvent) => handleDeleteVehicle(e, v.id)}
+                                        >
+                                            <Trash2 className="size-3.5" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                            <DropdownMenuSeparator className="bg-white/5 my-2" />
+                            <DropdownMenuItem className="rounded-xl focus:bg-white/10 py-2 transition-colors cursor-pointer" asChild>
+                                <Link href="/dashboard/settings/vehicle" className="flex items-center w-full">
+                                    <Settings className="size-4 mr-2 text-slate-400" />
+                                    <span className="text-xs font-semibold text-slate-300">Manage Vehicles</span>
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </SidebarHeader>
 
-            <SidebarContent className="px-2 py-4">
-                <SidebarMenu>
+            <SidebarContent className="px-3 py-6 bg-transparent">
+                <SidebarMenu className="gap-1.5">
                     {mainNav.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild
                                 tooltip={item.title}
                                 isActive={pathname === item.url}
-                                className="transition-all duration-200"
+                                className={`h-11 rounded-xl transition-all duration-300 group ${pathname === item.url
+                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold shadow-inner'
+                                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-white/5'
+                                    }`}
                             >
-                                <Link href={item.url}>
-                                    <item.icon className="size-5" />
-                                    <span className="font-medium">{item.title}</span>
+                                <Link href={item.url} className="flex items-center gap-3">
+                                    <div className={`p-1 rounded-lg transition-colors ${pathname === item.url ? 'bg-emerald-500 text-white shadow-md' : 'group-hover:bg-white/10'}`}>
+                                        <item.icon className="size-4" />
+                                    </div>
+                                    <span className="text-sm tracking-tight">{item.title}</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     ))}
                 </SidebarMenu>
 
-                <SidebarSeparator className="my-4 opacity-50" />
+                <div className="my-6 px-3">
+                    <div className="h-px bg-gradient-to-r from-transparent via-border/10 to-transparent" />
+                </div>
 
-                <SidebarMenu>
+                <SidebarMenu className="gap-1.5">
                     {secondaryNav.map((item) => (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton
                                 asChild
                                 tooltip={item.title}
                                 isActive={pathname === item.url}
+                                className={`h-11 rounded-xl transition-all duration-300 ${pathname === item.url
+                                    ? 'bg-slate-500/10 text-slate-900 dark:text-white font-semibold'
+                                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-white/5'
+                                    }`}
                             >
-                                <Link href={item.url}>
-                                    <item.icon className="size-5" />
-                                    <span>{item.title}</span>
+                                <Link href={item.url} className="flex items-center gap-3">
+                                    <div className={`p-1 rounded-lg ${pathname === item.url ? 'bg-slate-700 text-white' : ''}`}>
+                                        <item.icon className="size-4" />
+                                    </div>
+                                    <span className="text-sm tracking-tight">{item.title}</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -126,9 +262,9 @@ export function AppSidebar({ user, ...props }: AppSidebarProps & React.Component
                 </SidebarMenu>
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-border/50 p-2 space-y-2">
-                <div className="flex items-center justify-between px-2 pt-1">
-                    <span className="text-xs font-medium text-muted-foreground group-data-[collapsible=icon]:hidden">Appearance</span>
+            <SidebarFooter className="border-t border-border/10 p-4 space-y-4 bg-transparent">
+                <div className="flex items-center justify-between px-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-data-[collapsible=icon]:hidden">Appearance</span>
                     <ModeToggle />
                 </div>
                 <SidebarMenu>
@@ -137,60 +273,71 @@ export function AppSidebar({ user, ...props }: AppSidebarProps & React.Component
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton
                                     size="lg"
-                                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-full border border-sidebar-border shadow-sm hover:shadow-md transition-all hover:scale-[1.02] bg-sidebar-accent/10"
+                                    className="data-[state=open]:bg-white/10 data-[state=open]:text-white rounded-2xl border border-white/5 shadow-premium hover:shadow-emerald-500/5 transition-all hover:scale-[1.02] bg-white/5 group"
                                 >
-                                    <Avatar className="h-8 w-8 rounded-full shadow-none border border-emerald-500/20">
-                                        <AvatarFallback className="rounded-full bg-emerald-500 text-white font-bold">
+                                    <Avatar className="h-9 w-9 rounded-xl shadow-lg border-2 border-emerald-500/20">
+                                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-bold text-xs">
                                             {user.full_name?.charAt(0) || "U"}
                                         </AvatarFallback>
                                     </Avatar>
-                                    <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                                        <span className="truncate font-semibold">{user.full_name}</span>
-                                        <span className="truncate text-xs text-sidebar-foreground/60">Free Plan</span>
+                                    <div className="grid flex-1 text-left text-xs leading-tight group-data-[collapsible=icon]:hidden ml-2">
+                                        <span className="truncate font-bold text-slate-900 dark:text-white">{user.full_name}</span>
+                                        <span className="truncate text-[10px] text-emerald-500 font-semibold tracking-tight">Active Professional</span>
                                     </div>
-                                    <ChevronRight className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
+                                    <ChevronRight className="ml-auto size-4 text-slate-500 group-data-[collapsible=icon]:hidden transition-transform group-hover:translate-x-0.5" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
-                                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl shadow-premium"
+                                className="w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-2xl shadow-premium backdrop-blur-2xl bg-slate-950/90 border-white/10 p-2"
                                 side="right"
                                 align="end"
-                                sideOffset={4}
+                                sideOffset={12}
                             >
-                                <DropdownMenuLabel className="p-0 font-normal">
-                                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                        <Avatar className="h-8 w-8 rounded-lg">
-                                            <AvatarFallback className="rounded-lg bg-emerald-100 text-emerald-700">
+                                <DropdownMenuLabel className="p-2 font-normal">
+                                    <div className="flex items-center gap-3 px-1 py-1.5 text-left text-sm">
+                                        <Avatar className="h-10 w-10 rounded-xl">
+                                            <AvatarFallback className="rounded-xl bg-emerald-500/20 text-emerald-500 font-bold">
                                                 {user.full_name?.charAt(0) || "U"}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
-                                            <span className="truncate font-semibold">{user.full_name}</span>
-                                            <span className="truncate text-xs text-muted-foreground">{user.email || "user@example.com"}</span>
+                                            <span className="truncate font-bold text-white">{user.full_name}</span>
+                                            <span className="truncate text-xs text-slate-500 font-medium tracking-tight">{user.email || "user@example.com"}</span>
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem className="focus:bg-slate-50" asChild>
-                                        <Link href="/dashboard/settings/profile" className="flex items-center w-full cursor-pointer">
-                                            <User className="mr-2 size-4" />
-                                            My Profile
+                                <DropdownMenuSeparator className="bg-white/5 mx-2 my-2" />
+                                <DropdownMenuGroup className="space-y-1">
+                                    <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer" asChild>
+                                        <Link href="/dashboard/settings/profile" className="flex items-center w-full">
+                                            <div className="p-2 rounded-lg bg-white/5 mr-3">
+                                                <User className="size-4" />
+                                            </div>
+                                            <span className="font-medium">My Profile</span>
                                         </Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="focus:bg-slate-50">
-                                        <Bell className="mr-2 size-4" />
-                                        Notifications
+                                    <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer">
+                                        <div className="p-2 rounded-lg bg-white/5 mr-3">
+                                            <Bell className="size-4" />
+                                        </div>
+                                        <span className="font-medium">Notifications</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem className="focus:bg-slate-50">
-                                        <CreditCard className="mr-2 size-4" />
-                                        Billing
+                                    <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer">
+                                        <div className="p-2 rounded-lg bg-white/5 mr-3">
+                                            <CreditCard className="size-4" />
+                                        </div>
+                                        <span className="font-medium">Billing & Plan</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-ruby-600 focus:bg-ruby-50 focus:text-ruby-600">
-                                    <LogOut className="mr-2 size-4" />
-                                    Log out
+                                <DropdownMenuSeparator className="bg-white/5 mx-2 my-2" />
+                                <DropdownMenuItem
+                                    className="rounded-xl text-ruby-500 focus:bg-ruby-500/10 focus:text-ruby-400 py-2.5 transition-colors cursor-pointer"
+                                    onClick={() => signOut()}
+                                >
+                                    <div className="p-2 rounded-lg bg-ruby-500/10 mr-3">
+                                        <LogOut className="size-4" />
+                                    </div>
+                                    <span className="font-bold">Sign Out</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

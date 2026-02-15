@@ -6,8 +6,9 @@ import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createClient } from '@/utils/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -43,6 +44,7 @@ const schema = z.object({
 export default function NewEntryPage() {
     const [availablePlatforms, setAvailablePlatforms] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
+    const [quickMode, setQuickMode] = useState(true) // Default to quick mode
     const router = useRouter()
     const supabase = createClient()
 
@@ -65,6 +67,16 @@ export default function NewEntryPage() {
         control,
         name: "expenses"
     })
+
+    const searchParams = useSearchParams()
+
+    // Handle shift session hours
+    useEffect(() => {
+        const hours = searchParams.get('hours')
+        if (hours) {
+            setValue('platforms.0.hours', hours)
+        }
+    }, [searchParams, setValue])
 
     // Check for scanned receipt data on mount
     useEffect(() => {
@@ -132,11 +144,22 @@ export default function NewEntryPage() {
             }, earningsData, expensesData)
 
             // Success feedback
+            const hasEarnings = earningsData.some(e => parseFloat(e.amount) > 0)
+            const hasExpenses = expensesData.some(e => parseFloat(e.amount) > 0)
+
+            if (hasEarnings && hasExpenses) {
+                toast.success("Entry added successfully! 🚀")
+            } else if (hasExpenses) {
+                toast.success("Expense added successfully! 💸")
+            } else {
+                toast.success("Earnings added successfully! 🚀")
+            }
+
             router.push('/dashboard')
             router.refresh()
         } catch (error: any) {
             console.error('Error:', error)
-            alert(`Error saving entry: ${error.message}`)
+            toast.error(`Error saving entry: ${error.message}`)
         } finally {
             setLoading(false)
         }
@@ -150,8 +173,21 @@ export default function NewEntryPage() {
                     <ChevronLeft className="size-4" />
                     Back to Dashboard
                 </Link>
-                <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Log Shift Activity</h1>
-                <p className="text-muted-foreground">Keep your records up-to-date for accurate tax projections.</p>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Log Shift Activity</h1>
+                        <p className="text-muted-foreground">Keep your records up-to-date for accurate tax projections.</p>
+                    </div>
+                    <Button
+                        type="button"
+                        variant={quickMode ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setQuickMode(!quickMode)}
+                        className="rounded-full"
+                    >
+                        {quickMode ? "⚡ Quick Mode" : "📋 Detailed Mode"}
+                    </Button>
+                </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -171,12 +207,14 @@ export default function NewEntryPage() {
                             error={errors.date?.message as string}
                             className="rounded-xl"
                         />
-                        <Input
-                            label="Notes (Optional)"
-                            placeholder="Rainy day, high demand..."
-                            {...register('notes')}
-                            className="rounded-xl"
-                        />
+                        {!quickMode && (
+                            <Input
+                                label="Notes (Optional)"
+                                placeholder="Rainy day, high demand..."
+                                {...register('notes')}
+                                className="rounded-xl"
+                            />
+                        )}
                     </CardContent>
                 </Card>
 
@@ -244,26 +282,30 @@ export default function NewEntryPage() {
                                             />
                                         </div>
 
-                                        <Input
-                                            label="Tips ($)"
-                                            type="number" step="0.01"
-                                            placeholder="0.00"
-                                            {...register(`platforms.${index}.tips`)}
-                                        />
+                                        {!quickMode && (
+                                            <>
+                                                <Input
+                                                    label="Tips ($)"
+                                                    type="number" step="0.01"
+                                                    placeholder="0.00"
+                                                    {...register(`platforms.${index}.tips`)}
+                                                />
 
-                                        <Input
-                                            label="Miles"
-                                            type="number" step="0.1"
-                                            placeholder="0.0"
-                                            {...register(`platforms.${index}.miles`)}
-                                        />
+                                                <Input
+                                                    label="Miles"
+                                                    type="number" step="0.1"
+                                                    placeholder="0.0"
+                                                    {...register(`platforms.${index}.miles`)}
+                                                />
 
-                                        <Input
-                                            label="Hours"
-                                            type="number" step="0.1"
-                                            placeholder="0.0"
-                                            {...register(`platforms.${index}.hours`)}
-                                        />
+                                                <Input
+                                                    label="Hours"
+                                                    type="number" step="0.1"
+                                                    placeholder="0.0"
+                                                    {...register(`platforms.${index}.hours`)}
+                                                />
+                                            </>
+                                        )}
                                     </div>
                                 </CardContent>
                                 <div className="absolute left-0 top-0 h-full w-1 bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />

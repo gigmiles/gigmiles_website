@@ -21,6 +21,15 @@ interface CalculationInput {
     mpg?: number
     gasPrice?: number
     wearRate?: number // Price per mile for wear & tear
+    manualFuel?: number
+    manualWear?: number
+    manualInsurance?: number
+    ownershipType?: string // 'owned', 'leased', 'rented'
+    monthlyInsurance?: number
+    monthlyLease?: number
+    paymentCycle?: string // 'daily', 'weekly', 'monthly'
+    fuelType?: 'gasoline' | 'electric'
+    electricityPrice?: number // $/kWh
 }
 
 export function calculateFinancials({
@@ -30,7 +39,16 @@ export function calculateFinancials({
     stateCode,
     mpg = 25,
     gasPrice = 4.50, // Updated standard baseline
-    wearRate = 0.35
+    wearRate = 0.35,
+    manualFuel,
+    manualWear,
+    manualInsurance,
+    ownershipType = 'owned',
+    monthlyInsurance = 0,
+    monthlyLease = 0,
+    paymentCycle = 'monthly',
+    fuelType = 'gasoline',
+    electricityPrice = 0.15
 }: CalculationInput) {
     // Ensure numeric parity (Sanitize inputs)
     const safeMiles = Number(miles) || 0
@@ -39,7 +57,32 @@ export function calculateFinancials({
     const safeGross = Number(grossEarnings) || 0
     const safeExpenses = Number(expenses) || 0
 
-    // 1. Tax Logic
+    // 1. Amortized Fixed Costs (Daily/Weekly/Monthly to Daily)
+    const safeMonthlyInsurance = Number(monthlyInsurance) || 0
+    const safeMonthlyLease = Number(monthlyLease) || 0
+
+    let dailyLease = 0
+    if (paymentCycle === 'daily') {
+        dailyLease = safeMonthlyLease
+    } else if (paymentCycle === 'weekly') {
+        dailyLease = safeMonthlyLease / 7
+    } else {
+        dailyLease = safeMonthlyLease / 30
+    }
+
+    const dailyFixedCosts = dailyLease + (safeMonthlyInsurance / 30)
+
+    // 2. Fuel Cost
+    // For Gasoline: (Miles / MPG) * GasPrice
+    // For Electric: (Miles / MPGe) * ElectricityPrice * 33.7 
+    // (Note: 33.7 kWh is the EPA standard for 1 Gallon of Gasoline Equivalent)
+    const fuelCost = manualFuel !== undefined
+        ? Number(manualFuel)
+        : (fuelType === 'electric'
+            ? (safeMpg > 0 ? (safeMiles / safeMpg) * 33.7 * (Number(electricityPrice) || 0.15) : 0)
+            : (safeMpg > 0 ? (safeMiles / safeMpg) * safeGasPrice : 0))
+
+    // 3. Tax Logic
     const mileageDeduction = safeMiles * IRS_STANDARD_MILEAGE_RATE_2025
     const totalDeductions = safeExpenses + mileageDeduction
     const taxableIncome = Math.max(0, safeGross - totalDeductions)
@@ -49,23 +92,25 @@ export function calculateFinancials({
     const estimatedStateTax = taxableIncome * stateRate
     const totalEstimatedTax = estimatedFederalTax + estimatedStateTax
 
-    // 2. Real-World Business Profit logic
-    // Fuel Cost = (Miles / MPG) * GasPrice
-    const fuelCost = safeMpg > 0 ? (safeMiles / safeMpg) * safeGasPrice : 0
+    // 3. Real-World Business Profit logic
+    // Wear & Tear (Only if user owns the vehicle)
+    const isOwned = ownershipType.toLowerCase() === 'owned'
+    const wearCost = manualWear !== undefined
+        ? Number(manualWear)
+        : (isOwned ? (safeMiles * wearRate) : 0)
 
-    // Wear & Tear
-    const wearCost = safeMiles * wearRate
+    // Per-shift/Daily Insurance (Legacy or manual override)
+    const directInsurance = manualInsurance !== undefined ? Number(manualInsurance) : 0
 
-    // Daily Insurance
-    const dailyInsurance = 5.00
-
-    const totalRealCosts = safeExpenses + fuelCost + wearCost + dailyInsurance
+    const totalRealCosts = safeExpenses + fuelCost + wearCost + directInsurance + dailyFixedCosts
 
     return {
         grossEarnings: safeGross,
         cashExpenses: safeExpenses,
         fuelCost,
         wearCost,
+        insuranceCost: directInsurance + dailyFixedCosts,
+        dailyFixedCosts,
         totalRealCosts,
         estimatedTax: totalEstimatedTax,
         netProfit: safeGross - totalRealCosts - totalEstimatedTax,

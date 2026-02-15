@@ -60,72 +60,73 @@ export function VehicleValueCard({ vehicle }: VehicleValueCardProps) {
     }
 
     return (
-        <Card className="shadow-premium border-border/50 relative overflow-hidden group">
-            {/* Background Gradient */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+        <div className="glass-card p-6 border-white/5 shadow-2xl relative overflow-hidden group">
+            <div className="absolute -top-12 -right-12 w-24 h-24 bg-indigo-500/10 blur-[50px] rounded-full pointer-events-none group-hover:bg-indigo-500/20 transition-all" />
 
-            <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg font-display">
-                    <Car className="size-5 text-indigo-500" />
-                    Asset Value
-                </CardTitle>
-                <CardDescription>
-                    {vehicle.year} {vehicle.make} {vehicle.model}
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-6">
-                    {value ? (
-                        <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-                                    ${value.toLocaleString()}
-                                </span>
-                                <span className="text-sm text-muted-foreground font-medium">USD</span>
-                            </div>
-
-                            <div className="mt-2 flex items-center gap-2 text-xs font-medium text-rose-500 bg-rose-50 dark:bg-rose-500/10 px-2 py-1 rounded-md w-fit">
-                                <TrendingDown className="size-3" />
-                                <span>Est. Depreciation: $1,200 / yr</span>
-                            </div>
-
-                            <p className="text-xs text-muted-foreground mt-4">
-                                Updated: {lastUpdated?.toLocaleTimeString()}
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center py-6 text-center space-y-2">
-                            <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-full mb-2">
-                                <DollarSign className="size-6 text-indigo-500" />
-                            </div>
-                            <p className="text-sm font-medium text-slate-900 dark:text-slate-200">Know Your Car's Worth</p>
-                            <p className="text-xs text-muted-foreground max-w-[200px]">
-                                Enter mileage to see real-time market value based on similar listings.
-                            </p>
-                        </div>
-                    )}
-
-                    <div className="flex items-end gap-2">
-                        <div className="flex-1 space-y-1">
-                            <label className="text-xs font-medium text-muted-foreground ml-1">Current Mileage</label>
-                            <Input
-                                placeholder="e.g. 45000"
-                                type="number"
-                                value={mileage}
-                                onChange={(e) => setMileage(e.target.value)}
-                                className="h-9"
-                            />
-                        </div>
-                        <Button
-                            onClick={handleCheckValue}
-                            disabled={loading}
-                            className="h-9 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20"
-                        >
-                            {loading ? <RefreshCw className="size-4 animate-spin" /> : "Check"}
-                        </Button>
-                    </div>
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                    <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Asset Value</h2>
+                    <p className="text-xs text-slate-500 font-medium">{vehicle.year} {vehicle.make} {vehicle.model}</p>
                 </div>
-            </CardContent>
-        </Card>
+                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+                    <Car className="size-5" />
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                {value ? (
+                    <div className="animate-fade-in-up">
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mr-1">$</span>
+                            <span className="text-4xl font-extrabold tracking-tighter text-slate-900 dark:text-slate-50">
+                                {value.toLocaleString()}
+                            </span>
+                            <span className="text-xs text-slate-500 font-bold ml-1 uppercase">USD</span>
+                        </div>
+
+                        <div className="mt-4 flex items-center gap-2 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 w-fit">
+                            <TrendingDown className="size-3 text-rose-500" />
+                            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Est. Depreciation: $1,200 / yr</span>
+                        </div>
+
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-6 opacity-60">
+                            Last Refreshed: {lastUpdated?.toLocaleTimeString()}
+                        </p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
+                        <div className="p-4 bg-indigo-500/10 rounded-3xl border border-indigo-500/20 group-hover:scale-110 transition-transform">
+                            <DollarSign className="size-6 text-indigo-400" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-200 tracking-tight">Market Valuation</p>
+                            <p className="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed px-4 opacity-80 uppercase tracking-wider">
+                                Enter your current mileage to see real-time market value estimates.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                <div className="flex items-end gap-3 mt-4">
+                    <div className="flex-1 space-y-2">
+                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Mileage</label>
+                        <Input
+                            placeholder="e.g. 45,000"
+                            type="number"
+                            value={mileage}
+                            onChange={(e) => setMileage(e.target.value)}
+                            className="glass-input h-11 px-4 text-sm focus:ring-1 focus:ring-indigo-500/50"
+                        />
+                    </div>
+                    <Button
+                        onClick={handleCheckValue}
+                        disabled={loading}
+                        className="h-11 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white shadow-xl shadow-indigo-500/20 px-6 font-bold active:scale-95 transition-all"
+                    >
+                        {loading ? <RefreshCw className="size-4 animate-spin" /> : "Verify"}
+                    </Button>
+                </div>
+            </div>
+        </div>
     )
 }

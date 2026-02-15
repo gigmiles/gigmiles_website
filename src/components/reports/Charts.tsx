@@ -1,6 +1,8 @@
 'use client'
 
 import {
+    AreaChart,
+    Area,
     BarChart,
     Bar,
     XAxis,
@@ -11,8 +13,17 @@ import {
     ResponsiveContainer,
     PieChart,
     Pie,
-    Cell
+    Cell,
+    Label
 } from 'recharts'
+import {
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+    ChartLegend,
+    ChartLegendContent,
+    ChartConfig
+} from "@/components/ui/chart"
 
 interface DailyData {
     date: string
@@ -26,6 +37,14 @@ interface DailyData {
 interface PlatformData {
     name: string
     value: number
+    gross: number
+    tips: number
+    hours: number
+    miles: number
+    hourlyRate: number
+    tipPct: number
+    earningsPerMile: number
+    fill?: string
 }
 
 interface ChartsProps {
@@ -33,57 +52,119 @@ interface ChartsProps {
     platformData: PlatformData[]
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d']
-
 export function Charts({ dailyData, platformData }: ChartsProps) {
+    const totalGross = platformData.reduce((acc, curr) => acc + curr.gross, 0)
+
+    const chartConfig: ChartConfig = {
+        profit: { label: "Net Profit", color: "hsl(var(--emerald-500))" },
+        gross: { label: "Gross Revenue", color: "hsl(var(--blue-500))" },
+        expenses: { label: "Expenses", color: "hsl(var(--ruby-500))" }
+    }
+
+    platformData.forEach((plat) => {
+        chartConfig[plat.name.toLowerCase().replace(/\s+/g, '-')] = {
+            label: plat.name
+        }
+    })
+
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             {/* Weekly Earnings & Net Profit Analysis */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 h-96">
-                <h3 className="text-lg font-semibold mb-4 text-slate-800">Weekly Profit Analysis</h3>
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                        data={dailyData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        stackOffset="sign"
-                    >
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                        <XAxis dataKey="date" />
-                        <YAxis tickFormatter={(value) => `$${value}`} />
-                        <Tooltip
-                            formatter={(value, name) => [`$${Number(value).toFixed(2)}`, name]}
-                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+            <div className="lg:col-span-7 h-[350px] relative">
+                <div className="absolute top-0 left-0 flex items-center gap-2 mb-4">
+                    <div className="size-2 rounded-full bg-emerald-500" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Profit Trend</span>
+                </div>
+                <ChartContainer config={chartConfig} className="w-full h-full mt-6">
+                    <AreaChart data={dailyData}>
+                        <defs>
+                            <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                        <XAxis
+                            dataKey="date"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10, fill: '#64748b' }}
                         />
-                        <Legend />
-                        <Bar dataKey="netProfit" fill="#10b981" name="Real Net Profit" stackId="a" radius={[0, 0, 4, 4]} />
-                        <Bar dataKey="expenses" fill="#ef4444" name="Expenses (Fuel/Other)" stackId="a" />
-                        <Bar dataKey="depreciationCost" fill="#f59e0b" name="Depreciation (Wear)" stackId="a" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                </ResponsiveContainer>
+                        <YAxis
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 10, fill: '#64748b' }}
+                            tickFormatter={(v) => `$${v}`}
+                        />
+                        <Tooltip
+                            content={<ChartTooltipContent />}
+                            contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: 'none', borderRadius: '12px', backdropFilter: 'blur(10px)' }}
+                        />
+                        <Area
+                            type="monotone"
+                            dataKey="netProfit"
+                            stroke="#10b981"
+                            strokeWidth={3}
+                            fillOpacity={1}
+                            fill="url(#colorProfit)"
+                            name="Net Profit"
+                        />
+                        <Area
+                            type="monotone"
+                            dataKey="earnings"
+                            stroke="#3b82f6"
+                            strokeWidth={2}
+                            fill="transparent"
+                            name="Gross"
+                            strokeDasharray="5 5"
+                        />
+                    </AreaChart>
+                </ChartContainer>
             </div>
 
-            {/* Platform Breakdown Pie Chart */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 h-96">
-                <h3 className="text-lg font-semibold mb-4 text-slate-800">Platform Breakdown</h3>
-                <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                        <Pie
-                            data={platformData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={5}
-                            dataKey="value"
-                        >
-                            {platformData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => `$${value}`} />
-                        <Legend verticalAlign="bottom" height={36} />
-                    </PieChart>
-                </ResponsiveContainer>
+            {/* Platform Breakdown Donut Chart */}
+            <div className="lg:col-span-5 h-[350px] flex flex-col items-center justify-center border-l border-white/5 pl-10">
+                <div className="w-full h-full">
+                    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
+                        <PieChart>
+                            <Pie
+                                data={platformData}
+                                dataKey="value"
+                                nameKey="name"
+                                innerRadius={75}
+                                outerRadius={100}
+                                strokeWidth={8}
+                                stroke="rgba(15, 23, 42, 0.9)"
+                            >
+                                <Label
+                                    content={({ viewBox }) => {
+                                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                            return (
+                                                <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                                                    <tspan
+                                                        x={viewBox.cx}
+                                                        y={viewBox.cy}
+                                                        className="fill-slate-900 dark:fill-white text-3xl font-display font-bold tracking-tighter"
+                                                    >
+                                                        ${totalGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                                    </tspan>
+                                                    <tspan
+                                                        x={viewBox.cx}
+                                                        y={(viewBox.cy || 0) + 24}
+                                                        className="fill-slate-500 text-[10px] uppercase font-black tracking-widest"
+                                                    >
+                                                        Revenue
+                                                    </tspan>
+                                                </text>
+                                            )
+                                        }
+                                    }}
+                                />
+                            </Pie>
+                            <Tooltip content={<ChartTooltipContent hideLabel />} />
+                        </PieChart>
+                    </ChartContainer>
+                </div>
             </div>
         </div>
     )

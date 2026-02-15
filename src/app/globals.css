@@ -26,6 +26,9 @@
   --color-amber-500: #f59e0b;
   --color-amber-600: #d97706;
 
+  --color-amazon-flex: #FF9900;
+  --color-other: #64748b;
+
   /* Typography */
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-display: var(--font-outfit), system-ui, sans-serif;
@@ -104,6 +107,17 @@
   --sidebar-accent-foreground: #f8fafc;
   --sidebar-border: #1e293b;
   --sidebar-ring: #3b82f6;
+
+  /* Platform Colors Base */
+  --color-uber: #000000;
+  --color-uber-eats: #06C167;
+  --color-lyft: #FF00BF;
+  --color-doordash: #FF3008;
+  --color-grubhub: #F6343F;
+  --color-instacart: #43B02A;
+  --color-spark: #0071CE;
+  --color-amazon-flex: #FF9900;
+  --color-other: #64748b;
 }
 
 .dark {
@@ -138,6 +152,17 @@
   --sidebar-accent-foreground: #f8fafc;
   --sidebar-border: #0f172a;
   --sidebar-ring: #3b82f6;
+
+  /* Platform Colors (Same as :root for consistency) */
+  --color-uber: #000000;
+  --color-uber-eats: #06C167;
+  --color-lyft: #FF00BF;
+  --color-doordash: #FF3008;
+  --color-grubhub: #F6343F;
+  --color-instacart: #43B02A;
+  --color-spark: #0071CE;
+  --color-amazon-flex: #FF9900;
+  --color-other: #64748b;
 }
 
 body {
@@ -155,21 +180,38 @@ body {
   }
 }
 
-/* Premium Utilities */
 @utility glass-card {
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@utility glass-card-hover {
+  @apply hover:bg-white/10 dark:hover:bg-slate-800/60 hover:border-white/20 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-1;
 }
 
 @utility premium-gradient {
   background: linear-gradient(135deg, var(--color-slate-900) 0%, var(--color-slate-800) 100%);
 }
 
+@utility mesh-gradient {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(236, 72, 153, 0.05) 0px, transparent 50%);
+}
+
 @utility animate-fade-in {
   animation: fadeIn 0.5s ease-out;
+}
+
+@utility animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
@@ -181,6 +223,34 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility premium-glow {
+  box-shadow: 0 0 20px 2px rgba(16, 185, 129, 0.15), 0 0 40px 4px rgba(16, 185, 129, 0.05);
+}
+
+@utility uber-halo-text {
+  &:is(.dark *) {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  }
+}
+
+@utility uber-halo-dot {
+  &:is(.dark *) {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
   }
 }
 

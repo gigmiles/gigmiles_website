@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input'
 import { ChevronLeft, Save } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
 
+import { ProfileSettingsForm } from './profile-form'
+
 export default async function ProfileSettingsPage() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -18,25 +20,11 @@ export default async function ProfileSettingsPage() {
         .eq('id', user.id)
         .single()
 
-    async function updateProfile(formData: FormData) {
-        'use server'
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
-
-        const full_name = formData.get('full_name') as string
-        const state_code = formData.get('state_code') as string
-        const city = formData.get('city') as string
-        const zip_code = formData.get('zip_code') as string
-
-        await supabase
-            .from('profiles')
-            .update({ full_name, state_code, city, zip_code })
-            .eq('id', user.id)
-
-        revalidatePath('/dashboard/settings')
-        revalidatePath('/dashboard/settings/profile')
-    }
+    const { data: vehicles } = await supabase
+        .from('vehicles')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('is_primary', { ascending: false })
 
     return (
         <div className="max-w-2xl space-y-8 animate-fade-in">
@@ -49,63 +37,9 @@ export default async function ProfileSettingsPage() {
                 <p className="text-muted-foreground">Manage your personal and location details.</p>
             </div>
 
-            <form action={updateProfile} className="space-y-6 bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-border/50 shadow-premium">
-                <div className="grid gap-6">
-                    <Input
-                        name="full_name"
-                        label="Full Name"
-                        defaultValue={profile?.full_name || ''}
-                        placeholder="John Doe"
-                    />
+            <ProfileSettingsForm profile={profile} vehicles={vehicles || []} />
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <Input
-                            name="state_code"
-                            label="State Code (e.g. CA)"
-                            defaultValue={profile?.state_code || ''}
-                            placeholder="CA"
-                        />
-                        <Input
-                            name="zip_code"
-                            label="ZIP Code"
-                            defaultValue={profile?.zip_code || ''}
-                            placeholder="90001"
-                        />
-                    </div>
-
-                    <Input
-                        name="city"
-                        label="City"
-                        defaultValue={profile?.city || ''}
-                        placeholder="Los Angeles"
-                    />
-                </div>
-
-                <div className="pt-4 border-t border-border/50 flex justify-between items-center">
-                    <div className="text-sm text-muted-foreground">
-                        <p className="font-medium text-slate-900 dark:text-slate-200">Weekly Reports</p>
-                        <p>Receive a weekly summary of your earnings.</p>
-                    </div>
-                    <div className="flex gap-2">
-                        {/* 
-                            NOTE: This button needs to be a Client Component to handle onClick / pending state nicely.
-                            For now, we will use a simple form action for the MVP verification.
-                        */}
-                        <Button formAction={async () => {
-                            'use server'
-                            // We need to import dynamically or handling this better in a real client component
-                            // But for quick MVP, let's just make a new client component button
-                        }} disabled className="hidden">
-                            Hidden
-                        </Button>
-
-                        <Button type="submit" className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 px-8 shadow-xl">
-                            <Save className="mr-2 size-4" />
-                            Save Changes
-                        </Button>
-                    </div>
-                </div>
-            </form>
+            {/* Email Test Section - Temporary for Verification */}
 
             {/* Email Test Section - Temporary for Verification */}
             <div className="bg-indigo-50 dark:bg-indigo-900/10 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-500/20">

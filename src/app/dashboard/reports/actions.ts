@@ -16,14 +16,14 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         .select(`
       date,
       platform_earnings ( platform_name, amount, tips, miles, hours ),
-      expenses ( amount, category )
+      expenses ( amount, category, description )
     `)
         .eq('user_id', user.id)
         .gte('date', format(start, 'yyyy-MM-dd'))
         .lte('date', format(end, 'yyyy-MM-dd'))
         .order('date', { ascending: true })
 
-    if (!entries) return { dailyData: [], platformData: [] }
+    if (!entries) return { dailyData: [], platformData: [], expenseBreakdown: [] }
 
     // Fetch user's primary vehicle for depreciation rate
     const { data: vehicle } = await supabase
@@ -35,7 +35,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
 
     const depreciationRate = vehicle?.depreciation_rate || 0.15
 
-    // 1. Process Daily Data
+    // 1. Initialize Daily Data Map
     const dailyDataMap = new Map<string, {
         date: string;
         earnings: number;
@@ -45,8 +45,6 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         depreciationCost: number;
     }>()
 
-    // Initialize days in range with 0
-    // Generate dates between start and end
     let loopDate = new Date(start)
     while (loopDate <= end) {
         const dateStr = format(loopDate, 'yyyy-MM-dd')
@@ -61,54 +59,123 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         loopDate.setDate(loopDate.getDate() + 1)
     }
 
-    // 2. Process Platform Data for Pie Chart
-    const platformMap = new Map<string, number>()
+    // 2. Initialize Platform and Expense Maps
+    const platformMap = new Map<string, {
+        gross: number;
+        tips: number;
+        hours: number;
+        miles: number;
+    }>()
 
-    type PlatformEarning = { platform_name: string; amount: number; tips: number; miles: number }
-    type Expense = { amount: number }
-    type Entry = { date: string; platform_earnings: PlatformEarning[]; expenses: Expense[] }
+    type ExpenseItemDetail = { amount: number; description: string; date: string }
+
+    const expenseMap = new Map<string, {
+        category: string;
+        total: number;
+        items: ExpenseItemDetail[];
+    }>()
+
+    type PlatformEarning = {
+        platform_name: string;
+        amount: number;
+        tips: number;
+        miles: number;
+        hours: number;
+    }
+    type ExpenseItem = { amount: number; category: string; description?: string }
+    type Entry = { date: string; platform_earnings: PlatformEarning[]; expenses: ExpenseItem[] }
 
     (entries as unknown as Entry[]).forEach((entry) => {
         const dayStat = dailyDataMap.get(entry.date)
         if (dayStat) {
-            // Sum Earnings & Miles
             let dailyEarnings = 0
             let dailyMiles = 0
+            let dailyHours = 0
+
+            // Earnings & Platform Stats
             entry.platform_earnings.forEach((p: any) => {
                 const total = (p.amount || 0) + (p.tips || 0)
                 dailyEarnings += total
                 dailyMiles += (p.miles || 0)
+                dailyHours += (p.hours || 0)
 
-                // Add to Platform Map
-                const currentPlat = platformMap.get(p.platform_name) || 0
-                platformMap.set(p.platform_name, currentPlat + total)
+                const existing = platformMap.get(p.platform_name) || { gross: 0, tips: 0, hours: 0, miles: 0 }
+                platformMap.set(p.platform_name, {
+                    gross: existing.gross + total,
+                    tips: existing.tips + (p.tips || 0),
+                    hours: existing.hours + (p.hours || 0),
+                    miles: existing.miles + (p.miles || 0)
+                })
             })
             dayStat.earnings += dailyEarnings
             dayStat.miles += dailyMiles
 
-            // Sum Expenses
+            // Manual Expenses
             let dailyExpenses = 0
             entry.expenses.forEach((e: any) => {
-                dailyExpenses += (e.amount || 0)
+                const amount = (e.amount || 0)
+                dailyExpenses += amount
+
+                // Update Expense Breakdown Map
+                const cat = e.category || 'Other'
+                const existing = expenseMap.get(cat) || { category: cat, total: 0, items: [] as ExpenseItemDetail[] }
+                existing.total += amount
+                existing.items.push({
+                    amount,
+                    description: e.description || 'No description',
+                    date: entry.date
+                })
+                expenseMap.set(cat, existing)
             })
             dayStat.expenses += dailyExpenses
 
-            // Calculate Depreciation & Net Profit
-            // Net Profit = Earnings - Expenses - (Miles * Rate)
-            dayStat.depreciationCost = dailyMiles * depreciationRate
-            dayStat.netProfit = dailyEarnings - dailyExpenses - dayStat.depreciationCost
+            // Calculated Depreciation
+            const depreciation = dailyMiles * depreciationRate
+            dayStat.depreciationCost = depreciation
+
+            if (depreciation > 0) {
+                const depCat = 'Vehicle Wear'
+                const existingDep = expenseMap.get(depCat) || { category: depCat, total: 0, items: [] }
+                existingDep.total += depreciation
+                existingDep.items.push({
+                    amount: depreciation,
+                    description: `Depreciation for ${dailyMiles.toFixed(1)} miles`,
+                    date: entry.date
+                })
+                expenseMap.set(depCat, existingDep)
+            }
+
+            // Net Profit
+            dayStat.netProfit = dailyEarnings - dailyExpenses - depreciation
         }
     })
 
-    // Convert Maps to Arrays
+    // 3. Convert Maps to Arrays and Add efficiency metrics
     const dailyData = Array.from(dailyDataMap.values())
-    const platformData = Array.from(platformMap.entries()).map(([name, value]) => ({
-        name,
-        value
-    }))
+    const platformData = Array.from(platformMap.entries()).map(([name, stats]) => {
+        const hourlyRate = stats.hours > 0 ? stats.gross / stats.hours : 0
+        const tipPct = stats.gross > 0 ? (stats.tips / stats.gross) * 100 : 0
+        const earningsPerMile = stats.miles > 0 ? stats.gross / stats.miles : 0
+
+        return {
+            name,
+            value: stats.gross, // For PieChart
+            gross: stats.gross,
+            tips: stats.tips,
+            hours: stats.hours,
+            miles: stats.miles,
+            hourlyRate,
+            tipPct,
+            earningsPerMile,
+            fill: `var(--color-${name.toLowerCase().replace(/\s+/g, '-')})`
+        }
+    }).sort((a, b) => b.gross - a.gross)
+
+    const expenseBreakdown = Array.from(expenseMap.values()).sort((a, b) => b.total - a.total)
 
     return {
         dailyData,
-        platformData
+        platformData,
+        expenseBreakdown
     }
 }

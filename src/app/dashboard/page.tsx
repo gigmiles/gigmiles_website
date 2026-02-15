@@ -15,10 +15,11 @@ import { BoltQuickActions } from '@/components/dashboard/BoltQuickActions'
 import { BoltTodaySummary } from '@/components/dashboard/BoltTodaySummary'
 import { BoltWeeklySummary } from '@/components/dashboard/BoltWeeklySummary'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { EarningsChart } from '@/components/dashboard/EarningsChart'
+import { PlatformDistributionChart } from '@/components/dashboard/PlatformDistributionChart'
 import { RecentEntries } from '@/components/dashboard/RecentEntries'
-
-import { createClient } from '@/utils/supabase/server'
 import { VehicleValueCard } from '@/components/dashboard/VehicleValueCard'
+import { createClient } from '@/utils/supabase/server'
 
 export default async function DashboardPage() {
     const supabase = await createClient()
@@ -35,10 +36,10 @@ export default async function DashboardPage() {
 
     if (!stats) return <div className="p-8 text-center text-muted-foreground">Loading insights...</div>
 
-    const { today } = stats
+    const { today, weekly, chartData, platformDistribution } = stats
 
     return (
-        <div className="space-y-8 animate-fade-in">
+        <div className="space-y-8 animate-fade-in pb-12">
             {/* Header Section */}
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
@@ -58,39 +59,44 @@ export default async function DashboardPage() {
             </div>
 
             {/* Bolt Migration Components */}
-            <BoltQuickActions />
+            <div className="mb-8">
+                <BoltQuickActions />
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <BoltTodaySummary
-                    gross={today.gross}
-                    netProfit={today.netProfit}
-                    expenses={today.expenses + today.fuelCost + today.wearCost}
-                    miles={today.miles}
-                    hours={today.hours}
-                    tax={today.estimatedTax}
-                    tips={today.tips}
-                    mpg={today.mpg}
-                    gasPrice={today.gasPrice}
-                    fuelCost={today.fuelCost}
-                />
-
-                <div className="space-y-8">
-                    <BoltWeeklySummary
-                        entries={today.richEntry ? [today.richEntry] : []}
-                        totalNetProfit={today.netProfit}
-                        totalGross={today.gross}
-                        totalMiles={today.miles}
-                        totalHours={today.hours}
+            {/* Main Content Grid: Two Column Layout for better vertical packing */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                {/* Left Primary Column (8/12) */}
+                <div className="lg:col-span-8 space-y-8">
+                    <BoltTodaySummary
+                        gross={today.gross}
+                        netProfit={today.netProfit}
+                        expenses={today.totalRealCosts}
+                        miles={today.miles}
+                        hours={today.hours}
+                        tax={today.estimatedTax}
+                        tips={today.tips}
+                        mpg={today.mpg}
+                        gasPrice={today.gasPrice}
+                        fuelCost={today.fuelCost}
+                        wearCost={today.wearCost}
+                        insurance={today.dailyInsurance}
+                        richEntry={today.richEntry}
                     />
+                    <EarningsChart data={chartData} />
+                </div>
 
-                    {/* Integrated Recent Activity & Net Worth */}
-                    <div className="grid grid-cols-1 gap-6">
-                        <RecentEntries entries={recentEntries} />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <VehicleValueCard vehicle={vehicle} />
-                            {/* Placeholder for future asset/goal card */}
-                        </div>
-                    </div>
+                {/* Right Secondary Column (4/12) */}
+                <div className="lg:col-span-4 space-y-8">
+                    <BoltWeeklySummary
+                        entries={weekly.entries}
+                        totalNetProfit={weekly.netProfit}
+                        totalGross={weekly.gross}
+                        totalMiles={weekly.miles}
+                        totalHours={weekly.hours}
+                    />
+                    <PlatformDistributionChart data={platformDistribution} />
+                    <RecentEntries entries={recentEntries} />
+                    <VehicleValueCard vehicle={vehicle} />
                 </div>
             </div>
 
@@ -113,6 +119,6 @@ export default async function DashboardPage() {
                     </div>
                 )
             }
-        </div >
+        </div>
     )
 }
