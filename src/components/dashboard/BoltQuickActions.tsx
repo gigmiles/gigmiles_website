@@ -115,8 +115,8 @@ export function BoltQuickActions() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Link href="/dashboard/entry/new" className="w-full">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <Link href="/dashboard/entry/earnings" className="w-full">
                     <Button
                         size="lg"
                         className="w-full h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/20 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn"
@@ -124,7 +124,7 @@ export function BoltQuickActions() {
                         <div className="p-1.5 rounded-lg bg-white/20 transition-transform group-hover/btn:rotate-90">
                             <Plus className="size-5" />
                         </div>
-                        Add Shift
+                        Add Earnings
                     </Button>
                 </Link>
 
@@ -152,52 +152,31 @@ export function BoltQuickActions() {
                 </Button>
                 */}
 
-                <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-100 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
-                    onClick={() => toast.info("Fuel Log", { description: "Use the 'New Entry' button to log fuel expenses manually." })}
-                >
-                    <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 group-hover/btn:scale-110 transition-transform">
-                        <Fuel className="size-5" />
-                    </div>
-                    Fuel Log
-                </Button>
+                <Link href="/dashboard/entry/expense" className="w-full">
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        className="w-full h-14 rounded-2xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 text-red-500 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
+                    >
+                        <div className="p-1.5 rounded-lg bg-red-500/20 text-red-500 group-hover/btn:scale-110 transition-transform">
+                            <Plus className="size-5" />
+                        </div>
+                        Add Expense
+                    </Button>
+                </Link>
 
-                {activeShift ? (
+                <Link href="/dashboard/reports" className="w-full">
                     <Button
                         variant="outline"
                         size="lg"
-                        disabled={isShiftPending}
-                        className="w-full h-14 rounded-2xl bg-ruby-500/10 border border-ruby-500/20 hover:bg-ruby-500/20 hover:border-ruby-500/30 text-ruby-500 font-black active:scale-95 transition-all flex flex-col items-center justify-center gap-0.5 group/btn backdrop-blur-md relative overflow-hidden"
-                        onClick={handleEndShift}
-                    >
-                        <div className="absolute inset-0 bg-ruby-500/5 animate-pulse pointer-events-none" />
-                        <div className="flex items-center gap-2">
-                            <div className="p-1.5 rounded-lg bg-ruby-500/20 text-ruby-500 group-hover/btn:scale-110 transition-transform">
-                                <Square className="size-4 fill-current" />
-                            </div>
-                            <span className="text-sm">End Shift</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-[10px] font-mono opacity-80">
-                            <Clock className="size-3" />
-                            {elapsed}
-                        </div>
-                    </Button>
-                ) : (
-                    <Button
-                        variant="outline"
-                        size="lg"
-                        disabled={isShiftPending}
                         className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-100 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
-                        onClick={handleStartShift}
                     >
-                        <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 group-hover/btn:scale-110 transition-transform">
-                            <Play className="size-5" />
+                        <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500 group-hover/btn:scale-110 transition-transform">
+                            <RefreshCw className="size-5" />
                         </div>
-                        Start Shift
+                        Reports
                     </Button>
-                )}
+                </Link>
             </div>
         </div>
     )

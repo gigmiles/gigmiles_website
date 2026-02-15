@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DepreciationCalculator } from '@/components/settings/DepreciationCalculator'
 import { saveVehicleAction, deleteVehicleAction } from '@/app/dashboard/settings/vehicle/actions'
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
-import { getDepreciationRate } from '@/utils/vehicle-data'
+import { getDepreciationRate } from '@/utils/calculations'
 import { CAR_MAKES } from '@/utils/constants'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
@@ -343,12 +343,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                         onChange={(e) => setDepreciationRate(Number(e.target.value))}
                                         className="h-12 bg-white/5 border-white/10 rounded-xl"
                                     />
-                                    <DepreciationCalculator
-                                        make={make}
-                                        model={model}
-                                        year={year}
-                                        onRateChange={setDepreciationRate}
-                                    />
+                                    <DepreciationCalculator onRateChange={setDepreciationRate} />
                                 </div>
                             </div>
 

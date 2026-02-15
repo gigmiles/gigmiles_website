@@ -129,7 +129,20 @@ export function calculatePerMile(amount: number, miles: number): number {
     return Number((amount / miles).toFixed(2))
 }
 
+
 export function calculateProfitMargin(netProfit: number, grossIncome: number): number {
     if (grossIncome === 0) return 0
     return Number(((netProfit / grossIncome) * 100).toFixed(2))
+}
+
+export function getDepreciationRate(make: string, model: string): number {
+    // Basic estimation based on vehicle type
+    // This can be enhanced with a more detailed database later
+    const luxuryMakes = ['BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Tesla', 'Porsche', 'Land Rover']
+
+    if (luxuryMakes.includes(make)) {
+        return 0.25 // Higher depreciation for luxury vehicles ($0.25/mile)
+    }
+
+    return 0.15 // Standard depreciation ($0.15/mile)
 }

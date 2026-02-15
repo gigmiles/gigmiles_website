@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
-import { getDepreciationRate } from '@/utils/vehicle-data'
+import { getDepreciationRate } from '@/utils/calculations'
 import { toast } from 'sonner'
 import { Wallet, CheckCircle2, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { US_STATES, CAR_MAKES } from '@/utils/constants'
