@@ -1,17 +1,16 @@
 import { createClient } from '@/utils/supabase/server'
 import { startOfWeek, endOfWeek, subDays, format, startOfDay, endOfDay } from 'date-fns'
 
-export async function getWeeklyStats() {
+export async function getReportsData(startDate?: string, endDate?: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null
 
-    const today = new Date()
-    const sevenDaysAgo = subDays(today, 6)
-    const start = startOfDay(sevenDaysAgo).toISOString()
+    const end = endDate ? endOfDay(new Date(endDate)) : endOfDay(new Date())
+    const start = startDate ? startOfDay(new Date(startDate)) : startOfDay(subDays(end, 6))
 
-    // Fetch entries for the last 7 days
+    // Fetch entries for the date range
     const { data: entries } = await supabase
         .from('daily_entries')
         .select(`
@@ -20,39 +19,72 @@ export async function getWeeklyStats() {
       expenses ( amount, category )
     `)
         .eq('user_id', user.id)
-        .gte('date', format(sevenDaysAgo, 'yyyy-MM-dd'))
-        .lte('date', format(today, 'yyyy-MM-dd'))
+        .gte('date', format(start, 'yyyy-MM-dd'))
+        .lte('date', format(end, 'yyyy-MM-dd'))
         .order('date', { ascending: true })
 
     if (!entries) return { dailyData: [], platformData: [] }
 
-    // 1. Process Daily Data for Bar Chart
-    const dailyDataMap = new Map<string, { date: string; earnings: number; expenses: number }>()
+    // Fetch user's primary vehicle for depreciation rate
+    const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('depreciation_rate')
+        .eq('user_id', user.id)
+        .eq('is_primary', true)
+        .single()
 
-    // Initialize last 7 days with 0
-    for (let i = 0; i < 7; i++) {
-        const d = subDays(today, 6 - i)
-        const dateStr = format(d, 'yyyy-MM-dd')
-        dailyDataMap.set(dateStr, { date: format(d, 'MMM dd'), earnings: 0, expenses: 0 })
+    const depreciationRate = vehicle?.depreciation_rate || 0.15
+
+    // 1. Process Daily Data
+    const dailyDataMap = new Map<string, {
+        date: string;
+        earnings: number;
+        expenses: number;
+        netProfit: number;
+        miles: number;
+        depreciationCost: number;
+    }>()
+
+    // Initialize days in range with 0
+    // Generate dates between start and end
+    let loopDate = new Date(start)
+    while (loopDate <= end) {
+        const dateStr = format(loopDate, 'yyyy-MM-dd')
+        dailyDataMap.set(dateStr, {
+            date: format(loopDate, 'MMM dd'),
+            earnings: 0,
+            expenses: 0,
+            netProfit: 0,
+            miles: 0,
+            depreciationCost: 0
+        })
+        loopDate.setDate(loopDate.getDate() + 1)
     }
 
     // 2. Process Platform Data for Pie Chart
     const platformMap = new Map<string, number>()
 
-    entries.forEach((entry: any) => {
+    type PlatformEarning = { platform_name: string; amount: number; tips: number; miles: number }
+    type Expense = { amount: number }
+    type Entry = { date: string; platform_earnings: PlatformEarning[]; expenses: Expense[] }
+
+    (entries as unknown as Entry[]).forEach((entry) => {
         const dayStat = dailyDataMap.get(entry.date)
         if (dayStat) {
-            // Sum Earnings
+            // Sum Earnings & Miles
             let dailyEarnings = 0
+            let dailyMiles = 0
             entry.platform_earnings.forEach((p: any) => {
                 const total = (p.amount || 0) + (p.tips || 0)
                 dailyEarnings += total
+                dailyMiles += (p.miles || 0)
 
                 // Add to Platform Map
                 const currentPlat = platformMap.get(p.platform_name) || 0
                 platformMap.set(p.platform_name, currentPlat + total)
             })
             dayStat.earnings += dailyEarnings
+            dayStat.miles += dailyMiles
 
             // Sum Expenses
             let dailyExpenses = 0
@@ -60,6 +92,11 @@ export async function getWeeklyStats() {
                 dailyExpenses += (e.amount || 0)
             })
             dayStat.expenses += dailyExpenses
+
+            // Calculate Depreciation & Net Profit
+            // Net Profit = Earnings - Expenses - (Miles * Rate)
+            dayStat.depreciationCost = dailyMiles * depreciationRate
+            dayStat.netProfit = dailyEarnings - dailyExpenses - dayStat.depreciationCost
         }
     })
 

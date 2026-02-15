@@ -25,6 +25,35 @@ interface GasPriceResponse {
 
 // --- FuelEconomy.gov API ---
 // No API Key required.
+
+export async function getVehicleModels(year: string, make: string): Promise<string[]> {
+    try {
+        const response = await fetch(
+            `https://www.fueleconomy.gov/ws/rest/vehicle/menu/model?year=${year}&make=${make}`,
+            {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }
+        )
+
+        if (!response.ok) return []
+
+        const data = await response.json()
+
+        // Structure: { menuItem: [ { text: "Civic", value: "Civic" }, ... ] }
+        if (!data.menuItem) return []
+
+        // Handle single item vs array
+        const items = Array.isArray(data.menuItem) ? data.menuItem : [data.menuItem]
+
+        return items.map((item: any) => item.value)
+    } catch (error) {
+        console.error('Error fetching models:', error)
+        return []
+    }
+}
+
 export async function getEstimatedMPG(year: string, make: string, model: string): Promise<number | null> {
     try {
         const response = await fetch(
@@ -51,9 +80,13 @@ export async function getEstimatedMPG(year: string, make: string, model: string)
         // 1. Year/Make/Model -> Options (returns IDs)
         // 2. ID -> MPG
 
-        if (!data.menuItem || data.menuItem.length === 0) return null
+        if (!data.menuItem) return null
 
-        const vehicleId = data.menuItem[0].value // taking the first engine option
+        // Handle single item vs array
+        const items = Array.isArray(data.menuItem) ? data.menuItem : [data.menuItem]
+        if (items.length === 0) return null
+
+        const vehicleId = items[0].value // taking the first engine option
 
         const mpgResponse = await fetch(`https://www.fueleconomy.gov/ws/rest/vehicle/${vehicleId}`, {
             headers: { 'Accept': 'application/json' }

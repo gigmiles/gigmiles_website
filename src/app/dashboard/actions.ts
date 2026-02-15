@@ -128,16 +128,31 @@ export async function createDailyEntry(entryData: any, earningsData: any[], expe
         throw new Error(`Failed to create entry: ${entryError.message}`)
     }
 
+    // 1.5 Get Vehicle Depreciation Rate
+    const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('depreciation_rate')
+        .eq('user_id', user.id)
+        .eq('is_primary', true)
+        .single()
+
+    const depreciationRate = vehicle?.depreciation_rate || 0
+
     // 2. Create Platform Earnings
+    let totalMiles = 0
     if (earningsData && earningsData.length > 0) {
-        const formattedEarnings = earningsData.map((p: any) => ({
-            entry_id: entry.id,
-            platform_name: p.platform_name,
-            amount: parseFloat(p.amount),
-            tips: p.tips ? parseFloat(p.tips) : 0,
-            miles: p.miles ? parseFloat(p.miles) : 0,
-            hours: p.hours ? parseFloat(p.hours) : 0,
-        }))
+        const formattedEarnings = earningsData.map((p: any) => {
+            const miles = p.miles ? parseFloat(p.miles) : 0
+            totalMiles += miles
+            return {
+                entry_id: entry.id,
+                platform_name: p.platform_name,
+                amount: parseFloat(p.amount),
+                tips: p.tips ? parseFloat(p.tips) : 0,
+                miles: miles,
+                hours: p.hours ? parseFloat(p.hours) : 0,
+            }
+        })
 
         const { error: earningsError } = await supabase
             .from('platform_earnings')
@@ -145,13 +160,25 @@ export async function createDailyEntry(entryData: any, earningsData: any[], expe
 
         if (earningsError) {
             console.error('Error adding earnings:', earningsError)
-            // Cleanup?
         }
     }
 
+    // 2.5 Auto-Calculate Depreciation Expense
+    const depreciationAmount = totalMiles * depreciationRate
+    let finalExpenses = expensesData ? [...expensesData] : []
+
+    if (depreciationAmount > 0) {
+        // Check if Depreciation expense already manually added? (Assuming not for now, or just append)
+        finalExpenses.push({
+            category: 'Depreciation',
+            amount: depreciationAmount,
+            description: `Automated: ${totalMiles} mi @ $${depreciationRate}/mi`
+        })
+    }
+
     // 3. Create Expenses
-    if (expensesData && expensesData.length > 0) {
-        const formattedExpenses = expensesData.map((e: any) => ({
+    if (finalExpenses.length > 0) {
+        const formattedExpenses = finalExpenses.map((e: any) => ({
             entry_id: entry.id,
             category: e.category,
             amount: parseFloat(e.amount),
@@ -168,4 +195,123 @@ export async function createDailyEntry(entryData: any, earningsData: any[], expe
     }
 
     return { success: true, entryId: entry.id }
+}
+export async function getRecentEntries(limit = 5) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+
+    const { data } = await supabase
+        .from('daily_entries')
+        .select(`
+            id,
+            date,
+            platform_earnings ( amount, tips ),
+            expenses ( amount )
+        `)
+        .eq('user_id', user.id)
+        .order('date', { ascending: false })
+        .limit(limit)
+
+    return data || []
+}
+
+export async function getEntryById(id: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+
+    const { data } = await supabase
+        .from('daily_entries')
+        .select(`
+            id,
+            date,
+            notes,
+            platform_earnings ( id, platform_name, amount, tips, miles, hours ),
+            expenses ( id, category, amount, description )
+        `)
+        .eq('user_id', user.id)
+        .eq('id', id)
+        .single()
+
+    return data
+}
+
+export async function deleteDailyEntry(id: string) {
+    const supabase = await createClient()
+    const { error } = await supabase
+        .from('daily_entries')
+        .delete()
+        .eq('id', id)
+
+    return { success: !error, error }
+}
+
+export async function updateDailyEntry(id: string, entryData: any, earningsData: any[], expensesData: any[]) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return { success: false, error: 'Not authenticated' }
+
+    // 1. Update Base Entry
+    await supabase.from('daily_entries').update({ date: entryData.date, notes: entryData.notes }).eq('id', id)
+
+    // 1.5 Get Vehicle Rate
+    const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('depreciation_rate')
+        .eq('user_id', user.id)
+        .eq('is_primary', true)
+        .single()
+
+    const depreciationRate = vehicle?.depreciation_rate || 0
+
+    // 2. Handle Earnings
+    await supabase.from('platform_earnings').delete().eq('entry_id', id)
+
+    let totalMiles = 0
+    let formattedEarnings: any[] = []
+
+    if (earningsData && earningsData.length > 0) {
+        formattedEarnings = earningsData.map((p: any) => {
+            const miles = p.miles ? parseFloat(p.miles) : 0
+            totalMiles += miles
+            return {
+                entry_id: id,
+                platform_name: p.platform_name,
+                amount: parseFloat(p.amount),
+                tips: p.tips ? parseFloat(p.tips) : 0,
+                miles: miles,
+                hours: p.hours ? parseFloat(p.hours) : 0,
+            }
+        })
+        await supabase.from('platform_earnings').insert(formattedEarnings)
+    }
+
+    // 3. Handle Expenses
+    await supabase.from('expenses').delete().eq('entry_id', id)
+
+    // Filter out old automated depreciation to avoid duplicates
+    let finalExpenses = expensesData ? expensesData.filter((e: any) => !e.description?.startsWith('Automated:')) : []
+
+    const depreciationAmount = totalMiles * depreciationRate
+    if (depreciationAmount > 0) {
+        finalExpenses.push({
+            category: 'Depreciation',
+            amount: depreciationAmount,
+            description: `Automated: ${totalMiles} mi @ $${depreciationRate}/mi`
+        })
+    }
+
+    if (finalExpenses.length > 0) {
+        const formattedExpenses = finalExpenses.map((e: any) => ({
+            entry_id: id,
+            category: e.category,
+            amount: parseFloat(e.amount),
+            description: e.description
+        }))
+        await supabase.from('expenses').insert(formattedExpenses)
+    }
+
+    return { success: true }
 }

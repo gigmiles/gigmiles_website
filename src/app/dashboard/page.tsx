@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { getDashboardStats } from './actions'
+import { getDashboardStats, getRecentEntries } from './actions'
 import Link from 'next/link'
 import {
     ArrowUpRight,
@@ -15,6 +15,7 @@ import { BoltQuickActions } from '@/components/dashboard/BoltQuickActions'
 import { BoltTodaySummary } from '@/components/dashboard/BoltTodaySummary'
 import { BoltWeeklySummary } from '@/components/dashboard/BoltWeeklySummary'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { RecentEntries } from '@/components/dashboard/RecentEntries'
 
 import { createClient } from '@/utils/supabase/server'
 import { VehicleValueCard } from '@/components/dashboard/VehicleValueCard'
@@ -24,9 +25,10 @@ export default async function DashboardPage() {
     const { data: { user } } = await supabase.auth.getUser()
 
     // Parallel fetching
-    const [stats, vehicleResult] = await Promise.all([
+    const [stats, vehicleResult, recentEntries] = await Promise.all([
         getDashboardStats(),
-        user ? supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).single() : Promise.resolve({ data: null })
+        user ? supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).single() : Promise.resolve({ data: null }),
+        getRecentEntries(5)
     ])
 
     const vehicle = vehicleResult?.data
@@ -81,10 +83,13 @@ export default async function DashboardPage() {
                         totalHours={today.hours}
                     />
 
-                    {/* New Asset Section - Integrated here for layout balance */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <VehicleValueCard vehicle={vehicle} />
-                        {/* Placeholder for future asset/goal card */}
+                    {/* Integrated Recent Activity & Net Worth */}
+                    <div className="grid grid-cols-1 gap-6">
+                        <RecentEntries entries={recentEntries} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <VehicleValueCard vehicle={vehicle} />
+                            {/* Placeholder for future asset/goal card */}
+                        </div>
                     </div>
                 </div>
             </div>
