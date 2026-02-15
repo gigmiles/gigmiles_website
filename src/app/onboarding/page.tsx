@@ -406,3 +406,73 @@ export default function OnboardingPage() {
         </div>
     )
 }
+
+function VehicleModelSelect({ control, watch, setValue }: { control: Control<any>, watch: UseFormWatch<any>, setValue: UseFormSetValue<any> }) {
+    const [models, setModels] = useState<string[]>([])
+    const [loading, setLoading] = useState(false)
+
+    const year = watch('year')
+    const make = watch('make')
+
+    useEffect(() => {
+        let active = true
+
+        async function fetchModels() {
+            if (!year || !make || year.length < 4) {
+                setModels([])
+                return
+            }
+
+            setLoading(true)
+            try {
+                const fetchedModels = await getVehicleModels(year, make)
+                if (active) {
+                    setModels(fetchedModels)
+                    if (fetchedModels.length === 0 && year.length === 4) {
+                        toast.error(`No models found for ${year} ${make}`)
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to fetch models", error)
+            } finally {
+                if (active) setLoading(false)
+            }
+        }
+
+        const timeout = setTimeout(fetchModels, 500) // Debounce
+        return () => { active = false; clearTimeout(timeout) }
+    }, [year, make])
+
+    return (
+        <Controller
+            control={control}
+            name="model"
+            render={({ field }) => (
+                <Select
+                    disabled={!year || !make || loading}
+                    onValueChange={(val) => {
+                        field.onChange(val)
+                    }}
+                    value={field.value}
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder={
+                            loading ? "Loading models..." :
+                                (!year || !make) ? "Select Year & Make first" :
+                                    "Select Model"
+                        } />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {models.map((model) => (
+                            <SelectItem key={model} value={model}>{model}</SelectItem>
+                        ))}
+                        {models.length === 0 && !loading && (
+                            <SelectItem value="Other" disabled>No models found</SelectItem>
+                        )}
+                        <SelectItem value="Other_Manual">Other (Enter Manually)</SelectItem>
+                    </SelectContent>
+                </Select>
+            )}
+        />
+    )
+}
