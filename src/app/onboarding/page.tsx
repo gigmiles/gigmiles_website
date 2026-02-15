@@ -115,7 +115,10 @@ export default function OnboardingPage() {
     }
 
     const handleFinalSubmit = async () => {
+        console.log("Submit clicked. Current formData:", formData)
+
         if (formData.platforms.length === 0) {
+            console.warn("Validation failed: No platforms selected")
             toast.error('Please select at least one platform')
             return
         }
@@ -123,19 +126,37 @@ export default function OnboardingPage() {
         setLoading(true)
 
         try {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (!user) throw new Error('No user found')
+            console.log("Checking auth...")
+            const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+            if (authError) {
+                console.error("Auth error:", authError)
+                throw new Error("Authentication failed: " + authError.message)
+            }
+            if (!user) {
+                console.error("No user found in session")
+                throw new Error('No user found')
+            }
+
+            console.log("User found:", user.id)
 
             // 1. Update Profile
-            await supabase.from('profiles').update({
+            console.log("Updating profile...")
+            const profileUpdate = await supabase.from('profiles').update({
                 full_name: formData.full_name,
                 state_code: formData.state,
                 city: formData.city,
                 zip_code: formData.zip_code,
             }).eq('id', user.id)
 
+            if (profileUpdate.error) {
+                console.error("Profile update error:", profileUpdate.error)
+                throw new Error("Profile update failed: " + profileUpdate.error.message)
+            }
+
             // 2. Insert Vehicle
-            await supabase.from('vehicles').insert({
+            console.log("Inserting vehicle...")
+            const vehicleInsert = await supabase.from('vehicles').insert({
                 user_id: user.id,
                 make: formData.make,
                 model: formData.model,
@@ -144,21 +165,33 @@ export default function OnboardingPage() {
                 is_primary: true
             })
 
+            if (vehicleInsert.error) {
+                console.error("Vehicle insert error:", vehicleInsert.error)
+                throw new Error("Vehicle insert failed: " + vehicleInsert.error.message)
+            }
+
             // 3. Insert Platforms
+            console.log("Inserting platforms...")
             const platformInserts = formData.platforms.map(p => ({
                 user_id: user.id,
                 platform_name: p,
                 is_active: true
             }))
 
-            await supabase.from('user_platforms').insert(platformInserts)
+            const platformsInsert = await supabase.from('user_platforms').insert(platformInserts)
 
+            if (platformsInsert.error) {
+                console.error("Platforms insert error:", platformsInsert.error)
+                throw new Error("Platforms insert failed: " + platformsInsert.error.message)
+            }
+
+            console.log("All operations successful. Redirecting...")
             router.push('/dashboard')
             router.refresh()
             toast.success("Welcome to Gig Tracker!")
 
         } catch (error: any) {
-            console.error('Error saving data:', error)
+            console.error('FINAL SUBMIT ERROR:', error)
             toast.error('Error saving data: ' + error.message)
         } finally {
             setLoading(false)
