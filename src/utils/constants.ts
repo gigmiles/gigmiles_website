@@ -56,6 +56,8 @@ export const CAR_MAKES = [
     "Toyota", "Honda", "Ford", "Chevrolet", "Nissan", "Hyundai", "Kia", "Tesla", "Volkswagen", "Subaru", "Jeep", "Mazda", "BMW", "Mercedes-Benz", "Audi", "Lexus", "Dodge", "Ram", "GMC", "Other"
 ]
 
+export const CAR_YEARS = Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i).toString())
+
 export const POPULAR_MODELS: Record<string, string[]> = {
     "Toyota": ["Camry", "Corolla", "Prius", "RAV4", "Highlander", "Tacoma", "Sienna"],
     "Honda": ["Civic", "Accord", "CR-V", "Pilot", "Odyssey", "HR-V"],

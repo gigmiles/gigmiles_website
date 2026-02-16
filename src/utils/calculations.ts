@@ -74,12 +74,11 @@ export function calculateFinancials({
 
     // 2. Fuel Cost
     // For Gasoline: (Miles / MPG) * GasPrice
-    // For Electric: (Miles / MPGe) * ElectricityPrice * 33.7 
-    // (Note: 33.7 kWh is the EPA standard for 1 Gallon of Gasoline Equivalent)
+    // For Electric: (Miles / Efficiency_mi_kWh) * ElectricityPrice
     const fuelCost = manualFuel !== undefined
         ? Number(manualFuel)
         : (fuelType === 'electric'
-            ? (safeMpg > 0 ? (safeMiles / safeMpg) * 33.7 * (Number(electricityPrice) || 0.15) : 0)
+            ? (safeMpg > 0 ? (safeMiles / safeMpg) * (Number(electricityPrice) || 0.15) : 0) // Note: For EV, 'safeMpg' holds the efficiency (mi/kWh)
             : (safeMpg > 0 ? (safeMiles / safeMpg) * safeGasPrice : 0))
 
     // 3. Tax Logic
@@ -135,14 +134,51 @@ export function calculateProfitMargin(netProfit: number, grossIncome: number): n
     return Number(((netProfit / grossIncome) * 100).toFixed(2))
 }
 
-export function getDepreciationRate(make: string, model: string): number {
-    // Basic estimation based on vehicle type
-    // This can be enhanced with a more detailed database later
-    const luxuryMakes = ['BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Tesla', 'Porsche', 'Land Rover']
+export function getDepreciationRate(make: string, model: string, year: number): number {
+    let rate = 0.15 // Base rate ($0.15/mile)
+
+    // 1. Luxury / Premium Make Factor (Higher Maintenance/Depreciation)
+    const luxuryMakes = [
+        'BMW', 'Mercedes-Benz', 'Audi', 'Lexus', 'Tesla', 'Porsche', 'Land Rover',
+        'Jaguar', 'Volvo', 'Infiniti', 'Acura', 'Cadillac', 'Lincoln', 'Maserati',
+        'Alfa Romeo', 'Rivian', 'Lucid', 'Polestar'
+    ]
+
+    // 2. High Resale Value Models (Lower Depreciation)
+    // These cars hold their value better than average
+    const highResaleModels = [
+        // Toyota
+        'Tacoma', '4Runner', 'Tundra', 'Camry', 'Corolla', 'RAV4', 'Highlander', 'Prius',
+        // Honda
+        'Civic', 'CR-V', 'Accord', 'Pilot',
+        // Jeep
+        'Wrangler', 'Gladiator',
+        // Subaru
+        'WRX', 'Outback', 'Crosstrek', 'Forester',
+        // Trucks & Others
+        'F-150', 'Silverado', 'Sierra', 'Mustang', 'Corvette', '911'
+    ]
 
     if (luxuryMakes.includes(make)) {
-        return 0.25 // Higher depreciation for luxury vehicles ($0.25/mile)
+        rate += 0.08 // Reduced from 0.10 to 0.08 as per plan
     }
 
-    return 0.15 // Standard depreciation ($0.15/mile)
+    if (highResaleModels.includes(model)) {
+        rate -= 0.03 // Value retention discount
+    }
+
+    // 3. Age Factor
+    const currentYear = new Date().getFullYear()
+    const age = currentYear - year
+
+    if (age <= 3) {
+        rate += 0.05 // New cars lose value fastest
+    } else if (age > 15) {
+        rate -= 0.08 // Very old cars (bottomed out, heavily depreciated)
+    } else if (age > 7) {
+        rate -= 0.05 // Older cars have flatter depreciation curve
+    }
+
+    // Cap minimum rate to avoid unrealistic values (e.g. old civic shouldn't be 0)
+    return Math.max(0.05, Number(rate.toFixed(3)))
 }

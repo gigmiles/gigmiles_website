@@ -12,7 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
 import { getDepreciationRate } from '@/utils/calculations'
-import { toast } from 'sonner'
+import { EV_MODELS, ELECTRIC_BRANDS } from '@/utils/vehicle-data'
+import { Toaster, toast } from 'sonner'
 import { Wallet, CheckCircle2, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { US_STATES, CAR_MAKES } from '@/utils/constants'
 
@@ -28,6 +29,9 @@ const step2Schema = z.object({
     model: z.string().min(2, 'Model is required'),
     year: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
     mpg: z.coerce.number().min(1, 'MPG must be a valid number'),
+    fuel_type: z.string().optional(),
+    ownership_type: z.string().optional(),
+    electricity_cost_per_kwh: z.string().optional()
 })
 
 const step3Schema = z.object({
@@ -73,7 +77,7 @@ export default function OnboardingPage() {
         watch: watch2
     } = useForm({
         resolver: zodResolver(step2Schema),
-        defaultValues: { make: '', model: '', year: '', mpg: '' }
+        defaultValues: { make: '', model: '', year: '', mpg: '', fuel_type: 'gasoline', ownership_type: 'owned', electricity_cost_per_kwh: '' }
     })
 
     // Persistence Check Logic
@@ -126,7 +130,10 @@ export default function OnboardingPage() {
                         make: vehicle.make || '',
                         model: vehicle.model || '',
                         year: vehicle.year?.toString() || '',
-                        mpg: vehicle.mpg || 25.5
+                        mpg: vehicle.mpg || 25.5,
+                        fuel_type: vehicle.fuel_type || 'gasoline',
+                        ownership_type: vehicle.ownership_type || 'owned',
+                        electricity_cost_per_kwh: vehicle.electricity_cost_per_kwh?.toString() || ''
                     })
                 }
 
@@ -259,7 +266,7 @@ export default function OnboardingPage() {
             let vehicleResult;
             if (existingVehicle) {
                 console.log("Updating existing vehicle:", existingVehicle.id)
-                const depreciation_rate = getDepreciationRate(formData.make, formData.model)
+                const depreciation_rate = getDepreciationRate(formData.make, formData.model, parseInt(formData.year))
                 vehicleResult = await supabase.from('vehicles').update({
                     make: formData.make,
                     model: formData.model,
@@ -269,15 +276,18 @@ export default function OnboardingPage() {
                 }).eq('id', existingVehicle.id)
             } else {
                 console.log("Inserting new vehicle")
-                const depreciation_rate = getDepreciationRate(formData.make, formData.model)
+                const depreciation_rate = getDepreciationRate(formData.make, formData.model, parseInt(formData.year))
                 vehicleResult = await supabase.from('vehicles').insert({
                     user_id: user.id,
                     make: formData.make,
                     model: formData.model,
                     year: parseInt(formData.year),
-                    mpg: parseFloat(formData.mpg),
+                    mpg: parseFloat(formData.mpg || '0'),
                     depreciation_rate: depreciation_rate,
-                    is_primary: true
+                    is_primary: true,
+                    fuel_type: getValues2('fuel_type') || 'gasoline',
+                    ownership_type: getValues2('ownership_type') || 'owned',
+                    electricity_cost_per_kwh: getValues2('electricity_cost_per_kwh') ? parseFloat(getValues2('electricity_cost_per_kwh') || '0') : null
                 })
             }
 
@@ -445,6 +455,14 @@ export default function OnboardingPage() {
                                                     field.onChange(val)
                                                     setValue2('model', '') // Reset
                                                     setValue2('mpg', 0)    // Reset
+
+                                                    // Auto-detect Electric Brands
+                                                    const electricBrands = ['Tesla', 'Rivian', 'Lucid', 'Polestar', 'Fisker']
+                                                    if (electricBrands.includes(val)) {
+                                                        setValue2('fuel_type', 'electric')
+                                                    } else {
+                                                        setValue2('fuel_type', 'gasoline')
+                                                    }
                                                 }} value={field.value}>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select Brand" />
@@ -467,53 +485,132 @@ export default function OnboardingPage() {
                                         <VehicleModelSelect
                                             control={control2}
                                             watch={watch2}
-                                            setValue={setValue2}
+                                            setValue={setValue2 as any}
                                         />
                                         {errors2.model && <p className="text-xs text-red-500">{errors2.model.message as string}</p>}
                                     </div>
 
+                                    {/* MPG or Electricity Cost based on Fuel Type */}
                                     <div className="space-y-2 relative">
-                                        <div className="flex justify-between">
-                                            <label className="text-sm font-medium">MPG</label>
-                                        </div>
-                                        <div className="relative">
-                                            <Input
-                                                type="number"
-                                                step="0.1"
-                                                placeholder="25.5"
-                                                className="pr-20"
-                                                {...register2('mpg')}
-                                            />
-                                            <button
-                                                type="button"
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-600 hover:text-emerald-500 font-medium bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md transition-colors"
-                                                onClick={async () => {
-                                                    const { year, make, model } = getValues2()
-                                                    if (!year || !make || !model) {
-                                                        toast.error("Fill Year, Brand, Model first")
-                                                        return
-                                                    }
+                                        {watch2('fuel_type') === 'electric' ? (
+                                            <>
+                                                <label className="text-sm font-medium">Electricity Cost ($/kWh)</label>
+                                                <div className="relative">
+                                                    <Input
+                                                        type="number"
+                                                        step="0.01"
+                                                        placeholder="0.15"
+                                                        {...register2('electricity_cost_per_kwh')}
+                                                        onChange={(e) => {
+                                                            // Auto-replace comma with dot
+                                                            const val = e.target.value.replace(',', '.')
+                                                            setValue2('electricity_cost_per_kwh', val)
+                                                        }}
+                                                    />
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                                                        $/kWh
+                                                    </span>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="flex justify-between">
+                                                    <label className="text-sm font-medium">MPG</label>
+                                                </div>
+                                                <div className="relative">
+                                                    <Input
+                                                        type="number"
+                                                        step="0.1"
+                                                        placeholder="25.5"
+                                                        className="pr-20"
+                                                        {...register2('mpg')}
+                                                        onChange={(e) => {
+                                                            // Auto-replace comma with dot
+                                                            const val = e.target.value.replace(',', '.')
+                                                            setValue2('mpg', val)
+                                                        }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-600 hover:text-emerald-500 font-medium bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md transition-colors"
+                                                        onClick={async () => {
+                                                            const { year, make, model } = getValues2()
+                                                            if (!year || !make || !model) {
+                                                                toast.error("Fill Year, Brand, Model first")
+                                                                return
+                                                            }
 
-                                                    const toastId = toast.loading(`Fetching MPG for ${year} ${make} ${model}...`)
-                                                    try {
-                                                        const mpg = await getEstimatedMPG(year, make, model)
-                                                        if (mpg) {
-                                                            setValue2('mpg', mpg, { shouldValidate: true, shouldDirty: true })
-                                                            toast.success(`Found: ${mpg} MPG`, { id: toastId })
-                                                        } else {
-                                                            toast.error("MPG not found. Please enter manually.", { id: toastId })
-                                                        }
-                                                    } catch (e) {
-                                                        toast.error("Error fetching MPG", { id: toastId })
-                                                    }
-                                                }}
-                                            >
-                                                Auto-Fill
-                                            </button>
-                                        </div>
-                                        {errors2.mpg && <p className="text-xs text-red-500">{errors2.mpg.message as string}</p>}
+                                                            const toastId = toast.loading(`Fetching MPG for ${year} ${make} ${model}...`)
+                                                            try {
+                                                                const mpg = await getEstimatedMPG(year, make, model)
+                                                                if (mpg) {
+                                                                    setValue2('mpg', mpg, { shouldValidate: true, shouldDirty: true })
+                                                                    toast.success(`Found: ${mpg} MPG`, { id: toastId })
+                                                                } else {
+                                                                    toast.error("MPG not found. Please enter manually.", { id: toastId })
+                                                                }
+                                                            } catch (e) {
+                                                                toast.error("Error fetching MPG", { id: toastId })
+                                                            }
+                                                        }}
+                                                    >
+                                                        Auto-Fill
+                                                    </button>
+                                                </div>
+                                                {errors2.mpg && <p className="text-xs text-red-500">{errors2.mpg.message as string}</p>}
+                                            </>
+                                        )}
                                     </div>
                                 </div>
+
+                                {/* Ownership & Fuel Type Selection */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Ownership</label>
+                                        <Controller
+                                            control={control2}
+                                            name="ownership_type"
+                                            defaultValue="owned"
+                                            render={({ field }) => (
+                                                <Select onValueChange={field.onChange} value={field.value}>
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="owned">I Own It</SelectItem>
+                                                        <SelectItem value="leased">Leased</SelectItem>
+                                                        <SelectItem value="rented">Rented</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            )}
+                                        />
+                                    </div>
+
+                                    {/* Only show Fuel Type if NOT an electric-only brand */}
+                                    {!['Tesla', 'Rivian', 'Lucid', 'Polestar', 'Fisker'].includes(watch2('make')) && (
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium">Fuel Type</label>
+                                            <Controller
+                                                control={control2}
+                                                name="fuel_type"
+                                                defaultValue="gasoline"
+                                                render={({ field }) => (
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <SelectTrigger>
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="gasoline">Gasoline</SelectItem>
+                                                            <SelectItem value="hybrid">Hybrid</SelectItem>
+                                                            <SelectItem value="electric">Electric</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+
                             </div>
                             <div className="flex gap-3 pt-4">
                                 <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1">
@@ -567,7 +664,11 @@ export default function OnboardingPage() {
     )
 }
 
-function VehicleModelSelect({ control, watch, setValue }: { control: Control<any>, watch: UseFormWatch<any>, setValue: UseFormSetValue<any> }) {
+function VehicleModelSelect({ control, watch, setValue }: {
+    control: Control<any>,
+    watch: UseFormWatch<any>,
+    setValue: (name: string, value: any) => void
+}) {
     const [models, setModels] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
 
@@ -575,32 +676,33 @@ function VehicleModelSelect({ control, watch, setValue }: { control: Control<any
     const make = watch('make')
 
     useEffect(() => {
-        let active = true
-
         async function fetchModels() {
-            if (!year || !make || year.length < 4) {
-                setModels([])
-                return
-            }
-
+            if (!year || !make) return
             setLoading(true)
+
+            // Check if we have local EV models for this make first
+            const localEvModels = EV_MODELS.filter(ev => ev.make === make).map(ev => ev.model)
+
             try {
-                const fetchedModels = await getVehicleModels(year, make)
-                if (active) {
-                    setModels(fetchedModels)
-                    if (fetchedModels.length === 0 && year.length === 4) {
-                        toast.error(`No models found for ${year} ${make}`)
-                    }
-                }
+                // ... fetch from API (existing logic) ...
+                // For now, simulate or just use the API.
+                // Merging local EV models with API results if needed, or just relying on API
+                // and matching the name.
+                const models = await getVehicleModels(year, make)
+
+                // Ensure local EVs are in the list if not returned by API
+                const allModels = Array.from(new Set([...models, ...localEvModels])).sort()
+                setModels(allModels)
             } catch (error) {
-                console.error("Failed to fetch models", error)
+                console.error("Error fetching models:", error)
+                // Fallback to local if API fails
+                setModels(localEvModels.length > 0 ? localEvModels : [])
             } finally {
-                if (active) setLoading(false)
+                setLoading(false)
             }
         }
 
-        const timeout = setTimeout(fetchModels, 500) // Debounce
-        return () => { active = false; clearTimeout(timeout) }
+        fetchModels()
     }, [year, make])
 
     return (
@@ -612,6 +714,8 @@ function VehicleModelSelect({ control, watch, setValue }: { control: Control<any
                     disabled={!year || !make || loading}
                     onValueChange={(val) => {
                         field.onChange(val)
+                        // Trigger the parent's setValue handler which contains the auto-fill logic
+                        setValue('model', val)
                     }}
                     value={field.value}
                 >

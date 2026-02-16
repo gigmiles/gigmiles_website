@@ -9,7 +9,8 @@ import { DepreciationCalculator } from '@/components/settings/DepreciationCalcul
 import { saveVehicleAction, deleteVehicleAction } from '@/app/dashboard/settings/vehicle/actions'
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
 import { getDepreciationRate } from '@/utils/calculations'
-import { CAR_MAKES } from '@/utils/constants'
+import { CAR_MAKES, CAR_YEARS } from '@/utils/constants'
+import { EV_MODELS, ELECTRIC_BRANDS } from '@/utils/vehicle-data'
 import { toast } from 'sonner'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
@@ -109,7 +110,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
         async function syncVehicleData() {
             if (!year || !make || !model) return
 
-            const newRate = getDepreciationRate(make, model)
+            const newRate = getDepreciationRate(make, model, parseInt(year))
             setDepreciationRate(newRate)
 
             setFetchingMPG(true)
@@ -131,7 +132,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
         if (!isInitialLoad && isSheetOpen) {
             syncVehicleData()
         }
-    }, [model])
+    }, [model, year, make])
 
     async function handleSave(e: React.FormEvent) {
         e.preventDefault()
@@ -301,7 +302,22 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-slate-400">Brand</label>
-                                    <Select value={make} onValueChange={setMake}>
+                                    <Select value={make} onValueChange={(val) => {
+                                        setMake(val)
+                                        // Auto-detect Electric Brands
+                                        if (ELECTRIC_BRANDS.includes(val)) {
+                                            setFuelType('electric')
+                                        } else {
+                                            const isKnownEV = EV_MODELS.some(ev => ev.make === val)
+                                            if (isKnownEV) {
+                                                // Don't force set yet, wait for model
+                                                setFuelType('electric')
+                                            } else {
+                                                setFuelType('gasoline')
+                                            }
+                                        }
+                                        setModel('') // Reset model on make change
+                                    }}>
                                         <SelectTrigger className="h-12 bg-white/5 border-white/10 rounded-xl">
                                             <SelectValue placeholder="Brand" />
                                         </SelectTrigger>
@@ -316,7 +332,16 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-slate-400">Model</label>
-                                <Select value={model} onValueChange={setModel} disabled={fetchingModels || !make}>
+                                <Select value={model} onValueChange={(val) => {
+                                    setModel(val)
+                                    // Auto-fill efficiency for known EVs
+                                    const evMatch = EV_MODELS.find(ev => ev.make === make && ev.model === val)
+                                    if (evMatch) {
+                                        setFuelType('electric')
+                                        setMpg(evMatch.efficiency.toString())
+                                        toast.success(`Auto-set efficiency: ${evMatch.efficiency} mi/kWh`)
+                                    }
+                                }} disabled={fetchingModels || !make}>
                                     <SelectTrigger className="h-12 bg-white/5 border-white/10 rounded-xl">
                                         <SelectValue placeholder={fetchingModels ? "Loading..." : "Select Model"} />
                                     </SelectTrigger>
@@ -340,7 +365,10 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                         type="number"
                                         step="0.001"
                                         value={depreciationRate}
-                                        onChange={(e) => setDepreciationRate(Number(e.target.value))}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(',', '.')
+                                            setDepreciationRate(val as any) // Cast to any to allow string intermediate state
+                                        }}
                                         className="h-12 bg-white/5 border-white/10 rounded-xl"
                                     />
                                     <DepreciationCalculator onRateChange={setDepreciationRate} />
@@ -370,7 +398,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                             step="0.01"
                                             placeholder="0.15"
                                             value={electricityCost}
-                                            onChange={(e) => setElectricityCost(e.target.value)}
+                                            onChange={(e) => setElectricityCost(e.target.value.replace(',', '.'))}
                                             className="h-12 bg-white/5 border-white/10 rounded-xl"
                                         />
                                         <p className="text-[10px] text-slate-500 italic">Average US rate: $0.15/kWh. Check your utility bill for exact rate.</p>
@@ -417,7 +445,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                             type="number"
                                             placeholder="0.00"
                                             value={monthlyPayment}
-                                            onChange={(e) => setMonthlyPayment(e.target.value)}
+                                            onChange={(e) => setMonthlyPayment(e.target.value.replace(',', '.'))}
                                             className="h-12 bg-white/5 border-white/10 rounded-xl"
                                         />
                                     </div>
@@ -427,7 +455,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                             type="number"
                                             placeholder="0.00"
                                             value={monthlyInsurance}
-                                            onChange={(e) => setMonthlyInsurance(e.target.value)}
+                                            onChange={(e) => setMonthlyInsurance(e.target.value.replace(',', '.'))}
                                             className="h-12 bg-white/5 border-white/10 rounded-xl"
                                         />
                                     </div>
