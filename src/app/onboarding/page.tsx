@@ -46,7 +46,9 @@ export default function OnboardingPage() {
     const [step, setStep] = useState(1)
     const [loading, setLoading] = useState(false)
     const router = useRouter()
-    const supabase = createClient()
+
+    // Create supabase client once
+    const [supabase] = useState(() => createClient())
 
     // We can use a single form or multiple. For simplicity, let's manage state manually or use a big form.
     // Actually, separate forms per step is cleaner for validation.
@@ -58,6 +60,8 @@ export default function OnboardingPage() {
     })
 
     const [checkingPersistence, setCheckingPersistence] = useState(true)
+
+    console.log("[Onboarding] Render State:", { step, loading, checkingPersistence });
 
     // Step 1 Form
     const { register: register1, handleSubmit: handleSubmit1, control: control1, setValue: setValue1, reset: reset1, formState: { errors: errors1 } } = useForm({
@@ -84,36 +88,53 @@ export default function OnboardingPage() {
     useEffect(() => {
         async function checkPersistence() {
             try {
-                const { data: { user } } = await supabase.auth.getUser()
-                if (!user) {
+                console.log("[Persistence] Starting check...")
+                const { data: { user }, error: userError } = await supabase.auth.getUser()
+                console.log("[Persistence] Auth response:", { user: user?.id, error: userError })
+
+                if (userError) {
+                    console.error("[Persistence] User error:", userError)
                     setCheckingPersistence(false)
                     return
                 }
 
-                // 1. Fetch Profile
-                const { data: profile } = await supabase
+                if (!user) {
+                    console.log("[Persistence] No user found, stopping persistence check.")
+                    setCheckingPersistence(false)
+                    return
+                }
+
+                console.log("[Persistence] Checking profile...")
+                const { data: profile, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', user.id)
                     .single()
+                console.log("[Persistence] Profile data:", !!profile, profileError)
 
                 // 2. Fetch Vehicle
-                const { data: vehicle } = await supabase
+                console.log("[Persistence] Checking vehicle...")
+                const { data: vehicle, error: vehicleError } = await supabase
                     .from('vehicles')
                     .select('*')
                     .eq('user_id', user.id)
                     .eq('is_primary', true)
                     .maybeSingle()
+                console.log("[Persistence] Vehicle data:", !!vehicle, vehicleError)
 
                 // 3. Fetch Platforms
-                const { data: platforms } = await supabase
+                console.log("[Persistence] Checking platforms...")
+                const { data: platforms, error: platformsError } = await supabase
                     .from('user_platforms')
                     .select('platform_name')
                     .eq('user_id', user.id)
+                console.log("[Persistence] Platforms data:", platforms?.length, platformsError)
 
                 const hasProfile = !!(profile?.full_name && profile?.state_code && profile?.city && profile?.zip_code)
                 const hasVehicle = !!(vehicle?.make && vehicle?.model && vehicle?.year && vehicle?.mpg)
                 const hasPlatforms = !!(platforms && platforms.length > 0)
+
+                console.log("[Persistence] Progress:", { hasProfile, hasVehicle, hasPlatforms })
 
                 // Populate Forms initially with reset() to avoid validation errors on mount
                 if (profile) {
@@ -163,12 +184,23 @@ export default function OnboardingPage() {
                 }
 
             } catch (error) {
-                console.error("Persistence check failed", error)
+                console.error("[Persistence] Unexpected error:", error)
             } finally {
+                console.log("[Persistence] Finishing check.")
                 setCheckingPersistence(false)
             }
         }
+
+        // Add a safety timeout
+        const timeout = setTimeout(() => {
+            if (checkingPersistence) {
+                console.warn("[Persistence] Check timed out after 5s. Forcing UI load.")
+                setCheckingPersistence(false)
+            }
+        }, 5000)
+
         checkPersistence()
+        return () => clearTimeout(timeout)
     }, [supabase, router, reset1, reset2])
 
     const selectedMake = watch2('make')
@@ -327,9 +359,23 @@ export default function OnboardingPage() {
     if (checkingPersistence) {
         return (
             <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-                <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col items-center gap-4 max-w-sm text-center">
                     <Loader2 className="size-10 text-emerald-500 animate-spin" />
                     <p className="text-sm font-medium text-slate-500 animate-pulse">Syncing your session...</p>
+                    <div className="pt-8 space-y-4 border-t border-slate-200 dark:border-slate-800 mt-4">
+                        <p className="text-xs text-slate-400">Oturum senkronizasyonu beklenenden uzun sürüyorsa manuel devam edebilirsiniz.</p>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-xs"
+                            onClick={() => {
+                                console.log("[Persistence] Manual skip triggered by user");
+                                setCheckingPersistence(false);
+                            }}
+                        >
+                            Senkronizasyonu Atla & Manuel Kurulum
+                        </Button>
+                    </div>
                 </div>
             </div>
         )
