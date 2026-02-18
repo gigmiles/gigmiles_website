@@ -10,10 +10,9 @@ if (!apiKey) {
 
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
-// TEMPORARY: Using gemini-pro (text-only) because vision models don't work in v1beta
-// TODO: Upgrade to v1 API or use different OCR service
+// Using gemini-1.5-flash for better performance and multimodal support
 const model = genAI.getGenerativeModel({
-    model: "gemini-pro"
+    model: "gemini-1.5-flash"
 });
 
 export interface ReceiptData {
