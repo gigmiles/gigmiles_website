@@ -115,8 +115,14 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
 
             setFetchingMPG(true)
             try {
-                const estimatedMPG = await getEstimatedMPG(year, make, model)
-                if (estimatedMPG) setMpg(estimatedMPG.toString())
+                const result = await getEstimatedMPG(year, make, model)
+                if (result) {
+                    setMpg(result.value.toString())
+                    setFuelType(result.fuelType)
+                    if (result.fuelType === 'electric') {
+                        toast.success(`Electric vehicle detected! Efficiency: ${result.value} mi/kWh`)
+                    }
+                }
             } catch (error) {
                 console.error("Failed to fetch MPG:", error)
             } finally {

@@ -82,7 +82,12 @@ export async function getVehicleModels(year: string, make: string): Promise<stri
     }
 }
 
-export async function getEstimatedMPG(year: string, make: string, model: string): Promise<number | null> {
+export interface MPGResponse {
+    value: number
+    fuelType: 'gasoline' | 'electric'
+}
+
+export async function getEstimatedMPG(year: string, make: string, model: string): Promise<MPGResponse | null> {
     if (isApiDown('fueleconomy.gov')) return null
 
     const url = `https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=${year}&make=${make}&model=${model}`
@@ -128,7 +133,22 @@ export async function getEstimatedMPG(year: string, make: string, model: string)
         }
         const mpgData = await mpgResponse.json()
         recordSuccess('fueleconomy.gov')
-        return parseFloat(mpgData.comb08)
+
+        const isEV = mpgData.atvType === 'EV'
+        let value = 0
+
+        if (isEV) {
+            // Efficiency (mi/kWh) = 100 / combE (kWh/100 miles)
+            const combE = parseFloat(mpgData.combE)
+            value = combE > 0 ? parseFloat((100 / combE).toFixed(2)) : 0
+        } else {
+            value = parseFloat(mpgData.comb08)
+        }
+
+        return {
+            value,
+            fuelType: isEV ? 'electric' : 'gasoline'
+        }
 
     } catch (error: any) {
         recordFail('fueleconomy.gov')
@@ -139,70 +159,74 @@ export async function getEstimatedMPG(year: string, make: string, model: string)
 }
 
 
-// --- CollectAPI (Gas Prices) ---
-// Requires API Key.
-// Implements simple caching via Global Map (in-memory) for persistence across requests in same lambda instance.
+// --- FuelPrices (Apify) ---
+// Replacing CollectAPI with johnvc/fuelprices (ID: 0wi38CtP5zEKifljx)
+// Implements simple caching via Global Map (in-memory).
 
 const GAS_PRICE_CACHE = new Map<string, { price: number, timestamp: number }>()
-const CACHE_DURATION_MS = 6 * 60 * 60 * 1000 // 6 Hours
+const CACHE_DURATION_MS = 24 * 60 * 60 * 1000 // 24 Hours
 
 export async function getGasPrice(stateCode: string): Promise<number> {
     const cacheKey = stateCode.toUpperCase().trim()
     const cached = GAS_PRICE_CACHE.get(cacheKey)
 
     if (cached && (Date.now() - cached.timestamp < CACHE_DURATION_MS)) {
+        console.log(`[GasPrice] Serving cached gas price for ${cacheKey}`)
         return cached.price
     }
 
-    if (isApiDown('collectapi.com')) {
-        console.warn(`[GasPrice] Circuit breaker for collectapi.com. Using fallback for ${stateCode}.`)
-        if (cached) return cached.price
+    const apiToken = process.env.APIFY_API_TOKEN
+    // Fallback if no token (DEMO/MOCK)
+    if (!apiToken) {
+        console.warn('APIFY_API_TOKEN is missing for gas price. Using fallback.')
         return 3.50
     }
 
-    const apiKey = process.env.COLLECTAPI_KEY
-    if (!apiKey) return cached?.price || 3.50
-
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 2000) // Fast timeout for dashboard
-
     try {
-        const response = await fetch(
-            `https://api.collectapi.com/gasPrice/stateUsaPrice?state=${stateCode}`,
-            {
-                headers: {
-                    'authorization': `apikey ${apiKey}`,
-                    'content-type': 'application/json',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'
-                },
-                signal: controller.signal
-            }
-        )
+        console.log(`[GasPrice] Fetching gas price for: ${stateCode}`)
+        const { ApifyClient } = await import('apify-client')
+        const client = new ApifyClient({ token: apiToken })
 
-        if (!response.ok) {
-            recordFail('collectapi.com')
-            if (cached) return cached.price
-            return 3.50
-        }
+        // This is a "Pay Per Result" actor, very efficient.
+        const run = await client.actor('0wi38CtP5zEKifljx').call({
+            search: `${stateCode} USA`,
+            maxItems: 10
+        });
 
-        const data: any = await response.json()
-        const priceStr = data.result?.state?.[0]?.gasoline
-        const price = parseFloat(priceStr)
+        const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
-        if (isNaN(price)) {
-            recordSuccess('collectapi.com')
+        if (!items || items.length === 0) {
+            console.warn(`[GasPrice] No data found for ${stateCode}.`)
             return cached?.price || 3.50
         }
 
-        recordSuccess('collectapi.com')
-        GAS_PRICE_CACHE.set(cacheKey, { price, timestamp: Date.now() })
-        return price
+        // Calculate Average Price from Results
+        let totalPrice = 0;
+        let count = 0;
 
-    } catch (error: any) {
-        recordFail('collectapi.com')
-        if (cached) return cached.price
-        return 3.50
-    } finally {
-        clearTimeout(timeoutId)
+        items.forEach((item: any) => {
+            // Priority: price_credit, then price_cash
+            const price = item.price_credit || item.price_cash || item.price;
+            if (typeof price === 'number' && price > 0) {
+                totalPrice += price;
+                count++;
+            } else if (typeof price === 'string') {
+                const numeric = parseFloat(price.replace(/[^0-9.]/g, ''));
+                if (!isNaN(numeric) && numeric > 0) {
+                    totalPrice += numeric;
+                    count++;
+                }
+            }
+        });
+
+        const averagePrice = count > 0 ? parseFloat((totalPrice / count).toFixed(2)) : (cached?.price || 3.50);
+
+        // Update Cache
+        GAS_PRICE_CACHE.set(cacheKey, { price: averagePrice, timestamp: Date.now() })
+        return averagePrice
+
+    } catch (error) {
+        console.error('[GasPrice] Fetch Error:', error)
+        return cached?.price || 3.50
     }
 }
