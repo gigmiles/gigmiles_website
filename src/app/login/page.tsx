@@ -64,13 +64,13 @@ export default function LoginPage() {
             <div className="relative z-10 w-full max-w-md px-4">
                 {/* Branding */}
                 <div className="flex flex-col items-center mb-8 animate-fade-in-up">
-                    <div className="p-4 bg-emerald-500 rounded-2xl shadow-lg shadow-emerald-500/20 mb-4 group transition-transform hover:scale-105">
-                        <Car className="size-8 text-white" />
+                    <div className="p-5 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl shadow-xl shadow-emerald-500/30 mb-4 group transition-transform hover:scale-110">
+                        <Car className="size-10 text-white" />
                     </div>
-                    <h1 className="text-4xl font-display font-bold tracking-tight text-white mb-2 underline selection:decoration-emerald-500">
-                        Gigcalculator
+                    <h1 className="text-5xl font-display font-bold tracking-tighter text-white mb-2 italic">
+                        GigMiles
                     </h1>
-                    <p className="text-slate-400 text-sm">Track your earnings, maximize your profit.</p>
+                    <p className="text-emerald-400/80 text-sm font-medium">Maximize every mile. Own your earnings.</p>
                 </div>
 
                 {/* Login Card */}

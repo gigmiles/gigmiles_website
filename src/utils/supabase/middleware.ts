@@ -37,13 +37,14 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    if (
-        !user &&
-        !request.nextUrl.pathname.startsWith('/login') &&
-        !request.nextUrl.pathname.startsWith('/auth') &&
-        request.nextUrl.pathname !== '/'
-    ) {
-        // no user, potentially respond by redirecting the user to the login page
+    console.log("[Middleware] Route:", request.nextUrl.pathname, "| User ID:", user?.id)
+
+    const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
+        request.nextUrl.pathname.startsWith('/auth') ||
+        request.nextUrl.pathname === '/'
+
+    if (!user && !isAuthRoute) {
+        console.log("[Middleware] Unauthenticated access to protected route, redirecting to /login")
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)

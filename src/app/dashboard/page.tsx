@@ -74,6 +74,8 @@ export default async function DashboardPage() {
                         miles={today.miles}
                         hours={today.hours}
                         tax={today.estimatedTax}
+                        federalTax={today.federalTax}
+                        stateTax={today.stateTax}
                         tips={today.tips}
                         mpg={today.mpg}
                         gasPrice={today.gasPrice}

@@ -12,38 +12,40 @@ export async function getDashboardStats() {
 
     if (!user) return null
 
-    // Get Profile for State Code
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('state_code')
-        .eq('id', user.id)
-        .single()
+    const today = new Date()
+    const todayStr = format(today, 'yyyy-MM-dd')
+    const sevenDaysAgo = startOfDay(new Date())
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
+    const sevenDaysAgoStr = format(sevenDaysAgo, 'yyyy-MM-dd')
 
-    // Get Vehicles
-    const { data: vehicles } = await supabase
-        .from('vehicles')
-        .select('id, make, model, year, mpg, depreciation_rate, is_primary, ownership_type, monthly_payment, monthly_insurance, payment_cycle, fuel_type, electricity_cost_per_kwh')
-        .eq('user_id', user.id)
-        .order('is_primary', { ascending: false })
-        .order('created_at', { ascending: false })
+    // 1. Parallel fetch for all core requirements
+    const [profileRes, vehiclesRes, todayEntryRes, weeklyEntriesRes] = await Promise.all([
+        supabase.from('profiles').select('state_code').eq('id', user.id).single(),
+        supabase.from('vehicles').select('*').eq('user_id', user.id).order('is_primary', { ascending: false }),
+        supabase.from('daily_entries').select(`
+            id,
+            platform_earnings ( platform_name, amount, tips, miles, hours ),
+            expenses ( amount, category )
+        `).eq('user_id', user.id).eq('date', todayStr).single(),
+        supabase.from('daily_entries').select(`
+            id,
+            date,
+            platform_earnings ( platform_name, amount, tips, miles, hours ),
+            expenses ( amount, category )
+        `).eq('user_id', user.id).gte('date', sevenDaysAgoStr).lte('date', todayStr).order('date', { ascending: true })
+    ])
+
+    const profile = profileRes.data
+    const vehicles = vehiclesRes.data
+    const todayEntry = todayEntryRes.data
+    const weeklyEntries = weeklyEntriesRes.data || []
 
     let vehicle = vehicles?.find(v => v.is_primary) || vehicles?.[0] || null
-
     const stateCode = profile?.state_code || 'DEFAULT'
     const mpg = vehicle?.mpg || 25
 
-    const today = new Date()
-    // 1. Get Today's Entry
-    const { data: todayEntry } = await supabase
-        .from('daily_entries')
-        .select(`
-      id,
-      platform_earnings ( platform_name, amount, tips, miles, hours ),
-      expenses ( amount, category )
-    `)
-        .eq('user_id', user.id)
-        .eq('date', format(today, 'yyyy-MM-dd'))
-        .single()
+    // 2. Fetch Gas Price (concurrent with initial processing if we wanted, but let's keep it here for clarity)
+    const currentGasPrice = await getGasPrice(stateCode)
 
     // Calculate Today's Stats
     let todayGross = 0
@@ -61,19 +63,17 @@ export async function getDashboardStats() {
         })
 
         todayEntry.expenses.forEach((e: any) => {
-            todayExpenses += (e.amount || 0)
+            if (!e.category.startsWith('__')) { // Skip overrides for base expense sum
+                todayExpenses += (e.amount || 0)
+            }
         })
     }
 
-    // 1.5 Extract Overrides
     const overrides = {
         fuel: todayEntry?.expenses.find((e: any) => e.category === '__FUEL_OVERRIDE__')?.amount,
         wear: todayEntry?.expenses.find((e: any) => e.category === '__WEAR_OVERRIDE__')?.amount,
         insurance: todayEntry?.expenses.find((e: any) => e.category === '__INSURANCE_OVERRIDE__')?.amount
     }
-
-    // 2. Fetch Dynamic Gas Price
-    const currentGasPrice = await getGasPrice(stateCode)
 
     const financials = calculateFinancials({
         grossEarnings: todayGross,
@@ -94,26 +94,6 @@ export async function getDashboardStats() {
         electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
     })
 
-    // Debugging Fuel Calculation
-    console.log(`[DashboardStats] Date: ${format(today, 'yyyy-MM-dd')}, Gross: ${todayGross}, Miles: ${todayMiles}, MPG: ${mpg}, FuelCost: ${financials.fuelCost}`)
-
-    // 3. Get Last 7 Days for Chart
-    const sevenDaysAgo = startOfDay(new Date())
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
-
-    const { data: weeklyEntries } = await supabase
-        .from('daily_entries')
-        .select(`
-            id,
-            date,
-            platform_earnings ( platform_name, amount, tips, miles, hours ),
-            expenses ( amount, category )
-        `)
-        .eq('user_id', user.id)
-        .gte('date', format(sevenDaysAgo, 'yyyy-MM-dd'))
-        .lte('date', format(today, 'yyyy-MM-dd'))
-        .order('date', { ascending: true })
-
     // Process Weekly Data
     const chartData = []
     let weeklyGross = 0
@@ -121,8 +101,7 @@ export async function getDashboardStats() {
     let weeklyMiles = 0
     let weeklyHours = 0
 
-    // Create a map for quick lookup
-    const entryMap = new Map(weeklyEntries?.map(e => [e.date, e]) || [])
+    const entryMap = new Map(weeklyEntries.map(e => [e.date, e]))
 
     for (let i = 0; i < 7; i++) {
         const d = new Date(sevenDaysAgo)
@@ -134,17 +113,15 @@ export async function getDashboardStats() {
         let dExpenses = 0
         let dMiles = 0
         let dHours = 0
-        let dTips = 0
 
         if (entry) {
             entry.platform_earnings.forEach((p: any) => {
                 dGross += (p.amount || 0) + (p.tips || 0)
-                dTips += (p.tips || 0)
                 dMiles += (p.miles || 0)
                 dHours += (p.hours || 0)
             })
             entry.expenses.forEach((e: any) => {
-                dExpenses += (e.amount || 0)
+                if (!e.category.startsWith('__')) dExpenses += (e.amount || 0)
             })
 
             const dOverrides = {
@@ -159,7 +136,7 @@ export async function getDashboardStats() {
                 miles: dMiles,
                 stateCode,
                 mpg,
-                gasPrice: currentGasPrice, // Use current gas price for simplicity or fetch historical?
+                gasPrice: currentGasPrice,
                 wearRate: vehicle?.depreciation_rate || 0.35,
                 manualFuel: dOverrides.fuel,
                 manualWear: dOverrides.wear,
@@ -193,9 +170,9 @@ export async function getDashboardStats() {
         }
     }
 
-    // 4. Platform Distribution (Last 7 Days)
+    // Platform Distribution
     const platformMap = new Map<string, { gross: number, tips: number, hours: number, miles: number }>()
-    weeklyEntries?.forEach(entry => {
+    weeklyEntries.forEach(entry => {
         entry.platform_earnings.forEach((p: any) => {
             const name = p.platform_name || 'Other'
             const existing = platformMap.get(name) || { gross: 0, tips: 0, hours: 0, miles: 0 }
@@ -230,18 +207,19 @@ export async function getDashboardStats() {
             totalRealCosts: financials.totalRealCosts,
             hasEntry: !!todayEntry,
             estimatedTax: financials.estimatedTax,
+            federalTax: financials.estimatedFederalTax,
+            stateTax: financials.estimatedStateTax,
             tips: todayTips,
             mpg,
             gasPrice: currentGasPrice,
-            // Bolt Component Compatibility
             richEntry: todayEntry ? {
                 ...todayEntry,
-                entry_date: format(today, 'yyyy-MM-dd'),
+                entry_date: todayStr,
                 total_earnings: todayGross,
                 total_tips: todayTips,
                 total_miles: todayMiles,
                 total_hours: todayHours,
-                calculated_costs: financials, // Inject calculated financials
+                calculated_costs: financials,
                 platform_earnings: todayEntry.platform_earnings || [],
                 expenses: todayEntry.expenses || []
             } : null
@@ -251,7 +229,7 @@ export async function getDashboardStats() {
             netProfit: weeklyNet,
             miles: weeklyMiles,
             hours: weeklyHours,
-            entries: weeklyEntries || []
+            entries: weeklyEntries
         },
         chartData,
         platformDistribution,

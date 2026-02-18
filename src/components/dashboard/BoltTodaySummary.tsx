@@ -23,6 +23,8 @@ interface TodaySummaryProps {
     miles: number;
     hours: number;
     tax: number;
+    federalTax?: number;
+    stateTax?: number;
     tips: number;
     mpg?: number;
     gasPrice?: number;
@@ -39,6 +41,8 @@ export function BoltTodaySummary({
     miles,
     hours,
     tax,
+    federalTax = 0,
+    stateTax = 0,
     tips,
     mpg,
     gasPrice,
@@ -379,9 +383,21 @@ export function BoltTodaySummary({
                                     <div className="space-y-4">
                                         <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Projections & Overrides</h3>
                                         <div className="space-y-1">
-                                            <div className="flex justify-between items-center p-3 rounded-xl bg-white/5">
-                                                <span className="text-sm font-medium text-slate-400 uppercase tracking-tight">Tax Estimates</span>
-                                                <span className="font-bold text-slate-300">${tax.toFixed(2)}</span>
+                                            <div className="group rounded-2xl bg-white/5 border border-white/5 overflow-hidden transition-all hover:border-white/10">
+                                                <div className="flex justify-between items-center p-4">
+                                                    <span className="text-sm font-bold text-slate-300 uppercase tracking-tight">Total Tax Estimates</span>
+                                                    <span className="font-extrabold text-white text-lg">${tax.toFixed(2)}</span>
+                                                </div>
+                                                <div className="px-4 pb-4 grid grid-cols-2 gap-4">
+                                                    <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5">
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Federal (15.3%)</span>
+                                                        <span className="font-bold text-slate-200">${federalTax.toFixed(2)}</span>
+                                                    </div>
+                                                    <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5">
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">State Estimate</span>
+                                                        <span className="font-bold text-slate-200">${stateTax.toFixed(2)}</span>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             {/* Fuel Override UI */}

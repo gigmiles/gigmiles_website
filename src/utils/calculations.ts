@@ -5,11 +5,16 @@ export const FEDERAL_SE_TAX_RATE = 0.153
 
 // Simplified State Tax Rates (Map or Object)
 export const STATE_TAX_RATES: Record<string, number> = {
-    'CA': 0.06, // Approx effective rate
-    'TX': 0.00,
-    'NY': 0.05,
-    'FL': 0.00,
-    // Add more as needed or default
+    'AL': 0.04, 'AK': 0.00, 'AZ': 0.025, 'AR': 0.044, 'CA': 0.06,
+    'CO': 0.044, 'CT': 0.05, 'DE': 0.05, 'FL': 0.00, 'GA': 0.055,
+    'HI': 0.07, 'ID': 0.058, 'IL': 0.0495, 'IN': 0.03, 'IA': 0.05,
+    'KS': 0.05, 'KY': 0.05, 'LA': 0.035, 'ME': 0.06, 'MD': 0.045,
+    'MA': 0.05, 'MI': 0.0425, 'MN': 0.06, 'MS': 0.04, 'MO': 0.04,
+    'MT': 0.05, 'NE': 0.05, 'NV': 0.00, 'NH': 0.00, 'NJ': 0.05,
+    'NM': 0.04, 'NY': 0.05, 'NC': 0.045, 'ND': 0.02, 'OH': 0.03,
+    'OK': 0.04, 'OR': 0.07, 'PA': 0.0307, 'RI': 0.04, 'SC': 0.05,
+    'SD': 0.00, 'TN': 0.00, 'TX': 0.00, 'UT': 0.0485, 'VT': 0.05,
+    'VA': 0.05, 'WA': 0.00, 'WV': 0.05, 'WI': 0.05, 'WY': 0.00,
     'DEFAULT': 0.04
 }
 
@@ -112,6 +117,8 @@ export function calculateFinancials({
         dailyFixedCosts,
         totalRealCosts,
         estimatedTax: totalEstimatedTax,
+        estimatedFederalTax,
+        estimatedStateTax,
         netProfit: safeGross - totalRealCosts - totalEstimatedTax,
         mileageDeduction
     }
@@ -163,7 +170,8 @@ export function getDepreciationRate(make: string, model: string, year: number): 
         rate += 0.08 // Reduced from 0.10 to 0.08 as per plan
     }
 
-    if (highResaleModels.includes(model)) {
+    const normalizedModel = model.toLowerCase()
+    if (highResaleModels.some(m => normalizedModel.includes(m.toLowerCase()))) {
         rate -= 0.03 // Value retention discount
     }
 
@@ -173,6 +181,8 @@ export function getDepreciationRate(make: string, model: string, year: number): 
 
     if (age <= 3) {
         rate += 0.05 // New cars lose value fastest
+    } else if (age <= 7) {
+        rate -= 0.02 // Mid-age cars (4-7 years) have a slight reduction but not as much as older ones
     } else if (age > 15) {
         rate -= 0.08 // Very old cars (bottomed out, heavily depreciated)
     } else if (age > 7) {

@@ -36,7 +36,7 @@ export function Features() {
                         Everything you need to <br className="hidden sm:block" /> run your gig business.
                     </h2>
                     <p className="mt-4 text-lg text-muted-foreground">
-                        Stop using spreadsheets. Gig Tracker automates the boring stuff so you can focus on driving.
+                        Stop using spreadsheets. GigMiles automates the boring stuff so you can focus on driving.
                     </p>
                 </div>
 

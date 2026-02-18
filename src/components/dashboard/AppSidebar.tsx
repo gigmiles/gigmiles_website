@@ -127,8 +127,8 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                         <Calculator className="size-5" />
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                        <span className="truncate font-display font-bold text-slate-900 dark:text-slate-100 tracking-tight text-base">Gigcalculator</span>
-                        <span className="truncate text-[10px] uppercase tracking-widest font-semibold text-emerald-500/80">Premium Edition</span>
+                        <span className="truncate font-display font-bold text-slate-900 dark:text-slate-100 tracking-tighter text-lg italic">GigMiles</span>
+                        <span className="truncate text-[10px] uppercase tracking-widest font-semibold text-emerald-500/80">Premium Performance</span>
                     </div>
                 </div>
 

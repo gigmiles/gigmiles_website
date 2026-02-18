@@ -15,8 +15,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "GigTracker | Premium Earning Insights",
-  description: "Track your gig earnings, expenses, and taxes with professional insights.",
+  title: "GigMiles | Professional Earnings Performance",
+  description: "Maximize your performance. Track gig earnings, expenses, and vehicle depreciation with GigMiles.",
 };
 
 import { ThemeProvider } from "@/components/theme-provider";

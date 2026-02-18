@@ -84,15 +84,6 @@ export default function NewEntryPage() {
     const onSubmit = async (data: any) => {
         setLoading(true)
         try {
-            // Prepare data for server action
-            const earningsData = data.platforms.map((p: any) => ({
-                platform_name: p.platform_name,
-                amount: p.amount,
-                tips: p.tips,
-                miles: p.miles,
-                hours: p.hours,
-            }))
-
             const expensesData = data.expenses?.map((e: any) => ({
                 category: e.category,
                 amount: e.amount,

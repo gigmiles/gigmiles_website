@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm, Controller, Control, UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -28,7 +28,7 @@ const step2Schema = z.object({
     make: z.string().min(2, 'Make is required'),
     model: z.string().min(2, 'Model is required'),
     year: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
-    mpg: z.coerce.number().min(1, 'MPG must be a valid number'),
+    mpg: z.string().min(1, 'MPG is required'), // Keep as string in schema to match state/input
     fuel_type: z.string().optional(),
     ownership_type: z.string().optional(),
     electricity_cost_per_kwh: z.string().optional()
@@ -53,13 +53,26 @@ export default function OnboardingPage() {
     // We can use a single form or multiple. For simplicity, let's manage state manually or use a big form.
     // Actually, separate forms per step is cleaner for validation.
 
-    const [formData, setFormData] = useState({
+    interface OnboardingFormData {
+        full_name: string;
+        state: string;
+        city: string;
+        zip_code: string;
+        make: string;
+        model: string;
+        year: string;
+        mpg: string;
+        platforms: string[];
+    }
+
+    const [formData, setFormData] = useState<OnboardingFormData>({
         full_name: '', state: '', city: '', zip_code: '',
         make: '', model: '', year: '', mpg: '',
-        platforms: [] as string[]
+        platforms: []
     })
 
     const [checkingPersistence, setCheckingPersistence] = useState(true)
+    const persistenceCheckStarted = useRef(false)
 
     console.log("[Onboarding] Render State:", { step, loading, checkingPersistence });
 
@@ -86,11 +99,18 @@ export default function OnboardingPage() {
 
     // Persistence Check Logic
     useEffect(() => {
+        if (persistenceCheckStarted.current) return
+        persistenceCheckStarted.current = true
+
+        let isMounted = true
+
         async function checkPersistence() {
             try {
                 console.log("[Persistence] Starting check...")
                 const { data: { user }, error: userError } = await supabase.auth.getUser()
-                console.log("[Persistence] Auth response:", { user: user?.id, error: userError })
+                console.log("[Persistence] Auth response received:", { user: user?.id, error: userError })
+
+                if (!isMounted) return
 
                 if (userError) {
                     console.error("[Persistence] User error:", userError)
@@ -99,36 +119,42 @@ export default function OnboardingPage() {
                 }
 
                 if (!user) {
-                    console.log("[Persistence] No user found, stopping persistence check.")
+                    console.log("[Persistence] No user found.")
                     setCheckingPersistence(false)
                     return
                 }
 
-                console.log("[Persistence] Checking profile...")
+                console.log("[Persistence] Fetching profile for ID:", user.id)
                 const { data: profile, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', user.id)
                     .single()
-                console.log("[Persistence] Profile data:", !!profile, profileError)
+                console.log("[Persistence] Profile result:", !!profile, profileError)
+
+                if (!isMounted) return
 
                 // 2. Fetch Vehicle
-                console.log("[Persistence] Checking vehicle...")
+                console.log("[Persistence] Fetching vehicle...")
                 const { data: vehicle, error: vehicleError } = await supabase
                     .from('vehicles')
                     .select('*')
                     .eq('user_id', user.id)
                     .eq('is_primary', true)
                     .maybeSingle()
-                console.log("[Persistence] Vehicle data:", !!vehicle, vehicleError)
+                console.log("[Persistence] Vehicle result:", !!vehicle, vehicleError)
+
+                if (!isMounted) return
 
                 // 3. Fetch Platforms
-                console.log("[Persistence] Checking platforms...")
+                console.log("[Persistence] Fetching platforms...")
                 const { data: platforms, error: platformsError } = await supabase
                     .from('user_platforms')
                     .select('platform_name')
                     .eq('user_id', user.id)
-                console.log("[Persistence] Platforms data:", platforms?.length, platformsError)
+                console.log("[Persistence] Platforms result:", platforms?.length, platformsError)
+
+                if (!isMounted) return
 
                 const hasProfile = !!(profile?.full_name && profile?.state_code && profile?.city && profile?.zip_code)
                 const hasVehicle = !!(vehicle?.make && vehicle?.model && vehicle?.year && vehicle?.mpg)
@@ -136,7 +162,7 @@ export default function OnboardingPage() {
 
                 console.log("[Persistence] Progress:", { hasProfile, hasVehicle, hasPlatforms })
 
-                // Populate Forms initially with reset() to avoid validation errors on mount
+                // Populate Forms initially with reset() 
                 if (profile) {
                     reset1({
                         full_name: profile.full_name || '',
@@ -151,7 +177,7 @@ export default function OnboardingPage() {
                         make: vehicle.make || '',
                         model: vehicle.model || '',
                         year: vehicle.year?.toString() || '',
-                        mpg: vehicle.mpg || 25.5,
+                        mpg: vehicle.mpg?.toString() || '25.5',
                         fuel_type: vehicle.fuel_type || 'gasoline',
                         ownership_type: vehicle.ownership_type || 'owned',
                         electricity_cost_per_kwh: vehicle.electricity_cost_per_kwh?.toString() || ''
@@ -171,8 +197,11 @@ export default function OnboardingPage() {
                     platforms: platforms?.map(p => p.platform_name) || []
                 })
 
+                if (!isMounted) return
+
                 // Redirection / Step Logic
                 if (hasProfile && hasVehicle && hasPlatforms) {
+                    console.log("[Persistence] Onboarding complete, redirecting to dashboard...")
                     router.push('/dashboard')
                     return
                 } else if (hasProfile && hasVehicle) {
@@ -186,31 +215,34 @@ export default function OnboardingPage() {
             } catch (error) {
                 console.error("[Persistence] Unexpected error:", error)
             } finally {
-                console.log("[Persistence] Finishing check.")
-                setCheckingPersistence(false)
+                if (isMounted) {
+                    console.log("[Persistence] Finishing check.")
+                    setCheckingPersistence(false)
+                }
             }
         }
 
-        // Add a safety timeout
+        // Safety timeout
         const timeout = setTimeout(() => {
-            if (checkingPersistence) {
+            if (isMounted) {
                 console.warn("[Persistence] Check timed out after 5s. Forcing UI load.")
                 setCheckingPersistence(false)
             }
         }, 5000)
 
         checkPersistence()
-        return () => clearTimeout(timeout)
-    }, [supabase, router, reset1, reset2])
+        return () => {
+            isMounted = false
+            clearTimeout(timeout)
+        }
+    }, [supabase, router]) // Removed reset1, reset2 from deps
 
-    const selectedMake = watch2('make')
-
-    const onSubmitStep1 = (data: any) => {
+    const onSubmitStep1 = (data: z.infer<typeof step1Schema>) => {
         setFormData(prev => ({ ...prev, ...data }))
         setStep(2)
     }
 
-    const onSubmitStep2 = (data: any) => {
+    const onSubmitStep2 = (data: z.infer<typeof step2Schema>) => {
         setFormData(prev => ({ ...prev, ...data }))
         setStep(3)
     }
@@ -346,11 +378,12 @@ export default function OnboardingPage() {
             console.log("All operations successful. Redirecting...")
             router.push('/dashboard')
             router.refresh()
-            toast.success("Welcome to Gig Tracker!")
+            toast.success("Welcome to GigMiles!")
 
-        } catch (error: any) {
+        } catch (error) {
             console.error('FINAL SUBMIT ERROR:', error)
-            toast.error('Error saving data: ' + error.message)
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            toast.error('Error saving data: ' + errorMessage)
         } finally {
             setLoading(false)
         }
@@ -385,11 +418,11 @@ export default function OnboardingPage() {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
 
             <div className="w-full max-w-lg mb-8 text-center">
-                <div className="inline-flex items-center gap-2 font-display font-bold text-2xl tracking-tight text-slate-900 dark:text-white mb-2">
-                    <div className="p-2 bg-emerald-500/10 rounded-lg">
-                        <Wallet className="size-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="inline-flex items-center gap-2 font-display font-bold text-3xl tracking-tight text-slate-900 dark:text-white mb-2 italic">
+                    <div className="p-2 bg-emerald-500/20 rounded-xl shadow-lg shadow-emerald-500/10">
+                        <Wallet className="size-7 text-emerald-500 animate-pulse" />
                     </div>
-                    Gig Tracker
+                    GigMiles
                 </div>
                 <p className="text-muted-foreground">Let's set up your financial copilot.</p>
             </div>
@@ -500,7 +533,7 @@ export default function OnboardingPage() {
                                                 <Select onValueChange={(val) => {
                                                     field.onChange(val)
                                                     setValue2('model', '') // Reset
-                                                    setValue2('mpg', 0)    // Reset
+                                                    setValue2('mpg', '0')    // Reset
 
                                                     // Auto-detect Electric Brands
                                                     const electricBrands = ['Tesla', 'Rivian', 'Lucid', 'Polestar', 'Fisker']
@@ -531,7 +564,7 @@ export default function OnboardingPage() {
                                         <VehicleModelSelect
                                             control={control2}
                                             watch={watch2}
-                                            setValue={setValue2 as any}
+                                            setValue={setValue2}
                                         />
                                         {errors2.model && <p className="text-xs text-red-500">{errors2.model.message as string}</p>}
                                     </div>
@@ -590,7 +623,7 @@ export default function OnboardingPage() {
                                                             try {
                                                                 const mpg = await getEstimatedMPG(year, make, model)
                                                                 if (mpg) {
-                                                                    setValue2('mpg', mpg, { shouldValidate: true, shouldDirty: true })
+                                                                    setValue2('mpg', mpg.toString(), { shouldValidate: true, shouldDirty: true })
                                                                     toast.success(`Found: ${mpg} MPG`, { id: toastId })
                                                                 } else {
                                                                     toast.error("MPG not found. Please enter manually.", { id: toastId })
@@ -710,10 +743,20 @@ export default function OnboardingPage() {
     )
 }
 
+interface Step2FormData {
+    make: string;
+    model: string;
+    year: string;
+    mpg: string;
+    fuel_type?: string;
+    ownership_type?: string;
+    electricity_cost_per_kwh?: string;
+}
+
 function VehicleModelSelect({ control, watch, setValue }: {
-    control: Control<any>,
-    watch: UseFormWatch<any>,
-    setValue: (name: string, value: any) => void
+    control: Control<Step2FormData>,
+    watch: UseFormWatch<Step2FormData>,
+    setValue: UseFormSetValue<Step2FormData>
 }) {
     const [models, setModels] = useState<string[]>([])
     const [loading, setLoading] = useState(false)
@@ -722,8 +765,13 @@ function VehicleModelSelect({ control, watch, setValue }: {
     const make = watch('make')
 
     useEffect(() => {
+        console.log("[VehicleModelSelect] Effect Triggered:", { year, make })
         async function fetchModels() {
-            if (!year || !make) return
+            if (!year || !make) {
+                console.log("[VehicleModelSelect] Missing year or make, skipping fetch.")
+                return
+            }
+            console.log("[VehicleModelSelect] Starting fetch for:", { year, make })
             setLoading(true)
 
             // Check if we have local EV models for this make first

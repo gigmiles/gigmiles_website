@@ -98,12 +98,6 @@ export default function NewEntryPage() {
                 hours: p.hours,
             }))
 
-            const expensesData = data.expenses?.map((e: any) => ({
-                category: e.category,
-                amount: e.amount,
-                description: e.description
-            })) || []
-
             await createDailyEntry({
                 date: data.date,
                 notes: data.notes
