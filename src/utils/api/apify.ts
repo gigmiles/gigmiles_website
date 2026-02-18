@@ -54,37 +54,63 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
     try {
         console.log(`[Apify] Fetching vehicle value for: ${year} ${make} ${model} (${mileage} miles)`)
 
-        // Using a generic scraper or a specific actor
-        // For this example, we'll interface with a hypothetical "cars-com-scraper" or similar.
-        // In a real scenario, you'd find the specific Actor ID (e.g., 'epctex/cars-com-scraper').
-
-        // This is a PLACEHOLDER implementation for the actual actor call
-        // We need to define the input correctly based on the chosen actor.
-
-        // Example logic for "epctex/cars-com-scraper":
-        /*
-        const run = await client.actor('epctex/cars-com-scraper').call({
-            searchArgs: {
-                year_min: parseInt(year),
-                year_max: parseInt(year),
-                makes: [make],
-                models: [model],
-                maximum_distance: 100 // Local market
-            },
-            maxItems: 5
+        // Using voyn/car-valuation-api
+        const run = await client.actor('voyn/car-valuation-api').call({
+            year: parseInt(year),
+            make: make,
+            model: model,
+            mileage: mileage,
+            zipCode: "90210" // Default ZIP
         });
+
         const { items } = await client.dataset(run.defaultDatasetId).listItems();
-        // Calculate average price from items
-        */
 
-        // PROVISIONAL: Returning a mock value based on "algorithm" until Actor is finalized/paid
-        const baseValue = 25000
-        const age = new Date().getFullYear() - parseInt(year)
-        const depreciation = (age * 1500) + (mileage * 0.08)
-        const estimatedValue = Math.max(2000, baseValue - depreciation)
+        console.log("[Apify] Raw Items:", JSON.stringify(items, null, 2));
 
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500))
+        if (!items || items.length === 0) {
+            console.warn('[Apify] No items found for vehicle.');
+            return null;
+        }
+
+        const data: any = items[0];
+        let estimatedValue = 0;
+
+        // Helper to parse range string "4000-6000" -> 5000
+        const parseRange = (rangeStr: string): number => {
+            if (!rangeStr || typeof rangeStr !== 'string') return 0;
+            const parts = rangeStr.split('-').map(p => parseFloat(p.trim().replace(/[^0-9.]/g, '')));
+            if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                return Math.round((parts[0] + parts[1]) / 2);
+            }
+            if (parts.length === 1 && !isNaN(parts[0])) {
+                return parts[0];
+            }
+            return 0;
+        };
+
+        if (typeof data === 'object') {
+            // Priority 1: Private Seller Range
+            if (data.private_seller_valuation_range) {
+                estimatedValue = parseRange(data.private_seller_valuation_range);
+            }
+            // Priority 2: Trade-In Range
+            if (!estimatedValue && data.trade_in_valuation_range) {
+                estimatedValue = parseRange(data.trade_in_valuation_range);
+            }
+
+            // Priority 3: Direct numerical values
+            if (!estimatedValue) {
+                if (typeof data.price === 'number') estimatedValue = data.price;
+                else if (typeof data.value === 'number') estimatedValue = data.value;
+                else if (typeof data.valuation === 'number') estimatedValue = data.valuation;
+                else if (typeof data.market_average === 'number') estimatedValue = data.market_average;
+            }
+        }
+
+        if (!estimatedValue) {
+            console.warn('[Apify] Could not extract value from item:', data);
+            return null;
+        }
 
         // 3. Update Cache
         VEHICLE_VALUE_CACHE.set(cacheKey, {
@@ -95,7 +121,7 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
         return {
             marketAverage: estimatedValue,
             currency: 'USD',
-            source: 'Estimated (Apify Placeholder)'
+            source: 'Market Data (voyn/car-valuation-api)'
         }
 
     } catch (error) {
