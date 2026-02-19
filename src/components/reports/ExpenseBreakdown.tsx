@@ -1,5 +1,4 @@
 'use client'
-/* eslint-disable react/forbid-component-props, react/forbid-dom-props */
 
 import { useState } from 'react'
 import {
@@ -84,7 +83,7 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
                         <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden mt-4">
                             <div
                                 className="h-full bg-ruby-500/50 transition-all duration-1000 ease-out"
-                                style={{ width: `${(category.total / totalExpenses) * 100}%` }}
+                                {...({ style: { width: `${(category.total / totalExpenses) * 100}%` } } as Record<string, unknown>)}
                             />
                         </div>
                     </button>

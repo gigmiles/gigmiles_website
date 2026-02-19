@@ -192,14 +192,20 @@ export async function getDashboardStats() {
                 date: dateStr,
                 label: format(d, 'EEE'),
                 gross: dGross,
-                net: dFinancials.netProfit
+                net: dFinancials.netProfit,
+                miles: dMiles,
+                hours: dHours,
+                expenses: dGross - dFinancials.netProfit
             })
         } else {
             chartData.push({
                 date: dateStr,
                 label: format(d, 'EEE'),
                 gross: 0,
-                net: 0
+                net: 0,
+                miles: 0,
+                hours: 0,
+                expenses: 0
             })
         }
     }

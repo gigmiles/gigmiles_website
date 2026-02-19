@@ -88,6 +88,7 @@ export default async function DashboardPage() {
                         totalGross={weekly.gross}
                         totalMiles={weekly.miles}
                         totalHours={weekly.hours}
+                        dailyStats={chartData}
                     />
                     <PlatformDistributionChart data={platformDistribution} />
                     <RecentEntries entries={recentEntries} />

@@ -44,6 +44,7 @@ export interface Vehicle {
 
 export interface DailyData {
     date: string;
+    fullDate?: string;
     earnings: number;
     expenses: number;
     netProfit: number;

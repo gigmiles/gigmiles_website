@@ -86,19 +86,20 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         return { dailyData: [], platformData: [], expenseBreakdown: [] }
     }
 
-    // Fetch user's primary vehicle for depreciation rate
+    // Fetch user's primary vehicle for calculations
     const { data: vehicle } = await supabase
         .from('vehicles')
-        .select('depreciation_rate')
+        .select('*')
         .eq('user_id', user.id)
         .eq('is_primary', true)
         .single()
 
-    const depreciationRate = vehicle?.depreciation_rate || 0.15
+    const { calculateFinancials } = await import('@/utils/calculations')
 
     // 1. Initialize Daily Data Map
     const dailyDataMap = new Map<string, {
         date: string;
+        fullDate: string;
         earnings: number;
         expenses: number;
         netProfit: number;
@@ -111,6 +112,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         const dateStr = format(loopDate, 'yyyy-MM-dd')
         dailyDataMap.set(dateStr, {
             date: format(loopDate, 'MMM dd'),
+            fullDate: dateStr,
             earnings: 0,
             expenses: 0,
             netProfit: 0,
@@ -127,17 +129,22 @@ export async function getReportsData(startDate?: string, endDate?: string) {
     // Type assertion with validation
     const typedEntries = entries as unknown as DatabaseEntry[]
 
+    // Current gas price (could be fetched dynamically, using default for now)
+    const currentGasPrice = 4.50
+
     typedEntries.forEach((entry) => {
         const dayStat = dailyDataMap.get(entry.date)
         if (dayStat) {
             let dailyEarnings = 0
             let dailyMiles = 0
+            let dailyHours = 0
 
             // Earnings & Platform Stats
             entry.platform_earnings.forEach((p) => {
                 const total = (p.amount || 0) + (p.tips || 0)
                 dailyEarnings += total
                 dailyMiles += (p.miles || 0)
+                dailyHours += (p.hours || 0)
 
                 const existing = platformMap.get(p.platform_name) || {
                     gross: 0,
@@ -157,55 +164,107 @@ export async function getReportsData(startDate?: string, endDate?: string) {
             dayStat.earnings += dailyEarnings
             dayStat.miles += dailyMiles
 
-            // Manual Expenses
-            let dailyExpenses = 0
+            // Manual Expenses & Overrides
+            let dailyCashExpenses = 0
+            let fuelOverride: number | undefined
+            let wearOverride: number | undefined
+            let insuranceOverride: number | undefined
+
             if (entry.expenses && Array.isArray(entry.expenses)) {
                 entry.expenses.forEach((e) => {
-                    const amount = (e.amount || 0)
-                    dailyExpenses += amount
+                    // Check for overrides
+                    if (e.category === '__FUEL_OVERRIDE__') fuelOverride = e.amount;
+                    else if (e.category === '__WEAR_OVERRIDE__') wearOverride = e.amount;
+                    else if (e.category === '__INSURANCE_OVERRIDE__') insuranceOverride = e.amount;
+                    else {
+                        // Regular expense
+                        const amount = (e.amount || 0)
+                        dailyCashExpenses += amount
 
-                    // Update Expense Breakdown Map
-                    const cat = e.category || 'Other'
-                    const existing = expenseMap.get(cat) || {
-                        category: cat,
-                        total: 0,
-                        items: []
+                        // Update Expense Breakdown Map
+                        const cat = e.category || 'Other'
+                        const existing = expenseMap.get(cat) || {
+                            category: cat,
+                            total: 0,
+                            items: []
+                        }
+
+                        existing.total += amount
+                        existing.items.push({
+                            amount,
+                            description: e.description || 'No description',
+                            date: entry.date
+                        })
+                        expenseMap.set(cat, existing)
                     }
-
-                    existing.total += amount
-                    existing.items.push({
-                        amount,
-                        description: e.description || 'No description',
-                        date: entry.date
-                    })
-                    expenseMap.set(cat, existing)
                 })
             }
-            dayStat.expenses += dailyExpenses
 
-            // Calculated Depreciation
-            const depreciation = dailyMiles * depreciationRate
+            // Perform Comprehensive Financial Calculation
+            const financials = calculateFinancials({
+                grossEarnings: dailyEarnings,
+                expenses: dailyCashExpenses,
+                miles: dailyMiles,
+                stateCode: 'CA', // Defaulting to CA or should come from user settings? Using placeholder from logic.
+                mpg: vehicle?.mpg || 25,
+                gasPrice: currentGasPrice,
+                wearRate: vehicle?.depreciation_rate || 0.15,
+                manualFuel: fuelOverride,
+                manualWear: wearOverride,
+                manualInsurance: insuranceOverride,
+                ownershipType: vehicle?.ownership_type || 'owned',
+                monthlyInsurance: vehicle?.monthly_insurance || 0,
+                monthlyLease: vehicle?.monthly_payment || 0,
+                paymentCycle: vehicle?.payment_cycle || 'monthly',
+                fuelType: vehicle?.fuel_type || 'gasoline',
+                electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
+            })
+
+            // Populate Breakdown for Depreciation/Wear if not manually overridden
+            // calculateFinancials returns 'wearCost' which is either manual or calculated
+            const depreciation = financials.wearCost
             dayStat.depreciationCost = depreciation
 
-            if (depreciation > 0) {
+            if (depreciation > 0 && !wearOverride) {
                 const depCat = 'Vehicle Wear'
                 const existingDep = expenseMap.get(depCat) || {
                     category: depCat,
                     total: 0,
                     items: []
                 }
-
+                // Only add if not already added for this day? 
+                // Currently grouped by day, so we push a new item for this day
                 existingDep.total += depreciation
                 existingDep.items.push({
                     amount: depreciation,
-                    description: `Depreciation for ${dailyMiles.toFixed(1)} miles`,
+                    description: `Wear & Tear for ${dailyMiles.toFixed(1)} miles`,
                     date: entry.date
                 })
                 expenseMap.set(depCat, existingDep)
             }
 
-            // Net Profit
-            dayStat.netProfit = dailyEarnings - dailyExpenses - depreciation
+            // Also populate Fuel Cost if significant and not manual
+            if (financials.fuelCost > 0 && !fuelOverride) {
+                const fuelCat = 'Estimated Fuel'
+                const existingFuel = expenseMap.get(fuelCat) || { category: fuelCat, total: 0, items: [] }
+                existingFuel.total += financials.fuelCost
+                existingFuel.items.push({
+                    amount: financials.fuelCost,
+                    description: `Estimated fuel for ${dailyMiles.toFixed(1)} miles`,
+                    date: entry.date
+                })
+                expenseMap.set(fuelCat, existingFuel)
+            }
+
+            // Sync Reports Logic with Dashboard Logic
+            // Dashboard effectively says Expenses = Gross - Net
+            // This includes Taxes as an 'Expense' in the visual sense of "Money Out"
+            // financials.totalRealCosts includes Cash Expenses + Fuel + Wear + Insurance + Fixed
+            // NetProfit = Gross - totalRealCosts - Taxes
+
+            // To align with "Expenses = Gross - Net", we should set expenses to:
+            dayStat.expenses = dailyEarnings - financials.netProfit
+            dayStat.netProfit = financials.netProfit
         }
     })
 

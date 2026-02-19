@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-component-props, react/forbid-dom-props */
 import { getExpenseStats } from './actions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PieChart, Receipt, TrendingDown, Calendar } from 'lucide-react'
@@ -105,7 +104,7 @@ export default async function ExpensesPage() {
                                 return (
                                     <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
                                         <div className="flex items-center gap-3">
-                                            <div className="size-3 rounded-full" style={dotStyle} />
+                                            <div className="size-3 rounded-full" {...({ style: dotStyle } as Record<string, unknown>)} />
                                             <div>
                                                 <p className="text-sm font-bold">{item.category}</p>
                                                 <p className="text-xs text-muted-foreground">{item.count} transactions</p>

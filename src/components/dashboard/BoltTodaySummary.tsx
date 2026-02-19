@@ -269,7 +269,7 @@ export function BoltTodaySummary({
                                                         <div className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
                                                             <div className="flex justify-between items-center text-sm font-bold text-white mb-2">
                                                                 <span>Editing {p.platform_name}</span>
-                                                                <button onClick={() => setEditingPlatformId(null)} className="p-1 hover:bg-white/10 rounded-full"><X className="size-4" /></button>
+                                                                <button onClick={() => setEditingPlatformId(null)} className="p-1 hover:bg-white/10 rounded-full" aria-label="Cancel editing"><X className="size-4" /></button>
                                                             </div>
                                                             <div className="grid grid-cols-2 gap-2">
                                                                 <div>

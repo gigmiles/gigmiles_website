@@ -1,8 +1,8 @@
-/* eslint-disable react/forbid-component-props, react/forbid-dom-props */
 import { getReportsData } from './actions'
 import { ReportControls } from '@/components/reports/ReportControls'
 import { Charts } from '@/components/reports/Charts'
 import { ExpenseBreakdown } from '@/components/reports/ExpenseBreakdown'
+import { ActivityCalendar } from '@/components/reports/ActivityCalendar'
 import Link from 'next/link'
 import { TrendingUp, LayoutGrid, ChevronLeft, DollarSign } from 'lucide-react'
 
@@ -76,6 +76,11 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                 </div>
             </div>
 
+            {/* Activity Calendar */}
+            <div className="animate-fade-in delay-100">
+                <ActivityCalendar data={data.dailyData} />
+            </div>
+
             {/* Main Visualizations Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
                 <div className="glass-card p-8 border-white/5 shadow-2xl">
@@ -104,7 +109,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                                 <div className="flex items-center justify-between mb-4">
                                     <span
                                         className={`text-sm font-extrabold tracking-tight antialiased ${plat.name.toLowerCase().includes('uber') ? 'uber-halo-text' : ''}`}
-                                        style={platStyle}
+                                        {...({ style: platStyle } as Record<string, unknown>)}
                                     >
                                         {plat.name}
                                     </span>
@@ -124,7 +129,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                                     <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
                                         <div
                                             className="h-full bg-emerald-500/50"
-                                            style={barStyle}
+                                            {...({ style: barStyle } as Record<string, unknown>)}
                                         />
                                     </div>
                                 </div>
