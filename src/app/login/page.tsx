@@ -5,7 +5,6 @@ import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Car, Mail, Lock, Loader2, ArrowRight, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 
 export default function LoginPage() {

@@ -1,6 +1,6 @@
 'use client'
 
-import { DollarSign, TrendingUp, Navigation, Clock, Briefcase, MinusCircle, Info, Edit2, Check, X, ArrowUpRight, Plus, Trash2 } from 'lucide-react';
+import { DollarSign, TrendingUp, Navigation, Clock, Briefcase, MinusCircle, Edit2, Check, X, ArrowUpRight, Plus, Trash2 } from 'lucide-react';
 import { calculateHourlyRate, calculateProfitMargin } from '@/utils/calculations';
 import { useState } from 'react';
 import { saveCostOverride, addExpense, deleteExpense } from '@/app/dashboard/actions';
@@ -13,7 +13,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface TodaySummaryProps {
@@ -31,7 +30,22 @@ interface TodaySummaryProps {
     fuelCost?: number;
     wearCost?: number;
     insurance?: number;
-    richEntry?: any;
+    richEntry?: {
+        entry_date?: string;
+        platform_earnings?: Array<{
+            platform_name: string;
+            amount: number;
+            tips?: number;
+            miles?: number;
+            hours?: number;
+        }>;
+        expenses?: Array<{
+            id: string;
+            category: string;
+            amount: number;
+            description?: string;
+        }>;
+    };
 }
 
 export function BoltTodaySummary({
@@ -43,9 +57,6 @@ export function BoltTodaySummary({
     tax,
     federalTax = 0,
     stateTax = 0,
-    tips,
-    mpg,
-    gasPrice,
     fuelCost,
     wearCost,
     insurance,
@@ -60,7 +71,7 @@ export function BoltTodaySummary({
 
     const platformEarnings = richEntry?.platform_earnings || [];
     // Filter out legacy "Depreciation" entries as they are now calculated dynamically
-    const directExpenses = (richEntry?.expenses || []).filter((e: any) =>
+    const directExpenses = (richEntry?.expenses || []).filter((e) =>
         e.category !== 'Depreciation' &&
         e.category !== '__FUEL_OVERRIDE__' &&
         e.category !== '__WEAR_OVERRIDE__' &&
@@ -87,7 +98,8 @@ export function BoltTodaySummary({
             toast.success("Expense added successfully!");
             setIsAddingExpense(false);
             setNewExpense({ category: '', amount: '', description: '' });
-        } catch (error) {
+        } catch (addError) {
+            console.error("Add expense error:", addError);
             toast.error("Failed to add expense");
         } finally {
             setIsSaving(false);
@@ -99,7 +111,8 @@ export function BoltTodaySummary({
         try {
             await deleteExpense(id);
             toast.success("Expense deleted");
-        } catch (error) {
+        } catch (deleteError) {
+            console.error("Delete expense error:", deleteError);
             toast.error("Failed to delete");
         } finally {
             setIsSaving(false);
@@ -117,7 +130,8 @@ export function BoltTodaySummary({
             await saveCostOverride(date, category, isNaN(amount) ? 0 : amount);
             toast.success("Cost updated!");
             setEditingField(null);
-        } catch (error) {
+        } catch (saveError) {
+            console.error("Save override error:", saveError);
             toast.error("Failed to save");
         } finally {
             setIsSaving(false);
@@ -166,7 +180,7 @@ export function BoltTodaySummary({
                     {/* Gross Income Card */}
                     <Sheet>
                         <SheetTrigger asChild>
-                            <button className="glass-card glass-card-hover p-4 text-left group">
+                            <button className="glass-card glass-card-hover p-4 text-left group" title="View Earnings Breakdown">
                                 <div className="flex items-center gap-2 text-slate-500 mb-2">
                                     <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                                         <DollarSign className="size-4" />
@@ -199,7 +213,7 @@ export function BoltTodaySummary({
                             <ScrollArea className="h-[calc(100vh-120px)] mt-6 pr-4">
                                 <div className="space-y-6">
                                     {platformEarnings.length > 0 ? (
-                                        platformEarnings.map((p: any, idx: number) => {
+                                        platformEarnings.map((p, idx: number) => {
                                             const platformSlug = p.platform_name.toLowerCase().replace(/\s+/g, '-');
                                             const platformColor = `var(--color-${platformSlug})`;
                                             const isUber = platformSlug.includes('uber');
@@ -227,7 +241,7 @@ export function BoltTodaySummary({
                                                             <span className="text-slate-200">${(p.amount || 0).toFixed(2)}</span>
                                                         </div>
                                                         <div className="flex justify-between py-1 border-b border-white/5">
-                                                            <span>Tips & Extras</span>
+                                                            <span>Tips &amp; Extras</span>
                                                             <span className="text-emerald-400/80">+${(p.tips || 0).toFixed(2)}</span>
                                                         </div>
                                                         <div className="flex justify-between py-1">
@@ -262,7 +276,7 @@ export function BoltTodaySummary({
                     {/* Total Costs Card */}
                     <Sheet>
                         <SheetTrigger asChild>
-                            <button className="glass-card glass-card-hover p-4 text-left group">
+                            <button className="glass-card glass-card-hover p-4 text-left group" title="View Expense Breakdown">
                                 <div className="flex items-center gap-2 text-slate-500 mb-2">
                                     <div className="p-1.5 rounded-lg bg-ruby-500/10 text-ruby-500">
                                         <TrendingUp className="size-4" />
@@ -287,10 +301,10 @@ export function BoltTodaySummary({
                             <SheetHeader>
                                 <SheetTitle className="flex items-center gap-2 text-white">
                                     <MinusCircle className="size-5 text-ruby-500" />
-                                    Expenses & Projections
+                                    Expenses &amp; Projections
                                 </SheetTitle>
                                 <SheetDescription className="text-slate-500 font-medium">
-                                    Detailed breakdown of today's costs.
+                                    Detailed breakdown of today&apos;s costs.
                                 </SheetDescription>
                             </SheetHeader>
                             <ScrollArea className="h-[calc(100vh-120px)] mt-6 pr-4">
@@ -301,6 +315,7 @@ export function BoltTodaySummary({
                                             <button
                                                 onClick={() => setIsAddingExpense(!isAddingExpense)}
                                                 className="p-1 px-2 rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500/10 hover:border-emerald-500/20 text-slate-400 hover:text-emerald-400 transition-all flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider"
+                                                title={isAddingExpense ? "Close Form" : "Add New Expense"}
                                             >
                                                 <Plus className="size-3" />
                                                 Add New
@@ -350,13 +365,13 @@ export function BoltTodaySummary({
 
                                         {directExpenses.length > 0 ? (
                                             <div className="space-y-3">
-                                                {directExpenses.map((e: any, idx: number) => (
+                                                {directExpenses.map((e, idx: number) => (
                                                     <div key={idx} className="bg-white/5 p-4 rounded-2xl border border-white/5 group hover:bg-white/10 transition-colors">
                                                         <div className="flex justify-between items-center">
                                                             <div>
                                                                 <span className="font-bold text-white text-sm block">{e.category}</span>
                                                                 {e.description && (
-                                                                    <p className="text-xs text-slate-500 mt-0.5 mt-1 font-medium italic opacity-70 group-hover:opacity-100">"{e.description}"</p>
+                                                                    <p className="text-xs text-slate-500 mt-1 font-medium italic opacity-70 group-hover:opacity-100">&quot;{e.description}&quot;</p>
                                                                 )}
                                                             </div>
                                                             <span className="font-extrabold text-ruby-400">-${(e.amount || 0).toFixed(2)}</span>
@@ -366,6 +381,7 @@ export function BoltTodaySummary({
                                                                 onClick={() => handleDeleteExpense(e.id)}
                                                                 disabled={isSaving}
                                                                 className="p-1.5 rounded-lg bg-ruby-500/10 text-ruby-500 hover:bg-ruby-500 hover:text-white transition-all transform active:scale-95 disabled:opacity-50"
+                                                                title="Delete Expense"
                                                             >
                                                                 <Trash2 className="size-3" />
                                                             </button>
@@ -413,11 +429,13 @@ export function BoltTodaySummary({
                                                                     onChange={(e) => setEditValue(e.target.value)}
                                                                     className="w-20 px-2 py-1 text-sm border-none rounded-lg bg-emerald-500/10 text-emerald-400 focus:ring-1 focus:ring-emerald-500 outline-none"
                                                                     autoFocus
+                                                                    placeholder="0.00"
+                                                                    aria-label="Fuel Cost Override"
                                                                 />
-                                                                <button onClick={() => handleSaveOverride('__FUEL_OVERRIDE__')} disabled={isSaving} className="text-emerald-400 hover:text-emerald-300">
+                                                                <button onClick={() => handleSaveOverride('__FUEL_OVERRIDE__')} disabled={isSaving} className="text-emerald-400 hover:text-emerald-300" title="Save">
                                                                     <Check className="size-4" />
                                                                 </button>
-                                                                <button onClick={() => setEditingField(null)} className="text-slate-500">
+                                                                <button onClick={() => setEditingField(null)} className="text-slate-500" title="Cancel">
                                                                     <X className="size-4" />
                                                                 </button>
                                                             </div>
@@ -427,6 +445,7 @@ export function BoltTodaySummary({
                                                                 <button
                                                                     onClick={() => { setEditingField('fuel'); setEditValue(fuelCost.toFixed(2)); }}
                                                                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
+                                                                    title="Edit Fuel Cost"
                                                                 >
                                                                     <Edit2 className="size-3" />
                                                                 </button>
@@ -449,11 +468,13 @@ export function BoltTodaySummary({
                                                                     onChange={(e) => setEditValue(e.target.value)}
                                                                     className="w-20 px-2 py-1 text-sm border-none rounded-lg bg-emerald-500/10 text-emerald-400 focus:ring-1 focus:ring-emerald-500 outline-none"
                                                                     autoFocus
+                                                                    placeholder="0.00"
+                                                                    aria-label="Wear &amp; Tear Override"
                                                                 />
-                                                                <button onClick={() => handleSaveOverride('__WEAR_OVERRIDE__')} disabled={isSaving} className="text-emerald-400 hover:text-emerald-300">
+                                                                <button onClick={() => handleSaveOverride('__WEAR_OVERRIDE__')} disabled={isSaving} className="text-emerald-400 hover:text-emerald-300" title="Save">
                                                                     <Check className="size-4" />
                                                                 </button>
-                                                                <button onClick={() => setEditingField(null)} className="text-slate-500">
+                                                                <button onClick={() => setEditingField(null)} className="text-slate-500" title="Cancel">
                                                                     <X className="size-4" />
                                                                 </button>
                                                             </div>
@@ -463,6 +484,7 @@ export function BoltTodaySummary({
                                                                 <button
                                                                     onClick={() => { setEditingField('wear'); setEditValue(wearCost.toFixed(2)); }}
                                                                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
+                                                                    title="Edit Wear &amp; Tear"
                                                                 >
                                                                     <Edit2 className="size-3" />
                                                                 </button>
@@ -485,11 +507,13 @@ export function BoltTodaySummary({
                                                                     onChange={(e) => setEditValue(e.target.value)}
                                                                     className="w-20 px-2 py-1 text-sm border-none rounded-lg bg-emerald-500/10 text-emerald-400 focus:ring-1 focus:ring-emerald-500 outline-none"
                                                                     autoFocus
+                                                                    placeholder="0.00"
+                                                                    aria-label="Insurance Override"
                                                                 />
-                                                                <button onClick={() => handleSaveOverride('__INSURANCE_OVERRIDE__')} disabled={isSaving} className="text-emerald-400 hover:text-emerald-300">
+                                                                <button onClick={() => handleSaveOverride('__INSURANCE_OVERRIDE__')} disabled={isSaving} className="text-emerald-400 hover:text-emerald-300" title="Save">
                                                                     <Check className="size-4" />
                                                                 </button>
-                                                                <button onClick={() => setEditingField(null)} className="text-slate-500">
+                                                                <button onClick={() => setEditingField(null)} className="text-slate-500" title="Cancel">
                                                                     <X className="size-4" />
                                                                 </button>
                                                             </div>
@@ -499,6 +523,7 @@ export function BoltTodaySummary({
                                                                 <button
                                                                     onClick={() => { setEditingField('insurance'); setEditValue(insurance.toFixed(2)); }}
                                                                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
+                                                                    title="Edit Commercial Insurance"
                                                                 >
                                                                     <Edit2 className="size-3" />
                                                                 </button>

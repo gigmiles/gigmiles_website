@@ -12,8 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
 import { getDepreciationRate } from '@/utils/calculations'
-import { EV_MODELS, ELECTRIC_BRANDS } from '@/utils/vehicle-data'
-import { Toaster, toast } from 'sonner'
+import { EV_MODELS } from '@/utils/vehicle-data'
+import { toast } from 'sonner'
 import { Wallet, CheckCircle2, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { US_STATES, CAR_MAKES } from '@/utils/constants'
 
@@ -32,10 +32,6 @@ const step2Schema = z.object({
     fuel_type: z.string().optional(),
     ownership_type: z.string().optional(),
     electricity_cost_per_kwh: z.string().optional()
-})
-
-const step3Schema = z.object({
-    platforms: z.array(z.string()).min(1, 'Select at least one platform'),
 })
 
 const PLATFORM_OPTIONS = [
@@ -235,7 +231,7 @@ export default function OnboardingPage() {
             isMounted = false
             clearTimeout(timeout)
         }
-    }, [supabase, router]) // Removed reset1, reset2 from deps
+    }, [supabase, router, reset1, reset2])
 
     const onSubmitStep1 = (data: z.infer<typeof step1Schema>) => {
         setFormData(prev => ({ ...prev, ...data }))
@@ -424,7 +420,7 @@ export default function OnboardingPage() {
                     </div>
                     GigMiles
                 </div>
-                <p className="text-sm md:text-base text-muted-foreground">Let's set up your financial copilot.</p>
+                <p className="text-sm md:text-base text-muted-foreground">Let&apos;s set up your financial copilot.</p>
             </div>
 
             <Card className="w-full max-w-lg border-border/50 shadow-xl shadow-slate-200/50 dark:shadow-none bg-card/50 backdrop-blur-sm">
@@ -628,7 +624,8 @@ export default function OnboardingPage() {
                                                                 } else {
                                                                     toast.error("MPG not found. Please enter manually.", { id: toastId })
                                                                 }
-                                                            } catch (e) {
+                                                            } catch (err) {
+                                                                console.error("Error fetching MPG", err)
                                                                 toast.error("Error fetching MPG", { id: toastId })
                                                             }
                                                         }}
