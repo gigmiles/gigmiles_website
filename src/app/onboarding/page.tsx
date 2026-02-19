@@ -417,26 +417,26 @@ export default function OnboardingPage() {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
 
-            <div className="w-full max-w-lg mb-8 text-center">
-                <div className="inline-flex items-center gap-2 font-display font-bold text-3xl tracking-tight text-slate-900 dark:text-white mb-2 italic">
-                    <div className="p-2 bg-emerald-500/20 rounded-xl shadow-lg shadow-emerald-500/10">
-                        <Wallet className="size-7 text-emerald-500 animate-pulse" />
+            <div className="w-full max-w-lg mb-6 md:mb-8 text-center px-4">
+                <div className="inline-flex items-center gap-2 font-display font-bold text-2xl md:text-3xl tracking-tight text-slate-900 dark:text-white mb-2 italic">
+                    <div className="p-1.5 md:p-2 bg-emerald-500/20 rounded-xl shadow-lg shadow-emerald-500/10">
+                        <Wallet className="size-6 md:size-7 text-emerald-500 animate-pulse" />
                     </div>
                     GigMiles
                 </div>
-                <p className="text-muted-foreground">Let's set up your financial copilot.</p>
+                <p className="text-sm md:text-base text-muted-foreground">Let's set up your financial copilot.</p>
             </div>
 
-            <Card className="w-full max-w-lg border-border/50 shadow-xl shadow-slate-200/50 dark:shadow-none">
-                <CardHeader>
+            <Card className="w-full max-w-lg border-border/50 shadow-xl shadow-slate-200/50 dark:shadow-none bg-card/50 backdrop-blur-sm">
+                <CardHeader className="p-4 md:p-6 pb-2">
                     <div className="flex items-center justify-between mb-4">
-                        <CardTitle>
+                        <CardTitle className="text-lg md:text-xl">
                             {step === 1 && "Personal Details"}
                             {step === 2 && "Vehicle Information"}
                             {step === 3 && "Select Platforms"}
                         </CardTitle>
-                        <span className="text-xs font-medium px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                            Step {step} of 3
+                        <span className="text-[10px] md:text-xs font-medium px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                            Step {step}/3
                         </span>
                     </div>
                     {/* Progress Bar */}
@@ -448,7 +448,7 @@ export default function OnboardingPage() {
                     </div>
                 </CardHeader>
 
-                <CardContent className="pt-2">
+                <CardContent className="p-4 md:p-6 pt-2">
                     {step === 1 && (
                         <form onSubmit={handleSubmit1(onSubmitStep1)} className="space-y-4">
                             <div className="space-y-4 animate-fade-in">

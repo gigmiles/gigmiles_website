@@ -162,7 +162,7 @@ export function BoltTodaySummary({
                 </div>
 
                 {/* Grid Stats */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Gross Income Card */}
                     <Sheet>
                         <SheetTrigger asChild>
@@ -524,16 +524,18 @@ export function BoltTodaySummary({
                         </SheetContent>
                     </Sheet>
 
-                    <div className="glass-card p-4">
-                        <div className="flex items-center gap-2 text-slate-500 mb-2 font-display">
-                            <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
-                                <Navigation className="size-4" />
+                    <div className="glass-card p-4 flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center gap-2 text-slate-500 mb-2 font-display">
+                                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+                                    <Navigation className="size-4" />
+                                </div>
+                                <span className="text-xs font-bold uppercase tracking-wider">Miles Driven</span>
                             </div>
-                            <span className="text-xs font-bold uppercase tracking-wider">Miles Driven</span>
+                            <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{miles.toFixed(1)}</p>
                         </div>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{miles.toFixed(1)}</p>
-                        <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-2">
-                            {miles > 0 ? `$${(netProfit / miles).toFixed(2)}/mile` : 'No data'}
+                        <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
+                            {miles > 0 ? `$${(netProfit / miles).toFixed(2)}/mi` : '—'}
                         </p>
                     </div>
 
@@ -550,9 +552,9 @@ export function BoltTodaySummary({
                             </p>
                         </div>
                         {hourlyRate > 0 && (
-                            <div className="mt-2 flex items-center gap-1.5 text-xs font-bold text-indigo-500 uppercase tracking-widest">
+                            <div className="mt-2 flex items-center gap-1.5 text-xs font-bold text-indigo-500 uppercase tracking-widest overflow-hidden text-ellipsis whitespace-nowrap">
                                 <TrendingUp className="size-3" />
-                                <span>${hourlyRate.toFixed(2)}/hr</span>
+                                <span>${hourlyRate.toFixed(1)}/hr</span>
                             </div>
                         )}
                     </div>

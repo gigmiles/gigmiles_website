@@ -63,18 +63,18 @@ export default function LoginPage() {
 
             <div className="relative z-10 w-full max-w-md px-4">
                 {/* Branding */}
-                <div className="flex flex-col items-center mb-8 animate-fade-in-up">
-                    <div className="p-5 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl shadow-xl shadow-emerald-500/30 mb-4 group transition-transform hover:scale-110">
-                        <Car className="size-10 text-white" />
+                <div className="flex flex-col items-center mb-6 md:mb-8 animate-fade-in-up">
+                    <div className="p-4 md:p-5 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl shadow-xl shadow-emerald-500/30 mb-4 group transition-transform hover:scale-110">
+                        <Car className="size-8 md:size-10 text-white" />
                     </div>
-                    <h1 className="text-5xl font-display font-bold tracking-tighter text-white mb-2 italic">
+                    <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tighter text-white mb-2 italic">
                         GigMiles
                     </h1>
-                    <p className="text-emerald-400/80 text-sm font-medium">Maximize every mile. Own your earnings.</p>
+                    <p className="text-emerald-400/80 text-xs md:text-sm font-medium text-center">Maximize every mile. Own your earnings.</p>
                 </div>
 
                 {/* Login Card */}
-                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl animate-fade-in-up [animation-delay:200ms]">
+                <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl animate-fade-in-up [animation-delay:200ms]">
                     <div className="flex gap-4 mb-8 p-1 bg-white/5 rounded-2xl border border-white/5">
                         <button
                             onClick={() => setIsSignUp(false)}
