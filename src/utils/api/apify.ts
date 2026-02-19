@@ -24,7 +24,7 @@ const VEHICLE_VALUE_CACHE = new Map<string, { value: number, timestamp: number }
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000 // 24 Hours (Values don't change hourly)
 
 export async function getVehicleMarketValue(year: string, make: string, model: string, mileage: number): Promise<VehicleValueResponse | null> {
-    const cacheKey = `${year}-${make}-${model}-${mileage}`.toLowerCase()
+    const cacheKey = `v2-${year}-${make}-${model}-${mileage}`.toLowerCase()
 
     // 1. Check Cache
     const cached = VEHICLE_VALUE_CACHE.get(cacheKey)

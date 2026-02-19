@@ -87,11 +87,13 @@ export function VehicleValueCard({ vehicle }: VehicleValueCardProps) {
 
                         <div className="mt-4 flex items-center gap-2 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 w-fit">
                             <TrendingDown className="size-3 text-rose-500" />
-                            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Est. Depreciation: $1,200 / yr</span>
+                            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest">
+                                Est. Depreciation: ${(value * 0.15).toLocaleString('en-US', { maximumFractionDigits: 0 })} / yr
+                            </span>
                         </div>
 
                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-6 opacity-60">
-                            Last Refreshed: {lastUpdated?.toLocaleTimeString()}
+                            Last Refreshed: {lastUpdated?.toLocaleTimeString()} • v1.1
                         </p>
                     </div>
                 ) : (
