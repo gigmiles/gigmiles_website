@@ -1,27 +1,8 @@
 'use server'
 
-import { cookies } from 'next/headers'
 
 // --- Types ---
-interface FuelEconomyResponse {
-    menuItem: Array<{
-        text: string
-        value: string
-    }>
-}
 
-interface GasPriceResponse {
-    result: {
-        state: Array<{
-            currency: string
-            name: string
-            gasoline: string
-            midGrade: string
-            premium: string
-            diesel: string
-        }>
-    }
-}
 
 // --- API Stability (Circuit Breaker) ---
 const API_STATUS = new Map<string, { lastFail: number, failCount: number }>()
@@ -73,8 +54,8 @@ export async function getVehicleModels(year: string, make: string): Promise<stri
         recordSuccess('fueleconomy.gov')
         if (!data.menuItem) return []
         const items = Array.isArray(data.menuItem) ? data.menuItem : [data.menuItem]
-        return items.map((item: any) => item.value)
-    } catch (error: any) {
+        return items.map((item: { value: string }) => item.value)
+    } catch {
         recordFail('fueleconomy.gov')
         return []
     } finally {
@@ -150,7 +131,12 @@ export async function getEstimatedMPG(year: string, make: string, model: string)
             fuelType: isEV ? 'electric' : 'gasoline'
         }
 
-    } catch (error: any) {
+        return {
+            value,
+            fuelType: isEV ? 'electric' : 'gasoline'
+        }
+
+    } catch {
         recordFail('fueleconomy.gov')
         return null
     } finally {
@@ -204,7 +190,7 @@ export async function getGasPrice(stateCode: string): Promise<number> {
         let totalPrice = 0;
         let count = 0;
 
-        items.forEach((item: any) => {
+        items.forEach((item: Record<string, unknown>) => {
             // Priority: price_credit, then price_cash
             const price = item.price_credit || item.price_cash || item.price;
             if (typeof price === 'number' && price > 0) {

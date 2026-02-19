@@ -9,6 +9,16 @@ interface VehicleValueResponse {
     source: string
 }
 
+interface ApifyItem {
+    private_seller_valuation_range?: string;
+    trade_in_valuation_range?: string;
+    price?: number;
+    value?: number;
+    valuation?: number;
+    market_average?: number;
+    [key: string]: unknown;
+}
+
 // Reuse the same cache structure as other APIs
 const VEHICLE_VALUE_CACHE = new Map<string, { value: number, timestamp: number }>()
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000 // 24 Hours (Values don't change hourly)
@@ -72,7 +82,7 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
             return null;
         }
 
-        const data: any = items[0];
+        const data = items[0] as unknown as ApifyItem;
         let estimatedValue = 0;
 
         // Helper to parse range string "4000-6000" -> 5000

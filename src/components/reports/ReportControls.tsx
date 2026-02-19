@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Calendar, Download, RefreshCw } from 'lucide-react'
 import { format, subDays } from 'date-fns'
+import { DailyData } from '@/app/dashboard/types'
 
 interface ReportControlsProps {
-    data: any[]
+    data: DailyData[]
 }
 
 export function ReportControls({ data }: ReportControlsProps) {
@@ -73,6 +73,7 @@ export function ReportControls({ data }: ReportControlsProps) {
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
+                            aria-label="Start date"
                             className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-900/50 border border-white/5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                         />
                     </div>
@@ -87,6 +88,7 @@ export function ReportControls({ data }: ReportControlsProps) {
                             type="date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
+                            aria-label="End date"
                             className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-900/50 border border-white/5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                         />
                     </div>

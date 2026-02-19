@@ -11,7 +11,6 @@ import {
     User,
     CreditCard,
     Bell,
-    Search,
     Car,
     ChevronsUpDown,
     Trash2,
@@ -23,6 +22,7 @@ import { switchPrimaryVehicle } from "@/app/dashboard/actions";
 import { deleteVehicleAction } from "@/app/dashboard/settings/vehicle/actions";
 import { signOut } from "@/app/auth/actions";
 import { toast } from "sonner";
+import { Vehicle } from "@/app/dashboard/types";
 
 import {
     Sidebar,
@@ -33,7 +33,6 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarRail,
-    SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,14 +44,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface AppSidebarProps {
     user: {
         full_name: string;
         email?: string;
     };
-    vehicles: any[];
+    vehicles: Vehicle[];
     activeVehicleId: string | null;
 }
 
@@ -93,7 +92,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
         try {
             await switchPrimaryVehicle(vehicleId);
             toast.success("Vehicle switched!", { id: toastId });
-        } catch (error) {
+        } catch {
             toast.error("Failed to switch vehicle", { id: toastId });
         }
     };
@@ -110,7 +109,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
             } else {
                 toast.error(result.error || "Failed to delete", { id: toastId });
             }
-        } catch (error) {
+        } catch {
             toast.error("Error deleting vehicle", { id: toastId });
         }
     };

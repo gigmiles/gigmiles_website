@@ -2,9 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ChevronLeft, Save } from 'lucide-react'
-import { revalidatePath } from 'next/cache'
+import { ChevronLeft } from 'lucide-react'
 
 import { ProfileSettingsForm } from './profile-form'
 

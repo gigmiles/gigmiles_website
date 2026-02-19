@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { calculateFinancials } from '@/utils/calculations'
 import { format } from 'date-fns'
+import { PlatformEarning, Expense } from '@/app/dashboard/types'
 
 // IRS Quarter Definitions
 const QUARTERS = [
@@ -49,8 +50,8 @@ export async function getTaxOverview() {
     // 4. Aggregate per Quarter
     const quarterStats = QUARTERS.map(q => {
         // Filter entries for this quarter
-        const qEntries = entries?.filter((e: any) => {
-            const d = e.date // YYYY-MM-DD
+        const qEntries = entries?.filter((e) => {
+            const d = e.date as string // YYYY-MM-DD
             const md = d.substring(5) // MM-DD
             return md >= q.start && md <= q.end
         }) || []
@@ -59,12 +60,14 @@ export async function getTaxOverview() {
         let expenses = 0
         let miles = 0
 
-        qEntries.forEach((e: any) => {
-            e.platform_earnings.forEach((p: any) => {
+        qEntries.forEach((e) => {
+            (e.platform_earnings as unknown as PlatformEarning[]).forEach((p) => {
                 gross += (p.amount || 0) + (p.tips || 0)
                 miles += (p.miles || 0)
             })
-            e.expenses.forEach((ex: any) => expenses += (ex.amount || 0))
+                ; (e.expenses as unknown as Expense[]).forEach((ex) => {
+                    expenses += (ex.amount || 0)
+                })
         })
 
         const financials = calculateFinancials({
@@ -75,7 +78,7 @@ export async function getTaxOverview() {
         })
 
         const paidAmount = payments
-            ?.filter((p: any) => p.quarter === q.id)
+            ?.filter((p) => p.quarter === q.id)
             .reduce((sum, p) => sum + (p.amount_paid || 0), 0) || 0
 
         return {

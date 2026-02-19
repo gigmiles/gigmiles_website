@@ -1,18 +1,10 @@
+/* eslint-disable react/forbid-component-props, react/forbid-dom-props */
 import { getReportsData } from './actions'
 import { ReportControls } from '@/components/reports/ReportControls'
 import { Charts } from '@/components/reports/Charts'
 import { ExpenseBreakdown } from '@/components/reports/ExpenseBreakdown'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import {
-    TrendingUp,
-    LayoutGrid,
-    ChevronLeft,
-    DollarSign,
-    Clock,
-    Info
-} from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { TrendingUp, LayoutGrid, ChevronLeft, DollarSign } from 'lucide-react'
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ startDate?: string, endDate?: string }> }) {
     const { startDate, endDate } = await searchParams
@@ -23,6 +15,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
     const totalWeekly = data.dailyData.reduce((acc, curr) => acc + curr.earnings, 0)
     const totalNetProfit = data.dailyData.reduce((acc, curr) => acc + curr.netProfit, 0)
     const avgDaily = totalWeekly / (data.dailyData.length || 1)
+    void avgDaily // Suppress unused warning if it's meant to be used later
     const topPlatform = data.platformData.sort((a, b) => b.value - a.value)[0]?.name || 'N/A'
 
     return (
@@ -103,37 +96,41 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                     <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Platform Efficiency</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {data.platformData.map((plat: any, idx: number) => (
-                        <div key={idx} className="glass-card p-5 border-white/5 hover:bg-white/5 transition-all">
-                            <div className="flex items-center justify-between mb-4">
-                                <span
-                                    className={`text-sm font-extrabold tracking-tight antialiased ${plat.name.toLowerCase().includes('uber') ? 'uber-halo-text' : ''}`}
-                                    style={{ color: plat.fill || 'var(--foreground)' }}
-                                >
-                                    {plat.name}
-                                </span>
-                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 font-bold uppercase tracking-tight">
-                                    {((plat.gross / totalWeekly) * 100).toFixed(0)}%
-                                </span>
+                    {data.platformData.map((plat, idx: number) => {
+                        const platStyle = { color: plat.fill || 'var(--foreground)' };
+                        const barStyle = { width: `${Math.min(100, (plat.hourlyRate / 50) * 100)}%` };
+                        return (
+                            <div key={idx} className="glass-card p-5 border-white/5 hover:bg-white/5 transition-all">
+                                <div className="flex items-center justify-between mb-4">
+                                    <span
+                                        className={`text-sm font-extrabold tracking-tight antialiased ${plat.name.toLowerCase().includes('uber') ? 'uber-halo-text' : ''}`}
+                                        style={platStyle}
+                                    >
+                                        {plat.name}
+                                    </span>
+                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 font-bold uppercase tracking-tight">
+                                        {((plat.gross / totalWeekly) * 100).toFixed(0)}%
+                                    </span>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Hourly Rate</span>
+                                        <span className="text-lg font-display font-bold text-blue-400">${plat.hourlyRate.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Tip Pct</span>
+                                        <span className="text-sm font-bold text-amber-500">{plat.tipPct.toFixed(1)}%</span>
+                                    </div>
+                                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
+                                        <div
+                                            className="h-full bg-emerald-500/50"
+                                            style={barStyle}
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <div className="space-y-3">
-                                <div className="flex justify-between items-end">
-                                    <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Hourly Rate</span>
-                                    <span className="text-lg font-display font-bold text-blue-400">${plat.hourlyRate.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between items-end">
-                                    <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Tip Pct</span>
-                                    <span className="text-sm font-bold text-amber-500">{plat.tipPct.toFixed(1)}%</span>
-                                </div>
-                                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
-                                    <div
-                                        className="h-full bg-emerald-500/50"
-                                        style={{ width: `${Math.min(100, (plat.hourlyRate / 50) * 100)}%` }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 

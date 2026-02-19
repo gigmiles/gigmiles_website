@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
-import { startOfWeek, endOfWeek, subDays, format, startOfDay, endOfDay } from 'date-fns'
+import { subDays, format, startOfDay, endOfDay } from 'date-fns'
 
 interface PlatformEarning {
     platform_name: string
@@ -106,7 +106,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         depreciationCost: number;
     }>()
 
-    let loopDate = new Date(start)
+    const loopDate = new Date(start)
     while (loopDate <= end) {
         const dateStr = format(loopDate, 'yyyy-MM-dd')
         dailyDataMap.set(dateStr, {
@@ -132,14 +132,12 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         if (dayStat) {
             let dailyEarnings = 0
             let dailyMiles = 0
-            let dailyHours = 0
 
             // Earnings & Platform Stats
             entry.platform_earnings.forEach((p) => {
                 const total = (p.amount || 0) + (p.tips || 0)
                 dailyEarnings += total
                 dailyMiles += (p.miles || 0)
-                dailyHours += (p.hours || 0)
 
                 const existing = platformMap.get(p.platform_name) || {
                     gross: 0,

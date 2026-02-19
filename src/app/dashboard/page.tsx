@@ -2,19 +2,12 @@ import { Button } from '@/components/ui/button'
 import { getDashboardStats, getRecentEntries } from './actions'
 import Link from 'next/link'
 import {
-    ArrowUpRight,
-    ArrowDownRight,
-    DollarSign,
     Car,
-    CreditCard,
-    TrendingUp,
-    Clock,
     Plus
 } from 'lucide-react'
 import { BoltQuickActions } from '@/components/dashboard/BoltQuickActions'
 import { BoltTodaySummary } from '@/components/dashboard/BoltTodaySummary'
 import { BoltWeeklySummary } from '@/components/dashboard/BoltWeeklySummary'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { EarningsChart } from '@/components/dashboard/EarningsChart'
 import { PlatformDistributionChart } from '@/components/dashboard/PlatformDistributionChart'
 import { RecentEntries } from '@/components/dashboard/RecentEntries'
@@ -82,7 +75,7 @@ export default async function DashboardPage() {
                         fuelCost={today.fuelCost}
                         wearCost={today.wearCost}
                         insurance={today.dailyInsurance}
-                        richEntry={today.richEntry}
+                        richEntry={today.richEntry || undefined}
                     />
                     <EarningsChart data={chartData} />
                 </div>

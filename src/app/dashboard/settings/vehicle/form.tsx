@@ -9,10 +9,10 @@ import { DepreciationCalculator } from '@/components/settings/DepreciationCalcul
 import { saveVehicleAction, deleteVehicleAction } from '@/app/dashboard/settings/vehicle/actions'
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
 import { getDepreciationRate } from '@/utils/calculations'
-import { CAR_MAKES, CAR_YEARS } from '@/utils/constants'
+import { CAR_MAKES } from '@/utils/constants'
 import { EV_MODELS, ELECTRIC_BRANDS } from '@/utils/vehicle-data'
 import { toast } from 'sonner'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 interface Vehicle {
     id: string;
@@ -35,7 +35,7 @@ interface VehicleSettingsFormProps {
 }
 
 export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProps) {
-    const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles)
+    const [vehicles] = useState<Vehicle[]>(initialVehicles)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -55,7 +55,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
     const [electricityCost, setElectricityCost] = useState('0.15')
 
     const [fetchingModels, setFetchingModels] = useState(false)
-    const [fetchingMPG, setFetchingMPG] = useState(false)
 
     // Reset form when opening sheet for Add or Edit
     useEffect(() => {
@@ -113,7 +112,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
             const newRate = getDepreciationRate(make, model, parseInt(year))
             setDepreciationRate(newRate)
 
-            setFetchingMPG(true)
             try {
                 const result = await getEstimatedMPG(year, make, model)
                 if (result) {
@@ -126,7 +124,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
             } catch (error) {
                 console.error("Failed to fetch MPG:", error)
             } finally {
-                setFetchingMPG(false)
+                // Done
             }
         }
 
@@ -138,7 +136,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
         if (!isInitialLoad && isSheetOpen) {
             syncVehicleData()
         }
-    }, [model, year, make])
+    }, [model, year, make, editingVehicle, isSheetOpen])
 
     async function handleSave(e: React.FormEvent) {
         e.preventDefault()
@@ -176,7 +174,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                 // but revalidatePath should handle it if this was a purely server component setup.
                 // However, since we are in a client component, we rely on the server action revalidating tags/paths.
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to save vehicle')
         } finally {
             setIsLoading(false)
@@ -192,7 +190,8 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
             } else {
                 toast.error(result.error || 'Failed to delete')
             }
-        } catch (error) {
+        } catch (err) {
+            console.error('Delete error:', err)
             toast.error('Error deleting vehicle')
         }
     }
@@ -359,27 +358,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                 </Select>
                             </div>
 
-                            <div className={`pt-4 border-t border-white/5 transition-opacity duration-300 ${ownershipType !== 'owned' ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-                                <div className="flex items-center justify-between mb-4">
-                                    <label className="text-sm font-medium text-slate-400 block">Depreciation & Wear ($/mile)</label>
-                                    {ownershipType !== 'owned' && (
-                                        <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">Not Applicable for Rentals</span>
-                                    )}
-                                </div>
-                                <div className="space-y-6">
-                                    <Input
-                                        type="number"
-                                        step="0.001"
-                                        value={depreciationRate}
-                                        onChange={(e) => {
-                                            const val = e.target.value.replace(',', '.')
-                                            setDepreciationRate(val as any) // Cast to any to allow string intermediate state
-                                        }}
-                                        className="h-12 bg-white/5 border-white/10 rounded-xl"
-                                    />
-                                    <DepreciationCalculator onRateChange={setDepreciationRate} />
-                                </div>
-                            </div>
 
                             {/* Fuel Type & Electricity Cost */}
                             <div className="space-y-4 p-4 bg-white/5 rounded-xl border border-white/10">
@@ -480,7 +458,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                         type="number"
                                         step="0.001"
                                         value={depreciationRate}
-                                        onChange={(e) => setDepreciationRate(Number(e.target.value))}
+                                        onChange={(e) => setDepreciationRate(parseFloat(e.target.value.replace(',', '.')) || 0)}
                                         className="h-12 bg-white/5 border-white/10 rounded-xl"
                                     />
                                     <DepreciationCalculator onRateChange={setDepreciationRate} />

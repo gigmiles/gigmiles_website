@@ -1,4 +1,4 @@
-const { calculateFinancials, getDepreciationRate } = require('./src/utils/calculations');
+const { calculateFinancials, getDepreciationRate } = require('./src/utils/calculations'); // eslint-disable-line @typescript-eslint/no-require-imports
 
 function testCalculations() {
     console.log('Running tests for calculations.ts...');

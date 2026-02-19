@@ -2,7 +2,6 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { getDepreciationRate } from '@/utils/calculations'
 
 export async function saveVehicleAction(formData: FormData, vehicleId?: string) {
     const supabase = await createClient()

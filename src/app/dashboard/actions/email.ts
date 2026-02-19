@@ -3,6 +3,7 @@
 import { resend } from '@/utils/api/resend'
 import WeeklySummaryEmail from '@/emails/WeeklySummary'
 import { createClient } from '@/utils/supabase/server'
+import { PlatformEarning, Expense } from '@/app/dashboard/types'
 
 export async function sendWeeklyReport(emailTo?: string) {
     try {
@@ -54,13 +55,13 @@ export async function sendWeeklyReport(emailTo?: string) {
 
         if (weeklyEntries) {
             weeklyEntries.forEach(entry => {
-                entry.platform_earnings.forEach((p: any) => {
+                (entry.platform_earnings as unknown as PlatformEarning[]).forEach((p) => {
                     totalGross += (p.amount || 0) + (p.tips || 0)
                     totalMiles += (p.miles || 0)
                 })
-                entry.expenses.forEach((e: any) => {
-                    totalExpenses += (e.amount || 0)
-                })
+                    ; (entry.expenses as unknown as Expense[]).forEach((e) => {
+                        totalExpenses += (e.amount || 0)
+                    })
             })
         }
 

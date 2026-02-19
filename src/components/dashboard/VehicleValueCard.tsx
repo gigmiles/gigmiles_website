@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Car, RefreshCw, TrendingDown, DollarSign } from 'lucide-react'
@@ -41,7 +41,8 @@ export function VehicleValueCard({ vehicle }: VehicleValueCardProps) {
             } else {
                 toast.error("Could not fetch value. Try again later.")
             }
-        } catch (error) {
+        } catch (err) {
+            console.error('Value check error:', err)
             toast.error("An error occurred.")
         } finally {
             setLoading(false)

@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import {
     ShieldCheck,
     Clock,
-    ArrowUpCircle,
     AlertCircle,
     Calendar,
     DollarSign

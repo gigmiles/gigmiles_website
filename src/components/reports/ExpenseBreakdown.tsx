@@ -1,9 +1,8 @@
 'use client'
+/* eslint-disable react/forbid-component-props, react/forbid-dom-props */
 
 import { useState } from 'react'
 import {
-    DollarSign,
-    ArrowRight,
     ChevronRight,
     Receipt,
     Calendar as CalendarIcon,
@@ -12,12 +11,8 @@ import {
 import {
     Sheet,
     SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
 } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 
 interface ExpenseItem {
     amount: number
@@ -131,7 +126,7 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
                                             <span className="text-md font-display font-bold text-white">${item.amount.toFixed(2)}</span>
                                         </div>
                                         <p className="text-sm text-slate-300 font-medium leading-relaxed italic">
-                                            "{item.description}"
+                                            &quot;{item.description}&quot;
                                         </p>
                                     </div>
                                 ))}

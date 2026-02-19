@@ -3,13 +3,10 @@
 import { useState, useEffect } from 'react'
 
 export function useShiftTimer(startTime: string | null) {
-    const [elapsed, setElapsed] = useState('00:00:00')
+    const [elapsed, setElapsed] = useState(startTime ? '...' : '00:00:00')
 
     useEffect(() => {
-        if (!startTime) {
-            setElapsed('00:00:00')
-            return
-        }
+        if (!startTime) return
 
         const start = new Date(startTime).getTime()
 

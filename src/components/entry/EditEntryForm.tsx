@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { DailyEntry, PlatformEarning, Expense } from '@/app/dashboard/types'
 import {
     Plus,
     Trash2,
@@ -17,8 +18,7 @@ import {
     Calendar as CalendarIcon,
     DollarSign,
     Briefcase,
-    Save,
-    AlertCircle
+    Save
 } from 'lucide-react'
 import { cn } from "@/lib/utils"
 
@@ -40,7 +40,7 @@ const schema = z.object({
 })
 
 interface EditEntryFormProps {
-    entry: any
+    entry: DailyEntry
     availablePlatforms: string[]
 }
 
@@ -54,14 +54,14 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
         defaultValues: {
             date: entry.date,
             notes: entry.notes || '',
-            platforms: entry.platform_earnings.map((p: any) => ({
+            platforms: entry.platform_earnings.map((p: PlatformEarning) => ({
                 platform_name: p.platform_name,
                 amount: p.amount?.toString() || '',
                 tips: p.tips?.toString() || '',
                 miles: p.miles?.toString() || '',
                 hours: p.hours?.toString() || ''
             })),
-            expenses: entry.expenses.map((e: any) => ({
+            expenses: entry.expenses.map((e: Expense) => ({
                 category: e.category,
                 amount: e.amount?.toString() || '',
                 description: e.description || ''
@@ -72,30 +72,32 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
     const { fields: platformFields, append: appendPlatform, remove: removePlatform } = useFieldArray({ control, name: "platforms" })
     const { fields: expenseFields, append: appendExpense, remove: removeExpense } = useFieldArray({ control, name: "expenses" })
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: z.infer<typeof schema>) => {
         setLoading(true)
         try {
-            const earningsData = data.platforms.map((p: any) => ({
+            const earningsData: PlatformEarning[] = data.platforms.map(p => ({
                 platform_name: p.platform_name,
-                amount: p.amount,
-                tips: p.tips,
-                miles: p.miles,
-                hours: p.hours,
+                amount: parseFloat(p.amount),
+                tips: p.tips ? parseFloat(p.tips) : 0,
+                miles: p.miles ? parseFloat(p.miles) : 0,
+                hours: p.hours ? parseFloat(p.hours) : 0
             }))
 
-            const expensesData = data.expenses?.map((e: any) => ({
+            const expensesData: Expense[] = data.expenses?.map(e => ({
+                id: '', // Temporary ID for insertion/update logic if needed, but actions usually handle it
                 category: e.category,
-                amount: e.amount,
+                amount: parseFloat(e.amount),
                 description: e.description
             })) || []
 
-            await updateDailyEntry(entry.id, { date: data.date, notes: data.notes }, earningsData, expensesData)
+            await updateDailyEntry(entry.id, { date: data.date, notes: data.notes || '' }, earningsData, expensesData)
 
             router.push('/dashboard')
             router.refresh()
-        } catch (error: any) {
-            console.error('Error:', error)
-            alert(`Error updating entry: ${error.message}`)
+        } catch (error) {
+            const err = error as Error;
+            console.error('Error:', err)
+            alert(`Error updating entry: ${err.message}`)
         } finally {
             setLoading(false)
         }
@@ -108,8 +110,9 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
             await deleteDailyEntry(entry.id)
             router.push('/dashboard')
             router.refresh()
-        } catch (error: any) {
-            alert(`Error deleting entry: ${error.message}`)
+        } catch (error) {
+            const err = error as Error;
+            alert(`Error deleting entry: ${err.message}`)
             setDeleting(false)
         }
     }

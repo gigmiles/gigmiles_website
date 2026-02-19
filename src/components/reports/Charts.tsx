@@ -3,25 +3,17 @@
 import {
     AreaChart,
     Area,
-    BarChart,
-    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
     Tooltip,
-    Legend,
-    ResponsiveContainer,
     PieChart,
     Pie,
-    Cell,
     Label
 } from 'recharts'
 import {
     ChartContainer,
-    ChartTooltip,
     ChartTooltipContent,
-    ChartLegend,
-    ChartLegendContent,
     ChartConfig
 } from "@/components/ui/chart"
 

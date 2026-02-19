@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { Expense } from '@/app/dashboard/types'
 
 export async function getExpenseStats(dateRange: { start: string; end: string }) {
     const supabase = await createClient()
@@ -28,10 +29,10 @@ export async function getExpenseStats(dateRange: { start: string; end: string })
         }
 
         // Flatten all expenses from all entries
-        const allExpenses: any[] = []
+        const allExpenses: Expense[] = []
         entries?.forEach(entry => {
             if (entry.expenses && Array.isArray(entry.expenses)) {
-                entry.expenses.forEach((expense: any) => {
+                (entry.expenses as unknown as Expense[]).forEach((expense) => {
                     allExpenses.push({
                         ...expense,
                         date: entry.date
@@ -41,20 +42,20 @@ export async function getExpenseStats(dateRange: { start: string; end: string })
         })
 
         // Aggregate by category
-        const byCategory: Record<string, { total: number; count: number; items: any[] }> = {}
+        const byCategory: Record<string, { total: number; count: number; items: Expense[] }> = {}
 
         allExpenses.forEach(expense => {
             const category = expense.category || 'Other'
             if (!byCategory[category]) {
                 byCategory[category] = { total: 0, count: 0, items: [] }
             }
-            const amount = parseFloat(expense.amount || 0)
+            const amount = expense.amount || 0
             byCategory[category].total += amount
             byCategory[category].count += 1
             byCategory[category].items.push(expense)
         })
 
-        const total = allExpenses.reduce((acc, e) => acc + parseFloat(e.amount || 0), 0)
+        const total = allExpenses.reduce((acc, e) => acc + (e.amount || 0), 0)
 
         return {
             expenses: allExpenses,

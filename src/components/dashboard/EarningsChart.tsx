@@ -1,9 +1,9 @@
 'use client'
 
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { TrendingUp, DollarSign } from "lucide-react"
+import { TrendingUp } from "lucide-react"
 
 interface EarningsChartProps {
     data: {
@@ -25,7 +25,7 @@ const chartConfig = {
 }
 
 export function EarningsChart({ data }: EarningsChartProps) {
-    const totalGross = data.reduce((acc, curr) => acc + curr.gross, 0)
+    // Analytics calculations
     const totalNet = data.reduce((acc, curr) => acc + curr.net, 0)
     const growth = data.length >= 2 ? ((data[data.length - 1].net - data[0].net) / (data[0].net || 1) * 100).toFixed(1) : 0
 

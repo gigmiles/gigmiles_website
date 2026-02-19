@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable react/forbid-component-props, react/forbid-dom-props */
 
 import { DollarSign, TrendingUp, Navigation, Clock, Briefcase, MinusCircle, Edit2, Check, X, ArrowUpRight, Plus, Trash2 } from 'lucide-react';
 import { calculateHourlyRate, calculateProfitMargin } from '@/utils/calculations';
@@ -187,13 +188,10 @@ export function BoltTodaySummary({
                                     </div>
                                     <span className="text-xs font-bold uppercase tracking-wider">Gross Income</span>
                                 </div>
-                                <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">${gross.toFixed(2)}</p>
-                                <div className="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-emerald-500 transition-all duration-1000"
-                                        style={{ width: `${Math.min(100, (gross / (gross + totalGrandCosts || 1)) * 100)}%` }}
-                                    />
-                                </div>
+                                <div
+                                    className="h-full bg-emerald-500 transition-all duration-1000"
+                                    style={{ width: `${Math.min(100, (gross / (gross + totalGrandCosts || 1)) * 100)}%` }}
+                                />
                                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <ArrowUpRight className="size-4 text-emerald-500/50" />
                                 </div>
@@ -223,12 +221,12 @@ export function BoltTodaySummary({
                                                     <div className="flex justify-between items-center">
                                                         <div className="flex items-center gap-2">
                                                             <div
-                                                                className={`size-2 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${isUber ? 'uber-halo-dot' : ''}`}
-                                                                style={{ backgroundColor: platformColor }}
+                                                                className={`size-2 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${isUber ? 'uber-halo-dot' : ''} bg-[var(--plat-bg)]`}
+                                                                style={{ '--plat-bg': platformColor } as React.CSSProperties}
                                                             />
                                                             <span
-                                                                className={`font-bold text-lg tracking-tight ${isUber ? 'uber-halo-text' : ''}`}
-                                                                style={{ color: platformColor }}
+                                                                className={`font-bold text-lg tracking-tight ${isUber ? 'uber-halo-text' : ''} text-[var(--plat-text)]`}
+                                                                style={{ '--plat-text': platformColor } as React.CSSProperties}
                                                             >
                                                                 {p.platform_name}
                                                             </span>

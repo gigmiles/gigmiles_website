@@ -3,14 +3,22 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Save, Loader2, Car, Shield, CreditCard, ChevronRight } from 'lucide-react'
+import { Save, Loader2, Car, CreditCard, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { updateProfile } from './actions'
+import { Vehicle } from '@/app/dashboard/types'
+
+interface Profile {
+    full_name: string | null
+    state_code: string | null
+    zip_code: string | null
+    city: string | null
+}
 
 interface ProfileSettingsFormProps {
-    profile: any
-    vehicles: any[]
+    profile: Profile | null
+    vehicles: Vehicle[]
 }
 
 export function ProfileSettingsForm({ profile, vehicles }: ProfileSettingsFormProps) {
@@ -26,7 +34,7 @@ export function ProfileSettingsForm({ profile, vehicles }: ProfileSettingsFormPr
             } else {
                 toast.error('Giriş başarısız: ' + (result?.error || 'Bilinmeyen hata'))
             }
-        } catch (error) {
+        } catch {
             toast.error('Bir hata oluştu')
         } finally {
             setIsLoading(false)

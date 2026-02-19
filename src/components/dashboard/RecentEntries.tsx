@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
 import { Edit, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
+import { DailyEntry } from '@/app/dashboard/types'
 
 interface RecentEntriesProps {
-    entries: any[]
+    entries: DailyEntry[]
 }
 
 export function RecentEntries({ entries }: RecentEntriesProps) {
@@ -26,8 +26,8 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
 
             <div className="space-y-3">
                 {entries.map((entry) => {
-                    const earnings = entry.platform_earnings.reduce((acc: number, curr: any) => acc + (curr.amount || 0) + (curr.tips || 0), 0)
-                    const expenses = entry.expenses.reduce((acc: number, curr: any) => acc + (curr.amount || 0), 0)
+                    const earnings = (entry.platform_earnings).reduce((acc: number, curr) => acc + (curr.amount || 0) + (curr.tips || 0), 0)
+                    const expenses = (entry.expenses).reduce((acc: number, curr) => acc + (curr.amount || 0), 0)
                     const net = earnings - expenses
 
                     return (

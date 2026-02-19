@@ -11,15 +11,13 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { PlatformEarning } from "../../types"
 import {
     Plus,
     Trash2,
     ChevronLeft,
     Calendar as CalendarIcon,
-    DollarSign,
-    Car,
-    Clock,
     Briefcase
 } from 'lucide-react'
 import { cn } from "@/lib/utils"
@@ -84,18 +82,18 @@ export default function NewEntryPage() {
             }
         }
         fetchPlatforms()
-    }, [])
+    }, [supabase])
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: z.infer<typeof schema>) => {
         setLoading(true)
         try {
             // Prepare data for server action
-            const earningsData = data.platforms.map((p: any) => ({
+            const earningsData: PlatformEarning[] = data.platforms.map((p) => ({
                 platform_name: p.platform_name,
-                amount: p.amount,
-                tips: p.tips,
-                miles: p.miles,
-                hours: p.hours,
+                amount: parseFloat(p.amount),
+                tips: p.tips ? parseFloat(p.tips) : 0,
+                miles: p.miles ? parseFloat(p.miles) : 0,
+                hours: p.hours ? parseFloat(p.hours) : 0,
             }))
 
             await createDailyEntry({
@@ -107,9 +105,10 @@ export default function NewEntryPage() {
 
             router.push('/dashboard')
             router.refresh()
-        } catch (error: any) {
-            console.error('Error:', error)
-            toast.error(`Error saving entry: ${error.message}`)
+        } catch (err: unknown) {
+            console.error('Error:', err)
+            const message = err instanceof Error ? err.message : 'Unknown error'
+            toast.error(`Error saving entry: ${message}`)
         } finally {
             setLoading(false)
         }

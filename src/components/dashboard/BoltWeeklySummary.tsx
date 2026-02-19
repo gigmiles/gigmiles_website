@@ -1,8 +1,9 @@
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { calculateHourlyRate } from '@/utils/calculations';
+import { DailyEntry } from '@/app/dashboard/types';
 
 interface WeeklySummaryProps {
-    entries: any[]; // Typing generalized for now, strictly it would be DailyEntryWithDetails[]
+    entries: DailyEntry[];
     totalNetProfit: number;
     totalGross: number;
     totalMiles: number;

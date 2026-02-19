@@ -1,10 +1,11 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { startOfDay, endOfDay, startOfWeek, endOfWeek, format } from 'date-fns'
+import { startOfDay, format } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { calculateFinancials } from '@/utils/calculations'
 import { getGasPrice } from '@/utils/api/external'
+import { PlatformEarning, Expense } from './types'
 
 export async function getDashboardStats() {
     const supabase = await createClient()
@@ -24,14 +25,17 @@ export async function getDashboardStats() {
         supabase.from('vehicles').select('*').eq('user_id', user.id).order('is_primary', { ascending: false }),
         supabase.from('daily_entries').select(`
             id,
-            platform_earnings ( platform_name, amount, tips, miles, hours ),
-            expenses ( amount, category )
+            date,
+            notes,
+            platform_earnings ( id, platform_name, amount, tips, miles, hours ),
+            expenses ( id, category, amount, description )
         `).eq('user_id', user.id).eq('date', todayStr).single(),
         supabase.from('daily_entries').select(`
             id,
             date,
-            platform_earnings ( platform_name, amount, tips, miles, hours ),
-            expenses ( amount, category )
+            notes,
+            platform_earnings ( id, platform_name, amount, tips, miles, hours ),
+            expenses ( id, category, amount, description )
         `).eq('user_id', user.id).gte('date', sevenDaysAgoStr).lte('date', todayStr).order('date', { ascending: true })
     ])
 
@@ -40,7 +44,7 @@ export async function getDashboardStats() {
     const todayEntry = todayEntryRes.data
     const weeklyEntries = weeklyEntriesRes.data || []
 
-    let vehicle = vehicles?.find(v => v.is_primary) || vehicles?.[0] || null
+    const vehicle = vehicles?.find(v => v.is_primary) || vehicles?.[0] || null
     const stateCode = profile?.state_code || 'DEFAULT'
     const mpg = vehicle?.mpg || 25
 
@@ -55,14 +59,17 @@ export async function getDashboardStats() {
     let todayTips = 0
 
     if (todayEntry) {
-        todayEntry.platform_earnings.forEach((p: any) => {
+        const earnings = todayEntry.platform_earnings as unknown as PlatformEarning[]
+        const expenses = todayEntry.expenses as unknown as Expense[]
+
+        earnings.forEach((p) => {
             todayGross += (p.amount || 0) + (p.tips || 0)
             todayTips += (p.tips || 0)
             todayMiles += (p.miles || 0)
             todayHours += (p.hours || 0)
         })
 
-        todayEntry.expenses.forEach((e: any) => {
+        expenses.forEach((e) => {
             if (!e.category.startsWith('__')) { // Skip overrides for base expense sum
                 todayExpenses += (e.amount || 0)
             }
@@ -70,9 +77,9 @@ export async function getDashboardStats() {
     }
 
     const overrides = {
-        fuel: todayEntry?.expenses.find((e: any) => e.category === '__FUEL_OVERRIDE__')?.amount,
-        wear: todayEntry?.expenses.find((e: any) => e.category === '__WEAR_OVERRIDE__')?.amount,
-        insurance: todayEntry?.expenses.find((e: any) => e.category === '__INSURANCE_OVERRIDE__')?.amount
+        fuel: (todayEntry?.expenses as unknown as Expense[])?.find((e) => e.category === '__FUEL_OVERRIDE__')?.amount,
+        wear: (todayEntry?.expenses as unknown as Expense[])?.find((e) => e.category === '__WEAR_OVERRIDE__')?.amount,
+        insurance: (todayEntry?.expenses as unknown as Expense[])?.find((e) => e.category === '__INSURANCE_OVERRIDE__')?.amount
     }
 
     const financials = calculateFinancials({
@@ -115,19 +122,23 @@ export async function getDashboardStats() {
         let dHours = 0
 
         if (entry) {
-            entry.platform_earnings.forEach((p: any) => {
+            const entryEarnings = entry.platform_earnings as unknown as PlatformEarning[]
+            const entryExpenses = entry.expenses as unknown as Expense[]
+
+            entryEarnings.forEach((p) => {
                 dGross += (p.amount || 0) + (p.tips || 0)
                 dMiles += (p.miles || 0)
                 dHours += (p.hours || 0)
             })
-            entry.expenses.forEach((e: any) => {
+
+            entryExpenses.forEach((e) => {
                 if (!e.category.startsWith('__')) dExpenses += (e.amount || 0)
             })
 
             const dOverrides = {
-                fuel: entry.expenses.find((e: any) => e.category === '__FUEL_OVERRIDE__')?.amount,
-                wear: entry.expenses.find((e: any) => e.category === '__WEAR_OVERRIDE__')?.amount,
-                insurance: entry.expenses.find((e: any) => e.category === '__INSURANCE_OVERRIDE__')?.amount
+                fuel: entryExpenses.find((e) => e.category === '__FUEL_OVERRIDE__')?.amount,
+                wear: entryExpenses.find((e) => e.category === '__WEAR_OVERRIDE__')?.amount,
+                insurance: entryExpenses.find((e) => e.category === '__INSURANCE_OVERRIDE__')?.amount
             }
 
             const dFinancials = calculateFinancials({
@@ -173,7 +184,7 @@ export async function getDashboardStats() {
     // Platform Distribution
     const platformMap = new Map<string, { gross: number, tips: number, hours: number, miles: number }>()
     weeklyEntries.forEach(entry => {
-        entry.platform_earnings.forEach((p: any) => {
+        (entry.platform_earnings as unknown as PlatformEarning[]).forEach((p: PlatformEarning) => {
             const name = p.platform_name || 'Other'
             const existing = platformMap.get(name) || { gross: 0, tips: 0, hours: 0, miles: 0 }
             platformMap.set(name, {
@@ -262,7 +273,7 @@ export async function switchPrimaryVehicle(vehicleId: string) {
     return { success: true }
 }
 
-export async function createDailyEntry(entryData: any, earningsData: any[], expensesData?: any[]) {
+export async function createDailyEntry(entryData: { date: string, notes?: string }, earningsData: PlatformEarning[], expensesData?: Expense[]) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -282,10 +293,6 @@ export async function createDailyEntry(entryData: any, earningsData: any[], expe
     if (existingEntry) {
         console.log("Entry exists, appending new data:", existingEntry.id)
         entryId = existingEntry.id
-        // Optional: Append notes? For now, we leave notes as is or maybe update if provided?
-        if (entryData.notes) {
-            // We could append notes, but let's keep it simple for now and just add the financial data
-        }
     } else {
         const { data: entry, error: entryError } = await supabase
             .from('daily_entries')
@@ -304,39 +311,17 @@ export async function createDailyEntry(entryData: any, earningsData: any[], expe
         entryId = entry.id
     }
 
-    // Get Vehicle Depreciation Rate
-    let { data: vehicle } = await supabase
-        .from('vehicles')
-        .select('depreciation_rate')
-        .eq('user_id', user.id)
-        .eq('is_primary', true)
-        .maybeSingle()
-
-    if (!vehicle) {
-        const { data: anyVehicle } = await supabase
-            .from('vehicles')
-            .select('depreciation_rate')
-            .eq('user_id', user.id)
-            .limit(1)
-            .maybeSingle()
-        vehicle = anyVehicle
-    }
-
-    const depreciationRate = vehicle?.depreciation_rate || 0
-
     // 2. Create Platform Earnings
-    let totalMiles = 0
     if (earningsData && earningsData.length > 0) {
-        const formattedEarnings = earningsData.map((p: any) => {
-            const miles = p.miles ? parseFloat(p.miles) : 0
-            totalMiles += miles
+        const formattedEarnings = earningsData.map((p: PlatformEarning) => {
+            const miles = p.miles ? parseFloat(p.miles.toString()) : 0
             return {
                 entry_id: entryId,
                 platform_name: p.platform_name,
-                amount: parseFloat(p.amount),
-                tips: p.tips ? parseFloat(p.tips) : 0,
+                amount: parseFloat(p.amount.toString()),
+                tips: p.tips ? parseFloat(p.tips.toString()) : 0,
                 miles: miles,
-                hours: p.hours ? parseFloat(p.hours) : 0,
+                hours: p.hours ? parseFloat(p.hours.toString()) : 0,
             }
         })
 
@@ -351,10 +336,10 @@ export async function createDailyEntry(entryData: any, earningsData: any[], expe
 
     // 3. Create Expenses
     if (expensesData && expensesData.length > 0) {
-        const formattedExpenses = expensesData.map((e: any) => ({
+        const formattedExpenses = expensesData.map((e: Expense) => ({
             entry_id: entryId,
             category: e.category,
-            amount: parseFloat(e.amount),
+            amount: parseFloat(e.amount.toString()),
             description: e.description
         }))
 
@@ -379,8 +364,9 @@ export async function getRecentEntries(limit = 5) {
         .select(`
             id,
             date,
-            platform_earnings ( amount, tips ),
-            expenses ( amount )
+            notes,
+            platform_earnings ( id, platform_name, amount, tips, miles, hours ),
+            expenses ( id, category, amount, description )
         `)
         .eq('user_id', user.id)
         .order('date', { ascending: false })
@@ -420,7 +406,7 @@ export async function deleteDailyEntry(id: string) {
     return { success: !error, error }
 }
 
-export async function updateDailyEntry(id: string, entryData: any, earningsData: any[], expensesData: any[]) {
+export async function updateDailyEntry(id: string, entryData: { date: string, notes?: string }, earningsData: PlatformEarning[], expensesData: Expense[]) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -429,43 +415,21 @@ export async function updateDailyEntry(id: string, entryData: any, earningsData:
     // 1. Update Base Entry
     await supabase.from('daily_entries').update({ date: entryData.date, notes: entryData.notes }).eq('id', id)
 
-    // Get Vehicle Rate
-    let { data: vehicle } = await supabase
-        .from('vehicles')
-        .select('depreciation_rate')
-        .eq('user_id', user.id)
-        .eq('is_primary', true)
-        .maybeSingle()
-
-    if (!vehicle) {
-        const { data: anyVehicle } = await supabase
-            .from('vehicles')
-            .select('depreciation_rate')
-            .eq('user_id', user.id)
-            .limit(1)
-            .maybeSingle()
-        vehicle = anyVehicle
-    }
-
-    const depreciationRate = vehicle?.depreciation_rate || 0
-
     // 2. Handle Earnings
     await supabase.from('platform_earnings').delete().eq('entry_id', id)
 
-    let totalMiles = 0
-    let formattedEarnings: any[] = []
+    let formattedEarnings: PlatformEarning[] = []
 
     if (earningsData && earningsData.length > 0) {
-        formattedEarnings = earningsData.map((p: any) => {
-            const miles = p.miles ? parseFloat(p.miles) : 0
-            totalMiles += miles
+        formattedEarnings = earningsData.map((p: PlatformEarning) => {
+            const miles = p.miles ? parseFloat(p.miles.toString()) : 0
             return {
                 entry_id: id,
                 platform_name: p.platform_name,
-                amount: parseFloat(p.amount),
-                tips: p.tips ? parseFloat(p.tips) : 0,
+                amount: parseFloat(p.amount.toString()),
+                tips: p.tips ? parseFloat(p.tips.toString()) : 0,
                 miles: miles,
-                hours: p.hours ? parseFloat(p.hours) : 0,
+                hours: p.hours ? parseFloat(p.hours.toString()) : 0,
             }
         })
         await supabase.from('platform_earnings').insert(formattedEarnings)
@@ -475,10 +439,10 @@ export async function updateDailyEntry(id: string, entryData: any, earningsData:
     await supabase.from('expenses').delete().eq('entry_id', id)
 
     if (expensesData && expensesData.length > 0) {
-        const formattedExpenses = expensesData.map((e: any) => ({
+        const formattedExpenses = expensesData.map((e: Expense) => ({
             entry_id: id,
             category: e.category,
-            amount: parseFloat(e.amount),
+            amount: parseFloat(e.amount.toString()),
             description: e.description
         }))
         await supabase.from('expenses').insert(formattedExpenses)

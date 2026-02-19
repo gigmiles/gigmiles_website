@@ -17,7 +17,7 @@ export default async function SearchPage({
         <div className="space-y-6">
             <h1 className="text-3xl font-bold tracking-tight">Search Results</h1>
             <p className="text-muted-foreground">
-                Showing results for <span className="font-semibold text-foreground">"{query}"</span>
+                Showing results for <span className="font-semibold text-foreground">&quot;{query}&quot;</span>
             </p>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -28,7 +28,7 @@ export default async function SearchPage({
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-muted-foreground">
-                            We couldn't find any direct matches for "{query}" in your transactions or vehicles.
+                            We couldn&apos;t find any direct matches for &quot;{query}&quot; in your transactions or vehicles.
                             <br />
                             Try searching for date ranges, platform names, or amounts.
                         </p>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useForm, Controller, Control, UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { cn } from '@/lib/utils'
 import { z } from 'zod'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -438,8 +439,10 @@ export default function OnboardingPage() {
                     {/* Progress Bar */}
                     <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-emerald-500 transition-all duration-500 ease-out"
-                            style={{ width: `${(step / 3) * 100}%` }}
+                            className={cn(
+                                "h-full bg-emerald-500 transition-all duration-500 ease-out",
+                                step === 1 ? "w-1/3" : step === 2 ? "w-2/3" : "w-full"
+                            )}
                         />
                     </div>
                 </CardHeader>
