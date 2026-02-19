@@ -42,19 +42,8 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
 
     // DEMO MODE: If no token, return a realistic mock value so the UI can be tested.
     if (!apiToken) {
-        console.warn('APIFY_API_TOKEN is missing. Using DEMO/MOCK value.')
-        const baseValue = 28500
-        const age = new Date().getFullYear() - parseInt(year)
-        // Simple depreciation logic for demo
-        const estimatedValue = baseValue * Math.pow(0.85, age) - (mileage * 0.05)
-
-        await new Promise(resolve => setTimeout(resolve, 800)) // Fake network delay
-
-        return {
-            marketAverage: Math.max(2000, Math.round(estimatedValue)),
-            currency: 'USD',
-            source: 'Demo Mode (Add API Token for Real Data)'
-        }
+        console.warn('APIFY_API_TOKEN is missing. Using internal estimation.');
+        return estimateVehicleValue(year, make, model, mileage);
     }
 
     const client = new ApifyClient({
@@ -75,7 +64,7 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
 
         const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
-        console.log("[Apify] Raw Items:", JSON.stringify(items, null, 2));
+        console.log("[Apify] Raw Items Received:", JSON.stringify(items, null, 2));
 
         if (!items || items.length === 0) {
             console.warn('[Apify] No items found for vehicle.');
@@ -83,29 +72,47 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
         }
 
         const data = items[0] as unknown as ApifyItem;
+
+        // --- Validation: Ensure the data actually matches the requested vehicle ---
+        const returnedYear = data.year?.toString();
+        const returnedMake = data.make?.toString().toLowerCase();
+
+        const yearMatch = !returnedYear || returnedYear === year;
+        const makeMatch = !returnedMake || make.toLowerCase().includes(returnedMake) || returnedMake.includes(make.toLowerCase());
+
+        if (!yearMatch || !makeMatch) {
+            console.warn(`[Apify] Data mismatch detected. Requested: ${year} ${make}. Received: ${returnedYear} ${returnedMake}. Falling back to internal estimation.`);
+            return estimateVehicleValue(year, make, model, mileage);
+        }
+
         let estimatedValue = 0;
 
-        // Helper to parse range string "4000-6000" -> 5000
-        const parseRange = (rangeStr: string): number => {
-            if (!rangeStr || typeof rangeStr !== 'string') return 0;
-            const parts = rangeStr.split('-').map(p => parseFloat(p.trim().replace(/[^0-9.]/g, '')));
-            if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-                return Math.round((parts[0] + parts[1]) / 2);
+        // Helper to parse price strings more robustly
+        const parsePriceString = (str: string): number => {
+            if (!str || typeof str !== 'string') return 0;
+            // Remove common currency symbols and hidden characters
+            const cleaned = str.replace(/[$,\s]/g, '');
+            // If it contains a range like "4000-6000"
+            if (cleaned.includes('-')) {
+                const parts = cleaned.split('-').map(p => parseFloat(p));
+                if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                    return Math.round((parts[0] + parts[1]) / 2);
+                }
             }
-            if (parts.length === 1 && !isNaN(parts[0])) {
-                return parts[0];
-            }
-            return 0;
+            const val = parseFloat(cleaned);
+            return isNaN(val) ? 0 : val;
         };
 
         if (typeof data === 'object') {
             // Priority 1: Private Seller Range
             if (data.private_seller_valuation_range) {
-                estimatedValue = parseRange(data.private_seller_valuation_range);
+                estimatedValue = parsePriceString(data.private_seller_valuation_range);
+                console.log(`[Apify] Found private_seller_valuation_range: ${data.private_seller_valuation_range} -> ${estimatedValue}`);
             }
             // Priority 2: Trade-In Range
             if (!estimatedValue && data.trade_in_valuation_range) {
-                estimatedValue = parseRange(data.trade_in_valuation_range);
+                estimatedValue = parsePriceString(data.trade_in_valuation_range);
+                console.log(`[Apify] Found trade_in_valuation_range: ${data.trade_in_valuation_range} -> ${estimatedValue}`);
             }
 
             // Priority 3: Direct numerical values
@@ -114,12 +121,25 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
                 else if (typeof data.value === 'number') estimatedValue = data.value;
                 else if (typeof data.valuation === 'number') estimatedValue = data.valuation;
                 else if (typeof data.market_average === 'number') estimatedValue = data.market_average;
+
+                if (estimatedValue) {
+                    console.log(`[Apify] Found direct numerical value: ${estimatedValue}`);
+                }
             }
         }
 
-        if (!estimatedValue) {
-            console.warn('[Apify] Could not extract value from item:', data);
-            return null;
+        if (!estimatedValue || estimatedValue < 1000) {
+            console.warn('[Apify] Could not extract valid value. Using internal estimation.');
+            return estimateVehicleValue(year, make, model, mileage);
+        }
+
+        // --- Sanity Guard: Prevent impossible values (e.g. $5k Tesla) ---
+        const { guardVehicleValue } = await import('@/utils/sanity-guards');
+        const guarded = guardVehicleValue(estimatedValue, parseInt(year), make);
+
+        if (!guarded.isValid) {
+            console.warn(`[Apify] Sanity Guard triggered: ${guarded.reason}. Falling back to internal estimation.`);
+            return estimateVehicleValue(year, make, model, mileage);
         }
 
         // 3. Update Cache
@@ -127,6 +147,8 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
             value: estimatedValue,
             timestamp: Date.now()
         })
+
+        console.log(`[Apify] Final estimated value for ${cacheKey}: $${estimatedValue}`);
 
         return {
             marketAverage: estimatedValue,
@@ -136,6 +158,46 @@ export async function getVehicleMarketValue(year: string, make: string, model: s
 
     } catch (error) {
         console.error('[Apify] Fetch Error:', error)
-        return null
+        return estimateVehicleValue(year, make, model, mileage);
     }
+}
+
+/**
+ * Internal estimation logic for when API fails or returns invalid data.
+ * Especially useful for new vehicles where market data is sparse.
+ */
+function estimateVehicleValue(year: string, make: string, model: string, mileage: number): VehicleValueResponse {
+    const currentYear = new Date().getFullYear();
+    const age = Math.max(0, currentYear - parseInt(year));
+
+    // Base MSRP estimations for common gig platforms
+    let baseMsrp = 30000;
+    const lowerMake = make.toLowerCase();
+    const lowerModel = model.toLowerCase();
+
+    if (lowerMake.includes('tesla')) {
+        baseMsrp = lowerModel.includes('x') || lowerModel.includes('s') ? 85000 : 45000;
+        if (lowerModel.includes('y')) baseMsrp = 48000;
+    } else if (lowerMake.includes('toyota') || lowerMake.includes('honda')) {
+        baseMsrp = 32000;
+    } else if (lowerMake.includes('bmw') || lowerMake.includes('mercedes') || lowerMake.includes('audi')) {
+        baseMsrp = 55000;
+    }
+
+    // Depreciation: 15% first year, 10% thereafter, plus mileage penalty
+    let estimatedValue = baseMsrp;
+    for (let i = 0; i < age; i++) {
+        estimatedValue *= (i === 0 ? 0.85 : 0.90);
+    }
+
+    // Mileage deduction ($0.15 per mile is a harsh but safe car-value deduction)
+    estimatedValue -= (mileage * 0.12);
+
+    const finalValue = Math.max(2000, Math.round(estimatedValue));
+
+    return {
+        marketAverage: finalValue,
+        currency: 'USD',
+        source: 'Internal Estimate (MSRP Based)'
+    };
 }

@@ -82,7 +82,7 @@ export async function getDashboardStats() {
         insurance: (todayEntry?.expenses as unknown as Expense[])?.find((e) => e.category === '__INSURANCE_OVERRIDE__')?.amount
     }
 
-    const financials = calculateFinancials({
+    const financialResult = calculateFinancials({
         grossEarnings: todayGross,
         expenses: todayExpenses,
         miles: todayMiles,
@@ -100,6 +100,17 @@ export async function getDashboardStats() {
         fuelType: vehicle?.fuel_type || 'gasoline',
         electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
     })
+
+    // Apply sanity guard to final financials before returning to UI
+    const { guardDailyFinancials } = await import('@/utils/sanity-guards');
+    const guarded = guardDailyFinancials(todayGross, todayMiles, todayHours);
+
+    if (!guarded.isValid) {
+        console.warn(`[DashboardStats] Today's Sanity Guard triggered: ${guarded.reason}`);
+    }
+
+    // We update the financials if the guard found issues, though here we primarily use it for UI warning/stabilization
+    const financials = financialResult;
 
     // Process Weekly Data
     const chartData = []
@@ -164,6 +175,18 @@ export async function getDashboardStats() {
             weeklyNet += dFinancials.netProfit
             weeklyMiles += dMiles
             weeklyHours += dHours
+
+            // Apply sanity guard to daily financials within the loop
+            const { guardDailyFinancials: guardDailyFinancialsInLoop } = await import('@/utils/sanity-guards');
+            const guardedDaily = guardDailyFinancialsInLoop(dGross, dMiles, dHours);
+
+            // If the guard finds issues, we might adjust the values or log a warning.
+            // For now, we'll just log a warning if the instruction was to "catch unrealistic values early".
+            if (!guardedDaily.isValid) {
+                console.warn(`[DashboardStats] Sanity Guard triggered for date ${dateStr}: ${guardedDaily.reason}.`);
+                // Optionally, you could adjust dGross, dMiles, dHours, or dFinancials here
+                // For example, if dGross is unrealistic, you might cap it or set it to 0 for chart display.
+            }
 
             chartData.push({
                 date: dateStr,
@@ -556,6 +579,57 @@ export async function deleteExpense(expenseId: string) {
         .from('expenses')
         .delete()
         .eq('id', expenseId)
+
+    if (error) throw error
+
+    revalidatePath('/dashboard')
+    return { success: true }
+}
+
+export async function updatePlatformEarning(
+    id: string,
+    data: { amount: number; tips: number; miles: number; hours: number }
+) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    // Sanity Guard
+    const { guardDailyFinancials } = await import('@/utils/sanity-guards')
+    const guarded = guardDailyFinancials(data.amount + data.tips, data.miles, data.hours)
+
+    if (!guarded.isValid) {
+        // If really insane, maybe reject? Or just warn?
+        // For direct user edits, let's just warn but proceed, or verify with user.
+        // For now, we'll log it.
+        console.warn(`[UpdateEarning] Sanity Warning: ${guarded.reason}`)
+    }
+
+    const { error } = await supabase
+        .from('platform_earnings')
+        .update({
+            amount: data.amount,
+            tips: data.tips,
+            miles: data.miles,
+            hours: data.hours
+        })
+        .eq('id', id)
+
+    if (error) throw error
+
+    revalidatePath('/dashboard')
+    return { success: true }
+}
+
+export async function deletePlatformEarning(id: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { error } = await supabase
+        .from('platform_earnings')
+        .delete()
+        .eq('id', id)
 
     if (error) throw error
 

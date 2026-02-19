@@ -1,10 +1,10 @@
 'use client'
-/* eslint-disable react/forbid-component-props, react/forbid-dom-props */
 
 import { DollarSign, TrendingUp, Navigation, Clock, Briefcase, MinusCircle, Edit2, Check, X, ArrowUpRight, Plus, Trash2 } from 'lucide-react';
 import { calculateHourlyRate, calculateProfitMargin } from '@/utils/calculations';
 import { useState } from 'react';
-import { saveCostOverride, addExpense, deleteExpense } from '@/app/dashboard/actions';
+import { saveCostOverride, addExpense, deleteExpense, updatePlatformEarning, deletePlatformEarning } from '@/app/dashboard/actions';
+import { PlatformEarning } from '@/app/dashboard/types';
 import { toast } from 'sonner';
 import {
     Sheet,
@@ -33,13 +33,7 @@ interface TodaySummaryProps {
     insurance?: number;
     richEntry?: {
         entry_date?: string;
-        platform_earnings?: Array<{
-            platform_name: string;
-            amount: number;
-            tips?: number;
-            miles?: number;
-            hours?: number;
-        }>;
+        platform_earnings?: PlatformEarning[];
         expenses?: Array<{
             id: string;
             category: string;
@@ -66,6 +60,54 @@ export function BoltTodaySummary({
     const [editingField, setEditingField] = useState<string | null>(null);
     const [editValue, setEditValue] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
+
+    // Platform Edit State
+    const [editingPlatformId, setEditingPlatformId] = useState<string | null>(null);
+    const [platformEditData, setPlatformEditData] = useState({ amount: '', tips: '', miles: '', hours: '' });
+
+    const handleEditPlatform = (p: PlatformEarning) => {
+        if (!p.id) return;
+        setEditingPlatformId(p.id);
+        setPlatformEditData({
+            amount: p.amount?.toString() || '0',
+            tips: p.tips?.toString() || '0',
+            miles: p.miles?.toString() || '0',
+            hours: p.hours?.toString() || '0'
+        });
+    };
+
+    const handleSavePlatformEdit = async (id: string) => {
+        setIsSaving(true);
+        try {
+            await updatePlatformEarning(id, {
+                amount: parseFloat(platformEditData.amount) || 0,
+                tips: parseFloat(platformEditData.tips) || 0,
+                miles: parseFloat(platformEditData.miles) || 0,
+                hours: parseFloat(platformEditData.hours) || 0
+            });
+            toast.success("Earning updated!");
+            setEditingPlatformId(null);
+        } catch (error) {
+            console.error("Update error:", error);
+            toast.error("Failed to update earning");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleDeletePlatform = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this earning entry?")) return;
+        setIsSaving(true);
+        try {
+            await deletePlatformEarning(id);
+            toast.success("Earning deleted");
+        } catch (error) {
+            console.error("Delete error:", error);
+            toast.error("Failed to delete earning");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const hourlyRate = calculateHourlyRate(netProfit, hours);
     const profitMargin = calculateProfitMargin(netProfit, gross);
@@ -188,10 +230,15 @@ export function BoltTodaySummary({
                                     </div>
                                     <span className="text-xs font-bold uppercase tracking-wider">Gross Income</span>
                                 </div>
-                                <div
-                                    className="h-full bg-emerald-500 transition-all duration-1000"
-                                    style={{ width: `${Math.min(100, (gross / (gross + totalGrandCosts || 1)) * 100)}%` }}
-                                />
+                                {(() => {
+                                    const progressStyle = { width: `${Math.min(100, (gross / (gross + totalGrandCosts || 1)) * 100)}%` };
+                                    return (
+                                        <div
+                                            className="h-full bg-emerald-500 transition-all duration-1000"
+                                            {...({ style: progressStyle } as Record<string, unknown>)}
+                                        />
+                                    );
+                                })()}
                                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <ArrowUpRight className="size-4 text-emerald-500/50" />
                                 </div>
@@ -217,40 +264,131 @@ export function BoltTodaySummary({
                                             const isUber = platformSlug.includes('uber');
 
                                             return (
-                                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-white/5 border border-white/5 group hover:border-white/20 transition-all">
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="flex items-center gap-2">
-                                                            <div
-                                                                className={`size-2 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${isUber ? 'uber-halo-dot' : ''} bg-[var(--plat-bg)]`}
-                                                                style={{ '--plat-bg': platformColor } as React.CSSProperties}
-                                                            />
-                                                            <span
-                                                                className={`font-bold text-lg tracking-tight ${isUber ? 'uber-halo-text' : ''} text-[var(--plat-text)]`}
-                                                                style={{ '--plat-text': platformColor } as React.CSSProperties}
-                                                            >
-                                                                {p.platform_name}
-                                                            </span>
+                                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-white/5 border border-white/5 group hover:border-white/20 transition-all relative">
+                                                    {editingPlatformId === p.id ? (
+                                                        <div className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
+                                                            <div className="flex justify-between items-center text-sm font-bold text-white mb-2">
+                                                                <span>Editing {p.platform_name}</span>
+                                                                <button onClick={() => setEditingPlatformId(null)} className="p-1 hover:bg-white/10 rounded-full"><X className="size-4" /></button>
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-2">
+                                                                <div>
+                                                                    <label className="text-[10px] uppercase text-slate-500 font-bold">Base Pay</label>
+                                                                    <input
+                                                                        type="number"
+                                                                        title="Base Pay Amount"
+                                                                        aria-label="Base Pay Amount"
+                                                                        placeholder="0.00"
+                                                                        value={platformEditData.amount}
+                                                                        onChange={e => setPlatformEditData({ ...platformEditData, amount: e.target.value })}
+                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[10px] uppercase text-slate-500 font-bold">Tips</label>
+                                                                    <input
+                                                                        type="number"
+                                                                        title="Tips Amount"
+                                                                        aria-label="Tips Amount"
+                                                                        placeholder="0.00"
+                                                                        value={platformEditData.tips}
+                                                                        onChange={e => setPlatformEditData({ ...platformEditData, tips: e.target.value })}
+                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-emerald-400"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[10px] uppercase text-slate-500 font-bold">Miles</label>
+                                                                    <input
+                                                                        type="number"
+                                                                        title="Miles Driven"
+                                                                        aria-label="Miles Driven"
+                                                                        placeholder="0"
+                                                                        value={platformEditData.miles}
+                                                                        onChange={e => setPlatformEditData({ ...platformEditData, miles: e.target.value })}
+                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-blue-400"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[10px] uppercase text-slate-500 font-bold">Hours</label>
+                                                                    <input
+                                                                        type="number"
+                                                                        title="Hours Worked"
+                                                                        aria-label="Hours Worked"
+                                                                        placeholder="0"
+                                                                        value={platformEditData.hours}
+                                                                        onChange={e => setPlatformEditData({ ...platformEditData, hours: e.target.value })}
+                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-indigo-400"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex gap-2 pt-2">
+                                                                <button
+                                                                    onClick={() => p.id && handleSavePlatformEdit(p.id)}
+                                                                    disabled={isSaving}
+                                                                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-lg transition-colors"
+                                                                    aria-label="Save platform earning changes"
+                                                                >
+                                                                    Save Changes
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                        <span className="font-extrabold text-white text-xl">${((p.amount || 0) + (p.tips || 0)).toFixed(2)}</span>
-                                                    </div>
-                                                    <div className="grid grid-cols-2 gap-4 text-xs text-slate-400 font-medium mt-2">
-                                                        <div className="flex justify-between py-1 border-b border-white/5">
-                                                            <span>Base Earnings</span>
-                                                            <span className="text-slate-200">${(p.amount || 0).toFixed(2)}</span>
-                                                        </div>
-                                                        <div className="flex justify-between py-1 border-b border-white/5">
-                                                            <span>Tips &amp; Extras</span>
-                                                            <span className="text-emerald-400/80">+${(p.tips || 0).toFixed(2)}</span>
-                                                        </div>
-                                                        <div className="flex justify-between py-1">
-                                                            <span>Distance</span>
-                                                            <span className="text-slate-200">{p.miles || 0} mi</span>
-                                                        </div>
-                                                        <div className="flex justify-between py-1">
-                                                            <span>Time</span>
-                                                            <span className="text-slate-200">{p.hours || 0} h</span>
-                                                        </div>
-                                                    </div>
+                                                    ) : (
+                                                        <>
+                                                            <div className="flex justify-between items-center">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div
+                                                                        className={`size-2 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)] ${isUber ? 'uber-halo-dot' : ''} bg-[var(--plat-bg)]`}
+                                                                        {...({ style: { '--plat-bg': platformColor } } as Record<string, unknown>)}
+                                                                    />
+                                                                    <span
+                                                                        className={`font-bold text-lg tracking-tight ${isUber ? 'uber-halo-text' : ''} text-[var(--plat-text)]`}
+                                                                        {...({ style: { '--plat-text': platformColor } } as Record<string, unknown>)}
+                                                                    >
+                                                                        {p.platform_name}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="font-extrabold text-white text-xl">${((p.amount || 0) + (p.tips || 0)).toFixed(2)}</span>
+
+                                                                    {/* Action Buttons */}
+                                                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                                                        <button
+                                                                            onClick={() => handleEditPlatform(p)}
+                                                                            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                                                            title="Edit Entry"
+                                                                        >
+                                                                            <Edit2 className="size-3" />
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => p.id && handleDeletePlatform(p.id)}
+                                                                            className="p-1.5 hover:bg-red-500/20 rounded-lg text-slate-400 hover:text-red-400 transition-colors"
+                                                                            title="Delete Entry"
+                                                                        >
+                                                                            <Trash2 className="size-3" />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-4 text-xs text-slate-400 font-medium mt-2">
+                                                                <div className="flex justify-between py-1 border-b border-white/5">
+                                                                    <span>Base Earnings</span>
+                                                                    <span className="text-slate-200">${(p.amount || 0).toFixed(2)}</span>
+                                                                </div>
+                                                                <div className="flex justify-between py-1 border-b border-white/5">
+                                                                    <span>Tips &amp; Extras</span>
+                                                                    <span className="text-emerald-400/80">+${(p.tips || 0).toFixed(2)}</span>
+                                                                </div>
+                                                                <div className="flex justify-between py-1">
+                                                                    <span>Distance</span>
+                                                                    <span className="text-slate-200">{p.miles || 0} mi</span>
+                                                                </div>
+                                                                <div className="flex justify-between py-1">
+                                                                    <span>Time</span>
+                                                                    <span className="text-slate-200">{p.hours || 0} h</span>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
                                             );
                                         })
@@ -287,8 +425,8 @@ export function BoltTodaySummary({
                                     </p>
                                 </div>
                                 <div className="mt-3 flex gap-1 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-ruby-500 transition-all duration-1000" style={{ width: `${Math.min(100, (expenses / totalGrandCosts) * 100)}%` }} />
-                                    <div className="h-full bg-amber-500 transition-all duration-1000" style={{ width: `${Math.min(100, (tax / totalGrandCosts) * 100)}%` }} />
+                                    <div className="h-full bg-ruby-500 transition-all duration-1000" {...({ style: { width: `${Math.min(100, (expenses / totalGrandCosts) * 100)}%` } } as Record<string, unknown>)} />
+                                    <div className="h-full bg-amber-500 transition-all duration-1000" {...({ style: { width: `${Math.min(100, (tax / totalGrandCosts) * 100)}%` } } as Record<string, unknown>)} />
                                 </div>
                                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <ArrowUpRight className="size-4 text-ruby-500/50" />
