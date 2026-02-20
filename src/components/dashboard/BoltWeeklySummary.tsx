@@ -1,3 +1,5 @@
+'use client';
+
 import { TrendingUp, Calendar, ArrowRight, Edit, Trash2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
