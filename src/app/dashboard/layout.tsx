@@ -42,20 +42,22 @@ export default async function DashboardLayout({
         email: user.email,
     }
 
-    // Fetch vehicles for the sidebar
+    // Fetch vehicles for the sidebar (Force Rebuild)
     const { data: vehicles } = await supabase
         .from('vehicles')
-        .select('id, make, model, year, is_primary')
+        .select('*')
         .eq('user_id', user.id)
         .order('is_primary', { ascending: false })
         .order('created_at', { ascending: false })
 
-    const activeVehicleId = vehicles?.find(v => v.is_primary)?.id || vehicles?.[0]?.id || null
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const activeVehicleId = (vehicles as any[])?.find((v: any) => v.is_primary)?.id || (vehicles as any[])?.[0]?.id || null
 
     return (
         <SidebarProvider>
             <div className="flex h-screen w-full overflow-hidden bg-background">
-                <AppSidebar user={userData} vehicles={vehicles || []} activeVehicleId={activeVehicleId} />
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <AppSidebar user={userData} vehicles={vehicles as any || []} activeVehicleId={activeVehicleId} />
                 <SidebarInset className="relative overflow-hidden bg-white dark:bg-slate-950 flex flex-col">
                     {/* Global Animated Mesh Gradient */}
                     <div className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-20 overflow-hidden">
