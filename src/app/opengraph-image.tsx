@@ -86,14 +86,14 @@ const styles = {
 export default async function Image() {
     return new ImageResponse(
         (
-            <div style={styles.container}>
+            <div {...{ style: styles.container }}>
                 {/* Animated Mesh Gradients (Static in ImageResponse but styled) */}
-                <div style={styles.meshGradientTop} />
-                <div style={styles.meshGradientBottom} />
+                <div {...{ style: styles.meshGradientTop }} />
+                <div {...{ style: styles.meshGradientBottom }} />
 
-                <div style={styles.contentWrapper}>
+                <div {...{ style: styles.contentWrapper }}>
                     {/* Logo Icon */}
-                    <div style={styles.logoWrapper}>
+                    <div {...{ style: styles.logoWrapper }}>
                         <svg
                             width="100"
                             height="100"
@@ -117,11 +117,11 @@ export default async function Image() {
                         </svg>
                     </div>
 
-                    <div style={styles.textContainer}>
-                        <div style={styles.title}>
-                            Gig<span style={styles.brandMiles}>Miles</span>
+                    <div {...{ style: styles.textContainer }}>
+                        <div {...{ style: styles.title }}>
+                            Gig<span {...{ style: styles.brandMiles }}>Miles</span>
                         </div>
-                        <div style={styles.subtitle}>
+                        <div {...{ style: styles.subtitle }}>
                             Professional Performance
                         </div>
                     </div>
