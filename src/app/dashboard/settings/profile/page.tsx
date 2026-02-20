@@ -24,6 +24,11 @@ export default async function ProfileSettingsPage() {
         .eq('user_id', user.id)
         .order('is_primary', { ascending: false })
 
+    const { data: userPlatforms } = await supabase
+        .from('user_platforms')
+        .select('*')
+        .eq('user_id', user.id)
+
     return (
         <div className="max-w-2xl space-y-8 animate-fade-in">
             <div className="flex flex-col gap-4">
@@ -35,7 +40,11 @@ export default async function ProfileSettingsPage() {
                 <p className="text-muted-foreground">Manage your personal and location details.</p>
             </div>
 
-            <ProfileSettingsForm profile={profile} vehicles={vehicles || []} />
+            <ProfileSettingsForm
+                profile={profile}
+                vehicles={vehicles || []}
+                userPlatforms={userPlatforms || []}
+            />
 
             {/* Email Test Section - Temporary for Verification */}
 

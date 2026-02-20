@@ -27,3 +27,35 @@ export async function updateProfile(formData: FormData) {
 
     return { success: true }
 }
+
+export async function updateUserPlatforms(platforms: string[]) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'Not authenticated' }
+
+    // 1. Delete old platforms
+    const { error: deleteError } = await supabase
+        .from('user_platforms')
+        .delete()
+        .eq('user_id', user.id)
+
+    if (deleteError) return { success: false, error: deleteError.message }
+
+    // 2. Insert new platforms
+    if (platforms.length > 0) {
+        const platformInserts = platforms.map(p => ({
+            user_id: user.id,
+            platform_name: p,
+            is_active: true
+        }))
+
+        const { error: insertError } = await supabase
+            .from('user_platforms')
+            .insert(platformInserts)
+
+        if (insertError) return { success: false, error: insertError.message }
+    }
+
+    revalidatePath('/dashboard/settings/profile')
+    return { success: true }
+}

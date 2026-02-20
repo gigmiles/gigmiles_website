@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { updateProfile } from './actions'
 import { Vehicle } from '@/app/dashboard/types'
+import { cn } from '@/lib/utils'
 
 interface Profile {
     full_name: string | null
@@ -19,11 +20,45 @@ interface Profile {
 interface ProfileSettingsFormProps {
     profile: Profile | null
     vehicles: Vehicle[]
+    userPlatforms: any[]
 }
 
-export function ProfileSettingsForm({ profile, vehicles }: ProfileSettingsFormProps) {
+const PLATFORM_OPTIONS = [
+    'DoorDash', 'Uber Eats', 'Grubhub', 'Uber', 'Lyft', 'Spark', 'Amazon Flex', 'Instacart', 'Shipt', 'Roadie'
+]
+
+export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: ProfileSettingsFormProps) {
     const primaryVehicle = vehicles?.find(v => v.is_primary) || vehicles?.[0]
     const [isLoading, setIsLoading] = useState(false)
+    const [platforms, setPlatforms] = useState<string[]>(userPlatforms.map(p => p.platform_name))
+    const [isAddingCustom, setIsAddingCustom] = useState(false)
+    const [customPlatform, setCustomPlatform] = useState('')
+
+    const togglePlatform = async (name: string) => {
+        const newPlatforms = platforms.includes(name)
+            ? platforms.filter(p => p !== name)
+            : [...platforms, name]
+
+        setPlatforms(newPlatforms)
+        // Auto-save platforms when toggled
+        const { updateUserPlatforms } = await import('./actions')
+        await updateUserPlatforms(newPlatforms)
+    }
+
+    const handleAddCustom = async () => {
+        if (!customPlatform.trim()) return
+        if (platforms.includes(customPlatform)) {
+            toast.error('Platform already added')
+            return
+        }
+        const newPlatforms = [...platforms, customPlatform]
+        setPlatforms(newPlatforms)
+        const { updateUserPlatforms } = await import('./actions')
+        await updateUserPlatforms(newPlatforms)
+        setCustomPlatform('')
+        setIsAddingCustom(false)
+        toast.success(`${customPlatform} added!`)
+    }
 
     async function handleSubmit(formData: FormData) {
         setIsLoading(true)
@@ -101,6 +136,66 @@ export function ProfileSettingsForm({ profile, vehicles }: ProfileSettingsFormPr
             </form>
 
             <div className="grid md:grid-cols-2 gap-6">
+                {/* Platform Manager Card */}
+                <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-border/50 shadow-premium md:col-span-2">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                            <Save className="size-4" />
+                            My Gig Platforms
+                        </h3>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-emerald-500 hover:text-emerald-600 font-bold text-[10px] uppercase tracking-wider"
+                            onClick={() => setIsAddingCustom(!isAddingCustom)}
+                        >
+                            {isAddingCustom ? 'Cancel' : '+ Add Manual'}
+                        </Button>
+                    </div>
+
+                    {isAddingCustom && (
+                        <div className="flex gap-2 mb-4 animate-in fade-in slide-in-from-top-2">
+                            <Input
+                                placeholder="E.g. Local Delivery"
+                                value={customPlatform}
+                                onChange={(e) => setCustomPlatform(e.target.value)}
+                                className="h-9 text-sm"
+                            />
+                            <Button size="sm" onClick={handleAddCustom} className="bg-emerald-500 text-white">Add</Button>
+                        </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                        {PLATFORM_OPTIONS.map(name => {
+                            const isActive = platforms.includes(name)
+                            return (
+                                <button
+                                    key={name}
+                                    onClick={() => togglePlatform(name)}
+                                    className={cn(
+                                        "px-4 py-2 rounded-full text-xs font-bold transition-all border",
+                                        isActive
+                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                                            : "bg-slate-50 dark:bg-white/5 border-border/50 text-slate-500 hover:border-emerald-500/30"
+                                    )}
+                                >
+                                    {name}
+                                </button>
+                            )
+                        })}
+                        {platforms.filter(p => !PLATFORM_OPTIONS.includes(p)).map(p => (
+                            <button
+                                key={p}
+                                onClick={() => togglePlatform(p)}
+                                className="px-4 py-2 rounded-full text-xs font-bold transition-all border bg-indigo-500 border-indigo-500 text-white shadow-lg shadow-indigo-500/20"
+                            >
+                                {p} (Custom)
+                            </button>
+                        ))}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-4 italic">Platformlar otomatik olarak kaydedilir. Seçili olanlar yeşil yanar.</p>
+                </div>
+
                 {/* Financial Baseline Card */}
                 <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-border/50 shadow-premium">
                     <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
