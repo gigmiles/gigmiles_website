@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Car, Mail, Lock, Loader2, ArrowRight, Github } from 'lucide-react'
+import { Mail, Lock, Loader2, ArrowRight, Github } from 'lucide-react'
+import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { useEffect, Suspense } from 'react'
@@ -114,12 +115,7 @@ function LoginContent() {
             <div className="relative z-10 w-full max-w-md px-4">
                 {/* Branding */}
                 <div className="flex flex-col items-center mb-6 md:mb-8 animate-fade-in-up">
-                    <div className="p-4 md:p-5 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl shadow-xl shadow-emerald-500/30 mb-4 group transition-transform hover:scale-110">
-                        <Car className="size-8 md:size-10 text-white" />
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tighter text-white mb-2 italic">
-                        GigMiles
-                    </h1>
+                    <Logo className="mb-2 flex-col !gap-4" />
                     <p className="text-emerald-400/80 text-xs md:text-sm font-medium text-center">Maximize every mile. Own your earnings.</p>
                 </div>
 

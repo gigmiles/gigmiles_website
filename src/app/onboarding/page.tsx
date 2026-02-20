@@ -15,7 +15,8 @@ import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
 import { getDepreciationRate } from '@/utils/calculations'
 import { EV_MODELS } from '@/utils/vehicle-data'
 import { toast } from 'sonner'
-import { Wallet, CheckCircle2, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react'
+import { Logo } from '@/components/brand/Logo'
+import { CheckCircle2, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { US_STATES, CAR_MAKES } from '@/utils/constants'
 
 const step1Schema = z.object({
@@ -414,14 +415,9 @@ export default function OnboardingPage() {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
 
-            <div className="w-full max-w-lg mb-6 md:mb-8 text-center px-4">
-                <div className="inline-flex items-center gap-2 font-display font-bold text-2xl md:text-3xl tracking-tight text-slate-900 dark:text-white mb-2 italic">
-                    <div className="p-1.5 md:p-2 bg-emerald-500/20 rounded-xl shadow-lg shadow-emerald-500/10">
-                        <Wallet className="size-6 md:size-7 text-emerald-500 animate-pulse" />
-                    </div>
-                    GigMiles
-                </div>
-                <p className="text-sm md:text-base text-muted-foreground">Let&apos;s set up your financial copilot.</p>
+            <div className="w-full max-w-lg mb-6 md:mb-8 flex flex-col items-center text-center px-4">
+                <Logo className="mb-2" />
+                <p className="text-sm md:text-base text-muted-foreground italic">Let&apos;s set up your financial copilot.</p>
             </div>
 
             <Card className="w-full max-w-lg border-border/50 shadow-xl shadow-slate-200/50 dark:shadow-none bg-card/50 backdrop-blur-sm">

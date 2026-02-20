@@ -23,6 +23,7 @@ import { deleteVehicleAction } from "@/app/dashboard/settings/vehicle/actions";
 import { signOut } from "@/app/auth/actions";
 import { toast } from "sonner";
 import { Vehicle } from "@/app/dashboard/types";
+import { Logo } from "@/components/brand/Logo";
 
 import {
     Sidebar,
@@ -121,15 +122,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
             className="border-r border-border/10 bg-background/40 backdrop-blur-xl overflow-hidden"
         >
             <SidebarHeader className="h-auto border-b border-border/10 p-4 bg-transparent flex flex-col gap-4">
-                <div className="flex items-center gap-3 px-2">
-                    <div className="flex aspect-square size-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20">
-                        <Calculator className="size-5" />
-                    </div>
-                    <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                        <span className="truncate font-display font-bold text-slate-900 dark:text-slate-100 tracking-tighter text-lg italic">GigMiles</span>
-                        <span className="truncate text-[10px] uppercase tracking-widest font-semibold text-emerald-500/80">Worth Every Mile</span>
-                    </div>
-                </div>
+                <Logo className="px-2" />
 
                 {/* Dashboard Vehicle Switcher */}
                 <div className="px-1 group-data-[collapsible=icon]:hidden">
