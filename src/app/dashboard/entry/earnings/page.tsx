@@ -68,21 +68,12 @@ export default function NewEntryPage() {
 
     useEffect(() => {
         async function fetchPlatforms() {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (user) {
-                const { data } = await supabase
-                    .from('user_platforms')
-                    .select('platform_name')
-                    .eq('user_id', user.id)
-                    .eq('is_active', true)
-
-                if (data) {
-                    setAvailablePlatforms(data.map(p => p.platform_name))
-                }
-            }
+            const { getActivePlatforms } = await import('../../settings/profile/actions')
+            const platforms = await getActivePlatforms()
+            setAvailablePlatforms(platforms)
         }
         fetchPlatforms()
-    }, [supabase])
+    }, [])
 
     const onSubmit = async (data: z.infer<typeof schema>) => {
         setLoading(true)

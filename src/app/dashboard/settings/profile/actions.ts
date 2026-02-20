@@ -59,3 +59,16 @@ export async function updateUserPlatforms(platforms: string[]) {
     revalidatePath('/dashboard/settings/profile')
     return { success: true }
 }
+export async function getActivePlatforms() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+
+    const { data } = await supabase
+        .from('user_platforms')
+        .select('platform_name')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+
+    return data?.map(p => p.platform_name) || []
+}
