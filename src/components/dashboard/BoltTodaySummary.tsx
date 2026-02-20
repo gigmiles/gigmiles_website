@@ -230,15 +230,17 @@ export function BoltTodaySummary({
                                     </div>
                                     <span className="text-xs font-bold uppercase tracking-wider">Gross Income</span>
                                 </div>
-                                {(() => {
-                                    const progressStyle = { width: `${Math.min(100, (gross / (gross + totalGrandCosts || 1)) * 100)}%` };
-                                    return (
-                                        <div
-                                            className="h-full bg-emerald-500 transition-all duration-1000"
-                                            {...({ style: progressStyle } as Record<string, unknown>)}
-                                        />
-                                    );
-                                })()}
+                                <div className="flex items-baseline gap-1">
+                                    <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                                        ${gross.toFixed(2)}
+                                    </p>
+                                </div>
+                                <div className="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-emerald-500 transition-all duration-1000"
+                                        style={{ width: `${Math.round((gross / (gross + totalGrandCosts || 1)) * 100)}%` }}
+                                    />
+                                </div>
                                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <ArrowUpRight className="size-4 text-emerald-500/50" />
                                 </div>
@@ -685,20 +687,115 @@ export function BoltTodaySummary({
                         </SheetContent>
                     </Sheet>
 
-                    <div className="glass-card p-4 flex flex-col justify-between">
-                        <div>
-                            <div className="flex items-center gap-2 text-slate-500 mb-2 font-display">
-                                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
-                                    <Navigation className="size-4" />
+                    {/* Miles Driven Card */}
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <button className="glass-card glass-card-hover p-4 text-left group" title="View Miles Breakdown">
+                                <div className="flex items-center gap-2 text-slate-500 mb-2 font-display">
+                                    <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+                                        <Navigation className="size-4" />
+                                    </div>
+                                    <span className="text-xs font-bold uppercase tracking-wider">Miles Driven</span>
                                 </div>
-                                <span className="text-xs font-bold uppercase tracking-wider">Miles Driven</span>
-                            </div>
-                            <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{miles.toFixed(1)}</p>
-                        </div>
-                        <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
-                            {miles > 0 ? `$${(netProfit / miles).toFixed(2)}/mi` : '—'}
-                        </p>
-                    </div>
+                                <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{miles.toFixed(1)}</p>
+                                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {miles > 0 ? `$${(netProfit / miles).toFixed(2)}/mi` : '—'}
+                                </p>
+                                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <ArrowUpRight className="size-4 text-blue-500/50" />
+                                </div>
+                            </button>
+                        </SheetTrigger>
+                        <SheetContent className="backdrop-blur-3xl bg-slate-950/95 border-white/5">
+                            <SheetHeader>
+                                <SheetTitle className="flex items-center gap-2 text-white">
+                                    <Navigation className="size-5 text-blue-500" />
+                                    Mileage Breakdown
+                                </SheetTitle>
+                                <SheetDescription className="text-slate-500 font-medium">
+                                    Distance tracked per platform today.
+                                </SheetDescription>
+                            </SheetHeader>
+                            <ScrollArea className="h-[calc(100vh-120px)] mt-6 pr-4">
+                                <div className="space-y-6">
+                                    {platformEarnings.length > 0 ? (
+                                        platformEarnings.map((p, idx: number) => {
+                                            const platformSlug = p.platform_name.toLowerCase().replace(/\s+/g, '-');
+                                            const platformColor = `var(--color-${platformSlug})`;
+
+                                            return (
+                                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-white/5 border border-white/5 group hover:border-white/20 transition-all">
+                                                    <div className="flex justify-between items-center">
+                                                        <div className="flex items-center gap-2">
+                                                            <div
+                                                                className="size-2 rounded-full bg-[var(--plat-bg)]"
+                                                                {...({ style: { '--plat-bg': platformColor } } as Record<string, unknown>)}
+                                                            />
+                                                            <span className="font-bold text-white">{p.platform_name}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <span className="font-extrabold text-blue-400 text-lg">{p.miles || 0} mi</span>
+                                                            <button
+                                                                onClick={() => handleEditPlatform(p)}
+                                                                className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                                                title="Edit Distance"
+                                                            >
+                                                                <Edit2 className="size-3" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    {editingPlatformId === p.id && (
+                                                        <div className="pt-2 mt-2 border-t border-white/5 animate-in fade-in slide-in-from-top-1">
+                                                            <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">Update Miles</label>
+                                                            <div className="flex gap-2">
+                                                                <input
+                                                                    type="number"
+                                                                    value={platformEditData.miles}
+                                                                    onChange={e => setPlatformEditData({ ...platformEditData, miles: e.target.value })}
+                                                                    className="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1 text-sm text-white focus:ring-1 focus:ring-blue-500 outline-none"
+                                                                    placeholder="0"
+                                                                />
+                                                                <button
+                                                                    onClick={() => p.id && handleSavePlatformEdit(p.id)}
+                                                                    disabled={isSaving}
+                                                                    className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-lg transition-colors disabled:opacity-50"
+                                                                >
+                                                                    Save
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => setEditingPlatformId(null)}
+                                                                    className="bg-white/5 hover:bg-white/10 text-slate-400 text-xs font-bold px-3 py-1 rounded-lg transition-colors"
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="text-center py-20 text-slate-600 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                                            No platform data recorded.
+                                        </div>
+                                    )}
+
+                                    <div className="bg-blue-500/10 p-5 rounded-2xl border border-blue-500/20">
+                                        <div className="flex justify-between items-center font-bold text-xl text-white">
+                                            <span>Total Miles</span>
+                                            <span className="text-blue-400">{miles.toFixed(1)} mi</span>
+                                        </div>
+                                        <div className="mt-2 flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-wider">
+                                            <span>Efficiency</span>
+                                            <span className="text-emerald-400">
+                                                {miles > 0 ? `$${(netProfit / miles).toFixed(2)}/mi` : '—'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ScrollArea>
+                        </SheetContent>
+                    </Sheet>
 
                     <div className="glass-card p-4 flex flex-col justify-between">
                         <div>

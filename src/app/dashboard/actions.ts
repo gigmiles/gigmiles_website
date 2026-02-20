@@ -189,6 +189,7 @@ export async function getDashboardStats() {
             }
 
             chartData.push({
+                id: entry.id,
                 date: dateStr,
                 label: format(d, 'EEE'),
                 gross: dGross,
@@ -199,6 +200,7 @@ export async function getDashboardStats() {
             })
         } else {
             chartData.push({
+                id: null,
                 date: dateStr,
                 label: format(d, 'EEE'),
                 gross: 0,
@@ -381,6 +383,7 @@ export async function createDailyEntry(entryData: { date: string, notes?: string
         }
     }
 
+    revalidatePath('/dashboard')
     return { success: true, entryId: entryId }
 }
 export async function getRecentEntries(limit = 5) {
@@ -432,6 +435,7 @@ export async function deleteDailyEntry(id: string) {
         .delete()
         .eq('id', id)
 
+    revalidatePath('/dashboard')
     return { success: !error, error }
 }
 

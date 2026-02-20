@@ -256,6 +256,19 @@ export async function getReportsData(startDate?: string, endDate?: string) {
                 expenseMap.set(fuelCat, existingFuel)
             }
 
+            // Sync Tax Estimates into the breakdown
+            if (financials.estimatedTax > 0) {
+                const taxCat = 'Tax Estimates'
+                const existingTax = expenseMap.get(taxCat) || { category: taxCat, total: 0, items: [] }
+                existingTax.total += financials.estimatedTax
+                existingTax.items.push({
+                    amount: financials.estimatedTax,
+                    description: `Estimated Federal (${(financials.estimatedFederalTax / (financials.grossEarnings || 1) * 100).toFixed(1)}%) & State tax`,
+                    date: entry.date
+                })
+                expenseMap.set(taxCat, existingTax)
+            }
+
             // Sync Reports Logic with Dashboard Logic
             // Dashboard effectively says Expenses = Gross - Net
             // This includes Taxes as an 'Expense' in the visual sense of "Money Out"

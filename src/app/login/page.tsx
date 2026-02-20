@@ -2,19 +2,34 @@
 
 import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Car, Mail, Lock, Loader2, ArrowRight, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { useEffect, Suspense } from 'react'
 
-export default function LoginPage() {
+function LoginContent() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [isSignUp, setIsSignUp] = useState(false)
     const [isResetMode, setIsResetMode] = useState(false)
     const router = useRouter()
+    const searchParams = useSearchParams()
     const supabase = createClient()
+
+    useEffect(() => {
+        const error = searchParams.get('error')
+        const signup = searchParams.get('signup')
+
+        if (error === 'auth-callback-error') {
+            toast.error('Authentication failed. Please try signing in again.')
+        }
+
+        if (signup === 'true') {
+            setIsSignUp(true)
+        }
+    }, [searchParams])
 
     const handleResetPassword = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -30,7 +45,11 @@ export default function LoginPage() {
         })
 
         if (error) {
-            toast.error(error.message)
+            if (error.message.includes('rate limit') || error.code === 'rate_limit') {
+                toast.error('Too many requests. Please wait a few minutes before trying again.')
+            } else {
+                toast.error(error.message)
+            }
         } else {
             toast.success('Password reset link sent to your email.')
             setIsResetMode(false)
@@ -53,7 +72,11 @@ export default function LoginPage() {
             })
 
             if (error) {
-                toast.error(error.message)
+                if (error.message.includes('rate limit') || error.code === 'rate_limit') {
+                    toast.error('Email limit exceeded. Please try again later or contact support.')
+                } else {
+                    toast.error(error.message)
+                }
                 setLoading(false)
             } else {
                 toast.success('Check your email for the confirmation link.')
@@ -66,7 +89,11 @@ export default function LoginPage() {
             })
 
             if (error) {
-                toast.error(error.message)
+                if (error.message.includes('rate limit') || error.code === 'rate_limit') {
+                    toast.error('Too many sign-in attempts. Please wait a moment.')
+                } else {
+                    toast.error(error.message)
+                }
                 setLoading(false)
             } else {
                 router.push('/')
@@ -239,5 +266,17 @@ export default function LoginPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-slate-950">
+                <Loader2 className="size-10 text-emerald-500 animate-spin" />
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
     )
 }

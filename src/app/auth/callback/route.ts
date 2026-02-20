@@ -35,11 +35,14 @@ export async function GET(request: Request) {
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {
             const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || origin
-            return NextResponse.redirect(`${baseUrl}${next}`)
+            // Ensure no double slashes and redirect to dashboard by default
+            const redirectUrl = new URL(next === '/' ? '/dashboard' : next, baseUrl)
+            return NextResponse.redirect(redirectUrl.toString())
         }
     }
 
-    // return the user to an error page with instructions
-    const errorUrl = process.env.NEXT_PUBLIC_SITE_URL || origin
-    return NextResponse.redirect(`${errorUrl}/auth/auth-code-error`)
+    // return the user to login page with an error parameter
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || origin
+    const errorUrl = new URL('/login?error=auth-callback-error', baseUrl)
+    return NextResponse.redirect(errorUrl.toString())
 }

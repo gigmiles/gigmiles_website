@@ -1,7 +1,10 @@
-import { TrendingUp, Calendar, ArrowRight } from 'lucide-react';
+import { TrendingUp, Calendar, ArrowRight, Edit, Trash2, Loader2 } from 'lucide-react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { calculateHourlyRate } from '@/utils/calculations';
 import { DailyEntry } from '@/app/dashboard/types';
+import { deleteDailyEntry } from '@/app/dashboard/actions';
+import { toast } from 'sonner';
 import {
     Sheet,
     SheetContent,
@@ -11,6 +14,7 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from '@/components/ui/button';
 
 interface WeeklySummaryProps {
     entries: DailyEntry[];
@@ -19,6 +23,7 @@ interface WeeklySummaryProps {
     totalMiles: number;
     totalHours: number;
     dailyStats: {
+        id?: string | null;
         date: string;
         label: string;
         gross: number;
@@ -37,8 +42,30 @@ export function BoltWeeklySummary({
     totalHours,
     dailyStats
 }: WeeklySummaryProps) {
+    const [deletingId, setDeletingId] = useState<string | null>(null);
     const avgDailyProfit = entries.length > 0 ? totalNetProfit / entries.length : 0;
     const hourlyRate = calculateHourlyRate(totalNetProfit, totalHours);
+
+    const handleDelete = async (id: string, date: string) => {
+        if (!confirm(`Are you sure you want to delete the entry for ${date}?`)) return;
+
+        setDeletingId(id);
+        const toastId = toast.loading(`Deleting entry for ${date}...`);
+        try {
+            const result = await deleteDailyEntry(id);
+            if (result.success) {
+                toast.success("Entry deleted successfully", { id: toastId });
+                // Note: revalidatePath in the action should refresh the server components
+            } else {
+                toast.error("Failed to delete entry", { id: toastId });
+            }
+        } catch (error) {
+            toast.error("An error occurred during deletion", { id: toastId });
+            console.error(error);
+        } finally {
+            setDeletingId(null);
+        }
+    };
 
     // Filter to only show days with actual activity or non-zero stats if preferred, 
     // but showing all 7 days provides context. Let's show days with *any* activity primarily.
@@ -120,11 +147,8 @@ export function BoltWeeklySummary({
                 <ScrollArea className="h-[calc(100vh-120px)] mt-6 pr-4">
                     <div className="space-y-3">
                         {reverseStats.map((day, idx) => {
-                            const isZero = day.net === 0 && day.gross === 0;
-                            if (isZero) return null; // Optional: Hide empty days if desired, or keep them. 
-                            // User wants simple view. Let's show only active days or all? 
-                            // "3 günlük bir weekly performance ise tıklanıldığında her günün ayrı ayrı gelir" 
-                            // implies filtering to relevant days. Let's keep non-zero days distinct.
+                            const isZero = day.net === 0 && day.gross === 0 && !day.id;
+                            if (isZero) return null;
 
                             return (
                                 <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all group">
@@ -134,13 +158,35 @@ export function BoltWeeklySummary({
                                             <span className="font-bold text-white text-lg">{day.label}</span>
                                             <span className="text-xs text-slate-500 font-medium ml-1">{day.date}</span>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            {day.expenses > 0 && (
-                                                <div className="flex items-center gap-1 text-rose-400">
-                                                    <span className="font-bold text-sm">-${day.expenses.toFixed(2)}</span>
+                                        <div className="flex items-center gap-2">
+                                            {day.id && (
+                                                <div className="flex items-center gap-1.5 mr-2">
+                                                    <Link href={`/dashboard/entry/${day.id}/edit`}>
+                                                        <Button variant="ghost" size="icon" className="size-8 rounded-lg bg-white/5 hover:bg-blue-500/20 text-slate-400 hover:text-blue-400 transition-all">
+                                                            <Edit className="size-3.5" />
+                                                        </Button>
+                                                    </Link>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        disabled={deletingId === day.id}
+                                                        onClick={() => day.id && handleDelete(day.id, day.date)}
+                                                        className="size-8 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-all"
+                                                    >
+                                                        {deletingId === day.id ? (
+                                                            <Loader2 className="size-3.5 animate-spin" />
+                                                        ) : (
+                                                            <Trash2 className="size-3.5" />
+                                                        )}
+                                                    </Button>
                                                 </div>
                                             )}
-                                            <span className="font-extrabold text-xl text-emerald-400">${day.net.toFixed(2)}</span>
+                                            <div className="flex flex-col items-end">
+                                                {day.expenses > 0 && (
+                                                    <span className="text-[10px] font-bold text-rose-400 opacity-80">-${day.expenses.toFixed(2)}</span>
+                                                )}
+                                                <span className="font-extrabold text-xl text-emerald-400">${day.net.toFixed(2)}</span>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -162,7 +208,7 @@ export function BoltWeeklySummary({
                             );
                         })}
 
-                        {reverseStats.every(d => d.net === 0 && d.gross === 0) && (
+                        {reverseStats.every(d => d.net === 0 && d.gross === 0 && !d.id) && (
                             <div className="text-center py-10 text-slate-500 bg-white/5 rounded-2xl border border-dashed border-white/10">
                                 No activity recorded this week.
                             </div>

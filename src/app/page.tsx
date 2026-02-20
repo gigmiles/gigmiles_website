@@ -32,7 +32,7 @@ export default async function LandingPage() {
             <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-slate-900 dark:hover:text-white transition-colors">
               Sign In
             </Link>
-            <Link href="/signup" className="text-sm font-medium bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950 px-4 py-2 rounded-full hover:opacity-90 transition-opacity">
+            <Link href="/login?signup=true" className="text-sm font-medium bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950 px-4 py-2 rounded-full hover:opacity-90 transition-opacity">
               Get Started
             </Link>
           </nav>
