@@ -100,7 +100,7 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
                         />
                         <Input
                             name="zip_code"
-                            label="ZIP Code (Active)"
+                            label="ZIP Code (Sync Check)"
                             defaultValue={profile?.zip_code || ''}
                             placeholder="90001"
                             required

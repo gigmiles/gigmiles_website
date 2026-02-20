@@ -65,8 +65,8 @@ export async function getDashboardStats() {
     let todayTips = 0
 
     if (todayEntry) {
-        const earnings = todayEntry.platform_earnings as unknown as PlatformEarning[]
-        const expenses = todayEntry.expenses as unknown as Expense[]
+        const earnings = (todayEntry.platform_earnings || []) as unknown as PlatformEarning[]
+        const expenses = (todayEntry.expenses || []) as unknown as Expense[]
 
         earnings.forEach((p) => {
             todayGross += (p.amount || 0) + (p.tips || 0)
@@ -139,8 +139,8 @@ export async function getDashboardStats() {
         let dHours = 0
 
         if (entry) {
-            const entryEarnings = entry.platform_earnings as unknown as PlatformEarning[]
-            const entryExpenses = entry.expenses as unknown as Expense[]
+            const entryEarnings = (entry.platform_earnings || []) as unknown as PlatformEarning[]
+            const entryExpenses = (entry.expenses || []) as unknown as Expense[]
 
             entryEarnings.forEach((p) => {
                 dGross += (p.amount || 0) + (p.tips || 0)
@@ -152,12 +152,6 @@ export async function getDashboardStats() {
                 if (!e.category.startsWith('__')) dExpenses += (e.amount || 0)
             })
 
-            const dOverrides = {
-                fuel: entryExpenses.find((e) => e.category === '__FUEL_OVERRIDE__')?.amount,
-                wear: entryExpenses.find((e) => e.category === '__WEAR_OVERRIDE__')?.amount,
-                insurance: entryExpenses.find((e) => e.category === '__INSURANCE_OVERRIDE__')?.amount
-            }
-
             const dFinancials = calculateFinancials({
                 grossEarnings: dGross,
                 expenses: dExpenses,
@@ -166,9 +160,9 @@ export async function getDashboardStats() {
                 mpg,
                 gasPrice: entry?.gas_price || profile?.default_gas_price || currentGasPrice,
                 wearRate: vehicle?.depreciation_rate || 0.35,
-                manualFuel: dOverrides.fuel,
-                manualWear: dOverrides.wear,
-                manualInsurance: dOverrides.insurance,
+                manualFuel: (entry.expenses as unknown as Expense[])?.find((e) => e.category === '__FUEL_OVERRIDE__')?.amount,
+                manualWear: (entry.expenses as unknown as Expense[])?.find((e) => e.category === '__WEAR_OVERRIDE__')?.amount,
+                manualInsurance: (entry.expenses as unknown as Expense[])?.find((e) => e.category === '__INSURANCE_OVERRIDE__')?.amount,
                 ownershipType: vehicle?.ownership_type || 'owned',
                 monthlyInsurance: vehicle?.monthly_insurance || 0,
                 monthlyLease: vehicle?.monthly_payment || 0,
@@ -221,7 +215,8 @@ export async function getDashboardStats() {
     // Platform Distribution
     const platformMap = new Map<string, { gross: number, tips: number, hours: number, miles: number }>()
     weeklyEntries.forEach(entry => {
-        (entry.platform_earnings as unknown as PlatformEarning[]).forEach((p: PlatformEarning) => {
+        const earnings = (entry.platform_earnings || []) as unknown as PlatformEarning[]
+        earnings.forEach((p: PlatformEarning) => {
             const name = p.platform_name || 'Other'
             const existing = platformMap.get(name) || { gross: 0, tips: 0, hours: 0, miles: 0 }
             platformMap.set(name, {

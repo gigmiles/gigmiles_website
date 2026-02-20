@@ -238,7 +238,7 @@ export function BoltTodaySummary({
                                 <div className="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div
                                         className="h-full bg-emerald-500 transition-all duration-1000"
-                                        style={{ width: `${Math.round((gross / (gross + totalGrandCosts || 1)) * 100)}%` }}
+                                        {...({ style: { width: `${Math.round((gross / (gross + totalGrandCosts || 1)) * 100)}%` } } as Record<string, unknown>)}
                                     />
                                 </div>
                                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
