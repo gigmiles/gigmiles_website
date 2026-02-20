@@ -193,7 +193,7 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
                             </button>
                         ))}
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-4 italic">Platformlar otomatik olarak kaydedilir. Seçili olanlar yeşil yanar.</p>
+                    <p className="text-[10px] text-muted-foreground mt-4 italic">Platforms are automatically saved. Selected ones appear in emerald.</p>
                 </div>
 
                 {/* Financial Baseline Card */}
