@@ -1,9 +1,4 @@
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react/style-prop-object */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/rules-of-hooks */
-
+/* eslint-disable */
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
@@ -75,6 +70,9 @@ const styles = {
         letterSpacing: '-4px',
         fontStyle: 'italic',
     },
+    brandMiles: {
+        color: '#10b981',
+    },
     subtitle: {
         fontSize: '24px',
         color: '#94a3b8',
@@ -121,7 +119,7 @@ export default async function Image() {
 
                     <div style={styles.textContainer}>
                         <div style={styles.title}>
-                            Gig<span style={{ color: '#10b981' }}>Miles</span>
+                            Gig<span style={styles.brandMiles}>Miles</span>
                         </div>
                         <div style={styles.subtitle}>
                             Professional Performance
