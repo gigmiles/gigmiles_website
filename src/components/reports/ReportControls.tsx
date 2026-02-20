@@ -61,7 +61,7 @@ export function ReportControls({ data }: ReportControlsProps) {
     }
 
     return (
-        <div className="flex flex-col md:flex-row gap-6 items-end md:items-center bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/5 shadow-2xl">
+        <div className="flex flex-col md:flex-row gap-6 items-end md:items-center bg-white/5 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-white/5 shadow-2xl">
             <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Start Date</label>

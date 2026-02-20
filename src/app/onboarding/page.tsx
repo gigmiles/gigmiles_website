@@ -513,7 +513,7 @@ export default function OnboardingPage() {
                     {step === 2 && (
                         <form onSubmit={handleSubmit2(onSubmitStep2)} className="space-y-4">
                             <div className="space-y-4 animate-fade-in">
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Year</label>
                                         <Input
@@ -557,7 +557,7 @@ export default function OnboardingPage() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Model</label>
                                         <VehicleModelSelect
@@ -643,7 +643,7 @@ export default function OnboardingPage() {
                                 </div>
 
                                 {/* Ownership & Fuel Type Selection */}
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">Ownership</label>
                                         <Controller
