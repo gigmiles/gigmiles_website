@@ -12,10 +12,11 @@ export async function updateProfile(formData: FormData) {
     const state_code = formData.get('state_code') as string
     const city = formData.get('city') as string
     const zip_code = formData.get('zip_code') as string
+    const default_gas_price = formData.get('default_gas_price') ? parseFloat(formData.get('default_gas_price') as string) : null
 
     const { error } = await supabase
         .from('profiles')
-        .update({ full_name, state_code, city, zip_code })
+        .update({ full_name, state_code, city, zip_code, default_gas_price })
         .eq('id', user.id)
 
     if (error) {

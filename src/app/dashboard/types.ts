@@ -21,6 +21,7 @@ export interface DailyEntry {
     id: string;
     date: string;
     notes?: string;
+    gas_price?: number;
     platform_earnings: PlatformEarning[];
     expenses: Expense[];
 }

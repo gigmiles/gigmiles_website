@@ -15,6 +15,7 @@ interface Profile {
     state_code: string | null
     zip_code: string | null
     city: string | null
+    default_gas_price?: number | null
 }
 
 interface ProfileSettingsFormProps {
@@ -112,6 +113,14 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
                         defaultValue={profile?.city || ''}
                         placeholder="Los Angeles"
                         required
+                    />
+                    <Input
+                        name="default_gas_price"
+                        label="Default Gas Price ($/gal)"
+                        type="number"
+                        step="0.01"
+                        defaultValue={profile?.default_gas_price || ''}
+                        placeholder="4.50"
                     />
                 </div>
 

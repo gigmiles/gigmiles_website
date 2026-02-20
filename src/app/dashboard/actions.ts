@@ -21,12 +21,13 @@ export async function getDashboardStats() {
 
     // 1. Parallel fetch for all core requirements
     const [profileRes, vehiclesRes, todayEntryRes, weeklyEntriesRes] = await Promise.all([
-        supabase.from('profiles').select('state_code').eq('id', user.id).single(),
+        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).single(),
         supabase.from('vehicles').select('*').eq('user_id', user.id).order('is_primary', { ascending: false }),
         supabase.from('daily_entries').select(`
             id,
             date,
             notes,
+            gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
         `).eq('user_id', user.id).eq('date', todayStr).single(),
@@ -34,6 +35,7 @@ export async function getDashboardStats() {
             id,
             date,
             notes,
+            gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
         `).eq('user_id', user.id).gte('date', sevenDaysAgoStr).lte('date', todayStr).order('date', { ascending: true })
@@ -48,8 +50,12 @@ export async function getDashboardStats() {
     const stateCode = profile?.state_code || 'DEFAULT'
     const mpg = vehicle?.mpg || 25
 
-    // 2. Fetch Gas Price (concurrent with initial processing if we wanted, but let's keep it here for clarity)
-    const currentGasPrice = await getGasPrice(stateCode)
+    // 2. Determine Gas Price (Priority: Daily Entry > Profile Default > State API)
+    let currentGasPrice = todayEntry?.gas_price || profile?.default_gas_price
+
+    if (!currentGasPrice) {
+        currentGasPrice = await getGasPrice(stateCode)
+    }
 
     // Calculate Today's Stats
     let todayGross = 0
@@ -158,7 +164,7 @@ export async function getDashboardStats() {
                 miles: dMiles,
                 stateCode,
                 mpg,
-                gasPrice: currentGasPrice,
+                gasPrice: entry?.gas_price || profile?.default_gas_price || currentGasPrice,
                 wearRate: vehicle?.depreciation_rate || 0.35,
                 manualFuel: dOverrides.fuel,
                 manualWear: dOverrides.wear,
@@ -304,7 +310,7 @@ export async function switchPrimaryVehicle(vehicleId: string) {
     return { success: true }
 }
 
-export async function createDailyEntry(entryData: { date: string, notes?: string }, earningsData: PlatformEarning[], expensesData?: Expense[]) {
+export async function createDailyEntry(entryData: { date: string, notes?: string, gas_price?: number }, earningsData: PlatformEarning[], expensesData?: Expense[]) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -330,7 +336,8 @@ export async function createDailyEntry(entryData: { date: string, notes?: string
             .insert({
                 user_id: user.id,
                 date: entryData.date,
-                notes: entryData.notes
+                notes: entryData.notes,
+                gas_price: entryData.gas_price
             })
             .select()
             .single()
@@ -397,6 +404,7 @@ export async function getRecentEntries(limit = 5) {
             id,
             date,
             notes,
+            gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
         `)
@@ -418,6 +426,7 @@ export async function getEntryById(id: string) {
             id,
             date,
             notes,
+            gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
         `)
@@ -439,14 +448,18 @@ export async function deleteDailyEntry(id: string) {
     return { success: !error, error }
 }
 
-export async function updateDailyEntry(id: string, entryData: { date: string, notes?: string }, earningsData: PlatformEarning[], expensesData: Expense[]) {
+export async function updateDailyEntry(id: string, entryData: { date: string, notes?: string, gas_price?: number }, earningsData: PlatformEarning[], expensesData: Expense[]) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return { success: false, error: 'Not authenticated' }
 
     // 1. Update Base Entry
-    await supabase.from('daily_entries').update({ date: entryData.date, notes: entryData.notes }).eq('id', id)
+    await supabase.from('daily_entries').update({
+        date: entryData.date,
+        notes: entryData.notes,
+        gas_price: entryData.gas_price
+    }).eq('id', id)
 
     // 2. Handle Earnings
     await supabase.from('platform_earnings').delete().eq('entry_id', id)

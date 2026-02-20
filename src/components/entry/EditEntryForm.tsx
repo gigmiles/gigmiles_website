@@ -36,7 +36,8 @@ const schema = z.object({
         category: z.string().min(1, 'Category is required'),
         amount: z.string().refine(val => !isNaN(parseFloat(val)), 'Must be a number'),
         description: z.string().optional()
-    })).optional()
+    })).optional(),
+    gas_price: z.string().optional().refine(val => !val || !isNaN(parseFloat(val)), 'Must be a number')
 })
 
 interface EditEntryFormProps {
@@ -65,7 +66,8 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
                 category: e.category,
                 amount: e.amount?.toString() || '',
                 description: e.description || ''
-            }))
+            })),
+            gas_price: entry.gas_price?.toString() || ''
         }
     })
 
@@ -90,7 +92,11 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
                 description: e.description
             })) || []
 
-            await updateDailyEntry(entry.id, { date: data.date, notes: data.notes || '' }, earningsData, expensesData)
+            await updateDailyEntry(entry.id, {
+                date: data.date,
+                notes: data.notes || '',
+                gas_price: data.gas_price ? parseFloat(data.gas_price) : undefined
+            }, earningsData, expensesData)
 
             router.push('/dashboard')
             router.refresh()
@@ -160,6 +166,15 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
                         label="Notes (Optional)"
                         placeholder="Rainy day, high demand..."
                         {...register('notes')}
+                        className="rounded-xl"
+                    />
+                    <Input
+                        label="Pump Price ($/gal - Optional)"
+                        placeholder="4.50"
+                        type="number"
+                        step="0.01"
+                        {...register('gas_price')}
+                        error={errors.gas_price?.message as string}
                         className="rounded-xl"
                     />
                 </CardContent>

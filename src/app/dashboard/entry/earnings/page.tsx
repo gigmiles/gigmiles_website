@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils"
 const schema = z.object({
     date: z.string().min(1, 'Date is required'),
     notes: z.string().optional(),
+    gas_price: z.string().optional().refine(val => !val || !isNaN(parseFloat(val)), 'Must be a number'),
     platforms: z.array(z.object({
         platform_name: z.string().min(1, 'Platform is required'),
         amount: z.string().refine(val => !isNaN(parseFloat(val)), 'Must be a number'),
@@ -45,7 +46,8 @@ export default function NewEntryPage() {
         defaultValues: {
             date: new Date().toISOString().split('T')[0],
             notes: '',
-            platforms: [{ platform_name: '', amount: '', tips: '', miles: '', hours: '' }]
+            platforms: [{ platform_name: '', amount: '', tips: '', miles: '', hours: '' }],
+            gas_price: ''
         }
     })
 
@@ -89,7 +91,8 @@ export default function NewEntryPage() {
 
             await createDailyEntry({
                 date: data.date,
-                notes: data.notes
+                notes: data.notes,
+                gas_price: data.gas_price ? parseFloat(data.gas_price) : undefined
             }, earningsData, [])
 
             toast.success("Earnings added successfully! 🚀")
@@ -142,6 +145,15 @@ export default function NewEntryPage() {
                             label="Notes (Optional)"
                             placeholder="Rainy day, high demand..."
                             {...register('notes')}
+                            className="rounded-xl"
+                        />
+                        <Input
+                            label="Pump Price ($/gal - Optional)"
+                            placeholder="4.50"
+                            type="number"
+                            step="0.01"
+                            {...register('gas_price')}
+                            error={errors.gas_price?.message as string}
                             className="rounded-xl"
                         />
                     </CardContent>
