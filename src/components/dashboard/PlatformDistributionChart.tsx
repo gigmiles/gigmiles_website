@@ -68,7 +68,7 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
 
     if (data.length === 0) {
         return (
-            <Card className="glass-card border-white/5 flex flex-col items-center justify-center p-8 text-center">
+            <Card className="glass-card border-slate-200 dark:border-white/5 flex flex-col items-center justify-center p-8 text-center">
                 <PieIcon className="size-12 text-slate-700 mb-4" />
                 <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No Platform Data</p>
                 <p className="text-[10px] text-slate-600 mt-1 italic">Log earnings to see your sources</p>
@@ -77,7 +77,7 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
     }
 
     return (
-        <Card className="glass-card border-white/5 flex flex-col group overflow-hidden">
+        <Card className="glass-card border-slate-200 dark:border-white/5 flex flex-col group overflow-hidden">
             <CardHeader className="items-start pb-0">
                 <div className="flex w-full items-center justify-between">
                     <div>
@@ -150,14 +150,14 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                     </PieChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col gap-4 text-sm pt-4 border-t border-white/5 bg-white/5">
+            <CardFooter className="flex-col gap-4 text-sm pt-4 border-t border-slate-200 dark:border-white/5 bg-slate-100 dark:bg-white/5">
                 <div className="grid grid-cols-1 gap-3 w-full">
                     {data.map((item, idx) => {
                         const hRate = item.hours > 0 ? item.value / item.hours : 0
                         const tipPct = item.value > 0 ? (item.tips / item.value) * 100 : 0
 
                         return (
-                            <div key={idx} className="flex flex-col gap-2 p-3 rounded-xl bg-slate-900/50 border border-white/5 hover:border-white/10 transition-colors">
+                            <div key={idx} className="flex flex-col gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/10 transition-colors">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div
@@ -177,7 +177,7 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                                             {item.name}
                                         </span>
                                     </div>
-                                    <span className="text-xs font-bold text-white">${item.value.toFixed(0)} ({((item.value / totalEarnings) * 100).toFixed(0)}%)</span>
+                                    <span className="text-xs font-bold text-slate-900 dark:text-white">${item.value.toFixed(0)} ({((item.value / totalEarnings) * 100).toFixed(0)}%)</span>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="flex items-center gap-1.5">

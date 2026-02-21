@@ -60,7 +60,7 @@ export function CustomDateTaxReport() {
             <CardContent>
                 {loading ? (
                     <div className="flex justify-center items-center py-12">
-                        <Loader2 className="size-8 animate-spin text-slate-400" />
+                        <Loader2 className="size-8 animate-spin text-slate-500 dark:text-slate-400" />
                     </div>
                 ) : taxData ? (
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 pt-4">
@@ -83,7 +83,7 @@ export function CustomDateTaxReport() {
                     </div>
                 ) : (
                     <div className="flex flex-col justify-center items-center py-12 text-center text-muted-foreground bg-slate-50 dark:bg-slate-900/20 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-                        <Calculator className="size-12 mb-4 text-slate-300" />
+                        <Calculator className="size-12 mb-4 text-slate-700 dark:text-slate-300" />
                         <p className="font-medium text-slate-600">No date range selected</p>
                         <p className="text-sm">Select a start and end date to generate a report.</p>
                     </div>

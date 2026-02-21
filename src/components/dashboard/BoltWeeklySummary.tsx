@@ -78,7 +78,7 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <div className="glass-card p-5 border-white/5 shadow-2xl relative overflow-hidden group cursor-pointer transition-all hover:bg-white/5">
+                <div className="glass-card p-5 border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden group cursor-pointer transition-all hover:bg-white/5">
                     <div className="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/5 blur-[100px] rounded-full transition-all group-hover:bg-blue-500/10 pointer-events-none" />
 
                     <div className="flex items-center justify-between mb-6">
@@ -86,15 +86,15 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                             <h2 className="text-lg font-display font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-blue-400 transition-colors">Weekly Performance</h2>
                             <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Aggregated insights • Tap for details</p>
                         </div>
-                        <div className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 backdrop-blur-md group-hover:bg-blue-500/20 group-hover:border-blue-500/20 transition-all">
-                            <span className="text-[10px] text-slate-400 group-hover:text-blue-300 font-bold uppercase tracking-wider">
+                        <div className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 backdrop-blur-md group-hover:bg-blue-500/20 group-hover:border-blue-500/20 transition-all">
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 group-hover:text-blue-300 font-bold uppercase tracking-wider">
                                 {entries.length}d Active
                             </span>
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-blue-500/10 active:scale-[0.99] transition-transform">
+                        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-slate-900 dark:text-white shadow-lg shadow-blue-500/10 active:scale-[0.99] transition-transform">
                             <div className="absolute top-0 right-0 p-2 opacity-10 transform translate-x-2 -translate-y-2">
                                 <TrendingUp className="size-16" />
                             </div>
@@ -103,30 +103,30 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                                 <span className="text-xl font-bold opacity-50">$</span>
                                 <p className="text-3xl font-extrabold tracking-tighter">{totalNetProfit.toFixed(2)}</p>
                             </div>
-                            <div className="mt-3 inline-block px-2 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[9px] font-bold">
+                            <div className="mt-3 inline-block px-2 py-0.5 rounded-full bg-slate-200 dark:bg-white/10 backdrop-blur-md border border-slate-300 dark:border-white/10 text-[9px] font-bold">
                                 Avg ${avgDailyProfit.toFixed(2)}/day
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <div className="glass-card p-3 border-white/5 bg-slate-50/50 dark:bg-white/5">
+                            <div className="glass-card p-3 border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Gross</p>
                                 <p className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">${totalGross.toFixed(2)}</p>
                             </div>
 
-                            <div className="glass-card p-3 border-white/5 bg-slate-50/50 dark:bg-white/5">
+                            <div className="glass-card p-3 border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Miles</p>
                                 <p className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">{totalMiles.toFixed(1)}</p>
                             </div>
 
-                            <div className="glass-card p-3 border-white/5 bg-slate-50/50 dark:bg-white/5">
+                            <div className="glass-card p-3 border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Hours</p>
                                 <p className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                                     {totalHours > 0 ? totalHours.toFixed(1) : '—'}
                                 </p>
                             </div>
 
-                            <div className="glass-card p-3 border-white/5 bg-slate-50/50 dark:bg-white/5">
+                            <div className="glass-card p-3 border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
                                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Hourly</p>
                                 <p className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                                     {hourlyRate > 0 ? `$${hourlyRate.toFixed(2)}` : '—'}
@@ -136,9 +136,9 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                     </div>
                 </div>
             </SheetTrigger>
-            <SheetContent className="backdrop-blur-3xl bg-slate-950/95 border-white/5">
+            <SheetContent className="backdrop-blur-3xl bg-white/95 dark:bg-slate-950/95 border-slate-200 dark:border-white/5">
                 <SheetHeader>
-                    <SheetTitle className="flex items-center gap-2 text-white">
+                    <SheetTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
                         <Calendar className="size-5 text-blue-500" />
                         Weekly Breakdown
                     </SheetTitle>
@@ -153,18 +153,18 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                             if (isZero) return null;
 
                             return (
-                                <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all group">
+                                <div key={idx} className="p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 hover:border-blue-500/30 transition-all group">
                                     <div className="flex items-center justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                             <div className="size-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-                                            <span className="font-bold text-white text-lg">{day.label}</span>
+                                            <span className="font-bold text-slate-900 dark:text-white text-lg">{day.label}</span>
                                             <span className="text-xs text-slate-500 font-medium ml-1">{day.date}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             {day.id && (
                                                 <div className="flex items-center gap-1.5 mr-2">
                                                     <Link href={`/dashboard/entry/${day.id}/edit`}>
-                                                        <Button variant="ghost" size="icon" className="size-8 rounded-lg bg-white/5 hover:bg-blue-500/20 text-slate-400 hover:text-blue-400 transition-all">
+                                                        <Button variant="ghost" size="icon" className="size-8 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-blue-500/20 text-slate-500 dark:text-slate-400 hover:text-blue-400 transition-all">
                                                             <Edit className="size-3.5" />
                                                         </Button>
                                                     </Link>
@@ -173,7 +173,7 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                                                         size="icon"
                                                         disabled={deletingId === day.id}
                                                         onClick={() => day.id && handleDelete(day.id, day.date)}
-                                                        className="size-8 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-all"
+                                                        className="size-8 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-rose-500/20 text-slate-500 dark:text-slate-400 hover:text-rose-400 transition-all"
                                                     >
                                                         {deletingId === day.id ? (
                                                             <Loader2 className="size-3.5 animate-spin" />
@@ -193,17 +193,17 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-2">
-                                        <div className="p-2 rounded-xl bg-slate-900/50 border border-white/5">
+                                        <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5">
                                             <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Gross</p>
-                                            <p className="text-sm font-bold text-slate-300">${day.gross.toFixed(0)}</p>
+                                            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">${day.gross.toFixed(0)}</p>
                                         </div>
-                                        <div className="p-2 rounded-xl bg-slate-900/50 border border-white/5">
+                                        <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5">
                                             <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Miles</p>
-                                            <p className="text-sm font-bold text-slate-300">{day.miles.toFixed(0)}</p>
+                                            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{day.miles.toFixed(0)}</p>
                                         </div>
-                                        <div className="p-2 rounded-xl bg-slate-900/50 border border-white/5">
+                                        <div className="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5">
                                             <p className="text-[9px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">Hours</p>
-                                            <p className="text-sm font-bold text-slate-300">{day.hours.toFixed(1)}</p>
+                                            <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{day.hours.toFixed(1)}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -211,7 +211,7 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                         })}
 
                         {reverseStats.every(d => d.net === 0 && d.gross === 0 && !d.id) && (
-                            <div className="text-center py-10 text-slate-500 bg-white/5 rounded-2xl border border-dashed border-white/10">
+                            <div className="text-center py-10 text-slate-500 bg-slate-100 dark:bg-white/5 rounded-2xl border border-dashed border-slate-300 dark:border-white/10">
                                 No activity recorded this week.
                             </div>
                         )}

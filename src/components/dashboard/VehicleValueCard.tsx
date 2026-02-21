@@ -55,7 +55,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
         return (
             <Card className="h-full border-dashed border-2 shadow-none bg-slate-50/50 dark:bg-slate-900/20">
                 <CardContent className="flex flex-col items-center justify-center h-full p-6 text-center">
-                    <Car className="size-10 text-slate-300 mb-4" />
+                    <Car className="size-10 text-slate-700 dark:text-slate-300 mb-4" />
                     <p className="text-muted-foreground font-medium">Add a vehicle to track its value.</p>
                 </CardContent>
             </Card>
@@ -63,7 +63,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
     }
 
     return (
-        <div className="glass-card p-6 border-white/5 shadow-2xl relative overflow-hidden group">
+        <div className="glass-card p-6 border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden group">
             <div className="absolute -top-12 -right-12 w-24 h-24 bg-indigo-500/10 blur-[50px] rounded-full pointer-events-none group-hover:bg-indigo-500/20 transition-all" />
 
             <div className="flex flex-col gap-4 mb-6">
@@ -85,10 +85,10 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
                         setMileage('')
                     }}
                 >
-                    <SelectTrigger className="w-full h-11 bg-white/5 border-white/10 rounded-xl text-xs font-bold text-slate-300">
+                    <SelectTrigger className="w-full h-11 bg-slate-100 dark:bg-white/5 border-slate-300 dark:border-white/10 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300">
                         <SelectValue placeholder="Select Vehicle" />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-white/10">
+                    <SelectContent className="bg-slate-100 dark:bg-slate-900 border-slate-300 dark:border-white/10">
                         {vehicles.map(v => (
                             <SelectItem key={v.id} value={v.id} className="text-xs">
                                 {v.year} {v.make} {v.model} {v.is_primary ? '(Primary)' : ''}
@@ -148,7 +148,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
                     <Button
                         onClick={handleCheckValue}
                         disabled={loading}
-                        className="h-11 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white shadow-xl shadow-indigo-500/20 px-6 font-bold active:scale-95 transition-all"
+                        className="h-11 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-slate-900 dark:text-white shadow-xl shadow-indigo-500/20 px-6 font-bold active:scale-95 transition-all"
                     >
                         {loading ? <RefreshCw className="size-4 animate-spin" /> : "Verify"}
                     </Button>

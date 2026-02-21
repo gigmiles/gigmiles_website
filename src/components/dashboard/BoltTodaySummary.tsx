@@ -243,7 +243,7 @@ export function BoltTodaySummary({
     };
 
     return (
-        <div className="glass-card p-6 border-white/5 shadow-2xl relative overflow-hidden group">
+        <div className="glass-card p-6 border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden group">
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/5 blur-[100px] rounded-full transition-all group-hover:bg-emerald-500/10 pointer-events-none" />
 
             <div className="flex items-center justify-between mb-8">
@@ -255,10 +255,10 @@ export function BoltTodaySummary({
                 <div className="flex items-center gap-2">
                     {vehicles?.length > 1 && (
                         <Select value={activeVehicleId || ''} onValueChange={setActiveVehicleId}>
-                            <SelectTrigger className="w-[140px] h-9 bg-white/5 border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-wider text-slate-300">
+                            <SelectTrigger className="w-[140px] h-9 bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                                 <SelectValue placeholder="Select Vehicle" />
                             </SelectTrigger>
-                            <SelectContent className="bg-slate-900 border-white/10">
+                            <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-white/10">
                                 {vehicles?.map(v => (
                                     <SelectItem key={v.id} value={v.id} className="text-xs">
                                         {v.make} {v.model}
@@ -273,7 +273,7 @@ export function BoltTodaySummary({
                             <Button
                                 variant="ghost"
                                 className={cn(
-                                    "glass-card border-white/10 flex items-center gap-2 px-4 py-2 hover:bg-white/10 transition-all active:scale-95 group relative",
+                                    "glass-card border-slate-300 dark:border-white/10 flex items-center gap-2 px-4 py-2 hover:bg-slate-200 dark:hover:bg-white/10 transition-all active:scale-95 group relative",
                                     isPending && "opacity-50 cursor-not-allowed"
                                 )}
                                 disabled={isPending}
@@ -285,22 +285,43 @@ export function BoltTodaySummary({
                                 {isPending && <RefreshCw className="size-3 animate-spin text-neon-primary" />}
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 border-white/10 bg-slate-900" align="end">
+                        <PopoverContent className="w-auto p-0 border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900" align="end">
                             <Calendar
                                 mode="single"
                                 selected={date}
                                 onSelect={handleDateChange}
                                 disabled={(date) => isBefore(startOfDay(new Date()), date)}
-                                className="bg-slate-950 text-white"
+                                className="bg-white dark:bg-slate-950 text-slate-900 dark:text-white"
                                 modifiers={{
                                     hasEntry: (date) => activeDates?.includes(format(date, 'yyyy-MM-dd')),
                                     noEntry: (date) => !activeDates?.includes(format(date, 'yyyy-MM-dd')) && isBefore(date, startOfDay(new Date()))
                                 }}
                                 modifiersClassNames={{
-                                    hasEntry: "text-emerald-400 font-bold underline decoration-2 underline-offset-4",
-                                    noEntry: "text-rose-400/50"
+                                    hasEntry: "text-emerald-500 font-bold underline decoration-2 underline-offset-4",
+                                    noEntry: "text-rose-500/80"
                                 }}
                             />
+
+                            {/* Calendar Legend */}
+                            <div className="p-3 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50 mt-1">
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Legend</p>
+                                <div className="space-y-1.5 flex flex-col">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                        <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">Logged Entry</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-rose-500/80" />
+                                        <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">No Entry</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 rounded-full border-2 border-slate-900 dark:border-white flex items-center justify-center -ml-1">
+                                            <div className="w-1 h-1 rounded-full bg-slate-400" />
+                                        </div>
+                                        <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">Today</span>
+                                    </div>
+                                </div>
+                            </div>
                         </PopoverContent>
                     </Popover>
                 </div>
@@ -315,7 +336,7 @@ export function BoltTodaySummary({
                 className="space-y-6"
             >
                 {/* Hero Card */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-3xl p-8 text-white shadow-xl shadow-emerald-500/20 active:scale-[0.99] transition-transform cursor-default">
+                <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-3xl p-8 text-slate-900 dark:text-white shadow-xl shadow-emerald-500/20 active:scale-[0.99] transition-transform cursor-default">
                     <div className="absolute top-0 right-0 p-4 opacity-20 transform translate-x-4 -translate-y-4">
                         <TrendingUp className="size-24" />
                     </div>
@@ -325,7 +346,7 @@ export function BoltTodaySummary({
                         <p className="text-5xl font-extrabold tracking-tighter">{netProfit.toFixed(2)}</p>
                     </div>
                     {calculateProfitMargin(netProfit, gross) > 0 && (
-                        <div className="inline-flex items-center gap-2 mt-6 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20">
+                        <div className="inline-flex items-center gap-2 mt-6 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-slate-300 dark:border-white/20">
                             <ArrowUpRight className="size-3" />
                             <span className="text-xs font-bold tracking-tight">
                                 {calculateProfitMargin(netProfit, gross).toFixed(1)}% profit margin
@@ -357,16 +378,16 @@ export function BoltTodaySummary({
                                     <div className="flex items-center gap-3 text-[10px] font-bold tracking-wider">
                                         <div className="flex items-center gap-1.5">
                                             <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                                            <span className="text-slate-400">GROSS</span>
+                                            <span className="text-slate-500 dark:text-slate-400">GROSS</span>
                                         </div>
                                         <div className="flex items-center gap-1.5">
                                             <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                            <span className="text-slate-400">NET</span>
+                                            <span className="text-slate-500 dark:text-slate-400">NET</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="h-4 w-full bg-slate-900 rounded-full overflow-hidden border border-white/5">
+                                <div className="h-4 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${Math.max(0, Math.min(100, (netProfit / (gross || 1)) * 100))}%` }}
@@ -377,9 +398,9 @@ export function BoltTodaySummary({
                             </button>
                         </SheetTrigger>
                         {/* Sheet content remains same for functionality but can be styled later if needed */}
-                        <SheetContent className="backdrop-blur-3xl bg-slate-950/95 border-white/5">
+                        <SheetContent className="backdrop-blur-3xl bg-white/95 dark:bg-slate-950/95 border-slate-200 dark:border-white/5">
                             <SheetHeader>
-                                <SheetTitle className="flex items-center gap-2 text-white">
+                                <SheetTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
                                     <Briefcase className="size-5 text-emerald-400" />
                                     Earnings Breakdown
                                 </SheetTitle>
@@ -396,12 +417,12 @@ export function BoltTodaySummary({
                                             const isUber = platformSlug.includes('uber');
 
                                             return (
-                                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-white/5 border border-white/5 group hover:border-white/20 transition-all relative">
+                                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 group hover:border-slate-300 dark:hover:border-white/20 transition-all relative">
                                                     {editingPlatformId === p.id ? (
                                                         <div className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
-                                                            <div className="flex justify-between items-center text-sm font-bold text-white mb-2">
+                                                            <div className="flex justify-between items-center text-sm font-bold text-slate-900 dark:text-white mb-2">
                                                                 <span>Editing {p.platform_name}</span>
-                                                                <button onClick={() => setEditingPlatformId(null)} className="p-1 hover:bg-white/10 rounded-full" aria-label="Cancel editing"><X className="size-4" /></button>
+                                                                <button onClick={() => setEditingPlatformId(null)} className="p-1 hover:bg-slate-200 dark:hover:bg-white/10 rounded-full" aria-label="Cancel editing"><X className="size-4" /></button>
                                                             </div>
                                                             <div className="grid grid-cols-2 gap-2">
                                                                 <div>
@@ -413,7 +434,7 @@ export function BoltTodaySummary({
                                                                         placeholder="0.00"
                                                                         value={platformEditData.amount}
                                                                         onChange={e => setPlatformEditData({ ...platformEditData, amount: e.target.value })}
-                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-white"
+                                                                        className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs text-slate-900 dark:text-white"
                                                                     />
                                                                 </div>
                                                                 <div>
@@ -425,7 +446,7 @@ export function BoltTodaySummary({
                                                                         placeholder="0.00"
                                                                         value={platformEditData.tips}
                                                                         onChange={e => setPlatformEditData({ ...platformEditData, tips: e.target.value })}
-                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-emerald-400"
+                                                                        className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs text-emerald-400"
                                                                     />
                                                                 </div>
                                                                 <div>
@@ -437,7 +458,7 @@ export function BoltTodaySummary({
                                                                         placeholder="0"
                                                                         value={platformEditData.miles}
                                                                         onChange={e => setPlatformEditData({ ...platformEditData, miles: e.target.value })}
-                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-blue-400"
+                                                                        className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs text-blue-400"
                                                                     />
                                                                 </div>
                                                                 <div>
@@ -452,7 +473,7 @@ export function BoltTodaySummary({
                                                                         onKeyDown={(e) => {
                                                                             if (e.key === 'Enter') p.id && handleSavePlatformEdit(p.id);
                                                                         }}
-                                                                        className="w-full bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1.5 text-xs text-indigo-400"
+                                                                        className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 rounded-lg px-2 py-1.5 text-xs text-indigo-400"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -460,7 +481,7 @@ export function BoltTodaySummary({
                                                                 <button
                                                                     onClick={() => p.id && handleSavePlatformEdit(p.id)}
                                                                     disabled={isSaving}
-                                                                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 rounded-lg transition-colors"
+                                                                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-900 dark:text-white text-xs font-bold py-1.5 rounded-lg transition-colors"
                                                                     aria-label="Save platform earning changes"
                                                                 >
                                                                     Save Changes
@@ -489,20 +510,20 @@ export function BoltTodaySummary({
                                                                     </span>
                                                                 </div>
                                                                 <div className="flex items-center gap-3">
-                                                                    <span className="font-extrabold text-white text-xl">${((p.amount || 0) + (p.tips || 0)).toFixed(2)}</span>
+                                                                    <span className="font-extrabold text-slate-900 dark:text-white text-xl">${((p.amount || 0) + (p.tips || 0)).toFixed(2)}</span>
 
                                                                     {/* Action Buttons */}
                                                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
                                                                         <button
                                                                             onClick={() => handleEditPlatform(p)}
-                                                                            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                                                            className="p-1.5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                                                                             title="Edit Entry"
                                                                         >
                                                                             <Edit2 className="size-3" />
                                                                         </button>
                                                                         <button
                                                                             onClick={() => p.id && handleDeletePlatform(p.id)}
-                                                                            className="p-1.5 hover:bg-red-500/20 rounded-lg text-slate-400 hover:text-red-400 transition-colors"
+                                                                            className="p-1.5 hover:bg-red-500/20 rounded-lg text-slate-500 dark:text-slate-400 hover:text-red-400 transition-colors"
                                                                             title="Delete Entry"
                                                                         >
                                                                             <Trash2 className="size-3" />
@@ -510,22 +531,22 @@ export function BoltTodaySummary({
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div className="grid grid-cols-2 gap-4 text-xs text-slate-400 font-medium mt-2">
-                                                                <div className="flex justify-between py-1 border-b border-white/5">
+                                                            <div className="grid grid-cols-2 gap-4 text-xs text-slate-500 dark:text-slate-400 font-medium mt-2">
+                                                                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-white/5">
                                                                     <span>Base Earnings</span>
-                                                                    <span className="text-slate-200">${(p.amount || 0).toFixed(2)}</span>
+                                                                    <span className="text-slate-700 dark:text-slate-200">${(p.amount || 0).toFixed(2)}</span>
                                                                 </div>
-                                                                <div className="flex justify-between py-1 border-b border-white/5">
+                                                                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-white/5">
                                                                     <span>Tips &amp; Extras</span>
                                                                     <span className="text-emerald-400/80">+${(p.tips || 0).toFixed(2)}</span>
                                                                 </div>
                                                                 <div className="flex justify-between py-1">
                                                                     <span>Distance</span>
-                                                                    <span className="text-slate-200">{p.miles || 0} mi</span>
+                                                                    <span className="text-slate-700 dark:text-slate-200">{p.miles || 0} mi</span>
                                                                 </div>
                                                                 <div className="flex justify-between py-1">
                                                                     <span>Time</span>
-                                                                    <span className="text-slate-200">{p.hours || 0} h</span>
+                                                                    <span className="text-slate-700 dark:text-slate-200">{p.hours || 0} h</span>
                                                                 </div>
                                                             </div>
                                                         </>
@@ -534,13 +555,13 @@ export function BoltTodaySummary({
                                             );
                                         })
                                     ) : (
-                                        <div className="text-center py-20 text-slate-600 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                                        <div className="text-center py-20 text-slate-600 bg-slate-100 dark:bg-white/5 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
                                             No platform earnings recorded.
                                         </div>
                                     )}
 
                                     <div className="bg-emerald-500/10 p-5 rounded-2xl border border-emerald-500/20">
-                                        <div className="flex justify-between items-center font-bold text-xl text-white">
+                                        <div className="flex justify-between items-center font-bold text-xl text-slate-900 dark:text-white">
                                             <span>Total Gross</span>
                                             <span className="text-emerald-400">${gross.toFixed(2)}</span>
                                         </div>
@@ -576,19 +597,19 @@ export function BoltTodaySummary({
                                     <div className="flex items-center gap-3 text-[10px] font-bold tracking-wider">
                                         <div className="flex items-center gap-1.5">
                                             <div className="w-2 h-2 rounded-full bg-ruby-500" />
-                                            <span className="text-slate-400">EXPENSE</span>
+                                            <span className="text-slate-500 dark:text-slate-400">EXPENSE</span>
                                         </div>
                                         <div className="flex items-center gap-1.5">
                                             <div className="w-2 h-2 rounded-full bg-amber-500" />
-                                            <span className="text-slate-400">TAX</span>
+                                            <span className="text-slate-500 dark:text-slate-400">TAX</span>
                                         </div>
                                     </div>
                                 </div>
                             </button>
                         </SheetTrigger>
-                        <SheetContent className="backdrop-blur-3xl bg-slate-950/95 border-white/5">
+                        <SheetContent className="backdrop-blur-3xl bg-white/95 dark:bg-slate-950/95 border-slate-200 dark:border-white/5">
                             <SheetHeader>
-                                <SheetTitle className="flex items-center gap-2 text-white">
+                                <SheetTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
                                     <MinusCircle className="size-5 text-ruby-500" />
                                     Expenses &amp; Projections
                                 </SheetTitle>
@@ -603,7 +624,7 @@ export function BoltTodaySummary({
                                             <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Direct Expenses</h3>
                                             <button
                                                 onClick={() => setIsAddingExpense(!isAddingExpense)}
-                                                className="p-1 px-2 rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500/10 hover:border-emerald-500/20 text-slate-400 hover:text-emerald-400 transition-all flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider"
+                                                className="p-1 px-2 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 hover:bg-emerald-500/10 hover:border-emerald-500/20 text-slate-500 dark:text-slate-400 hover:text-emerald-400 transition-all flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider"
                                                 title={isAddingExpense ? "Close Form" : "Add New Expense"}
                                             >
                                                 <Plus className="size-3" />
@@ -618,14 +639,14 @@ export function BoltTodaySummary({
                                                         placeholder="Category (e.g. Car Wash)"
                                                         value={newExpense.category}
                                                         onChange={e => setNewExpense({ ...newExpense, category: e.target.value })}
-                                                        className="bg-slate-900/50 border-white/5 rounded-xl px-3 py-2 text-xs text-white placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
+                                                        className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-white/5 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
                                                     />
                                                     <input
                                                         type="number"
                                                         placeholder="Amount"
                                                         value={newExpense.amount}
                                                         onChange={e => setNewExpense({ ...newExpense, amount: e.target.value })}
-                                                        className="bg-slate-900/50 border-white/5 rounded-xl px-3 py-2 text-xs text-white placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-bold"
+                                                        className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-white/5 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-bold"
                                                     />
                                                 </div>
                                                 <input
@@ -635,19 +656,19 @@ export function BoltTodaySummary({
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter') handleAddDirectExpense();
                                                     }}
-                                                    className="w-full bg-slate-900/50 border-white/5 rounded-xl px-3 py-2 text-xs text-white placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-bold"
+                                                    className="w-full bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-white/5 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all font-bold"
                                                 />
                                                 <div className="flex gap-2">
                                                     <button
                                                         onClick={handleAddDirectExpense}
                                                         disabled={isSaving}
-                                                        className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-xl text-xs transition-all active:scale-95 disabled:opacity-50"
+                                                        className="flex-1 bg-red-500 hover:bg-red-600 text-slate-900 dark:text-white font-bold py-2 rounded-xl text-xs transition-all active:scale-95 disabled:opacity-50"
                                                     >
                                                         {isSaving ? 'Adding...' : 'Add Expense'}
                                                     </button>
                                                     <button
                                                         onClick={() => setIsAddingExpense(false)}
-                                                        className="px-4 bg-white/5 hover:bg-white/10 text-slate-400 font-bold rounded-xl text-xs transition-all"
+                                                        className="px-4 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 font-bold rounded-xl text-xs transition-all"
                                                     >
                                                         Cancel
                                                     </button>
@@ -658,21 +679,21 @@ export function BoltTodaySummary({
                                         {directExpenses.length > 0 ? (
                                             <div className="space-y-3">
                                                 {directExpenses.map((e, idx: number) => (
-                                                    <div key={idx} className="bg-white/5 p-4 rounded-2xl border border-white/5 group hover:bg-white/10 transition-colors">
+                                                    <div key={idx} className="bg-slate-100 dark:bg-white/5 p-4 rounded-2xl border border-slate-200 dark:border-white/5 group hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
                                                         <div className="flex justify-between items-center">
                                                             <div>
-                                                                <span className="font-bold text-white text-sm block">{e.category}</span>
+                                                                <span className="font-bold text-slate-900 dark:text-white text-sm block">{e.category}</span>
                                                                 {e.description && (
                                                                     <p className="text-xs text-slate-500 mt-1 font-medium italic opacity-70 group-hover:opacity-100">&quot;{e.description}&quot;</p>
                                                                 )}
                                                             </div>
                                                             <span className="font-extrabold text-ruby-400">-${(e.amount || 0).toFixed(2)}</span>
                                                         </div>
-                                                        <div className="mt-4 pt-4 border-t border-white/5 flex justify-end">
+                                                        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-white/5 flex justify-end">
                                                             <button
                                                                 onClick={() => handleDeleteExpense(e.id)}
                                                                 disabled={isSaving}
-                                                                className="p-1.5 rounded-lg bg-ruby-500/10 text-ruby-500 hover:bg-ruby-500 hover:text-white transition-all transform active:scale-95 disabled:opacity-50"
+                                                                className="p-1.5 rounded-lg bg-ruby-500/10 text-ruby-500 hover:bg-ruby-500 hover:text-slate-900 dark:hover:text-white transition-all transform active:scale-95 disabled:opacity-50"
                                                                 title="Delete Expense"
                                                             >
                                                                 <Trash2 className="size-3" />
@@ -682,7 +703,7 @@ export function BoltTodaySummary({
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div className="text-center py-10 text-xs font-bold text-slate-600 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                                            <div className="text-center py-10 text-xs font-bold text-slate-600 bg-slate-100 dark:bg-white/5 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
                                                 No direct expenses.
                                             </div>
                                         )}
@@ -691,27 +712,27 @@ export function BoltTodaySummary({
                                     <div className="space-y-4">
                                         <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Projections & Overrides</h3>
                                         <div className="space-y-1">
-                                            <div className="group rounded-2xl bg-white/5 border border-white/5 overflow-hidden transition-all hover:border-white/10">
+                                            <div className="group rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 overflow-hidden transition-all hover:border-slate-300 dark:hover:border-white/10">
                                                 <div className="flex justify-between items-center p-4">
-                                                    <span className="text-sm font-bold text-slate-300 uppercase tracking-tight">Total Tax Estimates</span>
-                                                    <span className="font-extrabold text-white text-lg">${tax.toFixed(2)}</span>
+                                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">Total Tax Estimates</span>
+                                                    <span className="font-extrabold text-slate-900 dark:text-white text-lg">${tax.toFixed(2)}</span>
                                                 </div>
                                                 <div className="px-4 pb-4 grid grid-cols-2 gap-4">
-                                                    <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5">
+                                                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5">
                                                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Federal (15.3%)</span>
-                                                        <span className="font-bold text-slate-200">${federalTax.toFixed(2)}</span>
+                                                        <span className="font-bold text-slate-700 dark:text-slate-200">${federalTax.toFixed(2)}</span>
                                                     </div>
-                                                    <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5">
+                                                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/5">
                                                         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">State Estimate</span>
-                                                        <span className="font-bold text-slate-200">${stateTax.toFixed(2)}</span>
+                                                        <span className="font-bold text-slate-700 dark:text-slate-200">${stateTax.toFixed(2)}</span>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             {/* Fuel/Electric Override UI */}
                                             {fuelCost !== undefined && (
-                                                <div className="flex justify-between items-center p-3 rounded-xl hover:bg-white/10 transition-colors group">
-                                                    <span className="text-sm font-medium text-slate-400 uppercase tracking-tight">
+                                                <div className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-colors group">
+                                                    <span className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-tight">
                                                         {activeVehicle?.fuel_type === 'electric' ? 'Charging Cost' : 'Fuel Cost'}
                                                     </span>
                                                     <div className="flex items-center gap-3">
@@ -735,12 +756,12 @@ export function BoltTodaySummary({
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                <span className="font-bold text-slate-300 tracking-tight">
+                                                                <span className="font-bold text-slate-700 dark:text-slate-300 tracking-tight">
                                                                     ${(activeVehicle?.fuel_type === 'electric' ? (electricCost ?? 0) : (gasCost ?? 0)).toFixed(2)}
                                                                 </span>
                                                                 <button
                                                                     onClick={() => { setEditingField('fuel'); setEditValue((activeVehicle?.fuel_type === 'electric' ? (electricCost ?? 0) : (gasCost ?? 0)).toFixed(2)); }}
-                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
+                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg text-slate-500"
                                                                     title="Edit Cost"
                                                                 >
                                                                     <Edit2 className="size-3" />
@@ -753,8 +774,8 @@ export function BoltTodaySummary({
 
                                             {/* Wear Override UI */}
                                             {wearCost !== undefined && (
-                                                <div className="flex justify-between items-center p-3 rounded-xl hover:bg-white/10 transition-colors group">
-                                                    <span className="text-sm font-medium text-slate-400 uppercase tracking-tight">
+                                                <div className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-colors group">
+                                                    <span className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-tight">
                                                         Wear & Tear {activeVehicle ? `(${activeVehicle.make} ${activeVehicle.model})` : ''}
                                                     </span>
                                                     <div className="flex items-center gap-3">
@@ -778,10 +799,10 @@ export function BoltTodaySummary({
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                <span className="font-bold text-slate-300 tracking-tight">${(wearCost ?? 0).toFixed(2)}</span>
+                                                                <span className="font-bold text-slate-700 dark:text-slate-300 tracking-tight">${(wearCost ?? 0).toFixed(2)}</span>
                                                                 <button
                                                                     onClick={() => { setEditingField('wear'); setEditValue((wearCost ?? 0).toFixed(2)); }}
-                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
+                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg text-slate-500"
                                                                     title="Edit Wear &amp; Tear"
                                                                 >
                                                                     <Edit2 className="size-3" />
@@ -794,8 +815,8 @@ export function BoltTodaySummary({
 
                                             {/* Insurance Override UI */}
                                             {insurance !== undefined && (
-                                                <div className="flex justify-between items-center p-3 rounded-xl hover:bg-white/10 transition-colors group">
-                                                    <span className="text-sm font-medium text-slate-400 uppercase tracking-tight">Commercial Ins.</span>
+                                                <div className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 transition-colors group">
+                                                    <span className="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-tight">Commercial Ins.</span>
                                                     <div className="flex items-center gap-3">
                                                         {editingField === 'insurance' ? (
                                                             <div className="flex items-center gap-2">
@@ -817,10 +838,10 @@ export function BoltTodaySummary({
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                <span className="font-bold text-slate-300 tracking-tight">${(insurance ?? 0).toFixed(2)}</span>
+                                                                <span className="font-bold text-slate-700 dark:text-slate-300 tracking-tight">${(insurance ?? 0).toFixed(2)}</span>
                                                                 <button
                                                                     onClick={() => { setEditingField('insurance'); setEditValue((insurance ?? 0).toFixed(2)); }}
-                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
+                                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg text-slate-500"
                                                                     title="Edit Commercial Insurance"
                                                                 >
                                                                     <Edit2 className="size-3" />
@@ -834,7 +855,7 @@ export function BoltTodaySummary({
                                     </div>
 
                                     <div className="bg-ruby-500/10 p-6 rounded-3xl border border-ruby-500/20 shadow-xl shadow-ruby-500/5">
-                                        <div className="flex justify-between items-center font-bold text-2xl text-white">
+                                        <div className="flex justify-between items-center font-bold text-2xl text-slate-900 dark:text-white">
                                             <span>Total Costs</span>
                                             <span className="text-ruby-400">${totalGrandCosts.toFixed(2)}</span>
                                         </div>
@@ -866,9 +887,9 @@ export function BoltTodaySummary({
                                 </div>
                             </button>
                         </SheetTrigger>
-                        <SheetContent className="backdrop-blur-3xl bg-slate-950/95 border-white/5">
+                        <SheetContent className="backdrop-blur-3xl bg-white/95 dark:bg-slate-950/95 border-slate-200 dark:border-white/5">
                             <SheetHeader>
-                                <SheetTitle className="flex items-center gap-2 text-white">
+                                <SheetTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
                                     <Navigation className="size-5 text-blue-500" />
                                     Mileage Breakdown
                                 </SheetTitle>
@@ -884,19 +905,19 @@ export function BoltTodaySummary({
                                             const platformColor = `var(--color-${platformSlug})`;
 
                                             return (
-                                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-white/5 border border-white/5 group hover:border-white/20 transition-all">
+                                                <div key={idx} className="space-y-2 p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 group hover:border-slate-300 dark:hover:border-white/20 transition-all">
                                                     <div className="flex justify-between items-center">
                                                         <div className="flex items-center gap-2">
                                                             <div
                                                                 className={cn("size-2 rounded-full", `bg-[var(--color-${platformSlug})]`)}
                                                             />
-                                                            <span className="font-bold text-white">{p.platform_name || 'Other'}</span>
+                                                            <span className="font-bold text-slate-900 dark:text-white">{p.platform_name || 'Other'}</span>
                                                         </div>
                                                         <div className="flex items-center gap-3">
                                                             <span className="font-extrabold text-blue-400 text-lg">{p.miles || 0} mi</span>
                                                             <button
                                                                 onClick={() => handleEditPlatform(p)}
-                                                                className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+                                                                className="p-1.5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                                                                 title="Edit Distance"
                                                             >
                                                                 <Edit2 className="size-3" />
@@ -904,26 +925,26 @@ export function BoltTodaySummary({
                                                         </div>
                                                     </div>
                                                     {editingPlatformId === p.id && (
-                                                        <div className="pt-2 mt-2 border-t border-white/5 animate-in fade-in slide-in-from-top-1">
+                                                        <div className="pt-2 mt-2 border-t border-slate-200 dark:border-white/5 animate-in fade-in slide-in-from-top-1">
                                                             <label className="text-[10px] uppercase text-slate-500 font-bold block mb-1">Update Miles</label>
                                                             <div className="flex gap-2">
                                                                 <input
                                                                     type="number"
                                                                     value={platformEditData.miles}
                                                                     onChange={e => setPlatformEditData({ ...platformEditData, miles: e.target.value })}
-                                                                    className="flex-1 bg-slate-900/50 border border-white/10 rounded-lg px-2 py-1 text-sm text-white focus:ring-1 focus:ring-blue-500 outline-none"
+                                                                    className="flex-1 bg-slate-50 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 rounded-lg px-2 py-1 text-sm text-slate-900 dark:text-white focus:ring-1 focus:ring-blue-500 outline-none"
                                                                     placeholder="0"
                                                                 />
                                                                 <button
                                                                     onClick={() => p.id && handleSavePlatformEdit(p.id)}
                                                                     disabled={isSaving}
-                                                                    className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-lg transition-colors disabled:opacity-50"
+                                                                    className="bg-blue-500 hover:bg-blue-600 text-slate-900 dark:text-white text-xs font-bold px-3 py-1 rounded-lg transition-colors disabled:opacity-50"
                                                                 >
                                                                     Save
                                                                 </button>
                                                                 <button
                                                                     onClick={() => setEditingPlatformId(null)}
-                                                                    className="bg-white/5 hover:bg-white/10 text-slate-400 text-xs font-bold px-3 py-1 rounded-lg transition-colors"
+                                                                    className="bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 text-xs font-bold px-3 py-1 rounded-lg transition-colors"
                                                                 >
                                                                     Cancel
                                                                 </button>
@@ -934,13 +955,13 @@ export function BoltTodaySummary({
                                             );
                                         })
                                     ) : (
-                                        <div className="text-center py-20 text-slate-600 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                                        <div className="text-center py-20 text-slate-600 bg-slate-100 dark:bg-white/5 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
                                             No platform data recorded.
                                         </div>
                                     )}
 
                                     <div className="bg-blue-500/10 p-5 rounded-2xl border border-blue-500/20">
-                                        <div className="flex justify-between items-center font-bold text-xl text-white">
+                                        <div className="flex justify-between items-center font-bold text-xl text-slate-900 dark:text-white">
                                             <span>Total Miles</span>
                                             <span className="text-blue-400">{miles.toFixed(1)} mi</span>
                                         </div>
@@ -982,7 +1003,7 @@ export function BoltTodaySummary({
                                     </div>
                                 </div>
                             </TooltipTrigger>
-                            <TooltipContent side="top" className="w-64 p-4 backdrop-blur-3xl bg-slate-950/95 border-white/10 shadow-2xl rounded-2xl">
+                            <TooltipContent side="top" className="w-64 p-4 backdrop-blur-3xl bg-white/95 dark:bg-slate-950/95 border-slate-300 dark:border-white/10 shadow-2xl rounded-2xl">
                                 <div className="space-y-3">
                                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-2">Hours per Platform</p>
                                     <div className="space-y-2">
@@ -991,15 +1012,15 @@ export function BoltTodaySummary({
                                                 <div key={idx} className="flex justify-between items-center group/item">
                                                     <div className="flex items-center gap-2">
                                                         <div className={cn("size-1.5 rounded-full", `bg-[var(--color-${(p.platform_name || 'other').toLowerCase().replace(/\s+/g, '-')})]`)} />
-                                                        <span className="text-xs text-slate-400 font-medium group-hover/item:text-slate-200 transition-colors capitalize">{p.platform_name}</span>
+                                                        <span className="text-xs text-slate-500 dark:text-slate-400 font-medium group-hover/item:text-slate-200 transition-colors capitalize">{p.platform_name}</span>
                                                     </div>
-                                                    <span className="text-xs font-bold text-white">{p.hours || 0}h</span>
+                                                    <span className="text-xs font-bold text-slate-900 dark:text-white">{p.hours || 0}h</span>
                                                 </div>
                                             ))
                                         ) : (
                                             <p className="text-xs text-slate-500">No active sessions logged</p>
                                         )}
-                                        <div className="pt-2 border-t border-white/5 flex justify-between items-center">
+                                        <div className="pt-2 border-t border-slate-200 dark:border-white/5 flex justify-between items-center">
                                             <span className="text-[10px] uppercase font-bold text-slate-500">Total</span>
                                             <span className="text-xs font-black text-indigo-400">{hours.toFixed(1)}h</span>
                                         </div>
