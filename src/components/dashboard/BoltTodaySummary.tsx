@@ -1,8 +1,9 @@
 'use client'
 
-import { DollarSign, TrendingUp, Navigation, Clock, Briefcase, MinusCircle, Edit2, Check, X, ArrowUpRight, Plus, Trash2 } from 'lucide-react';
+import { DollarSign, TrendingUp, Navigation, Clock, Briefcase, MinusCircle, Edit2, Check, X, ArrowUpRight, Plus, Trash2, Calendar as CalendarIcon, RefreshCw } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { calculateHourlyRate, calculateProfitMargin } from '@/utils/calculations';
-import { useState } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import { saveCostOverride, addExpense, deleteExpense, updatePlatformEarning, deletePlatformEarning } from '@/app/dashboard/actions';
 import { PlatformEarning } from '@/app/dashboard/types';
 import { toast } from 'sonner';
@@ -15,6 +16,12 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format, parseISO, isBefore, startOfDay } from 'date-fns';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface TodaySummaryProps {
     gross: number;
@@ -31,6 +38,9 @@ interface TodaySummaryProps {
     fuelCost?: number;
     wearCost?: number;
     insurance?: number;
+    hasEntry?: boolean;
+    selectedDate?: string;
+    activeDates?: string[];
     richEntry?: {
         entry_date?: string;
         platform_earnings?: PlatformEarning[];
@@ -55,8 +65,16 @@ export function BoltTodaySummary({
     fuelCost,
     wearCost,
     insurance,
-    richEntry
+    richEntry,
+    hasEntry,
+    selectedDate,
+    activeDates = []
 }: TodaySummaryProps) {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const [isPending, startTransition] = useTransition();
+
     const [editingField, setEditingField] = useState<string | null>(null);
     const [editValue, setEditValue] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
@@ -64,6 +82,23 @@ export function BoltTodaySummary({
     // Platform Edit State
     const [editingPlatformId, setEditingPlatformId] = useState<string | null>(null);
     const [platformEditData, setPlatformEditData] = useState({ amount: '', tips: '', miles: '', hours: '' });
+
+    // Date Pick State
+    const initialDate = selectedDate ? parseISO(selectedDate) : new Date();
+    const [date, setDate] = useState<Date | undefined>(initialDate);
+
+    const handleDateChange = (newDate: Date | undefined) => {
+        if (!newDate) return;
+        setDate(newDate);
+
+        const formattedDate = format(newDate, 'yyyy-MM-dd');
+        const params = new URLSearchParams(searchParams);
+        params.set('date', formattedDate);
+
+        startTransition(() => {
+            router.push(`${pathname}?${params.toString()}`);
+        });
+    };
 
     const handleEditPlatform = (p: PlatformEarning) => {
         if (!p.id) return;
@@ -190,14 +225,62 @@ export function BoltTodaySummary({
                     <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Daily Summary</h2>
                     <p className="text-xs text-slate-500 font-medium">Real-time performance metrics</p>
                 </div>
-                <div className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-                    <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
-                        {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                    </span>
-                </div>
+
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                                "px-3 py-1.5 h-auto rounded-xl bg-white/5 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-all gap-2",
+                                isPending && "opacity-50 cursor-not-allowed"
+                            )}
+                        >
+                            <CalendarIcon className="size-3.5 text-slate-400" />
+                            <span className="text-xs text-slate-200 font-bold uppercase tracking-wider">
+                                {date ? format(date, 'MMM dd') : format(new Date(), 'MMM dd')}
+                            </span>
+                            {isPending && <RefreshCw className="size-3 animate-spin text-neon-primary" />}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                        className="w-auto p-0 border-white/10 bg-slate-900/95 backdrop-blur-xl"
+                        align="end"
+                        side="top"
+                        sideOffset={10}
+                    >
+                        <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={handleDateChange}
+                            initialFocus
+                            fixedWeeks
+                            showOutsideDays={false}
+                            className="bg-transparent"
+                            modifiers={{
+                                hasEntry: (date) => activeDates.includes(format(date, 'yyyy-MM-dd')),
+                                noEntry: (date) => !activeDates.includes(format(date, 'yyyy-MM-dd')) && isBefore(date, startOfDay(new Date()))
+                            }}
+                            modifiersClassNames={{
+                                hasEntry: "relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:size-1 after:bg-neon-primary after:rounded-full after:shadow-[0_0_5px_#13ec5b]",
+                                noEntry: "relative after:content-[''] after:absolute after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:size-1 after:bg-ruby-500 after:rounded-full after:shadow-[0_0_5px_#ef4444]"
+                            }}
+                            classNames={{
+                                today: "text-neon-primary font-bold"
+                            }}
+                        />
+                    </PopoverContent>
+                </Popover>
             </div>
 
-            <div className="space-y-6">
+            <motion.div
+                key={selectedDate || 'today'}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+            >
                 {/* Hero Card */}
                 <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-3xl p-8 text-white shadow-xl shadow-emerald-500/20 active:scale-[0.99] transition-transform cursor-default">
                     <div className="absolute top-0 right-0 p-4 opacity-20 transform translate-x-4 -translate-y-4">
@@ -208,11 +291,11 @@ export function BoltTodaySummary({
                         <span className="text-2xl font-bold opacity-60">$</span>
                         <p className="text-5xl font-extrabold tracking-tighter">{netProfit.toFixed(2)}</p>
                     </div>
-                    {profitMargin > 0 && (
+                    {calculateProfitMargin(gross, netProfit) > 0 && (
                         <div className="inline-flex items-center gap-2 mt-6 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20">
                             <ArrowUpRight className="size-3" />
                             <span className="text-xs font-bold tracking-tight">
-                                {profitMargin.toFixed(1)}% profit margin
+                                {calculateProfitMargin(gross, netProfit).toFixed(1)}% profit margin
                             </span>
                         </div>
                     )}
@@ -235,10 +318,12 @@ export function BoltTodaySummary({
                                         ${gross.toFixed(2)}
                                     </p>
                                 </div>
-                                <div className="mt-3 h-1 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-emerald-500 transition-all duration-1000"
-                                        {...({ style: { width: `${Math.round((gross / (gross + totalGrandCosts || 1)) * 100)}%` } } as Record<string, unknown>)}
+                                <div className="h-4 w-full bg-slate-900 rounded-full overflow-hidden border border-white/5">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${Math.max(0, Math.min(100, (netProfit / (gross || 1)) * 100))}%` }}
+                                        transition={{ duration: 1, ease: "easeOut" }}
+                                        className="h-full bg-gradient-to-r from-electric-blue to-neon-primary shadow-[0_0_20px_rgba(19,236,91,0.3)]"
                                     />
                                 </div>
                                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -579,9 +664,9 @@ export function BoltTodaySummary({
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                <span className="font-bold text-slate-300 tracking-tight">${fuelCost.toFixed(2)}</span>
+                                                                <span className="font-bold text-slate-300 tracking-tight">${(fuelCost ?? 0).toFixed(2)}</span>
                                                                 <button
-                                                                    onClick={() => { setEditingField('fuel'); setEditValue(fuelCost.toFixed(2)); }}
+                                                                    onClick={() => { setEditingField('fuel'); setEditValue((fuelCost ?? 0).toFixed(2)); }}
                                                                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
                                                                     title="Edit Fuel Cost"
                                                                 >
@@ -618,9 +703,9 @@ export function BoltTodaySummary({
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                <span className="font-bold text-slate-300 tracking-tight">${wearCost.toFixed(2)}</span>
+                                                                <span className="font-bold text-slate-300 tracking-tight">${(wearCost ?? 0).toFixed(2)}</span>
                                                                 <button
-                                                                    onClick={() => { setEditingField('wear'); setEditValue(wearCost.toFixed(2)); }}
+                                                                    onClick={() => { setEditingField('wear'); setEditValue((wearCost ?? 0).toFixed(2)); }}
                                                                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
                                                                     title="Edit Wear &amp; Tear"
                                                                 >
@@ -657,9 +742,9 @@ export function BoltTodaySummary({
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                <span className="font-bold text-slate-300 tracking-tight">${insurance.toFixed(2)}</span>
+                                                                <span className="font-bold text-slate-300 tracking-tight">${(insurance ?? 0).toFixed(2)}</span>
                                                                 <button
-                                                                    onClick={() => { setEditingField('insurance'); setEditValue(insurance.toFixed(2)); }}
+                                                                    onClick={() => { setEditingField('insurance'); setEditValue((insurance ?? 0).toFixed(2)); }}
                                                                     className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-white/10 rounded-lg text-slate-500"
                                                                     title="Edit Commercial Insurance"
                                                                 >
@@ -817,8 +902,8 @@ export function BoltTodaySummary({
                         )}
                     </div>
                 </div>
-            </div>
-        </div>
+            </motion.div >
+        </div >
     )
 }
 

@@ -14,6 +14,12 @@ This document tracks the long-term vision and future feature ideas for the GigMi
 - [ ] **Goal Tracking**: Set and track weekly/monthly net profit targets.
 - [ ] **Fuel Price Integration**: Automatically fetch local gas prices based on user location.
 
+## Mobile App & Native Experience 📱
+- [ ] **App Store & Play Store Launch**: Implement Capacitor/Native wrapper for a true mobile experience.
+- [ ] **Push Notifications**: Real-time alerts for earnings, gas prices, and tax deadlines.
+- [ ] **Biometric Auth**: FaceID/TouchID integration for faster, secure access.
+- [ ] **Haptic Feedback**: Premium tactile response for key user interactions.
+
 ## Technical Debt & Polish
 - [ ] **Refactor Inline Styles**: Move remaining dynamic UI styles in `BoltTodaySummary.tsx` to a more robust system (e.g., CSS Variables or Tailwind arbitrary values).
 - [ ] **Test Coverage**: Increase unit tests for core financial logic in `utils/calculations.ts`.

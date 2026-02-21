@@ -133,7 +133,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 className="h-14 w-full justify-between rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/10 shadow-premium transition-all active:scale-[0.98] group/switcher"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 shadow-inner group-hover/switcher:bg-emerald-500/20 transition-colors">
+                                    <div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-neon-primary/10 text-neon-primary shadow-inner group-hover/switcher:bg-neon-primary/20 transition-colors">
                                         <Car className="size-5" />
                                     </div>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
@@ -162,16 +162,16 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 {vehicles.map((v) => (
                                     <div
                                         key={v.id}
-                                        className={`rounded-xl py-2.5 px-3 transition-colors cursor-pointer flex items-center justify-between group/item ${v.id === activeVehicleId ? 'bg-emerald-500/10' : 'hover:bg-white/5'}`}
+                                        className={`rounded-xl py-2.5 px-3 transition-colors cursor-pointer flex items-center justify-between group/item ${v.id === activeVehicleId ? 'bg-neon-primary/10' : 'hover:bg-white/5'}`}
                                         onClick={() => handleSwitchVehicle(v.id)}
                                     >
                                         <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
                                             <div className="flex items-center gap-2 w-full">
-                                                <span className={`font-bold transition-colors truncate ${v.id === activeVehicleId ? 'text-emerald-500' : 'text-slate-200'}`}>
+                                                <span className={`font-bold transition-colors truncate ${v.id === activeVehicleId ? 'text-neon-primary' : 'text-slate-200'}`}>
                                                     {v.make} {v.model}
                                                 </span>
                                                 {v.id === activeVehicleId && (
-                                                    <div className="size-1.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                                    <div className="size-1.5 shrink-0 rounded-full bg-neon-primary shadow-[0_0_8px_rgba(19,236,91,0.5)]" />
                                                 )}
                                             </div>
                                             <span className="text-[10px] text-slate-500 font-medium tracking-wide italic truncate">
@@ -211,12 +211,12 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 tooltip={item.title}
                                 isActive={pathname === item.url}
                                 className={`h-11 rounded-xl transition-all duration-300 group ${pathname === item.url
-                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold shadow-inner'
+                                    ? 'bg-neon-primary/10 text-neon-primary font-semibold shadow-inner'
                                     : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-white/5'
                                     }`}
                             >
                                 <Link href={item.url} className="flex items-center gap-3">
-                                    <div className={`p-1 rounded-lg transition-colors ${pathname === item.url ? 'bg-emerald-500 text-white shadow-md' : 'group-hover:bg-white/10'}`}>
+                                    <div className={`p-1 rounded-lg transition-colors ${pathname === item.url ? 'bg-neon-primary text-navy-dark shadow-md' : 'group-hover:bg-white/10'}`}>
                                         <item.icon className="size-4" />
                                     </div>
                                     <span className="text-sm tracking-tight">{item.title}</span>
@@ -264,17 +264,16 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton
-                                    size="lg"
-                                    className="data-[state=open]:bg-white/10 data-[state=open]:text-white rounded-2xl border border-white/5 shadow-premium hover:shadow-emerald-500/5 transition-all hover:scale-[1.02] bg-white/5 group"
+                                    className="data-[state=open]:bg-white/10 data-[state=open]:text-white rounded-2xl border border-white/5 shadow-premium hover:shadow-neon-primary/5 transition-all hover:scale-[1.02] bg-white/5 group"
                                 >
-                                    <Avatar className="h-9 w-9 rounded-xl shadow-lg border-2 border-emerald-500/20">
-                                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-bold text-xs">
+                                    <Avatar className="h-9 w-9 rounded-xl shadow-lg border-2 border-neon-primary/20">
+                                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-neon-primary to-neon-primary/80 text-navy-dark font-bold text-xs">
                                             {user.full_name?.charAt(0) || "U"}
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-xs leading-tight group-data-[collapsible=icon]:hidden ml-2">
                                         <span className="truncate font-bold text-slate-900 dark:text-white">{user.full_name}</span>
-                                        <span className="truncate text-[10px] text-emerald-500 font-semibold tracking-tight">Active Professional</span>
+                                        <span className="truncate text-[10px] text-neon-primary font-semibold tracking-tight">Active Professional</span>
                                     </div>
                                     <ChevronRight className="ml-auto size-4 text-slate-500 group-data-[collapsible=icon]:hidden transition-transform group-hover:translate-x-0.5" />
                                 </SidebarMenuButton>
@@ -288,7 +287,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 <DropdownMenuLabel className="p-2 font-normal">
                                     <div className="flex items-center gap-3 px-1 py-1.5 text-left text-sm">
                                         <Avatar className="h-10 w-10 rounded-xl">
-                                            <AvatarFallback className="rounded-xl bg-emerald-500/20 text-emerald-500 font-bold">
+                                            <AvatarFallback className="rounded-xl bg-neon-primary/20 text-neon-primary font-bold">
                                                 {user.full_name?.charAt(0) || "U"}
                                             </AvatarFallback>
                                         </Avatar>
@@ -300,7 +299,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator className="bg-white/5 mx-2 my-2" />
                                 <DropdownMenuGroup className="space-y-1">
-                                    <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer" asChild>
+                                    <DropdownMenuItem className="rounded-xl focus:bg-neon-primary/10 focus:text-white py-2.5 transition-colors cursor-pointer" asChild>
                                         <Link href="/dashboard/settings/profile" className="flex items-center w-full">
                                             <div className="p-2 rounded-lg bg-white/5 mr-3">
                                                 <User className="size-4" />

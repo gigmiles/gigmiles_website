@@ -1,23 +1,22 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { startOfDay, format } from 'date-fns'
+import { startOfDay, format, parseISO, subDays } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { calculateFinancials } from '@/utils/calculations'
 import { getGasPrice } from '@/utils/api/external'
 import { PlatformEarning, Expense } from './types'
 
-export async function getDashboardStats() {
+export async function getDashboardStats(dateStr?: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null
 
-    const today = new Date()
-    const todayStr = format(today, 'yyyy-MM-dd')
-    const sevenDaysAgo = startOfDay(new Date())
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
-    const sevenDaysAgoStr = format(sevenDaysAgo, 'yyyy-MM-dd')
+    const today = dateStr ? parseISO(dateStr) : new Date()
+    const targetDateStr = dateStr || format(new Date(), 'yyyy-MM-dd')
+    const startOfRange = subDays(startOfDay(today), 6)
+    const startOfRangeStr = format(startOfRange, 'yyyy-MM-dd')
 
     // 1. Parallel fetch for all core requirements
     const [profileRes, vehiclesRes, todayEntryRes, weeklyEntriesRes] = await Promise.all([
@@ -30,7 +29,7 @@ export async function getDashboardStats() {
             gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
-        `).eq('user_id', user.id).eq('date', todayStr).single(),
+        `).eq('user_id', user.id).eq('date', targetDateStr).single(),
         supabase.from('daily_entries').select(`
             id,
             date,
@@ -38,7 +37,7 @@ export async function getDashboardStats() {
             gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
-        `).eq('user_id', user.id).gte('date', sevenDaysAgoStr).lte('date', todayStr).order('date', { ascending: true })
+        `).eq('user_id', user.id).gte('date', startOfRangeStr).lte('date', targetDateStr).order('date', { ascending: true })
     ])
 
     const profile = profileRes.data
@@ -128,7 +127,7 @@ export async function getDashboardStats() {
     const entryMap = new Map(weeklyEntries.map(e => [e.date, e]))
 
     for (let i = 0; i < 7; i++) {
-        const d = new Date(sevenDaysAgo)
+        const d = new Date(startOfRange)
         d.setDate(d.getDate() + i)
         const dateStr = format(d, 'yyyy-MM-dd')
         const entry = entryMap.get(dateStr)
@@ -257,7 +256,7 @@ export async function getDashboardStats() {
             gasPrice: currentGasPrice,
             richEntry: todayEntry ? {
                 ...todayEntry,
-                entry_date: todayStr,
+                entry_date: targetDateStr,
                 total_earnings: todayGross,
                 total_tips: todayTips,
                 total_miles: todayMiles,
@@ -653,4 +652,23 @@ export async function deletePlatformEarning(id: string) {
 
     revalidatePath('/dashboard')
     return { success: true }
+}
+
+export async function getDatesWithEntries() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return []
+
+    const { data, error } = await supabase
+        .from('daily_entries')
+        .select('date')
+        .eq('user_id', user.id)
+
+    if (error) {
+        console.error("Error fetching dates with entries:", error)
+        return []
+    }
+
+    return data.map(d => d.date)
 }

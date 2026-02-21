@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { getDashboardStats, getRecentEntries } from './actions'
+import { getDashboardStats, getRecentEntries, getDatesWithEntries } from './actions'
 import Link from 'next/link'
 import {
     Car,
@@ -14,15 +14,21 @@ import { RecentEntries } from '@/components/dashboard/RecentEntries'
 import { VehicleValueCard } from '@/components/dashboard/VehicleValueCard'
 import { createClient } from '@/utils/supabase/server'
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+    searchParams
+}: {
+    searchParams: Promise<{ date?: string }>
+}) {
+    const { date } = await searchParams
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     // Parallel fetching
-    const [stats, vehicleResult, recentEntries] = await Promise.all([
-        getDashboardStats(),
+    const [stats, vehicleResult, recentEntries, activeDates] = await Promise.all([
+        getDashboardStats(date),
         user ? supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).single() : Promise.resolve({ data: null }),
-        getRecentEntries(5)
+        getRecentEntries(5),
+        getDatesWithEntries()
     ])
 
     const vehicle = vehicleResult?.data
@@ -76,6 +82,9 @@ export default async function DashboardPage() {
                         wearCost={today.wearCost}
                         insurance={today.dailyInsurance}
                         richEntry={today.richEntry || undefined}
+                        hasEntry={today.hasEntry}
+                        selectedDate={date}
+                        activeDates={activeDates}
                     />
                     <EarningsChart data={chartData} />
                 </div>
