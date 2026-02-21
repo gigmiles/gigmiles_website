@@ -100,6 +100,11 @@ export function BoltTodaySummary({
     const [editValue, setEditValue] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
 
+    // Net Goal State
+    const [netGoal, setNetGoal] = useState<number>(250);
+    const [isEditingGoal, setIsEditingGoal] = useState(false);
+    const [goalInputValue, setGoalInputValue] = useState('250');
+
     // Platform Edit State
     const [editingPlatformId, setEditingPlatformId] = useState<string | null>(null);
     const [platformEditData, setPlatformEditData] = useState({ amount: '', tips: '', miles: '', hours: '' });
@@ -242,6 +247,14 @@ export function BoltTodaySummary({
         }
     };
 
+    const handleSaveGoal = () => {
+        const val = parseFloat(goalInputValue);
+        if (!isNaN(val) && val > 0) {
+            setNetGoal(val);
+        }
+        setIsEditingGoal(false);
+    };
+
     return (
         <div className="glass-card p-6 border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden group">
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/5 blur-[100px] rounded-full transition-all group-hover:bg-emerald-500/10 pointer-events-none" />
@@ -346,11 +359,94 @@ export function BoltTodaySummary({
                         <p className="text-5xl font-extrabold tracking-tighter">{netProfit.toFixed(2)}</p>
                     </div>
                     {calculateProfitMargin(netProfit, gross) > 0 && (
-                        <div className="inline-flex items-center gap-2 mt-6 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-slate-300 dark:border-white/20">
-                            <ArrowUpRight className="size-3" />
-                            <span className="text-xs font-bold tracking-tight">
-                                {calculateProfitMargin(netProfit, gross).toFixed(1)}% profit margin
-                            </span>
+                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mt-8">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/20 w-fit">
+                                <ArrowUpRight className="size-3" />
+                                <span className="text-xs font-bold tracking-tight">
+                                    {calculateProfitMargin(netProfit, gross).toFixed(1)}% profit margin
+                                </span>
+                            </div>
+
+                            <div className="flex-1 max-w-[200px] w-full">
+                                <div className="flex justify-between items-baseline mb-1.5 px-0.5">
+                                    <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-60">Goal Progress</span>
+                                    <span className="text-[10px] font-bold font-mono">
+                                        {Math.round((netProfit / netGoal) * 100)}%
+                                    </span>
+                                </div>
+                                <div className={cn(
+                                    "h-2.5 w-full bg-black/20 rounded-full p-[1.5px] relative transition-all duration-500",
+                                    netProfit >= netGoal && "ring-2 ring-yellow-400/50 shadow-lg"
+                                )}>
+                                    {/* Success Glow - Ultra High Contrast (Yellow on Green) */}
+                                    {netProfit >= netGoal && (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: [0.2, 0.6, 0.2] }}
+                                            transition={{ repeat: Infinity, duration: 1.5 }}
+                                            className="absolute -inset-8 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none"
+                                        />
+                                    )}
+
+                                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{
+                                                width: `${Math.min(100, (netProfit / netGoal) * 100)}%`,
+                                                backgroundColor: netProfit >= netGoal ? "#059669" : "#facc15"
+                                            }}
+                                            transition={{
+                                                width: { duration: 1.5, ease: "easeOut" },
+                                                backgroundColor: { duration: 1 }
+                                            }}
+                                            className={cn(
+                                                "h-full rounded-full relative z-10",
+                                                netProfit >= netGoal && "animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"
+                                            )}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mt-1.5 flex justify-between items-center">
+                                    {netProfit >= netGoal ? (
+                                        <motion.span
+                                            initial={{ scale: 0.8, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            className="text-[8px] font-black bg-white text-emerald-600 px-1.5 py-0.5 rounded shadow-sm tracking-tighter"
+                                        >
+                                            GOAL REACHED! 🏆
+                                        </motion.span>
+                                    ) : (
+                                        <div />
+                                    )}
+
+                                    {isEditingGoal ? (
+                                        <div className="flex items-center gap-1.5 bg-white/10 rounded-lg px-2 py-0.5 border border-white/10">
+                                            <span className="text-[8px] font-bold text-white/50 uppercase">Goal:</span>
+                                            <input
+                                                type="number"
+                                                value={goalInputValue}
+                                                onChange={(e) => setGoalInputValue(e.target.value)}
+                                                onBlur={handleSaveGoal}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleSaveGoal()}
+                                                className="w-12 bg-transparent border-none text-white text-[10px] font-bold outline-none focus:ring-0"
+                                                autoFocus
+                                                placeholder="250"
+                                                aria-label="Daily net profit goal"
+                                                title="Set your daily net profit goal"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <button
+                                            onClick={() => { setIsEditingGoal(true); setGoalInputValue(netGoal.toString()); }}
+                                            className="group/goal text-[10px] font-bold tracking-wider"
+                                        >
+                                            <span className="opacity-60 group-hover/goal:opacity-100 transition-opacity">${netProfit.toFixed(0)}</span>
+                                            <span className="mx-1 opacity-20">/</span>
+                                            <span className="text-white underline underline-offset-2 decoration-white/20 hover:decoration-white transition-all">${netGoal}</span>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -373,27 +469,25 @@ export function BoltTodaySummary({
                                     </p>
                                 </div>
 
-                                {/* Hover Breakdown Overlay */}
-                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-30">
-                                    <div className="flex items-center gap-3 text-[10px] font-bold tracking-wider">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                                            <span className="text-slate-500 dark:text-slate-400">GROSS</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                            <span className="text-slate-500 dark:text-slate-400">NET</span>
-                                        </div>
+                                {/* Platform Breakdown Summary */}
+                                <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/5">
+                                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                                        {platformEarnings.length > 0 ? (
+                                            platformEarnings.map((p, idx) => (
+                                                <div key={idx} className="flex items-center gap-1.5">
+                                                    <div className={cn(
+                                                        "size-1.5 rounded-full",
+                                                        `bg-[var(--color-${(p.platform_name || 'Other').toLowerCase().replace(/\s+/g, '-')})]`
+                                                    )} />
+                                                    <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                                                        {p.platform_name}: <span className="text-slate-700 dark:text-slate-200">${((p.amount || 0) + (p.tips || 0)).toFixed(0)}</span>
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <span className="text-[10px] font-bold text-slate-500/50 uppercase tracking-widest italic">No Data logged</span>
+                                        )}
                                     </div>
-                                </div>
-
-                                <div className="h-4 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${Math.max(0, Math.min(100, (netProfit / (gross || 1)) * 100))}%` }}
-                                        transition={{ duration: 1, ease: "easeOut" }}
-                                        className="h-full bg-gradient-to-r from-electric-blue to-neon-primary shadow-[0_0_20px_rgba(19,236,91,0.3)]"
-                                    />
                                 </div>
                             </button>
                         </SheetTrigger>
@@ -1034,4 +1128,3 @@ export function BoltTodaySummary({
         </div>
     )
 }
-

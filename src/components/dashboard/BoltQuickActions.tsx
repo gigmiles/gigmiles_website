@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, RefreshCw } from 'lucide-react'
+import { Plus, RefreshCw, Play, Pause } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -162,7 +162,11 @@ export function BoltQuickActions() {
                         className="w-full h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 hover:border-amber-500/30 text-amber-600 dark:text-amber-500 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
                     >
                         <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-500 group-hover/btn:scale-110 transition-transform">
-                            <RefreshCw className={`size-5 ${isShiftPending ? 'animate-spin' : ''}`} />
+                            {isShiftPending ? (
+                                <RefreshCw className="size-5 animate-spin" />
+                            ) : (
+                                <Pause className="size-5 fill-current" />
+                            )}
                         </div>
                         End Shift
                     </Button>
@@ -175,7 +179,11 @@ export function BoltQuickActions() {
                         className="w-full h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/30 text-blue-600 dark:text-blue-500 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
                     >
                         <div className="p-1.5 rounded-lg bg-blue-500/20 text-blue-600 dark:text-blue-500 group-hover/btn:scale-110 transition-transform">
-                            <RefreshCw className={`size-5 ${isShiftPending ? 'animate-spin' : ''}`} />
+                            {isShiftPending ? (
+                                <RefreshCw className="size-5 animate-spin" />
+                            ) : (
+                                <Play className="size-5 fill-current" />
+                            )}
                         </div>
                         Start Shift
                     </Button>

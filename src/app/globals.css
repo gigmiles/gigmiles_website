@@ -64,6 +64,20 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+
+  @keyframes gradient-x {
+
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  --animation-gradient-x: gradient-x 3s ease infinite;
 }
 
 :root {
@@ -192,6 +206,13 @@ body {
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-glass);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+
+@utility animate-gradient-x {
+  animation: var(--animation-gradient-x);
 }
 
 @utility glass-card-hover {
