@@ -4,6 +4,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { TrendingUp } from "lucide-react"
+import { memo } from "react"
 
 interface EarningsChartProps {
     data: {
@@ -24,7 +25,7 @@ const chartConfig = {
     },
 }
 
-export function EarningsChart({ data }: EarningsChartProps) {
+export const EarningsChart = memo(function EarningsChart({ data }: EarningsChartProps) {
     // Analytics calculations
     const totalNet = data.reduce((acc, curr) => acc + curr.net, 0)
     const growth = data.length >= 2 ? ((data[data.length - 1].net - data[0].net) / (data[0].net || 1) * 100).toFixed(1) : 0
@@ -91,8 +92,8 @@ export function EarningsChart({ data }: EarningsChartProps) {
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
-                            minTickGap={32}
-                            tick={{ fill: 'currentColor', opacity: 0.5, fontSize: 10, fontWeight: 600 }}
+                            minTickGap={10}
+                            tick={{ fill: 'currentColor', opacity: 0.7, fontSize: 10, fontWeight: 700 }}
                         />
                         <YAxis
                             tickLine={false}
@@ -142,4 +143,4 @@ export function EarningsChart({ data }: EarningsChartProps) {
             </div>
         </Card>
     )
-}
+})

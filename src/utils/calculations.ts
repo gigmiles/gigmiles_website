@@ -33,8 +33,11 @@ interface CalculationInput {
     monthlyInsurance?: number
     monthlyLease?: number
     paymentCycle?: string // 'daily', 'weekly', 'monthly'
+    insuranceCycle?: string // 'daily', 'weekly', 'monthly'
     fuelType?: 'gasoline' | 'electric'
     electricityPrice?: number // $/kWh
+    platformFee?: number
+    platformFeeCycle?: string // 'daily', 'weekly'
 }
 
 export function calculateFinancials({
@@ -52,8 +55,11 @@ export function calculateFinancials({
     monthlyInsurance = 0,
     monthlyLease = 0,
     paymentCycle = 'monthly',
+    insuranceCycle = 'monthly',
     fuelType = 'gasoline',
-    electricityPrice = 0.15
+    electricityPrice = 0.15,
+    platformFee = 0,
+    platformFeeCycle = 'daily'
 }: CalculationInput) {
     // Ensure numeric parity (Sanitize inputs)
     const safeMiles = Number(miles) || 0
@@ -62,29 +68,39 @@ export function calculateFinancials({
     const safeGross = Number(grossEarnings) || 0
     const safeExpenses = Number(expenses) || 0
 
-    // 1. Amortized Fixed Costs (Daily/Weekly/Monthly to Daily)
+    // 1. Amortized Fixed Costs (Daily/Weekly/Monthly/Yearly to Daily)
     const safeMonthlyInsurance = Number(monthlyInsurance) || 0
     const safeMonthlyLease = Number(monthlyLease) || 0
 
-    let dailyLease = 0
-    if (paymentCycle === 'daily') {
-        dailyLease = safeMonthlyLease
-    } else if (paymentCycle === 'weekly') {
-        dailyLease = safeMonthlyLease / 7
-    } else {
-        dailyLease = safeMonthlyLease / 30
+    const getDailyValue = (val: number, cycle: string) => {
+        if (cycle === 'daily') return val
+        if (cycle === 'weekly') return val / 7
+        if (cycle === 'yearly') return val / 365
+        return val / 30 // monthly
     }
 
-    const dailyFixedCosts = dailyLease + (safeMonthlyInsurance / 30)
+    const dailyLease = getDailyValue(safeMonthlyLease, paymentCycle)
+    const dailyInsurance = getDailyValue(safeMonthlyInsurance, insuranceCycle)
+    const dailyPlatformFee = getDailyValue(Number(platformFee) || 0, platformFeeCycle)
 
-    // 2. Fuel Cost
-    // For Gasoline: (Miles / MPG) * GasPrice
-    // For Electric: (Miles / Efficiency_mi_kWh) * ElectricityPrice
-    const fuelCost = manualFuel !== undefined
-        ? Number(manualFuel)
-        : (fuelType === 'electric'
-            ? (safeMpg > 0 ? (safeMiles / safeMpg) * (Number(electricityPrice) || 0.15) : 0) // Note: For EV, 'safeMpg' holds the efficiency (mi/kWh)
-            : (safeMpg > 0 ? (safeMiles / safeMpg) * safeGasPrice : 0))
+    const dailyFixedCosts = dailyLease + dailyInsurance + dailyPlatformFee
+
+    // 2. Fuel Cost (Separated by Gas vs Electric)
+    let gasCost = 0
+    let electricCost = 0
+
+    if (manualFuel !== undefined) {
+        if (fuelType === 'electric') electricCost = Number(manualFuel)
+        else gasCost = Number(manualFuel)
+    } else {
+        if (fuelType === 'electric') {
+            electricCost = safeMpg > 0 ? (safeMiles / safeMpg) * (Number(electricityPrice) || 0.15) : 0
+        } else {
+            gasCost = safeMpg > 0 ? (safeMiles / safeMpg) * safeGasPrice : 0
+        }
+    }
+
+    const fuelCost = gasCost + electricCost
 
     // 3. Tax Logic
     const mileageDeduction = safeMiles * IRS_STANDARD_MILEAGE_RATE_2025
@@ -112,6 +128,8 @@ export function calculateFinancials({
         grossEarnings: safeGross,
         cashExpenses: safeExpenses,
         fuelCost,
+        gasCost,
+        electricCost,
         wearCost,
         insuranceCost: directInsurance + dailyFixedCosts,
         dailyFixedCosts,
@@ -133,6 +151,22 @@ export function calculateHourlyRate(netProfit: number, hours: number): number {
 export function calculatePerMile(amount: number, miles: number): number {
     if (miles === 0) return 0
     return Number((amount / miles).toFixed(2))
+}
+
+export function formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount)
+}
+
+export function formatNumber(amount: number, decimals: number = 2): string {
+    return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+    }).format(amount)
 }
 
 

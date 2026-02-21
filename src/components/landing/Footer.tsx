@@ -8,7 +8,9 @@ export function Footer() {
             <div className="container mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-20">
                     <div className="col-span-1 md:col-span-1 space-y-6">
-                        <Logo />
+                        <Link href="/" className="transition-transform active:scale-95">
+                            <Logo />
+                        </Link>
                         <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
                             The ultimate financial dashboard for the future of work. Built for drivers, shoppers, and couriers.
                         </p>

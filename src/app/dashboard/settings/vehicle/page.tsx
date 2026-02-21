@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { VehicleSettingsForm } from './form'
 
 export default async function VehicleSettingsPage() {
@@ -21,14 +22,15 @@ export default async function VehicleSettingsPage() {
     return (
         <div className="max-w-3xl space-y-8 animate-fade-in pb-20">
             <div className="flex flex-col gap-4">
-                <Link href="/dashboard/settings" className="text-muted-foreground hover:text-slate-900 dark:hover:text-slate-100 flex items-center gap-1 text-sm transition-colors w-fit">
-                    <ChevronLeft className="size-4" />
-                    Back to Settings
-                </Link>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-4 mb-8">
+                    <Link href="/dashboard/settings">
+                        <Button variant="ghost" className="rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 font-bold">
+                            ← Back to Settings
+                        </Button>
+                    </Link>
                     <div>
-                        <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Vehicle Fleet</h1>
-                        <p className="text-muted-foreground">Manage multiple vehicles and operating costs.</p>
+                        <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Vehicle Settings</h1>
+                        <p className="mt-2 text-muted-foreground">Manage your car fleet and cost baselines.</p>
                     </div>
                 </div>
             </div>

@@ -35,8 +35,8 @@ export async function GET(request: Request) {
         const { error } = await supabase.auth.exchangeCodeForSession(code)
         if (!error) {
             const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || origin
-            // Ensure no double slashes and redirect to dashboard by default
-            const redirectUrl = new URL(next === '/' ? '/dashboard' : next, baseUrl)
+            // Ensure no double slashes and redirect to welcome by default
+            const redirectUrl = new URL(next === '/' ? '/welcome' : next, baseUrl)
             return NextResponse.redirect(redirectUrl.toString())
         }
     }

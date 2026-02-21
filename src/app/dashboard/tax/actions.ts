@@ -1,3 +1,5 @@
+'use server'
+
 import { createClient } from '@/utils/supabase/server'
 import { calculateFinancials } from '@/utils/calculations'
 import { format } from 'date-fns'
@@ -86,6 +88,8 @@ export async function getTaxOverview() {
             name: q.name,
             due: q.due,
             estimatedTax: financials.estimatedTax,
+            estimatedFederalTax: financials.estimatedFederalTax,
+            estimatedStateTax: financials.estimatedStateTax,
             paid: paidAmount,
             remaining: Math.max(0, financials.estimatedTax - paidAmount),
             isCurrent: isDateInQuarter(new Date(), q.start, q.end)
@@ -120,3 +124,63 @@ export async function addTaxPayment(quarter: number, amount: number) {
     if (error) throw error
     return { success: true }
 }
+
+export async function getTaxForDateRange(startDate: string, endDate: string) {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return null
+
+    // 1. Get User Profile for State Code
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('state_code')
+        .eq('id', user.id)
+        .single()
+
+    const stateCode = profile?.state_code || 'DEFAULT'
+
+    // 2. Fetch Entries for Date Range
+    const { data: entries } = await supabase
+        .from('daily_entries')
+        .select(`
+      date,
+      platform_earnings ( amount, tips, miles ),
+      expenses ( amount )
+    `)
+        .eq('user_id', user.id)
+        .gte('date', startDate)
+        .lte('date', endDate)
+
+    if (!entries) return null
+
+    let gross = 0
+    let expenses = 0
+    let miles = 0
+
+    entries.forEach((e) => {
+        (e.platform_earnings as unknown as PlatformEarning[]).forEach((p) => {
+            gross += (p.amount || 0) + (p.tips || 0)
+            miles += (p.miles || 0)
+        })
+            ; (e.expenses as unknown as Expense[]).forEach((ex) => {
+                expenses += (ex.amount || 0)
+            })
+    })
+
+    const financials = calculateFinancials({
+        grossEarnings: gross,
+        expenses,
+        miles,
+        stateCode
+    })
+
+    return {
+        gross,
+        expenses,
+        miles,
+        estimatedTax: financials.estimatedTax,
+        netProfit: financials.netProfit
+    }
+}
+

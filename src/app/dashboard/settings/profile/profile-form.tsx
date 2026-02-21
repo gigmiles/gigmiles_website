@@ -35,6 +35,39 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
     const [isAddingCustom, setIsAddingCustom] = useState(false)
     const [customPlatform, setCustomPlatform] = useState('')
 
+    // Location State for Auto-fill
+    const [zipCode, setZipCode] = useState(profile?.zip_code || '')
+    const [stateCode, setStateCode] = useState(profile?.state_code || '')
+    const [city, setCity] = useState(profile?.city || '')
+    const [isLookingUp, setIsLookingUp] = useState(false)
+
+    // Baseline Preview State
+    const [selectedBaselineVehicleId, setSelectedBaselineVehicleId] = useState<string | null>(primaryVehicle?.id || (vehicles?.[0]?.id || null))
+    const selectedBaselineVehicle = vehicles.find(v => v.id === selectedBaselineVehicleId) || primaryVehicle
+
+    const handleZipChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value
+        setZipCode(val)
+
+        if (val.length === 5) {
+            setIsLookingUp(true)
+            try {
+                const res = await fetch(`https://api.zippopotam.us/us/${val}`)
+                if (res.ok) {
+                    const data = await res.json()
+                    const place = data.places[0]
+                    setCity(place['place name'])
+                    setStateCode(place['state abbreviation'])
+                    toast.success('Location updated from ZIP')
+                }
+            } catch (err) {
+                console.error('Zip lookup failed:', err)
+            } finally {
+                setIsLookingUp(false)
+            }
+        }
+    }
+
     const togglePlatform = async (name: string) => {
         const newPlatforms = platforms.includes(name)
             ? platforms.filter(p => p !== name)
@@ -66,12 +99,12 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
         try {
             const result = await updateProfile(formData)
             if (result?.success) {
-                toast.success('Profil güncellendi!')
+                toast.success('Profile updated!')
             } else {
-                toast.error('Giriş başarısız: ' + (result?.error || 'Bilinmeyen hata'))
+                toast.error('Update failed: ' + (result?.error || 'Unknown error'))
             }
         } catch {
-            toast.error('Bir hata oluştu')
+            toast.error('An error occurred while updating')
         } finally {
             setIsLoading(false)
         }
@@ -93,24 +126,34 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
                         <Input
                             name="state_code"
                             label="State Code (e.g. CA)"
-                            defaultValue={profile?.state_code || ''}
+                            value={stateCode}
+                            onChange={(e) => setStateCode(e.target.value.toUpperCase())}
                             placeholder="CA"
                             maxLength={2}
                             required
                         />
-                        <Input
-                            name="zip_code"
-                            label="ZIP Code"
-                            defaultValue={profile?.zip_code || ''}
-                            placeholder="90001"
-                            required
-                        />
+                        <div className="relative">
+                            <Input
+                                name="zip_code"
+                                label="ZIP Code"
+                                value={zipCode}
+                                onChange={handleZipChange}
+                                placeholder="90001"
+                                required
+                            />
+                            {isLookingUp && (
+                                <div className="absolute right-3 top-[34px] animate-spin">
+                                    <Loader2 className="size-4 text-emerald-500" />
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <Input
                         name="city"
                         label="City"
-                        defaultValue={profile?.city || ''}
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
                         placeholder="Los Angeles"
                         required
                     />
@@ -209,22 +252,26 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
                 <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-border/50 shadow-premium">
                     <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                         <CreditCard className="size-4" />
-                        Financial Baseline
+                        Financial Baseline {selectedBaselineVehicle?.id !== primaryVehicle?.id && <span className="text-[10px] text-amber-500 lowercase font-normal">(Preview)</span>}
                     </h3>
 
-                    {primaryVehicle ? (
+                    {selectedBaselineVehicle ? (
                         <div className="space-y-4">
                             <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
-                                <span className="text-xs text-muted-foreground">Ownership</span>
-                                <span className="text-xs font-bold capitalize text-slate-900 dark:text-white">{primaryVehicle.ownership_type || 'Owned'}</span>
+                                <span className="text-xs text-muted-foreground mr-1">Vehicle</span>
+                                <span className="text-[10px] font-bold text-slate-900 dark:text-white truncate max-w-[120px]">{selectedBaselineVehicle.year} {selectedBaselineVehicle.make} {selectedBaselineVehicle.model}</span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
-                                <span className="text-xs text-muted-foreground capitalize">{primaryVehicle.payment_cycle || 'Monthly'} Payment</span>
-                                <span className="text-xs font-bold text-slate-900 dark:text-white">${primaryVehicle.monthly_payment || 0}</span>
+                                <span className="text-xs text-muted-foreground mr-1">Ownership</span>
+                                <span className="text-xs font-bold capitalize text-slate-900 dark:text-white">{selectedBaselineVehicle.ownership_type || 'Owned'}</span>
                             </div>
                             <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
-                                <span className="text-xs text-muted-foreground">Monthly Insurance</span>
-                                <span className="text-xs font-bold text-slate-900 dark:text-white">${primaryVehicle.monthly_insurance || 0}</span>
+                                <span className="text-xs text-muted-foreground mr-1 capitalize">{selectedBaselineVehicle.payment_cycle || 'Monthly'} Payment</span>
+                                <span className="text-xs font-bold text-slate-900 dark:text-white">${selectedBaselineVehicle.monthly_payment || 0}</span>
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
+                                <span className="text-xs text-muted-foreground mr-1">Monthly Insurance</span>
+                                <span className="text-xs font-bold text-slate-900 dark:text-white">${selectedBaselineVehicle.monthly_insurance || 0}</span>
                             </div>
                             <Link
                                 href="/dashboard/settings/vehicle"
@@ -254,7 +301,16 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
 
                     <div className="space-y-2">
                         {vehicles?.map(v => (
-                            <div key={v.id} className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-white/5 rounded-xl">
+                            <div
+                                key={v.id}
+                                onClick={() => setSelectedBaselineVehicleId(v.id)}
+                                className={cn(
+                                    "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all border outline-none",
+                                    selectedBaselineVehicleId === v.id
+                                        ? "bg-emerald-500/10 border-emerald-500/30 shadow-sm"
+                                        : "bg-slate-50 dark:bg-white/5 border-transparent hover:border-border/50"
+                                )}
+                            >
                                 <Car className={`size-4 ${v.is_primary ? 'text-emerald-500' : 'text-slate-400'}`} />
                                 <div className="flex-1 overflow-hidden">
                                     <p className="text-xs font-bold truncate">{v.year} {v.make}</p>

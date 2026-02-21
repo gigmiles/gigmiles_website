@@ -14,6 +14,7 @@ import {
     Car,
     ChevronsUpDown,
     Trash2,
+    HelpCircle,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -80,6 +81,11 @@ const secondaryNav = [
         url: "/dashboard/settings",
         icon: Settings,
     },
+    {
+        title: "Support",
+        url: "/dashboard/support",
+        icon: HelpCircle,
+    },
 ];
 
 export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
@@ -122,7 +128,9 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
             className="border-r border-border/10 bg-background/40 backdrop-blur-xl overflow-hidden"
         >
             <SidebarHeader className="h-auto border-b border-border/10 p-4 bg-transparent flex flex-col gap-4">
-                <Logo className="px-2" />
+                <Link href="/dashboard" className="transition-transform active:scale-95">
+                    <Logo className="px-2" />
+                </Link>
 
                 {/* Dashboard Vehicle Switcher */}
                 <div className="px-1 group-data-[collapsible=icon]:hidden">

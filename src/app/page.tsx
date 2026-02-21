@@ -23,7 +23,9 @@ export default async function LandingPage() {
       {/* Header / Nav */}
       <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo />
+          <Link href="/dashboard" className="transition-transform active:scale-95">
+            <Logo />
+          </Link>
 
           <nav className="hidden md:flex items-center gap-10">
             <Link href="#features" className="text-slate-600 dark:text-slate-300 hover:text-neon-primary transition-colors font-semibold text-sm tracking-tight">

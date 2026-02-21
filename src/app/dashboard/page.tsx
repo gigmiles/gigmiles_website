@@ -12,6 +12,8 @@ import { EarningsChart } from '@/components/dashboard/EarningsChart'
 import { PlatformDistributionChart } from '@/components/dashboard/PlatformDistributionChart'
 import { RecentEntries } from '@/components/dashboard/RecentEntries'
 import { VehicleValueCard } from '@/components/dashboard/VehicleValueCard'
+import { YesterdaysSummaryNotification } from '@/components/dashboard/YesterdaysSummaryNotification'
+import { DailyMotivation } from '@/components/dashboard/DailyMotivation'
 import { createClient } from '@/utils/supabase/server'
 
 export default async function DashboardPage({
@@ -39,6 +41,8 @@ export default async function DashboardPage({
 
     return (
         <div className="space-y-8 animate-fade-in pb-12">
+            <YesterdaysSummaryNotification />
+
             {/* Header Section */}
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
@@ -58,8 +62,9 @@ export default async function DashboardPage({
             </div>
 
             {/* Bolt Migration Components */}
-            <div className="mb-8">
+            <div className="mb-8 space-y-4">
                 <BoltQuickActions />
+                <DailyMotivation hasEntry={today.hasEntry} />
             </div>
 
             {/* Main Content Grid: Two Column Layout for better vertical packing */}
@@ -79,12 +84,16 @@ export default async function DashboardPage({
                         mpg={today.mpg}
                         gasPrice={today.gasPrice}
                         fuelCost={today.fuelCost}
+                        gasCost={today.gasCost}
+                        electricCost={today.electricCost}
                         wearCost={today.wearCost}
                         insurance={today.dailyInsurance}
                         richEntry={today.richEntry || undefined}
                         hasEntry={today.hasEntry}
                         selectedDate={date}
                         activeDates={activeDates}
+                        vehicles={stats.vehicles}
+                        activeVehicleId={stats.activeVehicleId}
                     />
                     <EarningsChart data={chartData} />
                 </div>
@@ -100,8 +109,8 @@ export default async function DashboardPage({
                         dailyStats={chartData}
                     />
                     <PlatformDistributionChart data={platformDistribution} />
-                    <RecentEntries entries={recentEntries} />
-                    <VehicleValueCard vehicle={vehicle} />
+                    <RecentEntries entries={recentEntries} primaryVehicle={stats.primaryVehicle} stateCode={stats.stateCode} />
+                    <VehicleValueCard vehicles={stats.vehicles} activeVehicleId={stats.activeVehicleId} />
                 </div>
             </div>
 

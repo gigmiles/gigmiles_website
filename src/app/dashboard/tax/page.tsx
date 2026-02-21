@@ -12,6 +12,7 @@ import {
     Calendar,
     DollarSign
 } from 'lucide-react'
+import { CustomDateTaxReport } from '@/components/dashboard/CustomDateTaxReport'
 
 export default async function TaxPage() {
     const quarters = await getTaxOverview()
@@ -36,7 +37,7 @@ export default async function TaxPage() {
         <div className="space-y-10 animate-fade-in">
             {/* Header */}
             <div>
-                <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Tax Center (2025)</h1>
+                <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">Tax Center (2026)</h1>
                 <p className="mt-2 text-muted-foreground">Manage your quarterly estimated taxes and track your payment history.</p>
             </div>
 
@@ -54,14 +55,10 @@ export default async function TaxPage() {
 
                 <Card className="border-none shadow-premium bg-emerald-600 text-white">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-emerald-100 uppercase tracking-wider text-opacity-80">Total Payments</CardTitle>
+                        <CardTitle className="text-sm font-medium text-emerald-100 uppercase tracking-wider text-opacity-80">Total Paid Amount</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold font-display">${totalPaid.toFixed(2)}</div>
-                        <div className="mt-2 flex items-center gap-1 text-[10px] text-emerald-100/70">
-                            <ShieldCheck className="size-3" />
-                            <span>Verified payments</span>
-                        </div>
                     </CardContent>
                 </Card>
 
@@ -77,6 +74,9 @@ export default async function TaxPage() {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Custom Date Range Report */}
+            <CustomDateTaxReport />
 
             {/* Quarterly Timeline */}
             <div className="space-y-6">
@@ -110,8 +110,16 @@ export default async function TaxPage() {
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-muted-foreground">Estimated</span>
+                                        <span className="text-muted-foreground">Estimated Total</span>
                                         <span className="font-semibold text-slate-900 dark:text-slate-100">${q.estimatedTax.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[11px] text-slate-500 pl-2 border-l-2 border-slate-200 dark:border-slate-800 ml-1 pb-1">
+                                        <span>Federal (SE)</span>
+                                        <span>${q.estimatedFederalTax?.toFixed(2) || '0.00'}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[11px] text-slate-500 pl-2 border-l-2 border-slate-200 dark:border-slate-800 ml-1 pb-2">
+                                        <span>State</span>
+                                        <span>${q.estimatedStateTax?.toFixed(2) || '0.00'}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Paid</span>
@@ -133,8 +141,8 @@ export default async function TaxPage() {
                                             name="amount"
                                             type="number"
                                             step="0.01"
-                                            placeholder="0.00"
-                                            className="h-9 pl-8 text-xs rounded-lg"
+                                            placeholder="Enter Paid Amount"
+                                            className="h-9 pl-8 text-xs rounded-lg placeholder:text-[10px]"
                                             min="0.01"
                                             required
                                         />

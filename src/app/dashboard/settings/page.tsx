@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { User, Car, Shield, Bell, ChevronRight } from 'lucide-react'
+import { DeleteAccountDialog } from './DeleteAccountDialog'
 
 export default async function SettingsPage() {
     const supabase = await createClient()
@@ -80,7 +81,7 @@ export default async function SettingsPage() {
                     <CardDescription>Actions here cannot be undone.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Button variant="destructive" className="rounded-full">Delete Account Data</Button>
+                    <DeleteAccountDialog />
                 </CardContent>
             </Card>
         </div>

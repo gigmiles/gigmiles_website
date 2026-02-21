@@ -123,7 +123,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                                         <span className="text-lg font-display font-bold text-blue-400">${plat.hourlyRate.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between items-end">
-                                        <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Tip Pct</span>
+                                        <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Tip %</span>
                                         <span className="text-sm font-bold text-amber-500">{plat.tipPct.toFixed(1)}%</span>
                                     </div>
                                     <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
@@ -156,8 +156,11 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                         <p className="text-emerald-100/80 max-w-2xl leading-relaxed">
                             Based on your {startDate && endDate ? 'selected' : 'recent'} performance,
                             <span className="text-white font-bold mx-1"> {topPlatform} </span>
-                            remains your strongest hourly driver. Historical data suggests maximizing active sessions on
-                            <span className="text-white font-bold ml-1">weekends</span> can increase your net profit by up to 18%.
+                            remains your strongest hourly driver. {data.dailyData.length > 3 ? (
+                                <>Historical data suggests maximizing active sessions on <span className="text-white font-bold ml-1">weekends</span> can increase your net profit significantly.</>
+                            ) : (
+                                <>Consistently logging your shifts will help us identify more precise patterns to boost your earnings.</>
+                            )}
                         </p>
                     </div>
                 </div>

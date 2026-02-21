@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Mail, Lock, Loader2, ArrowRight, Github } from 'lucide-react'
+import Link from 'next/link'
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -115,7 +116,9 @@ function LoginContent() {
             <div className="relative z-10 w-full max-w-md px-4">
                 {/* Branding */}
                 <div className="flex flex-col items-center mb-6 md:mb-8 animate-fade-in-up">
-                    <Logo className="mb-2 flex-col !gap-4" />
+                    <Link href="/" className="transition-transform active:scale-95">
+                        <Logo className="mb-2 flex-col !gap-4" />
+                    </Link>
                     <p className="text-emerald-400/80 text-xs md:text-sm font-medium text-center">Maximize every mile. Own your earnings.</p>
                 </div>
 

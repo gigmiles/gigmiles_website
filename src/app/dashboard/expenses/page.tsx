@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PieChart, Receipt, TrendingDown, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
+import { ExpenseDonutChart } from './ExpenseDonutChart'
 
 export default async function ExpensesPage() {
     // Last 30 days
@@ -93,10 +94,7 @@ export default async function ExpensesPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="grid md:grid-cols-2 gap-8">
-                        {/* Chart Placeholder - We'll add recharts donut chart here */}
-                        <div className="flex items-center justify-center p-8 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <p className="text-sm text-muted-foreground">Donut chart will go here</p>
-                        </div>
+                        <ExpenseDonutChart data={chartData} />
 
                         <div className="space-y-3">
                             {chartData.map((item, idx) => {

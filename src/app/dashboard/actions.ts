@@ -3,9 +3,9 @@
 // Deployment trigger: Time Travel feature v1.1
 
 import { createClient } from '@/utils/supabase/server'
-import { startOfDay, format, parseISO, subDays } from 'date-fns'
+import { format, parseISO, subDays, startOfDay, isBefore } from 'date-fns'
 import { revalidatePath } from 'next/cache'
-import { calculateFinancials } from '@/utils/calculations'
+import { calculateFinancials, formatCurrency } from '@/utils/calculations'
 import { getGasPrice } from '@/utils/api/external'
 import { PlatformEarning, Expense } from './types'
 
@@ -104,6 +104,7 @@ export async function getDashboardStats(dateStr?: string) {
         monthlyInsurance: vehicle?.monthly_insurance || 0,
         monthlyLease: vehicle?.monthly_payment || 0,
         paymentCycle: vehicle?.payment_cycle || 'monthly',
+        insuranceCycle: (vehicle as any)?.insurance_cycle || 'monthly',
         fuelType: vehicle?.fuel_type || 'gasoline',
         electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
     })
@@ -168,8 +169,11 @@ export async function getDashboardStats(dateStr?: string) {
                 monthlyInsurance: vehicle?.monthly_insurance || 0,
                 monthlyLease: vehicle?.monthly_payment || 0,
                 paymentCycle: vehicle?.payment_cycle || 'monthly',
+                insuranceCycle: (vehicle as any)?.insurance_cycle || 'monthly',
                 fuelType: vehicle?.fuel_type || 'gasoline',
-                electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
+                electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15,
+                platformFee: vehicle?.platform_fee || 0,
+                platformFeeCycle: vehicle?.platform_fee_cycle || 'daily'
             })
 
             weeklyGross += dGross
@@ -246,6 +250,8 @@ export async function getDashboardStats(dateStr?: string) {
             miles: todayMiles,
             hours: todayHours,
             fuelCost: financials.fuelCost,
+            gasCost: financials.gasCost,
+            electricCost: financials.electricCost,
             wearCost: financials.wearCost,
             dailyInsurance: financials.insuranceCost,
             totalRealCosts: financials.totalRealCosts,
@@ -278,7 +284,9 @@ export async function getDashboardStats(dateStr?: string) {
         chartData,
         platformDistribution,
         vehicles: vehicles || [],
-        activeVehicleId: vehicle?.id || null
+        activeVehicleId: vehicle?.id || null,
+        stateCode,
+        primaryVehicle: vehicle
     }
 }
 
@@ -389,6 +397,100 @@ export async function createDailyEntry(entryData: { date: string, notes?: string
     revalidatePath('/dashboard')
     return { success: true, entryId: entryId }
 }
+
+export async function getYesterdaysSummary() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return null
+
+    const yesterday = subDays(startOfDay(new Date()), 1)
+    const yesterdayStr = format(yesterday, 'yyyy-MM-dd')
+
+    const [profileRes, vehiclesRes, entryRes] = await Promise.all([
+        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).single(),
+        supabase.from('vehicles').select('*').eq('user_id', user.id).order('is_primary', { ascending: false }),
+        supabase.from('daily_entries').select(`
+            id,
+            date,
+            gas_price,
+            platform_earnings ( id, amount, tips, miles, hours ),
+            expenses ( id, category, amount )
+        `).eq('user_id', user.id).eq('date', yesterdayStr).single()
+    ])
+
+    const entry = entryRes.data
+    if (!entry) return null
+
+    const profile = profileRes.data
+    const vehicles = vehiclesRes.data
+    const vehicle = vehicles?.find(v => v.is_primary) || vehicles?.[0] || null
+    const stateCode = profile?.state_code || 'DEFAULT'
+    const mpg = vehicle?.mpg || 25
+
+    let currentGasPrice = entry?.gas_price || profile?.default_gas_price
+    if (!currentGasPrice) {
+        currentGasPrice = await getGasPrice(stateCode)
+    }
+
+    let gross = 0
+    let expenses = 0
+    let miles = 0
+    let hours = 0
+
+    const earnings = (entry.platform_earnings || []) as unknown as PlatformEarning[]
+    const entryExpenses = (entry.expenses || []) as unknown as Expense[]
+
+    earnings.forEach((p) => {
+        gross += (p.amount || 0) + (p.tips || 0)
+        miles += (p.miles || 0)
+        hours += (p.hours || 0)
+    })
+
+    entryExpenses.forEach((e) => {
+        if (!e.category.startsWith('__')) {
+            expenses += (e.amount || 0)
+        }
+    })
+
+    const overrides = {
+        fuel: (entry?.expenses as unknown as Expense[])?.find((e) => e.category === '__FUEL_OVERRIDE__')?.amount,
+        wear: (entry?.expenses as unknown as Expense[])?.find((e) => e.category === '__WEAR_OVERRIDE__')?.amount,
+        insurance: (entry?.expenses as unknown as Expense[])?.find((e) => e.category === '__INSURANCE_OVERRIDE__')?.amount
+    }
+
+    const financials = calculateFinancials({
+        grossEarnings: gross,
+        expenses: expenses,
+        miles: miles,
+        stateCode,
+        mpg,
+        gasPrice: currentGasPrice,
+        wearRate: vehicle?.depreciation_rate || 0.35,
+        manualFuel: overrides.fuel,
+        manualWear: overrides.wear,
+        manualInsurance: overrides.insurance,
+        ownershipType: vehicle?.ownership_type || 'owned',
+        monthlyInsurance: vehicle?.monthly_insurance || 0,
+        monthlyLease: vehicle?.monthly_payment || 0,
+        paymentCycle: vehicle?.payment_cycle || 'monthly',
+        insuranceCycle: (vehicle as any)?.insurance_cycle || 'monthly',
+        fuelType: vehicle?.fuel_type || 'gasoline',
+        electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15,
+        platformFee: vehicle?.platform_fee || 0,
+        platformFeeCycle: vehicle?.platform_fee_cycle || 'daily'
+    })
+
+    if (gross === 0 && miles === 0) return null
+
+    return {
+        date: format(yesterday, 'MMM d, yyyy'),
+        netProfit: financials.netProfit,
+        gross: gross,
+        hours: hours
+    }
+}
+
 export async function getRecentEntries(limit = 5) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()

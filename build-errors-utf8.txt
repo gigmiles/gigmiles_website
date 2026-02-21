@@ -1,0 +1,90 @@
+﻿
+> antigravity@0.1.0 build
+> next build
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+node.exe : ÔÜá The "middleware" file convention is depre
+cated. Please use "proxy" instead. Learn more: https://n
+extjs.org/docs/messages/middleware-to-proxy
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files
+\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ÔÜá The "m 
+   iddle...leware-to-proxy:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./src/utils/supabase/server.ts:2:1
+Ecmascript file had an error
+[0m [90m 1 |[39m [36mimport[39m { createServerClien
+t } [36mfrom[39m [32m'@supabase/ssr'[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { co
+okies } [36mfrom[39m [32m'next/headers'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mexport[39m [36masync[39m [36mfu
+nction[39m createClient() {
+ [90m 5 |[39m     [36mconst[39m cookieStore [33m=[
+39m [36mawait[39m cookies()[0m
+
+You're importing a component that needs "next/headers". 
+That only works in a Server Component which is not suppo
+rted in the pages/ directory. Read more: https://nextjs.
+org/docs/app/building-your-application/rendering/server-
+components
+
+
+
+Import traces:
+  #1 [Server Component]:
+    ./src/utils/supabase/server.ts
+    ./src/app/auth/actions.ts
+
+  #2 [Server Component]:
+    ./src/utils/supabase/server.ts
+    ./src/app/dashboard/page.tsx
+
+  #3 [Client Component Browser]:
+    ./src/utils/supabase/server.ts [Client Component Bro
+wser]
+    ./src/app/dashboard/tax/actions.ts [Client Component
+ Browser]
+    ./src/components/dashboard/CustomDateTaxReport.tsx [
+Client Component Browser]
+    ./src/components/dashboard/CustomDateTaxReport.tsx [
+Server Component]
+    ./src/app/dashboard/tax/page.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./src/utils/supabase/server.ts [Client Component SSR
+]
+    ./src/app/dashboard/tax/actions.ts [Client Component
+ SSR]
+    ./src/components/dashboard/CustomDateTaxReport.tsx [
+Client Component SSR]
+    ./src/components/dashboard/CustomDateTaxReport.tsx [
+Server Component]
+    ./src/app/dashboard/tax/page.tsx [Server Component]
+
+
+    at <unknown> (./src/utils/supabase/server.ts:2:1)

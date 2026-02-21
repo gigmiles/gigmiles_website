@@ -12,6 +12,7 @@ import { getDepreciationRate } from '@/utils/calculations'
 import { CAR_MAKES } from '@/utils/constants'
 import { EV_MODELS, ELECTRIC_BRANDS } from '@/utils/vehicle-data'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 interface Vehicle {
@@ -35,10 +36,16 @@ interface VehicleSettingsFormProps {
 }
 
 export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProps) {
-    const [vehicles] = useState<Vehicle[]>(initialVehicles)
+    const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
+
+    // Sync state with props when server refreshes
+    useEffect(() => {
+        setVehicles(initialVehicles)
+    }, [initialVehicles])
     const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
 
     // Form State
     const [year, setYear] = useState('')
@@ -51,8 +58,11 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
     const [monthlyPayment, setMonthlyPayment] = useState('')
     const [monthlyInsurance, setMonthlyInsurance] = useState('')
     const [paymentCycle, setPaymentCycle] = useState('monthly')
+    const [insuranceCycle, setInsuranceCycle] = useState('monthly')
     const [fuelType, setFuelType] = useState('gasoline')
     const [electricityCost, setElectricityCost] = useState('0.15')
+    const [platformFee, setPlatformFee] = useState('')
+    const [platformFeeCycle, setPlatformFeeCycle] = useState('daily')
 
     const [fetchingModels, setFetchingModels] = useState(false)
 
@@ -60,17 +70,20 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
     useEffect(() => {
         if (isSheetOpen) {
             if (editingVehicle) {
-                setYear(editingVehicle.year.toString())
-                setMake(editingVehicle.make)
-                setModel(editingVehicle.model)
-                setMpg(editingVehicle.mpg.toString())
-                setDepreciationRate(editingVehicle.depreciation_rate)
+                setYear(editingVehicle.year?.toString() || '')
+                setMake(editingVehicle.make || '')
+                setModel(editingVehicle.model || '')
+                setMpg(editingVehicle.mpg?.toString() || '')
+                setDepreciationRate(editingVehicle.depreciation_rate || 0.20)
                 setOwnershipType(editingVehicle.ownership_type || 'owned')
                 setMonthlyPayment(editingVehicle.monthly_payment?.toString() || '')
                 setMonthlyInsurance(editingVehicle.monthly_insurance?.toString() || '')
                 setPaymentCycle(editingVehicle.payment_cycle || 'monthly')
+                setInsuranceCycle((editingVehicle as any).insurance_cycle || 'monthly')
                 setFuelType(editingVehicle.fuel_type || 'gasoline')
                 setElectricityCost(editingVehicle.electricity_cost_per_kwh?.toString() || '0.15')
+                setPlatformFee((editingVehicle as any).platform_fee?.toString() || '')
+                setPlatformFeeCycle((editingVehicle as any).platform_fee_cycle || 'daily')
             } else {
                 setYear('')
                 setMake('')
@@ -81,8 +94,11 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                 setMonthlyPayment('')
                 setMonthlyInsurance('')
                 setPaymentCycle('monthly')
+                setInsuranceCycle('monthly')
                 setFuelType('gasoline')
                 setElectricityCost('0.15')
+                setPlatformFee('')
+                setPlatformFeeCycle('daily')
             }
         }
     }, [isSheetOpen, editingVehicle])
@@ -117,9 +133,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                 if (result) {
                     setMpg(result.value.toString())
                     setFuelType(result.fuelType)
-                    if (result.fuelType === 'electric') {
-                        toast.success(`Electric vehicle detected! Efficiency: ${result.value} mi/kWh`)
-                    }
+                    toast.success('Vehicle fuel efficiency data has been automatically updated.')
                 }
             } catch (error) {
                 console.error("Failed to fetch MPG:", error)
@@ -158,6 +172,9 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
         formData.set('monthly_payment', safePayment)
         formData.set('monthly_insurance', safeInsurance)
         formData.set('payment_cycle', paymentCycle)
+        formData.set('insurance_cycle', insuranceCycle)
+        formData.set('platform_fee', platformFee.toString().replace(',', '.'))
+        formData.set('platform_fee_cycle', platformFeeCycle)
 
         // Auto-detect electric vehicles
         const evBrands = ['Tesla', 'Rivian', 'Lucid', 'Polestar']
@@ -170,12 +187,13 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
             if (result.success) {
                 toast.success(editingVehicle ? 'Vehicle updated!' : 'Vehicle added!')
                 setIsSheetOpen(false)
-                // Window reload is a simple way to refresh server data, 
-                // but revalidatePath should handle it if this was a purely server component setup.
-                // However, since we are in a client component, we rely on the server action revalidating tags/paths.
+                router.refresh()
+            } else {
+                toast.error(result.error || 'Failed to save vehicle')
             }
-        } catch {
-            toast.error('Failed to save vehicle')
+        } catch (err) {
+            console.error('Save Error:', err)
+            toast.error('An unexpected error occurred')
         } finally {
             setIsLoading(false)
         }
@@ -187,6 +205,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
             const result = await deleteVehicleAction(id)
             if (result.success) {
                 toast.success('Vehicle removed')
+                router.refresh()
             } else {
                 toast.error(result.error || 'Failed to delete')
             }
@@ -232,7 +251,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                     {(Number(v.monthly_payment) > 0 || Number(v.monthly_insurance) > 0) && (
                                         <>
                                             <span className="text-xs text-slate-400">•</span>
-                                            <span className="text-xs text-slate-500 font-medium">${(Number(v.monthly_payment || 0) + Number(v.monthly_insurance || 0)).toLocaleString()}/mo fixed</span>
+                                            <span className="text-xs text-slate-500 font-medium">${(Number(v.monthly_payment || 0) + Number(v.monthly_insurance || 0)).toLocaleString()} Fixed Costs</span>
                                         </>
                                     )}
                                 </div>
@@ -344,7 +363,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                     if (evMatch) {
                                         setFuelType('electric')
                                         setMpg(evMatch.efficiency.toString())
-                                        toast.success(`Auto-set efficiency: ${evMatch.efficiency} mi/kWh`)
+                                        toast.success(`Vehicle efficiency data auto-populated: ${evMatch.efficiency} mi/kWh`)
                                     }
                                 }} disabled={fetchingModels || !make}>
                                     <SelectTrigger className="h-12 bg-white/5 border-white/10 rounded-xl">
@@ -406,43 +425,129 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                     </Select>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
+                                {ownershipType !== 'owned' && (
+                                    <div className="space-y-6 pt-2">
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">
+                                                    {ownershipType === 'rented' ? 'Daily / Weekly / Monthly Rent Cost' : 'Lease Payment'} ({paymentCycle})
+                                                </label>
+                                                <div className="flex gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                                                    {['D', 'W', 'M', 'Y'].map((label, i) => {
+                                                        const cycles = ['daily', 'weekly', 'monthly', 'yearly'];
+                                                        const c = cycles[i];
+                                                        return (
+                                                            <button
+                                                                key={c}
+                                                                type="button"
+                                                                onClick={() => setPaymentCycle(c)}
+                                                                className={`text-[10px] w-8 h-8 font-bold rounded-md transition-all ${paymentCycle === c ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                                                            >
+                                                                {label}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                            <Input
+                                                type="number"
+                                                placeholder="0.00"
+                                                value={monthlyPayment}
+                                                onChange={(e) => setMonthlyPayment(e.target.value.replace(',', '.'))}
+                                                className="h-14 w-full bg-white/5 border-white/10 rounded-xl text-lg font-medium px-4"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Insurance Cost ({insuranceCycle})</label>
+                                                <div className="flex gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                                                    {['D', 'W', 'M', 'Y'].map((label, i) => {
+                                                        const cycles = ['daily', 'weekly', 'monthly', 'yearly'];
+                                                        const c = cycles[i];
+                                                        return (
+                                                            <button
+                                                                key={c}
+                                                                type="button"
+                                                                onClick={() => setInsuranceCycle(c)}
+                                                                className={`text-[10px] w-8 h-8 font-bold rounded-md transition-all ${insuranceCycle === c ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                                                            >
+                                                                {label}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                            <Input
+                                                type="number"
+                                                placeholder="0.00"
+                                                value={monthlyInsurance}
+                                                onChange={(e) => setMonthlyInsurance(e.target.value.replace(',', '.'))}
+                                                className="h-14 w-full bg-white/5 border-white/10 rounded-xl text-lg font-medium px-4"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                                {ownershipType === 'owned' && (
+                                    <div className="space-y-3 pt-2">
                                         <div className="flex items-center justify-between">
-                                            <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500">
-                                                {paymentCycle.charAt(0).toUpperCase() + paymentCycle.slice(1)} Payment
-                                            </label>
-                                            <div className="flex gap-1 bg-white/5 p-0.5 rounded-lg border border-white/10">
-                                                {['daily', 'weekly', 'monthly'].map(c => (
-                                                    <button
-                                                        key={c}
-                                                        type="button"
-                                                        onClick={() => setPaymentCycle(c)}
-                                                        className={`text-[8px] font-bold px-1.5 py-0.5 rounded-md transition-all ${paymentCycle === c ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
-                                                    >
-                                                        {c.charAt(0).toUpperCase()}
-                                                    </button>
-                                                ))}
+                                            <label className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Insurance Cost ({insuranceCycle})</label>
+                                            <div className="flex gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                                                {['D', 'W', 'M', 'Y'].map((label, i) => {
+                                                    const cycles = ['daily', 'weekly', 'monthly', 'yearly'];
+                                                    const c = cycles[i];
+                                                    return (
+                                                        <button
+                                                            key={c}
+                                                            type="button"
+                                                            onClick={() => setInsuranceCycle(c)}
+                                                            className={`text-[10px] w-8 h-8 font-bold rounded-md transition-all ${insuranceCycle === c ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                                                        >
+                                                            {label}
+                                                        </button>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                         <Input
                                             type="number"
                                             placeholder="0.00"
-                                            value={monthlyPayment}
-                                            onChange={(e) => setMonthlyPayment(e.target.value.replace(',', '.'))}
-                                            className="h-12 bg-white/5 border-white/10 rounded-xl"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500">Monthly Insurance</label>
-                                        <Input
-                                            type="number"
-                                            placeholder="0.00"
                                             value={monthlyInsurance}
                                             onChange={(e) => setMonthlyInsurance(e.target.value.replace(',', '.'))}
-                                            className="h-12 bg-white/5 border-white/10 rounded-xl"
+                                            className="h-14 w-full bg-white/5 border-white/10 rounded-xl text-lg font-medium px-4"
                                         />
                                     </div>
+                                )}
+
+                                {/* Platform Fee */}
+                                <div className="space-y-4 pt-4 border-t border-white/5">
+                                    <div className="flex items-center justify-between">
+                                        <label className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Platform Software Fee ({platformFeeCycle})</label>
+                                        <div className="flex gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                                            {['D', 'W'].map((label, i) => {
+                                                const cycles = ['daily', 'weekly'];
+                                                const c = cycles[i];
+                                                return (
+                                                    <button
+                                                        key={c}
+                                                        type="button"
+                                                        onClick={() => setPlatformFeeCycle(c)}
+                                                        className={`text-[10px] w-8 h-8 font-bold rounded-md transition-all ${platformFeeCycle === c ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                                                    >
+                                                        {label}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                    <Input
+                                        type="number"
+                                        placeholder="0.00"
+                                        value={platformFee}
+                                        onChange={(e) => setPlatformFee(e.target.value.replace(',', '.'))}
+                                        className="h-14 w-full bg-white/5 border-white/10 rounded-xl text-lg font-medium px-4"
+                                    />
+                                    <p className="text-[10px] text-slate-500 italic">Recurring software fees (e.g. Solo, Gridwise, etc.)</p>
                                 </div>
                             </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { TrendingUp, Calendar, ArrowRight, Edit, Trash2, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import Link from 'next/link';
 import { calculateHourlyRate } from '@/utils/calculations';
 import { DailyEntry } from '@/app/dashboard/types';
@@ -36,7 +36,7 @@ interface WeeklySummaryProps {
     }[];
 }
 
-export function BoltWeeklySummary({
+export const BoltWeeklySummary = memo(function BoltWeeklySummary({
     entries,
     totalNetProfit,
     totalGross,
@@ -227,4 +227,4 @@ export function BoltWeeklySummary({
             </SheetContent>
         </Sheet>
     )
-}
+});

@@ -1,0 +1,1 @@
+﻿src/components/dashboard/BoltQuickActions.tsx(16,8): error TS2307: Cannot find module '@/components/ui/dialog' or its corresponding type declarations.

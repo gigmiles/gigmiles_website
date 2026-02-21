@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Calendar, Download, RefreshCw } from 'lucide-react'
 import { format, subDays } from 'date-fns'
 import { DailyData } from '@/app/dashboard/types'
+import { toast } from 'sonner'
 
 interface ReportControlsProps {
     data: DailyData[]
@@ -24,6 +25,10 @@ export function ReportControls({ data }: ReportControlsProps) {
     const [loading, setLoading] = useState(false)
 
     const handleFilter = () => {
+        if (new Date(startDate) > new Date(endDate)) {
+            toast.error("Start date cannot be after end date")
+            return
+        }
         setLoading(true)
         router.push(`/dashboard/reports?startDate=${startDate}&endDate=${endDate}`)
         setTimeout(() => setLoading(false), 500) // visual feedback

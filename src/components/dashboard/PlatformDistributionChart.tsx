@@ -4,6 +4,7 @@ import { Pie, PieChart, Label } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart"
 import { PieChart as PieIcon, Info } from "lucide-react"
+import { cn } from "@/lib/utils"
 import React from "react"
 
 interface PlatformDistributionProps {
@@ -17,7 +18,31 @@ interface PlatformDistributionProps {
     }[]
 }
 
-export function PlatformDistributionChart({ data }: PlatformDistributionProps) {
+const PLATFORM_COLORS: Record<string, string> = {
+    'uber': 'text-black dark:text-white', // Uber is black/white
+    'uber eats': 'text-[#06C167]',
+    'lyft': 'text-[#FF00BF]',
+    'doordash': 'text-[#FF3008]',
+    'grubhub': 'text-[#F6343F]',
+    'instacart': 'text-[#43B02A]',
+    'spark': 'text-[#0071CE]',
+    'amazon flex': 'text-[#FF9900]',
+    'other': 'text-slate-500'
+}
+
+const PLATFORM_BG_COLORS: Record<string, string> = {
+    'uber': 'bg-black dark:bg-white',
+    'uber eats': 'bg-[#06C167]',
+    'lyft': 'bg-[#FF00BF]',
+    'doordash': 'bg-[#FF3008]',
+    'grubhub': 'bg-[#F6343F]',
+    'instacart': 'bg-[#43B02A]',
+    'spark': 'bg-[#0071CE]',
+    'amazon flex': 'bg-[#FF9900]',
+    'other': 'bg-slate-500'
+}
+
+export const PlatformDistributionChart = React.memo(function PlatformDistributionChart({ data }: PlatformDistributionProps) {
     const totalEarnings = React.useMemo(() => {
         return data.reduce((acc, curr) => acc + curr.value, 0)
     }, [data])
@@ -33,8 +58,9 @@ export function PlatformDistributionChart({ data }: PlatformDistributionProps) {
     const chartConfig = React.useMemo(() => {
         const config: ChartConfig = {}
         data.forEach(item => {
-            config[item.name.toLowerCase().replace(/\s+/g, '-')] = {
-                label: item.name
+            const platformName = item.name || 'Other'
+            config[platformName.toLowerCase().replace(/\s+/g, '-')] = {
+                label: platformName
             }
         })
         return config
@@ -67,7 +93,7 @@ export function PlatformDistributionChart({ data }: PlatformDistributionProps) {
                     </div>
                     {bestPlatform && (
                         <div className="px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-500 uppercase tracking-tight">
-                            MVP: {bestPlatform.name}
+                            MVP Platform: {bestPlatform.name}
                         </div>
                     )}
                 </div>
@@ -135,12 +161,18 @@ export function PlatformDistributionChart({ data }: PlatformDistributionProps) {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div
-                                            className={`size-2.5 rounded-full shrink-0 shadow-sm ${item.name.toLowerCase().includes('uber') ? 'uber-halo-dot' : ''}`}
-                                            style={{ backgroundColor: item.fill }}
+                                            className={cn(
+                                                "size-2.5 rounded-full shrink-0 shadow-sm",
+                                                item.name.toLowerCase().includes('uber') && "uber-halo-dot",
+                                                PLATFORM_BG_COLORS[item.name.toLowerCase()] || "bg-slate-500"
+                                            )}
                                         />
                                         <span
-                                            className={`text-sm font-bold antialiased ${item.name.toLowerCase().includes('uber') ? 'uber-halo-text' : ''}`}
-                                            style={{ color: item.fill }}
+                                            className={cn(
+                                                "text-sm font-bold antialiased",
+                                                item.name.toLowerCase().includes('uber') && "uber-halo-text",
+                                                PLATFORM_COLORS[item.name.toLowerCase()] || "text-slate-500"
+                                            )}
                                         >
                                             {item.name}
                                         </span>
@@ -174,4 +206,4 @@ export function PlatformDistributionChart({ data }: PlatformDistributionProps) {
             </CardFooter>
         </Card>
     )
-}
+})

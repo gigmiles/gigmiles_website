@@ -1,7 +1,8 @@
 'use client'
 
 import { updateDailyEntry, deleteDailyEntry } from '@/app/dashboard/actions'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -48,7 +49,24 @@ interface EditEntryFormProps {
 export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps) {
     const [loading, setLoading] = useState(false)
     const [deleting, setDeleting] = useState(false)
+    const [fuelType, setFuelType] = useState('gasoline')
     const router = useRouter()
+    const supabase = createClient()
+
+    useEffect(() => {
+        async function fetchVehicle() {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+            const { data } = await supabase
+                .from('vehicles')
+                .select('fuel_type')
+                .eq('user_id', user.id)
+                .eq('is_primary', true)
+                .single()
+            if (data?.fuel_type) setFuelType(data.fuel_type)
+        }
+        fetchVehicle()
+    }, [supabase])
 
     const { register, control, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(schema),
@@ -169,8 +187,8 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
                         className="rounded-xl"
                     />
                     <Input
-                        label="Pump Price ($/gal - Optional)"
-                        placeholder="4.50"
+                        label={fuelType === 'electric' ? "Electricity Cost ($/kWh - Optional)" : "Pump Price ($/gal - Optional)"}
+                        placeholder={fuelType === 'electric' ? "0.15" : "4.50"}
                         type="number"
                         step="0.01"
                         {...register('gas_price')}

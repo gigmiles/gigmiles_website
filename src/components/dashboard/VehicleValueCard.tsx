@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,16 +8,18 @@ import { Car, RefreshCw, TrendingDown, DollarSign } from 'lucide-react'
 import { checkVehicleValue } from '@/app/dashboard/actions/vehicle'
 import { toast } from 'sonner'
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 interface VehicleValueCardProps {
-    vehicle: {
-        make: string
-        model: string
-        year: number
-        mpg: number
-    } | null
+    vehicles: any[]
+    activeVehicleId: string | null
 }
 
-export function VehicleValueCard({ vehicle }: VehicleValueCardProps) {
+export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activeVehicleId }: VehicleValueCardProps) {
+    const primaryVehicle = vehicles.find(v => v.id === activeVehicleId) || vehicles[0] || null
+    const [selectedVehicleId, setSelectedVehicleId] = useState<string>(activeVehicleId || (vehicles[0]?.id || ''))
+    const vehicle = vehicles.find(v => v.id === selectedVehicleId) || primaryVehicle
+
     const [mileage, setMileage] = useState<string>('')
     const [value, setValue] = useState<number | null>(null)
     const [loading, setLoading] = useState(false)
@@ -64,14 +66,36 @@ export function VehicleValueCard({ vehicle }: VehicleValueCardProps) {
         <div className="glass-card p-6 border-white/5 shadow-2xl relative overflow-hidden group">
             <div className="absolute -top-12 -right-12 w-24 h-24 bg-indigo-500/10 blur-[50px] rounded-full pointer-events-none group-hover:bg-indigo-500/20 transition-all" />
 
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Asset Value</h2>
-                    <p className="text-xs text-slate-500 font-medium">{vehicle.year} {vehicle.make} {vehicle.model}</p>
+            <div className="flex flex-col gap-4 mb-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Asset Value</h2>
+                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-0.5">Market Valuation</p>
+                    </div>
+                    <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
+                        <Car className="size-5" />
+                    </div>
                 </div>
-                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
-                    <Car className="size-5" />
-                </div>
+
+                <Select
+                    value={selectedVehicleId}
+                    onValueChange={(val) => {
+                        setSelectedVehicleId(val)
+                        setValue(null) // Reset value when switching vehicle
+                        setMileage('')
+                    }}
+                >
+                    <SelectTrigger className="w-full h-11 bg-white/5 border-white/10 rounded-xl text-xs font-bold text-slate-300">
+                        <SelectValue placeholder="Select Vehicle" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border-white/10">
+                        {vehicles.map(v => (
+                            <SelectItem key={v.id} value={v.id} className="text-xs">
+                                {v.year} {v.make} {v.model} {v.is_primary ? '(Primary)' : ''}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
 
             <div className="space-y-6">
@@ -132,4 +156,4 @@ export function VehicleValueCard({ vehicle }: VehicleValueCardProps) {
             </div>
         </div>
     )
-}
+})

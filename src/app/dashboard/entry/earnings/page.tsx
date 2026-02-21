@@ -37,9 +37,25 @@ const schema = z.object({
 
 export default function NewEntryPage() {
     const [availablePlatforms, setAvailablePlatforms] = useState<string[]>([])
+    const [fuelType, setFuelType] = useState('gasoline')
     const [loading, setLoading] = useState(false)
     const router = useRouter()
     const supabase = createClient()
+
+    useEffect(() => {
+        async function fetchVehicle() {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) return
+            const { data } = await supabase
+                .from('vehicles')
+                .select('fuel_type')
+                .eq('user_id', user.id)
+                .eq('is_primary', true)
+                .single()
+            if (data?.fuel_type) setFuelType(data.fuel_type)
+        }
+        fetchVehicle()
+    }, [supabase])
 
     const { register, control, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: zodResolver(schema),
@@ -148,8 +164,8 @@ export default function NewEntryPage() {
                             className="rounded-xl"
                         />
                         <Input
-                            label="Pump Price ($/gal - Optional)"
-                            placeholder="4.50"
+                            label={fuelType === 'electric' ? "Electricity Cost ($/kWh - Optional)" : "Pump Price ($/gal - Optional)"}
+                            placeholder={fuelType === 'electric' ? "0.15" : "4.50"}
                             type="number"
                             step="0.01"
                             {...register('gas_price')}

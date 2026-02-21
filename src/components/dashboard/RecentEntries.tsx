@@ -4,13 +4,16 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Edit, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
-import { DailyEntry } from '@/app/dashboard/types'
+import { DailyEntry, Vehicle } from '@/app/dashboard/types'
+import { calculateFinancials } from '@/utils/calculations'
 
 interface RecentEntriesProps {
     entries: DailyEntry[]
+    primaryVehicle: Vehicle | null
+    stateCode: string
 }
 
-export function RecentEntries({ entries }: RecentEntriesProps) {
+export function RecentEntries({ entries, primaryVehicle, stateCode }: RecentEntriesProps) {
     if (!entries || entries.length === 0) return null
 
     return (
@@ -26,9 +29,30 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
 
             <div className="space-y-3">
                 {entries.map((entry) => {
-                    const earnings = (entry.platform_earnings).reduce((acc: number, curr) => acc + (curr.amount || 0) + (curr.tips || 0), 0)
-                    const expenses = (entry.expenses).reduce((acc: number, curr) => acc + (curr.amount || 0), 0)
-                    const net = earnings - expenses
+                    const gross = (entry.platform_earnings).reduce((acc: number, curr) => acc + (curr.amount || 0) + (curr.tips || 0), 0)
+                    const cashExpenses = (entry.expenses).reduce((acc: number, curr) => acc + (curr.amount || 0), 0)
+                    const miles = (entry.platform_earnings).reduce((acc: number, curr) => acc + (curr.miles || 0), 0)
+
+                    const financials = calculateFinancials({
+                        grossEarnings: gross,
+                        expenses: cashExpenses,
+                        miles: miles,
+                        stateCode: stateCode,
+                        mpg: primaryVehicle?.mpg,
+                        gasPrice: entry.gas_price || 4.50,
+                        wearRate: primaryVehicle?.depreciation_rate,
+                        ownershipType: primaryVehicle?.ownership_type,
+                        monthlyInsurance: primaryVehicle?.monthly_insurance,
+                        monthlyLease: primaryVehicle?.monthly_payment,
+                        paymentCycle: primaryVehicle?.payment_cycle,
+                        insuranceCycle: primaryVehicle?.insurance_cycle,
+                        fuelType: primaryVehicle?.fuel_type as any,
+                        electricityPrice: primaryVehicle?.electricity_cost_per_kwh,
+                        platformFee: primaryVehicle?.platform_fee,
+                        platformFeeCycle: primaryVehicle?.platform_fee_cycle
+                    })
+
+                    const net = financials.netProfit
 
                     return (
                         <div key={entry.id} className="relative group/row overflow-hidden flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300">
@@ -37,7 +61,7 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
                                     <Calendar className="size-4" />
                                 </div>
                                 <div>
-                                    <p className="font-bold text-sm text-slate-900 dark:text-slate-100 tracking-tight">{format(new Date(entry.date), 'MMM dd, yyyy')}</p>
+                                    <p className="font-bold text-sm text-slate-900 dark:text-slate-100 tracking-tight">{format(new Date(entry.date), 'MM/dd/yyyy')}</p>
                                     <div className="flex items-center gap-3 mt-1">
                                         <div className="flex items-center gap-1">
                                             <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">${net.toFixed(2)}</span>
@@ -45,7 +69,7 @@ export function RecentEntries({ entries }: RecentEntriesProps) {
                                         </div>
                                         <div className="w-1 h-1 rounded-full bg-slate-700" />
                                         <div className="flex items-center gap-1">
-                                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${earnings.toFixed(2)}</span>
+                                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${gross.toFixed(2)}</span>
                                             <span className="text-[10px] text-slate-500 font-bold uppercase">Gross</span>
                                         </div>
                                     </div>
