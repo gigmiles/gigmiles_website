@@ -220,9 +220,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
                 monthlyLease: vehicle?.monthly_payment || 0,
                 paymentCycle: vehicle?.payment_cycle || 'monthly',
                 fuelType: vehicle?.fuel_type || 'gasoline',
-                electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15,
-                platformFee: vehicle?.platform_fee || 0,
-                platformFeeCycle: vehicle?.platform_fee_cycle || 'daily'
+                electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
             })
 
             // Populate Breakdown for Depreciation/Wear if not manually overridden

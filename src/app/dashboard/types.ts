@@ -42,8 +42,6 @@ export interface Vehicle {
     insurance_cycle: string;
     fuel_type: string;
     electricity_cost_per_kwh: number;
-    platform_fee?: number;
-    platform_fee_cycle?: string;
 }
 
 export interface DailyData {

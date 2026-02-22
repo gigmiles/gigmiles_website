@@ -8,11 +8,20 @@ export async function submitSupportTicket(subject: string, message: string) {
 
     if (!user) return { success: false, error: 'Unauthorized' }
 
-    // Mock sending the email/ticket for now
-    console.log(`Support ticket received from ${user.email} - Subject: ${subject}`)
+    // Insert into database
+    const { error } = await supabase
+        .from('support_tickets')
+        .insert({
+            user_id: user.id,
+            subject,
+            message,
+            status: 'open'
+        })
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    if (error) {
+        console.error('Error submitting support ticket:', error)
+        return { success: false, error: 'Database error' }
+    }
 
     return { success: true }
 }

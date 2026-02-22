@@ -61,8 +61,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
     const [insuranceCycle, setInsuranceCycle] = useState('monthly')
     const [fuelType, setFuelType] = useState('gasoline')
     const [electricityCost, setElectricityCost] = useState('0.15')
-    const [platformFee, setPlatformFee] = useState('')
-    const [platformFeeCycle, setPlatformFeeCycle] = useState('daily')
 
     const [fetchingModels, setFetchingModels] = useState(false)
 
@@ -82,8 +80,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                 setInsuranceCycle((editingVehicle as any).insurance_cycle || 'monthly')
                 setFuelType(editingVehicle.fuel_type || 'gasoline')
                 setElectricityCost(editingVehicle.electricity_cost_per_kwh?.toString() || '0.15')
-                setPlatformFee((editingVehicle as any).platform_fee?.toString() || '')
-                setPlatformFeeCycle((editingVehicle as any).platform_fee_cycle || 'daily')
             } else {
                 setYear('')
                 setMake('')
@@ -97,8 +93,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                 setInsuranceCycle('monthly')
                 setFuelType('gasoline')
                 setElectricityCost('0.15')
-                setPlatformFee('')
-                setPlatformFeeCycle('daily')
             }
         }
     }, [isSheetOpen, editingVehicle])
@@ -173,8 +167,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
         formData.set('monthly_insurance', safeInsurance)
         formData.set('payment_cycle', paymentCycle)
         formData.set('insurance_cycle', insuranceCycle)
-        formData.set('platform_fee', platformFee.toString().replace(',', '.'))
-        formData.set('platform_fee_cycle', platformFeeCycle)
 
         // Auto-detect electric vehicles
         const evBrands = ['Tesla', 'Rivian', 'Lucid', 'Polestar']
@@ -519,36 +511,6 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
                                     </div>
                                 )}
 
-                                {/* Platform Fee */}
-                                <div className="space-y-4 pt-4 border-t border-white/5">
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Platform Software Fee ({platformFeeCycle})</label>
-                                        <div className="flex gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
-                                            {['D', 'W'].map((label, i) => {
-                                                const cycles = ['daily', 'weekly'];
-                                                const c = cycles[i];
-                                                return (
-                                                    <button
-                                                        key={c}
-                                                        type="button"
-                                                        onClick={() => setPlatformFeeCycle(c)}
-                                                        className={`text-[10px] w-8 h-8 font-bold rounded-md transition-all ${platformFeeCycle === c ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
-                                                    >
-                                                        {label}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                    <Input
-                                        type="number"
-                                        placeholder="0.00"
-                                        value={platformFee}
-                                        onChange={(e) => setPlatformFee(e.target.value.replace(',', '.'))}
-                                        className="h-14 w-full bg-white/5 border-white/10 rounded-xl text-lg font-medium px-4"
-                                    />
-                                    <p className="text-[10px] text-slate-500 italic">Recurring software fees (e.g. Solo, Gridwise, etc.)</p>
-                                </div>
                             </div>
 
                             <div className={`pt-4 border-t border-white/5 transition-opacity duration-300 ${ownershipType !== 'owned' ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>

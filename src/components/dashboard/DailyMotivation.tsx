@@ -20,10 +20,11 @@ const MOTIVATIONS = [
 
 interface DailyMotivationProps {
     hasEntry: boolean
+    userName?: string | null
     className?: string
 }
 
-export function DailyMotivation({ hasEntry, className }: DailyMotivationProps) {
+export function DailyMotivation({ hasEntry, userName, className }: DailyMotivationProps) {
     const [quote, setQuote] = useState("")
     const [greeting, setGreeting] = useState("")
 
@@ -67,7 +68,7 @@ export function DailyMotivation({ hasEntry, className }: DailyMotivationProps) {
 
                     <div className="flex-1 min-w-0">
                         <h3 className="text-sm font-display font-bold text-slate-900 dark:text-white tracking-tight mb-0.5">
-                            {greeting} <span className="text-emerald-500">·</span> {hasEntry ? "Active Shift" : "Ready to Drive"}
+                            {greeting}{userName ? `, ${userName}` : ''}
                         </h3>
                         <p className="text-xs text-slate-500 font-medium italic mb-2">
                             "{quote}"

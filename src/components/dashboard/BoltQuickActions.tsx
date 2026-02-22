@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { scanReceiptAction } from '@/app/dashboard/actions/scan'
 import { getActiveShift, startShift, endShift } from '@/app/dashboard/actions/shift'
+import { PlatformEarning, Vehicle } from '@/app/dashboard/types'
 import { useShiftTimer } from '@/hooks/useShiftTimer'
 
 interface Shift {
@@ -25,7 +26,17 @@ interface Shift {
     user_id?: string
 }
 
-export function BoltQuickActions() {
+interface BoltQuickActionsProps {
+    vehicles?: Vehicle[]
+    activeVehicleId?: string | null
+    stateCode?: string
+}
+
+export function BoltQuickActions({
+    vehicles = [],
+    activeVehicleId: propActiveVehicleId,
+    stateCode
+}: BoltQuickActionsProps) {
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [scanning, setScanning] = useState(false)
     const [activeShift, setActiveShift] = useState<Shift | null>(null)
@@ -244,8 +255,24 @@ export function BoltQuickActions() {
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Start New Shift?</DialogTitle>
-                        <DialogDescription>
-                            This will track your overall time for the current driving session. You can later log your individual platform earnings and match them to this shift.
+                        <DialogDescription className="space-y-4">
+                            <p>
+                                This will track your overall time for the current driving session. You can later log your individual platform earnings and match them to this shift.
+                            </p>
+
+                            <div className="mt-4 p-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-200 dark:border-white/10 space-y-3">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Shift Configuration</p>
+                                <div className="flex justify-between items-center text-xs">
+                                    <span className="text-slate-500 font-bold uppercase tracking-wider">Active Vehicle</span>
+                                    <span className="text-slate-900 dark:text-white font-extrabold">
+                                        {vehicles.find(v => v.id === propActiveVehicleId)?.make} {vehicles.find(v => v.id === propActiveVehicleId)?.model || 'Primary Vehicle'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center text-xs">
+                                    <span className="text-slate-500 font-bold uppercase tracking-wider">Operating State</span>
+                                    <span className="text-slate-900 dark:text-white font-extrabold">{stateCode || 'Default'}</span>
+                                </div>
+                            </div>
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="sm:justify-end gap-2 mt-4">

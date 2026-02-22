@@ -185,7 +185,7 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                                             <Info className="size-2.5" />
                                         </div>
                                         <div>
-                                            <p className="text-[8px] text-slate-500 uppercase font-black tracking-widest">Hourly</p>
+                                            <p className="text-[8px] text-slate-500 uppercase font-black tracking-widest">Gross</p>
                                             <p className="text-[11px] font-bold text-blue-400">${hRate.toFixed(2)}/h</p>
                                         </div>
                                     </div>

@@ -20,8 +20,6 @@ export async function saveVehicleAction(formData: FormData, vehicleId?: string) 
     const insurance_cycle = formData.get('insurance_cycle') as string || 'monthly'
     const fuel_type = formData.get('fuel_type') as string || 'gasoline'
     const electricity_cost_per_kwh = parseFloat(formData.get('electricity_cost_per_kwh') as string) || 0.15
-    const platform_fee = parseFloat(formData.get('platform_fee') as string) || 0
-    const platform_fee_cycle = formData.get('platform_fee_cycle') as string || 'daily'
 
     if (vehicleId) {
         // Update existing
@@ -39,9 +37,7 @@ export async function saveVehicleAction(formData: FormData, vehicleId?: string) 
                 payment_cycle,
                 insurance_cycle,
                 fuel_type,
-                electricity_cost_per_kwh,
-                platform_fee,
-                platform_fee_cycle
+                electricity_cost_per_kwh
             } as any)
             .eq('id', vehicleId)
             .eq('user_id', user.id)
@@ -73,8 +69,6 @@ export async function saveVehicleAction(formData: FormData, vehicleId?: string) 
                 insurance_cycle,
                 fuel_type,
                 electricity_cost_per_kwh,
-                platform_fee,
-                platform_fee_cycle,
                 is_primary: count === 0 // Make primary if it's the first one
             } as any)
         if (error) {

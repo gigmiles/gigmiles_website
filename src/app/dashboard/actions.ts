@@ -171,9 +171,7 @@ export async function getDashboardStats(dateStr?: string) {
                 paymentCycle: vehicle?.payment_cycle || 'monthly',
                 insuranceCycle: (vehicle as any)?.insurance_cycle || 'monthly',
                 fuelType: vehicle?.fuel_type || 'gasoline',
-                electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15,
-                platformFee: vehicle?.platform_fee || 0,
-                platformFeeCycle: vehicle?.platform_fee_cycle || 'daily'
+                electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
             })
 
             weeklyGross += dGross
@@ -476,9 +474,7 @@ export async function getYesterdaysSummary() {
         paymentCycle: vehicle?.payment_cycle || 'monthly',
         insuranceCycle: (vehicle as any)?.insurance_cycle || 'monthly',
         fuelType: vehicle?.fuel_type || 'gasoline',
-        electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15,
-        platformFee: vehicle?.platform_fee || 0,
-        platformFeeCycle: vehicle?.platform_fee_cycle || 'daily'
+        electricityPrice: vehicle?.electricity_cost_per_kwh || 0.15
     })
 
     if (gross === 0 && miles === 0) return null

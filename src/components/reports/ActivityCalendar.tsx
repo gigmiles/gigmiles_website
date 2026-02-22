@@ -105,44 +105,46 @@ export function ActivityCalendar({ data }: ActivityCalendarProps) {
             </div>
 
             {/* Calendar Grid */}
-            <div className="glass-card p-6 border-white/5">
-                <div className="grid grid-cols-7 gap-2 mb-2">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                        <div key={day} className="text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                            {day}
-                        </div>
-                    ))}
-                </div>
-                <div className="grid grid-cols-7 gap-2">
-                    {/* Empty slots for start padding */}
-                    {Array.from({ length: startDayIndex }).map((_, i) => (
-                        <div key={`empty-${i}`} className="aspect-square" />
-                    ))}
+            <div className="max-w-2xl mx-auto">
+                <div className="glass-card p-4 border-white/5">
+                    <div className="grid grid-cols-7 gap-1.5 mb-2">
+                        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                            <div key={day} className="text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                {day}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="grid grid-cols-7 gap-1.5">
+                        {/* Empty slots for start padding */}
+                        {Array.from({ length: startDayIndex }).map((_, i) => (
+                            <div key={`empty-${i}`} className="aspect-square" />
+                        ))}
 
-                    {daysInMonth.map((day) => {
-                        const dateStr = format(day, 'yyyy-MM-dd')
-                        const dayData = dataMap.get(dateStr)
-                        const net = dayData?.netProfit || 0
-                        const hasActivity = dayData && (dayData.earnings > 0 || dayData.miles > 0)
+                        {daysInMonth.map((day) => {
+                            const dateStr = format(day, 'yyyy-MM-dd')
+                            const dayData = dataMap.get(dateStr)
+                            const net = dayData?.netProfit || 0
+                            const hasActivity = dayData && (dayData.earnings > 0 || dayData.miles > 0)
 
-                        return (
-                            <button
-                                key={dateStr}
-                                onClick={() => dayData && setSelectedDay(dayData)}
-                                disabled={!hasActivity && !dayData}
-                                className={`
-                                    aspect-square rounded-xl border flex flex-col items-center justify-center gap-0.5 transition-all
-                                    ${hasActivity ? 'cursor-pointer' : 'cursor-default border-transparent'}
-                                    ${hasActivity ? getColorClass(net) : 'bg-white/5 border-white/5 text-slate-600'}
-                                `}
-                            >
-                                <span className="text-xs font-medium">{format(day, 'd')}</span>
-                                {hasActivity && (
-                                    <span className="text-[9px] opacity-80 font-bold">${Math.round(net)}</span>
-                                )}
-                            </button>
-                        )
-                    })}
+                            return (
+                                <button
+                                    key={dateStr}
+                                    onClick={() => dayData && setSelectedDay(dayData)}
+                                    disabled={!hasActivity && !dayData}
+                                    className={`
+                                        aspect-square rounded-lg border flex flex-col items-center justify-center gap-0.5 transition-all
+                                        ${hasActivity ? 'cursor-pointer' : 'cursor-default border-transparent'}
+                                        ${hasActivity ? getColorClass(net) : 'bg-white/5 border-white/5 text-slate-600'}
+                                    `}
+                                >
+                                    <span className="text-[11px] font-medium">{format(day, 'd')}</span>
+                                    {hasActivity && (
+                                        <span className="text-[8px] opacity-80 font-bold">${Math.round(net)}</span>
+                                    )}
+                                </button>
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
 

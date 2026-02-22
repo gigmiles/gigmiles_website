@@ -15,6 +15,7 @@ import {
     ChevronsUpDown,
     Trash2,
     HelpCircle,
+    ShieldAlert,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -259,6 +260,28 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     ))}
+
+                    {/* Admin Section */}
+                    {(user.email === 'kayihanozgenc@gmail.com' || user.email?.includes('admin')) && (
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                asChild
+                                tooltip="Admin Messages"
+                                isActive={pathname === "/dashboard/admin/messages"}
+                                className={`h-11 rounded-xl transition-all duration-300 border border-indigo-500/10 ${pathname === "/dashboard/admin/messages"
+                                    ? 'bg-indigo-500/10 text-indigo-400 font-semibold'
+                                    : 'text-indigo-400/60 hover:text-indigo-400 hover:bg-indigo-500/5'
+                                    }`}
+                            >
+                                <Link href="/dashboard/admin/messages" className="flex items-center gap-3">
+                                    <div className={`p-1 rounded-lg ${pathname === "/dashboard/admin/messages" ? 'bg-indigo-500 text-white' : 'bg-indigo-500/10'}`}>
+                                        <ShieldAlert className="size-4" />
+                                    </div>
+                                    <span className="text-sm tracking-tight font-bold">Admin Panel</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    )}
                 </SidebarMenu>
             </SidebarContent>
 

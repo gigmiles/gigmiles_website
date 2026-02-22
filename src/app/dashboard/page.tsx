@@ -63,8 +63,15 @@ export default async function DashboardPage({
 
             {/* Bolt Migration Components */}
             <div className="mb-8 space-y-4">
-                <BoltQuickActions />
-                <DailyMotivation hasEntry={today.hasEntry} />
+                <BoltQuickActions
+                    vehicles={stats.vehicles}
+                    activeVehicleId={stats.activeVehicleId}
+                    stateCode={stats.stateCode}
+                />
+                <DailyMotivation
+                    hasEntry={today.hasEntry}
+                    userName={user?.user_metadata?.full_name || user?.email}
+                />
             </div>
 
             {/* Main Content Grid: Two Column Layout for better vertical packing */}

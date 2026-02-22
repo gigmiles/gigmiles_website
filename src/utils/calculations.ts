@@ -36,8 +36,6 @@ interface CalculationInput {
     insuranceCycle?: string // 'daily', 'weekly', 'monthly'
     fuelType?: 'gasoline' | 'electric'
     electricityPrice?: number // $/kWh
-    platformFee?: number
-    platformFeeCycle?: string // 'daily', 'weekly'
 }
 
 export function calculateFinancials({
@@ -57,9 +55,7 @@ export function calculateFinancials({
     paymentCycle = 'monthly',
     insuranceCycle = 'monthly',
     fuelType = 'gasoline',
-    electricityPrice = 0.15,
-    platformFee = 0,
-    platformFeeCycle = 'daily'
+    electricityPrice = 0.15
 }: CalculationInput) {
     // Ensure numeric parity (Sanitize inputs)
     const safeMiles = Number(miles) || 0
@@ -81,9 +77,7 @@ export function calculateFinancials({
 
     const dailyLease = getDailyValue(safeMonthlyLease, paymentCycle)
     const dailyInsurance = getDailyValue(safeMonthlyInsurance, insuranceCycle)
-    const dailyPlatformFee = getDailyValue(Number(platformFee) || 0, platformFeeCycle)
-
-    const dailyFixedCosts = dailyLease + dailyInsurance + dailyPlatformFee
+    const dailyFixedCosts = dailyLease + dailyInsurance
 
     // 2. Fuel Cost (Separated by Gas vs Electric)
     let gasCost = 0

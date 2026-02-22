@@ -47,9 +47,7 @@ export function RecentEntries({ entries, primaryVehicle, stateCode }: RecentEntr
                         paymentCycle: primaryVehicle?.payment_cycle,
                         insuranceCycle: primaryVehicle?.insurance_cycle,
                         fuelType: primaryVehicle?.fuel_type as any,
-                        electricityPrice: primaryVehicle?.electricity_cost_per_kwh,
-                        platformFee: primaryVehicle?.platform_fee,
-                        platformFeeCycle: primaryVehicle?.platform_fee_cycle
+                        electricityPrice: primaryVehicle?.electricity_cost_per_kwh
                     })
 
                     const net = financials.netProfit

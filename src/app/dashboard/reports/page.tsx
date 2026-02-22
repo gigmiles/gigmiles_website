@@ -119,7 +119,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                                 </div>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-end">
-                                        <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Hourly Rate</span>
+                                        <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">Gross Hourly Rate</span>
                                         <span className="text-lg font-display font-bold text-blue-400">${plat.hourlyRate.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between items-end">

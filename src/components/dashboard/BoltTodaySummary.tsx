@@ -1092,9 +1092,6 @@ export function BoltTodaySummary({
                                             <span>${hourlyRate.toFixed(2)}/hr Net</span>
                                         </div>
                                     )}
-                                    <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <ArrowUpRight className="size-4 text-indigo-500/50" />
-                                    </div>
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="w-64 p-4 backdrop-blur-3xl bg-white/95 dark:bg-slate-950/95 border-slate-300 dark:border-white/10 shadow-2xl rounded-2xl">

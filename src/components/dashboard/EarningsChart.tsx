@@ -104,7 +104,12 @@ export const EarningsChart = memo(function EarningsChart({ data }: EarningsChart
                         />
                         <ChartTooltip
                             cursor={false}
-                            content={<ChartTooltipContent indicator="dot" />}
+                            content={
+                                <ChartTooltipContent
+                                    indicator="dot"
+                                    formatter={(value) => `$${Number(value).toFixed(2)}`}
+                                />
+                            }
                         />
                         <Area
                             dataKey="gross"
@@ -138,7 +143,7 @@ export const EarningsChart = memo(function EarningsChart({ data }: EarningsChart
                 </div>
                 <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
                     <TrendingUp className="size-3" />
-                    {growth}% Trend
+                    ${totalNet.toFixed(2)} Bu Haftaki Net Kâr
                 </div>
             </div>
         </Card>
