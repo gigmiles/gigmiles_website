@@ -134,32 +134,23 @@ export function BoltQuickActions({
     }, [scanning, elapsed, setScanning]);
 
     return (
-        <div className="glass-card p-6 border-white/5 shadow-2xl relative overflow-hidden group mb-8">
-            <input
-                type="file"
-                ref={fileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileChange}
-                aria-label="Upload receipt"
-            />
+        <>
+            <div className="flex flex-wrap items-center gap-2">
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    aria-label="Upload receipt"
+                />
 
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h3 className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Rapid Workflow</h3>
-                    <p className="text-xs text-slate-500 font-medium font-sans">Quick access tools</p>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <Link href="/dashboard/entry/earnings" className="w-full">
+                <Link href="/dashboard/entry/earnings">
                     <Button
-                        size="lg"
-                        className="w-full h-14 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-500/20 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn"
+                        size="sm"
+                        className="h-9 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/15 font-bold active:scale-95 transition-all text-xs gap-1.5 px-4"
                     >
-                        <div className="p-1.5 rounded-lg bg-white/20 transition-transform group-hover/btn:rotate-90">
-                            <Plus className="size-5" />
-                        </div>
+                        <Plus className="size-3.5" />
                         Add Earnings
                     </Button>
                 </Link>
@@ -167,85 +158,53 @@ export function BoltQuickActions({
                 {activeShift ? (
                     <Button
                         variant="outline"
-                        size="lg"
+                        size="sm"
                         disabled={isShiftPending}
                         onClick={handleEndShift}
-                        className="w-full h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 hover:border-amber-500/30 text-amber-600 dark:text-amber-500 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
+                        className="h-9 rounded-xl bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/20 text-amber-500 font-bold active:scale-95 transition-all text-xs gap-1.5 px-4"
                     >
-                        <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-500 group-hover/btn:scale-110 transition-transform">
-                            {isShiftPending ? (
-                                <RefreshCw className="size-5 animate-spin" />
-                            ) : (
-                                <Pause className="size-5 fill-current" />
-                            )}
-                        </div>
+                        {isShiftPending ? (
+                            <RefreshCw className="size-3.5 animate-spin" />
+                        ) : (
+                            <Pause className="size-3.5 fill-current" />
+                        )}
                         End Shift
                     </Button>
                 ) : (
                     <Button
                         variant="outline"
-                        size="lg"
+                        size="sm"
                         disabled={isShiftPending}
                         onClick={() => setIsStartModalOpen(true)}
-                        className="w-full h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/30 text-blue-600 dark:text-blue-500 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
+                        className="h-9 rounded-xl bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/20 text-blue-500 font-bold active:scale-95 transition-all text-xs gap-1.5 px-4"
                     >
-                        <div className="p-1.5 rounded-lg bg-blue-500/20 text-blue-600 dark:text-blue-500 group-hover/btn:scale-110 transition-transform">
-                            {isShiftPending ? (
-                                <RefreshCw className="size-5 animate-spin" />
-                            ) : (
-                                <Play className="size-5 fill-current" />
-                            )}
-                        </div>
+                        {isShiftPending ? (
+                            <RefreshCw className="size-3.5 animate-spin" />
+                        ) : (
+                            <Play className="size-3.5 fill-current" />
+                        )}
                         Start Shift
                     </Button>
                 )}
 
-                {/* TEMPORARILY DISABLED: Receipt scanning feature
-                <Button
-                    variant="outline"
-                    size="lg"
-                    disabled={scanning}
-                    className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-100 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
-                    onClick={() => fileInputRef.current?.click()}
-                >
-                    {scanning ? (
-                        <span className="flex items-center gap-2">
-                            <RefreshCw className="size-4 animate-spin" />
-                            Scanning...
-                        </span>
-                    ) : (
-                        <>
-                            <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500 group-hover/btn:scale-110 transition-transform">
-                                <Camera className="size-5" />
-                            </div>
-                            Scan Receipt
-                        </>
-                    )}
-                </Button>
-                */}
-
-                <Link href="/dashboard/entry/expense" className="w-full">
+                <Link href="/dashboard/entry/expense">
                     <Button
                         variant="outline"
-                        size="lg"
-                        className="w-full h-14 rounded-2xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 text-red-500 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
+                        size="sm"
+                        className="h-9 rounded-xl bg-red-500/10 border-red-500/20 hover:bg-red-500/20 text-red-500 font-bold active:scale-95 transition-all text-xs gap-1.5 px-4"
                     >
-                        <div className="p-1.5 rounded-lg bg-red-500/20 text-red-500 group-hover/btn:scale-110 transition-transform">
-                            <Plus className="size-5" />
-                        </div>
-                        Add Expense
+                        <Plus className="size-3.5" />
+                        Expense
                     </Button>
                 </Link>
 
-                <Link href="/dashboard/reports" className="w-full">
+                <Link href="/dashboard/reports">
                     <Button
                         variant="outline"
-                        size="lg"
-                        className="w-full h-14 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/20 text-slate-900 dark:text-slate-100 font-bold active:scale-95 transition-all flex items-center justify-center gap-2 group/btn backdrop-blur-md"
+                        size="sm"
+                        className="h-9 rounded-xl bg-white/5 border-white/10 hover:bg-white/10 text-slate-300 font-bold active:scale-95 transition-all text-xs gap-1.5 px-4"
                     >
-                        <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500 group-hover/btn:scale-110 transition-transform">
-                            <RefreshCw className="size-5" />
-                        </div>
+                        <RefreshCw className="size-3.5" />
                         Reports
                     </Button>
                 </Link>
@@ -295,6 +254,6 @@ export function BoltQuickActions({
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </>
     )
 }

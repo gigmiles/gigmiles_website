@@ -60,33 +60,34 @@ export function Charts({ dailyData, platformData }: ChartsProps) {
     })
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Weekly Earnings & Net Profit Analysis */}
-            <div className="lg:col-span-7 h-[350px] relative">
-                <div className="absolute top-0 left-0 flex items-center gap-2 mb-4">
-                    <div className="size-2 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Profit Trend</span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Profit Trend */}
+            <div className="lg:col-span-7 h-[280px] relative">
+                <div className="absolute top-0 left-0 flex items-center gap-2">
+                    <div className="size-1.5 rounded-full bg-emerald-500" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Profit Trend</span>
                 </div>
-                <ChartContainer config={chartConfig} className="w-full h-full mt-6">
+                <ChartContainer config={chartConfig} className="w-full h-full mt-5">
                     <AreaChart data={dailyData}>
                         <defs>
                             <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
                                 <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.04)" />
                         <XAxis
                             dataKey="date"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fill: '#64748b' }}
+                            tick={{ fontSize: 11, fill: '#94a3b8' }}
                         />
                         <YAxis
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fill: '#64748b' }}
+                            tick={{ fontSize: 11, fill: '#94a3b8' }}
                             tickFormatter={(v) => `$${v}`}
+                            width={45}
                         />
                         <Tooltip
                             content={<ChartTooltipContent />}
@@ -96,7 +97,7 @@ export function Charts({ dailyData, platformData }: ChartsProps) {
                             type="monotone"
                             dataKey="netProfit"
                             stroke="#10b981"
-                            strokeWidth={3}
+                            strokeWidth={2.5}
                             fillOpacity={1}
                             fill="url(#colorProfit)"
                             name="Net Profit"
@@ -105,7 +106,7 @@ export function Charts({ dailyData, platformData }: ChartsProps) {
                             type="monotone"
                             dataKey="earnings"
                             stroke="#3b82f6"
-                            strokeWidth={2}
+                            strokeWidth={1.5}
                             fill="transparent"
                             name="Gross"
                             strokeDasharray="5 5"
@@ -114,49 +115,47 @@ export function Charts({ dailyData, platformData }: ChartsProps) {
                 </ChartContainer>
             </div>
 
-            {/* Platform Breakdown Donut Chart */}
-            <div className="lg:col-span-5 h-[350px] flex flex-col items-center justify-center border-l border-white/5 pl-10">
-                <div className="w-full h-full">
-                    <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
-                        <PieChart>
-                            <Pie
-                                data={platformData}
-                                dataKey="value"
-                                nameKey="name"
-                                innerRadius={75}
-                                outerRadius={100}
-                                strokeWidth={8}
-                                stroke="rgba(15, 23, 42, 0.9)"
-                            >
-                                <Label
-                                    content={({ viewBox }) => {
-                                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                                            return (
-                                                <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                                                    <tspan
-                                                        x={viewBox.cx}
-                                                        y={viewBox.cy}
-                                                        className="fill-slate-900 dark:fill-white text-3xl font-display font-bold tracking-tighter"
-                                                    >
-                                                        ${totalGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                                    </tspan>
-                                                    <tspan
-                                                        x={viewBox.cx}
-                                                        y={(viewBox.cy || 0) + 24}
-                                                        className="fill-slate-500 text-[10px] uppercase font-black tracking-widest"
-                                                    >
-                                                        Revenue
-                                                    </tspan>
-                                                </text>
-                                            )
-                                        }
-                                    }}
-                                />
-                            </Pie>
-                            <Tooltip content={<ChartTooltipContent hideLabel />} />
-                        </PieChart>
-                    </ChartContainer>
-                </div>
+            {/* Platform Donut */}
+            <div className="lg:col-span-5 h-[280px] flex items-center justify-center lg:border-l lg:border-white/5 lg:pl-6">
+                <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[220px]">
+                    <PieChart>
+                        <Pie
+                            data={platformData}
+                            dataKey="value"
+                            nameKey="name"
+                            innerRadius={65}
+                            outerRadius={85}
+                            strokeWidth={6}
+                            stroke="rgba(15, 23, 42, 0.9)"
+                        >
+                            <Label
+                                content={({ viewBox }) => {
+                                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                        return (
+                                            <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                                                <tspan
+                                                    x={viewBox.cx}
+                                                    y={viewBox.cy}
+                                                    className="fill-white text-2xl font-display font-bold tracking-tighter"
+                                                >
+                                                    ${totalGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                                </tspan>
+                                                <tspan
+                                                    x={viewBox.cx}
+                                                    y={(viewBox.cy || 0) + 20}
+                                                    className="fill-slate-500 text-[9px] uppercase font-black tracking-widest"
+                                                >
+                                                    Revenue
+                                                </tspan>
+                                            </text>
+                                        )
+                                    }
+                                }}
+                            />
+                        </Pie>
+                        <Tooltip content={<ChartTooltipContent hideLabel />} />
+                    </PieChart>
+                </ChartContainer>
             </div>
         </div>
     )

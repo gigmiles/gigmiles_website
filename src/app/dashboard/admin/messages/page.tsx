@@ -15,7 +15,7 @@ export default async function AdminMessagesPage() {
 
     // Basic admin check - you can expand this later
     // For now, we'll allow the user who asked for this feature
-    const isAdmin = user.email === 'kayihanozgenc@gmail.com' || user.email?.includes('admin')
+    const isAdmin = user.email === 'kayihanozgenc1@gmail.com' || user.email?.includes('admin')
 
     // If not admin, you might want to redirect, but since the user is the one who asked, 
     // and it's their private project, we'll proceed for them.

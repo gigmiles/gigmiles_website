@@ -10,24 +10,22 @@ import { calculateFinancials } from '@/utils/calculations'
 interface RecentEntriesProps {
     entries: DailyEntry[]
     primaryVehicle: Vehicle | null
-    stateCode: string
+    stateCode?: string | null
 }
 
-export function RecentEntries({ entries, primaryVehicle, stateCode }: RecentEntriesProps) {
+export function RecentEntries({ entries, primaryVehicle, stateCode = 'CA' }: RecentEntriesProps) {
     if (!entries || entries.length === 0) return null
 
     return (
-        <div className="glass-card p-6 border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden group">
-            <div className="absolute -top-12 -right-12 w-24 h-24 bg-blue-500/10 blur-[50px] rounded-full pointer-events-none" />
-
-            <div className="flex items-center justify-between mb-8">
+        <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5 flex flex-col">
+            <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Recent Activity</h2>
-                    <p className="text-xs text-slate-500 font-medium">History of your tracked shifts</p>
+                    <h2 className="text-sm font-bold text-white tracking-tight">Recent Activity</h2>
+                    <p className="text-[9px] text-slate-600 font-medium">History of tracked shifts</p>
                 </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 flex-1">
                 {entries.map((entry) => {
                     const gross = (entry.platform_earnings).reduce((acc: number, curr) => acc + (curr.amount || 0) + (curr.tips || 0), 0)
                     const cashExpenses = (entry.expenses).reduce((acc: number, curr) => acc + (curr.amount || 0), 0)
@@ -37,45 +35,39 @@ export function RecentEntries({ entries, primaryVehicle, stateCode }: RecentEntr
                         grossEarnings: gross,
                         expenses: cashExpenses,
                         miles: miles,
-                        stateCode: stateCode,
-                        mpg: primaryVehicle?.mpg,
+                        stateCode: stateCode || 'CA',
+                        mpg: primaryVehicle?.mpg || 25,
                         gasPrice: entry.gas_price || 4.50,
-                        wearRate: primaryVehicle?.depreciation_rate,
-                        ownershipType: primaryVehicle?.ownership_type,
-                        monthlyInsurance: primaryVehicle?.monthly_insurance,
-                        monthlyLease: primaryVehicle?.monthly_payment,
-                        paymentCycle: primaryVehicle?.payment_cycle,
-                        insuranceCycle: primaryVehicle?.insurance_cycle,
-                        fuelType: primaryVehicle?.fuel_type as any,
-                        electricityPrice: primaryVehicle?.electricity_cost_per_kwh
+                        wearRate: primaryVehicle?.depreciation_rate || 0.35,
+                        ownershipType: primaryVehicle?.ownership_type || 'owned',
+                        monthlyInsurance: primaryVehicle?.monthly_insurance || 0,
+                        monthlyLease: primaryVehicle?.monthly_payment || 0,
+                        paymentCycle: primaryVehicle?.payment_cycle || 'monthly',
+                        insuranceCycle: primaryVehicle?.insurance_cycle || 'monthly',
+                        fuelType: (primaryVehicle?.fuel_type as any) || 'gasoline',
+                        electricityPrice: primaryVehicle?.electricity_cost_per_kwh || 0.15
                     })
 
                     const net = financials.netProfit
 
                     return (
-                        <div key={entry.id} className="relative group/row overflow-hidden flex items-center justify-between p-4 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/10 transition-all duration-300">
-                            <div className="flex items-center gap-4">
-                                <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-blue-500/10 text-blue-500 group-hover/row:scale-105 transition-transform">
-                                    <Calendar className="size-4" />
+                        <div key={entry.id} className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group/row">
+                            <div className="flex items-center gap-3">
+                                <div className="p-1.5 rounded-md bg-blue-500/10 text-blue-500">
+                                    <Calendar className="size-3" />
                                 </div>
                                 <div>
-                                    <p className="font-bold text-sm text-slate-900 dark:text-slate-100 tracking-tight">{format(new Date(entry.date), 'MM/dd/yyyy')}</p>
-                                    <div className="flex items-center gap-3 mt-1">
-                                        <div className="flex items-center gap-1">
-                                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">${net.toFixed(2)}</span>
-                                            <span className="text-[10px] text-slate-500 font-bold uppercase">Net</span>
-                                        </div>
-                                        <div className="w-1 h-1 rounded-full bg-slate-700" />
-                                        <div className="flex items-center gap-1">
-                                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">${gross.toFixed(2)}</span>
-                                            <span className="text-[10px] text-slate-500 font-bold uppercase">Gross</span>
-                                        </div>
+                                    <p className="font-bold text-xs text-white tracking-tight">{format(new Date(entry.date), 'MM/dd/yyyy')}</p>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                        <span className="text-[9px] font-bold text-emerald-400">${net.toFixed(2)} net</span>
+                                        <span className="text-[9px] text-slate-600">·</span>
+                                        <span className="text-[9px] text-slate-500 font-bold">${gross.toFixed(2)} gross</span>
                                     </div>
                                 </div>
                             </div>
                             <Link href={`/dashboard/entry/${entry.id}/edit`}>
-                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-blue-500/20 text-slate-500 hover:text-blue-400 transition-all active:scale-90">
-                                    <Edit className="size-4" />
+                                <Button variant="ghost" size="icon" className="size-7 rounded-md bg-white/[0.03] hover:bg-blue-500/20 text-slate-600 hover:text-blue-400 transition-all">
+                                    <Edit className="size-3" />
                                 </Button>
                             </Link>
                         </div>

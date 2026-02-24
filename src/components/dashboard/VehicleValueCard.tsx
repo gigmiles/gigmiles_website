@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Car, RefreshCw, TrendingDown, DollarSign } from 'lucide-react'
 import { checkVehicleValue } from '@/app/dashboard/actions/vehicle'
 import { toast } from 'sonner'
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface VehicleValueCardProps {
@@ -35,7 +34,6 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
         setLoading(true)
         try {
             const result = await checkVehicleValue(vehicle.year, vehicle.make, vehicle.model, parseInt(mileage))
-
             if (result.success && result.data) {
                 setValue(result.data.marketAverage)
                 setLastUpdated(new Date())
@@ -53,104 +51,98 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
 
     if (!vehicle) {
         return (
-            <Card className="h-full border-dashed border-2 shadow-none bg-slate-50/50 dark:bg-slate-900/20">
-                <CardContent className="flex flex-col items-center justify-center h-full p-6 text-center">
-                    <Car className="size-10 text-slate-700 dark:text-slate-300 mb-4" />
-                    <p className="text-muted-foreground font-medium">Add a vehicle to track its value.</p>
+            <Card className="h-full border-dashed border border-white/10 bg-white/[0.02]">
+                <CardContent className="flex flex-col items-center justify-center h-full p-5 text-center">
+                    <Car className="size-8 text-slate-700 mb-3" />
+                    <p className="text-xs text-slate-500 font-medium">Add a vehicle to track its value.</p>
                 </CardContent>
             </Card>
         )
     }
 
     return (
-        <div className="glass-card p-6 border-slate-200 dark:border-white/5 shadow-2xl relative overflow-hidden group">
-            <div className="absolute -top-12 -right-12 w-24 h-24 bg-indigo-500/10 blur-[50px] rounded-full pointer-events-none group-hover:bg-indigo-500/20 transition-all" />
-
-            <div className="flex flex-col gap-4 mb-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-xl font-display font-bold text-slate-900 dark:text-white tracking-tight">Asset Value</h2>
-                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-0.5">Market Valuation</p>
-                    </div>
-                    <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
-                        <Car className="size-5" />
-                    </div>
+        <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5 flex flex-col flex-1">
+            <div className="flex items-center justify-between mb-3">
+                <div>
+                    <h2 className="text-sm font-bold text-white tracking-tight">Asset Value</h2>
+                    <p className="text-[9px] text-slate-600 font-bold uppercase tracking-wider">Market Valuation</p>
                 </div>
-
-                <Select
-                    value={selectedVehicleId}
-                    onValueChange={(val) => {
-                        setSelectedVehicleId(val)
-                        setValue(null) // Reset value when switching vehicle
-                        setMileage('')
-                    }}
-                >
-                    <SelectTrigger className="w-full h-11 bg-slate-100 dark:bg-white/5 border-slate-300 dark:border-white/10 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300">
-                        <SelectValue placeholder="Select Vehicle" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-100 dark:bg-slate-900 border-slate-300 dark:border-white/10">
-                        {vehicles.map(v => (
-                            <SelectItem key={v.id} value={v.id} className="text-xs">
-                                {v.year} {v.make} {v.model} {v.is_primary ? '(Primary)' : ''}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
+                    <Car className="size-3.5" />
+                </div>
             </div>
 
-            <div className="space-y-6">
+            <Select
+                value={selectedVehicleId}
+                onValueChange={(val) => {
+                    setSelectedVehicleId(val)
+                    setValue(null)
+                    setMileage('')
+                }}
+            >
+                <SelectTrigger className="w-full h-9 bg-white/[0.03] border-white/5 rounded-lg text-xs font-bold text-slate-300 mb-3">
+                    <SelectValue placeholder="Select Vehicle" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-white/10">
+                    {vehicles.map(v => (
+                        <SelectItem key={v.id} value={v.id} className="text-xs">
+                            {v.year} {v.make} {v.model} {v.is_primary ? '(Primary)' : ''}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+
+            <div className="space-y-3 flex-1">
                 {value ? (
-                    <div className="animate-fade-in-up">
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mr-1">$</span>
-                            <span className="text-4xl font-extrabold tracking-tighter text-slate-900 dark:text-slate-50">
+                    <div>
+                        <div className="flex items-baseline gap-0.5">
+                            <span className="text-[9px] font-bold text-slate-600">$</span>
+                            <span className="text-3xl font-extrabold tracking-tighter text-white">
                                 {value.toLocaleString()}
                             </span>
-                            <span className="text-xs text-slate-500 font-bold ml-1 uppercase">USD</span>
+                            <span className="text-[9px] text-slate-600 font-bold ml-1 uppercase">USD</span>
                         </div>
 
-                        <div className="mt-4 flex items-center gap-2 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 w-fit">
-                            <TrendingDown className="size-3 text-rose-500" />
-                            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest">
-                                Est. Depreciation: ${(value * 0.15).toLocaleString('en-US', { maximumFractionDigits: 0 })} / yr
+                        <div className="mt-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-500/10 border border-red-500/10 w-fit">
+                            <TrendingDown className="size-2.5 text-red-400" />
+                            <span className="text-[9px] font-bold text-red-400 uppercase tracking-wider">
+                                -${(value * 0.15).toLocaleString('en-US', { maximumFractionDigits: 0 })} / yr
                             </span>
                         </div>
 
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-6 opacity-60">
-                            Last Refreshed: {lastUpdated?.toLocaleTimeString()} • v1.1
+                        <p className="text-[9px] text-slate-700 font-medium mt-3">
+                            Updated {lastUpdated?.toLocaleTimeString()}
                         </p>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
-                        <div className="p-4 bg-indigo-500/10 rounded-3xl border border-indigo-500/20 group-hover:scale-110 transition-transform">
-                            <DollarSign className="size-6 text-indigo-400" />
+                    <div className="flex flex-col items-center justify-center py-4 text-center">
+                        <div className="p-2.5 bg-indigo-500/10 rounded-xl border border-indigo-500/10 mb-2">
+                            <DollarSign className="size-4 text-indigo-400" />
                         </div>
-                        <div>
-                            <p className="text-sm font-bold text-slate-900 dark:text-slate-200 tracking-tight">Market Valuation</p>
-                            <p className="text-[10px] text-slate-500 font-medium mt-1 leading-relaxed px-4 opacity-80 uppercase tracking-wider">
-                                Enter your current mileage to see real-time market value estimates.
-                            </p>
-                        </div>
+                        <p className="text-xs font-bold text-slate-300">Market Valuation</p>
+                        <p className="text-[9px] text-slate-600 mt-1 px-4">
+                            Enter mileage for real-time market value.
+                        </p>
                     </div>
                 )}
 
-                <div className="flex items-end gap-3 mt-4">
-                    <div className="flex-1 space-y-2">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] ml-1">Mileage</label>
+                <div className="flex items-end gap-2">
+                    <div className="flex-1 space-y-1">
+                        <label className="text-[9px] font-bold text-slate-600 uppercase tracking-wider ml-0.5">Mileage</label>
                         <Input
                             placeholder="e.g. 45,000"
                             type="number"
                             value={mileage}
                             onChange={(e) => setMileage(e.target.value)}
-                            className="glass-input h-11 px-4 text-sm focus:ring-1 focus:ring-indigo-500/50"
+                            className="h-9 px-3 text-xs bg-white/[0.03] border-white/5 rounded-lg focus:ring-1 focus:ring-indigo-500/50"
                         />
                     </div>
                     <Button
                         onClick={handleCheckValue}
                         disabled={loading}
-                        className="h-11 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-slate-900 dark:text-white shadow-xl shadow-indigo-500/20 px-6 font-bold active:scale-95 transition-all"
+                        className="h-9 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white shadow-md shadow-indigo-500/15 px-4 text-xs font-bold active:scale-95 transition-all"
                     >
-                        {loading ? <RefreshCw className="size-4 animate-spin" /> : "Verify"}
+                        {loading ? <RefreshCw className="size-3.5 animate-spin" /> : "Verify"}
                     </Button>
                 </div>
             </div>

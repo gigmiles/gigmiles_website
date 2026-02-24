@@ -16,6 +16,16 @@ import {
     Trash2,
     HelpCircle,
     ShieldAlert,
+    Target,
+    TrendingUp,
+    Sparkles,
+    Brain,
+    MapPin,
+    Zap,
+    Wallet,
+    CloudRain,
+    Trophy,
+    Compass
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -26,6 +36,7 @@ import { signOut } from "@/app/auth/actions";
 import { toast } from "sonner";
 import { Vehicle } from "@/app/dashboard/types";
 import { Logo } from "@/components/brand/Logo";
+import { cn } from "@/lib/utils";
 
 import {
     Sidebar,
@@ -37,6 +48,14 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -63,16 +82,19 @@ const mainNav = [
         title: "Dashboard",
         url: "/dashboard",
         icon: LayoutDashboard,
+        accent: "neon-primary",
     },
     {
         title: "Reports",
         url: "/dashboard/reports",
         icon: BarChart3,
+        accent: "blue-500",
     },
     {
         title: "Tax Center",
         url: "/dashboard/tax",
         icon: Calculator,
+        accent: "amber-500",
     },
 ];
 
@@ -126,84 +148,129 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
         <Sidebar
             collapsible="icon"
             {...props}
-            className="border-r border-border/10 bg-background/40 backdrop-blur-xl overflow-hidden"
+            className="border-r border-white/[0.04] bg-[#0a0e17]/95 backdrop-blur-2xl overflow-hidden"
         >
-            <SidebarHeader className="h-auto border-b border-border/10 p-4 bg-transparent flex flex-col gap-4">
+            {/* Ambient living gradient — subtle, slow-moving */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute -top-32 -left-16 w-40 h-40 bg-neon-primary/[0.03] rounded-full blur-[80px] animate-pulse" />
+                <div className="absolute bottom-20 -right-10 w-32 h-32 bg-blue-500/[0.03] rounded-full blur-[60px] animate-pulse [animation-delay:2s]" />
+            </div>
+
+            <SidebarHeader className="h-auto border-b border-white/[0.04] p-4 bg-transparent flex flex-col gap-4 relative z-10">
                 <Link href="/dashboard" className="transition-transform active:scale-95">
                     <Logo className="px-2" />
                 </Link>
 
-                {/* Dashboard Vehicle Switcher */}
+                {/* Vehicle Switcher */}
                 <div className="px-1 group-data-[collapsible=icon]:hidden">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <SidebarMenuButton
                                 size="lg"
-                                className="h-14 w-full justify-between rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/10 shadow-premium transition-all active:scale-[0.98] group/switcher"
+                                className="h-14 w-full justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-all active:scale-[0.98] group/switcher"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-neon-primary/10 text-neon-primary shadow-inner group-hover/switcher:bg-neon-primary/20 transition-colors">
+                                    <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-neon-primary/10 text-neon-primary shadow-[0_0_12px_rgba(57,255,20,0.1)] group-hover/switcher:shadow-[0_0_16px_rgba(57,255,20,0.2)] transition-all">
                                         <Car className="size-5" />
                                     </div>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
-                                        <span className="truncate font-bold text-slate-900 dark:text-white">
+                                        <span className="truncate font-bold text-white text-[13px]">
                                             {activeVehicle ? `${activeVehicle.make} ${activeVehicle.model}` : "No Vehicle"}
                                         </span>
-                                        <span className="truncate text-[10px] text-slate-500 font-medium">
-                                            {activeVehicle ? `${activeVehicle.year} • Active` : "Please set vehicle"}
+                                        <span className="truncate text-[10px] text-slate-500 font-medium flex items-center gap-1.5">
+                                            {activeVehicle ? (
+                                                <>
+                                                    {activeVehicle.year}
+                                                    <span className="text-slate-700">•</span>
+                                                    <span className="flex items-center gap-1">
+                                                        <span className="size-1.5 rounded-full bg-neon-primary animate-pulse shadow-[0_0_6px_rgba(57,255,20,0.6)]" />
+                                                        <span className="text-neon-primary/80">Active</span>
+                                                    </span>
+                                                </>
+                                            ) : "Please set vehicle"}
                                         </span>
                                     </div>
                                 </div>
-                                <ChevronsUpDown className="size-4 text-slate-500" />
+                                <ChevronsUpDown className="size-4 text-slate-600" />
                             </SidebarMenuButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
-                            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-2xl shadow-premium backdrop-blur-2xl bg-slate-950/90 border-white/10 p-2"
+                            className="w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl bg-[#0a0e17]/98 border border-white/[0.06] p-3"
                             side="bottom"
                             align="start"
                             sideOffset={8}
                         >
-                            <DropdownMenuLabel className="px-3 py-2 text-xs font-bold uppercase tracking-widest text-slate-500/80">
-                                Switch Vehicle
+                            <DropdownMenuLabel className="px-2 py-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-600">
+                                Your Vehicles
                             </DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-white/5" />
-                            <div className="space-y-1 mt-1">
-                                {vehicles.map((v) => (
-                                    <div
-                                        key={v.id}
-                                        className={`rounded-xl py-2.5 px-3 transition-colors cursor-pointer flex items-center justify-between group/item ${v.id === activeVehicleId ? 'bg-neon-primary/10' : 'hover:bg-white/5'}`}
-                                        onClick={() => handleSwitchVehicle(v.id)}
-                                    >
-                                        <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 w-full">
-                                                <span className={`font-bold transition-colors truncate ${v.id === activeVehicleId ? 'text-neon-primary' : 'text-slate-200'}`}>
-                                                    {v.make} {v.model}
-                                                </span>
-                                                {v.id === activeVehicleId && (
-                                                    <div className="size-1.5 shrink-0 rounded-full bg-neon-primary shadow-[0_0_8px_rgba(19,236,91,0.5)]" />
-                                                )}
-                                            </div>
-                                            <span className="text-[10px] text-slate-500 font-medium tracking-wide italic truncate">
-                                                {v.year} • {v.id === activeVehicleId ? 'Current Driving' : 'Available'}
-                                            </span>
-                                        </div>
-
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="size-7 rounded-lg hover:bg-ruby-500/20 text-slate-500 hover:text-ruby-500 transition-all opacity-0 group-hover/item:opacity-100"
-                                            onClick={(e: React.MouseEvent) => handleDeleteVehicle(e, v.id)}
+                            <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent mb-2" />
+                            <div className="space-y-1.5">
+                                {vehicles.map((v) => {
+                                    const isCurrentVehicle = v.id === activeVehicleId;
+                                    return (
+                                        <div
+                                            key={v.id}
+                                            className={cn(
+                                                "rounded-xl py-3 px-3 transition-all cursor-pointer flex items-center gap-3 group/item relative overflow-hidden",
+                                                isCurrentVehicle
+                                                    ? "bg-neon-primary/[0.06] border border-neon-primary/15 shadow-[0_0_12px_rgba(57,255,20,0.05)]"
+                                                    : "bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] hover:border-white/[0.08]"
+                                            )}
+                                            onClick={() => handleSwitchVehicle(v.id)}
                                         >
-                                            <Trash2 className="size-3.5" />
-                                        </Button>
-                                    </div>
-                                ))}
+                                            {/* Vehicle icon */}
+                                            <div className={cn(
+                                                "flex aspect-square size-8 items-center justify-center rounded-lg shrink-0 transition-all",
+                                                isCurrentVehicle
+                                                    ? "bg-neon-primary/15 text-neon-primary shadow-[0_0_8px_rgba(57,255,20,0.15)]"
+                                                    : "bg-white/[0.04] text-slate-500 group-hover/item:text-slate-300"
+                                            )}>
+                                                <Car className="size-4" />
+                                            </div>
+
+                                            {/* Vehicle info */}
+                                            <div className="flex flex-col flex-1 min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={cn(
+                                                        "font-bold text-[13px] truncate transition-colors",
+                                                        isCurrentVehicle ? "text-white" : "text-slate-300 group-hover/item:text-white"
+                                                    )}>
+                                                        {v.make} {v.model}
+                                                    </span>
+                                                    {isCurrentVehicle && (
+                                                        <div className="size-1.5 shrink-0 rounded-full bg-neon-primary animate-pulse shadow-[0_0_6px_rgba(57,255,20,0.5)]" />
+                                                    )}
+                                                </div>
+                                                <span className="text-[10px] text-slate-600 font-medium tracking-wide truncate flex items-center gap-1.5">
+                                                    {v.year}
+                                                    <span className="text-slate-700">•</span>
+                                                    <span className={isCurrentVehicle ? "text-neon-primary/70" : "text-slate-600"}>
+                                                        {isCurrentVehicle ? 'Currently Active' : 'Available'}
+                                                    </span>
+                                                </span>
+                                            </div>
+
+                                            {/* Delete button */}
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="size-7 rounded-lg hover:bg-ruby-500/20 text-slate-700 hover:text-ruby-500 transition-all opacity-0 group-hover/item:opacity-100 shrink-0"
+                                                onClick={(e: React.MouseEvent) => handleDeleteVehicle(e, v.id)}
+                                            >
+                                                <Trash2 className="size-3.5" />
+                                            </Button>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                            <DropdownMenuSeparator className="bg-white/5 my-2" />
-                            <DropdownMenuItem className="rounded-xl focus:bg-white/10 py-2 transition-colors cursor-pointer" asChild>
+                            <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-2.5" />
+                            <DropdownMenuItem className="rounded-xl focus:bg-white/[0.05] py-2.5 px-3 transition-colors cursor-pointer" asChild>
                                 <Link href="/dashboard/settings/vehicle" className="flex items-center w-full">
-                                    <Settings className="size-4 mr-2 text-slate-400" />
-                                    <span className="text-xs font-semibold text-slate-300">Manage Vehicles</span>
+                                    <div className="p-1.5 rounded-lg bg-white/[0.04] mr-3">
+                                        <Settings className="size-3.5 text-slate-500" />
+                                    </div>
+                                    <span className="text-[13px] font-medium text-slate-400">Manage Vehicles</span>
+                                    <ChevronRight className="size-3.5 text-slate-700 ml-auto" />
                                 </Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -211,102 +278,150 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                 </div>
             </SidebarHeader>
 
-            <SidebarContent className="px-3 py-6 bg-transparent">
-                <SidebarMenu className="gap-1.5">
-                    {mainNav.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton
-                                asChild
-                                tooltip={item.title}
-                                isActive={pathname === item.url}
-                                className={`h-11 rounded-xl transition-all duration-300 group ${pathname === item.url
-                                    ? 'bg-neon-primary/10 text-neon-primary font-semibold shadow-inner'
-                                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-white/5'
-                                    }`}
-                            >
-                                <Link href={item.url} className="flex items-center gap-3">
-                                    <div className={`p-1 rounded-lg transition-colors ${pathname === item.url ? 'bg-neon-primary text-navy-dark shadow-md' : 'group-hover:bg-white/10'}`}>
-                                        <item.icon className="size-4" />
-                                    </div>
-                                    <span className="text-sm tracking-tight">{item.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
+            <SidebarContent className="px-3 py-6 bg-transparent relative z-10">
+                {/* Main Navigation — Primary actions */}
+                <SidebarMenu className="gap-1">
+                    {mainNav.map((item) => {
+                        const isActive = pathname === item.url;
+                        return (
+                            <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton
+                                    asChild
+                                    tooltip={item.title}
+                                    isActive={isActive}
+                                    className={cn(
+                                        "h-11 rounded-xl transition-all duration-200 group/nav relative overflow-hidden",
+                                        isActive
+                                            ? "bg-neon-primary/[0.08] text-white font-semibold"
+                                            : "text-slate-500 hover:text-white hover:bg-white/[0.04]"
+                                    )}
+                                >
+                                    <Link href={item.url} className="flex items-center gap-3">
+                                        {/* Active indicator bar */}
+                                        {isActive && (
+                                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-neon-primary shadow-[0_0_8px_rgba(57,255,20,0.5)]" />
+                                        )}
+                                        <div className={cn(
+                                            "p-1.5 rounded-lg transition-all",
+                                            isActive
+                                                ? "bg-neon-primary text-[#0a0e17] shadow-[0_0_12px_rgba(57,255,20,0.3)]"
+                                                : "text-slate-500 group-hover/nav:text-slate-300"
+                                        )}>
+                                            <item.icon className="size-4" />
+                                        </div>
+                                        <span className="text-sm font-medium tracking-tight">{item.title}</span>
+                                        {/* Live dot for active */}
+                                        {isActive && (
+                                            <div className="ml-auto size-1.5 rounded-full bg-neon-primary animate-pulse shadow-[0_0_6px_rgba(57,255,20,0.6)]" />
+                                        )}
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        );
+                    })}
                 </SidebarMenu>
 
-                <div className="my-6 px-3">
-                    <div className="h-px bg-gradient-to-r from-transparent via-border/10 to-transparent" />
+                {/* Divider — living gradient */}
+                <div className="my-5 mx-3">
+                    <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
                 </div>
 
-                <SidebarMenu className="gap-1.5">
-                    {secondaryNav.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton
-                                asChild
-                                tooltip={item.title}
-                                isActive={pathname === item.url}
-                                className={`h-11 rounded-xl transition-all duration-300 ${pathname === item.url
-                                    ? 'bg-slate-500/10 text-slate-900 dark:text-white font-semibold'
-                                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-white/5'
-                                    }`}
-                            >
-                                <Link href={item.url} className="flex items-center gap-3">
-                                    <div className={`p-1 rounded-lg ${pathname === item.url ? 'bg-slate-700 text-white' : ''}`}>
-                                        <item.icon className="size-4" />
-                                    </div>
-                                    <span className="text-sm tracking-tight">{item.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
+                {/* Secondary Navigation — Utility actions */}
+                <SidebarMenu className="gap-1">
+                    {secondaryNav.map((item) => {
+                        const isActive = pathname === item.url;
+                        return (
+                            <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton
+                                    asChild
+                                    tooltip={item.title}
+                                    isActive={isActive}
+                                    className={cn(
+                                        "h-10 rounded-xl transition-all duration-200",
+                                        isActive
+                                            ? "bg-white/[0.06] text-white font-semibold"
+                                            : "text-slate-600 hover:text-slate-300 hover:bg-white/[0.03]"
+                                    )}
+                                >
+                                    <Link href={item.url} className="flex items-center gap-3">
+                                        <div className={cn(
+                                            "p-1 rounded-lg transition-colors",
+                                            isActive ? "text-slate-300" : "text-slate-600"
+                                        )}>
+                                            <item.icon className="size-4" />
+                                        </div>
+                                        <span className="text-[13px] tracking-tight">{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        );
+                    })}
 
                     {/* Admin Section */}
-                    {(user.email === 'kayihanozgenc@gmail.com' || user.email?.includes('admin')) && (
+                    {(user.email === 'kayihanozgenc1@gmail.com' || user.email?.includes('admin')) && (
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 asChild
                                 tooltip="Admin Messages"
                                 isActive={pathname === "/dashboard/admin/messages"}
-                                className={`h-11 rounded-xl transition-all duration-300 border border-indigo-500/10 ${pathname === "/dashboard/admin/messages"
-                                    ? 'bg-indigo-500/10 text-indigo-400 font-semibold'
-                                    : 'text-indigo-400/60 hover:text-indigo-400 hover:bg-indigo-500/5'
-                                    }`}
+                                className={cn(
+                                    "h-10 rounded-xl transition-all duration-200 border border-indigo-500/10",
+                                    pathname === "/dashboard/admin/messages"
+                                        ? "bg-indigo-500/10 text-indigo-400 font-semibold"
+                                        : "text-indigo-400/50 hover:text-indigo-400 hover:bg-indigo-500/5"
+                                )}
                             >
                                 <Link href="/dashboard/admin/messages" className="flex items-center gap-3">
-                                    <div className={`p-1 rounded-lg ${pathname === "/dashboard/admin/messages" ? 'bg-indigo-500 text-white' : 'bg-indigo-500/10'}`}>
+                                    <div className={cn(
+                                        "p-1 rounded-lg",
+                                        pathname === "/dashboard/admin/messages" ? "bg-indigo-500 text-white" : "bg-indigo-500/10"
+                                    )}>
                                         <ShieldAlert className="size-4" />
                                     </div>
-                                    <span className="text-sm tracking-tight font-bold">Admin Panel</span>
+                                    <span className="text-[13px] tracking-tight font-bold">Admin Panel</span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     )}
+
+                    {/* Divider */}
+                    <div className="my-5 mx-3">
+                        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+                    </div>
+
+                    {/* Customize Dashboard */}
+                    <SidebarMenuItem>
+                        <SidebarCustomizer />
+                    </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-border/10 p-4 space-y-4 bg-transparent">
+            <SidebarFooter className="border-t border-white/[0.04] p-4 space-y-3 bg-transparent relative z-10">
                 <div className="flex items-center justify-between px-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-data-[collapsible=icon]:hidden">Appearance</span>
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-600 group-data-[collapsible=icon]:hidden">Appearance</span>
                     <ModeToggle />
                 </div>
+
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton
-                                    className="data-[state=open]:bg-white/10 data-[state=open]:text-white rounded-2xl border border-white/5 shadow-premium hover:shadow-neon-primary/5 transition-all hover:scale-[1.02] bg-white/5 group"
+                                    className="data-[state=open]:bg-white/[0.06] data-[state=open]:text-white rounded-2xl border border-white/[0.06] hover:border-white/10 transition-all hover:bg-white/[0.04] bg-white/[0.02] group h-auto py-2.5"
                                 >
                                     <Avatar className="h-9 w-9 rounded-xl shadow-lg border-2 border-neon-primary/20">
-                                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-neon-primary to-neon-primary/80 text-navy-dark font-bold text-xs">
+                                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-neon-primary to-emerald-600 text-[#0a0e17] font-bold text-xs">
                                             {user.full_name?.charAt(0) || "U"}
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-xs leading-tight group-data-[collapsible=icon]:hidden ml-2">
-                                        <span className="truncate font-bold text-slate-900 dark:text-white">{user.full_name}</span>
-                                        <span className="truncate text-[10px] text-neon-primary font-semibold tracking-tight">Active Professional</span>
+                                        <span className="truncate font-bold text-white text-[13px]">{user.full_name}</span>
+                                        <span className="truncate text-[10px] font-semibold tracking-tight flex items-center gap-1.5">
+                                            <span className="size-1.5 rounded-full bg-neon-primary animate-pulse shadow-[0_0_4px_rgba(57,255,20,0.5)]" />
+                                            <span className="text-neon-primary/80">Active Professional</span>
+                                        </span>
                                     </div>
-                                    <ChevronRight className="ml-auto size-4 text-slate-500 group-data-[collapsible=icon]:hidden transition-transform group-hover:translate-x-0.5" />
+                                    <ChevronRight className="ml-auto size-4 text-slate-600 group-data-[collapsible=icon]:hidden transition-transform group-hover:translate-x-0.5" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
@@ -368,5 +483,183 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>
+    );
+}
+
+function SidebarCustomizer() {
+    const [visibleWidgets, setVisibleWidgets] = React.useState({
+        goals: true,
+        efficiency: true,
+        vehicle: true,
+        weekly: true,
+        recent: true,
+        maintenance: true,
+        tax: true,
+        weather: true,
+        milestones: true,
+        strategy: true
+    });
+
+    React.useEffect(() => {
+        const saved = localStorage.getItem('gigmiles_dashboard_widgets');
+        if (saved) {
+            try {
+                setVisibleWidgets(JSON.parse(saved));
+            } catch (e) {
+                console.error('Failed to parse dashboard settings');
+            }
+        }
+    }, []);
+
+    const toggleWidget = (id: keyof typeof visibleWidgets) => {
+        const newState = { ...visibleWidgets, [id]: !visibleWidgets[id] };
+        setVisibleWidgets(newState);
+        localStorage.setItem('gigmiles_dashboard_widgets', JSON.stringify(newState));
+
+        // Dispatch custom event to notify DashboardGrid
+        window.dispatchEvent(new CustomEvent('gigmiles_widget_update', { detail: newState }));
+
+        toast.success(`${id.charAt(0).toUpperCase() + id.slice(1)} widget ${newState[id] ? 'enabled' : 'disabled'}`, {
+            duration: 2000,
+            position: 'bottom-center'
+        });
+    };
+
+    const widgets = [
+        { id: 'goals', label: 'Earnings Goals', icon: Target },
+        { id: 'efficiency', label: 'Platform Efficiency', icon: BarChart3 },
+        { id: 'vehicle', label: 'Asset Value', icon: Car },
+        { id: 'weekly', label: 'Weekly Performance', icon: TrendingUp },
+        { id: 'recent', label: 'Recent Activity', icon: LayoutDashboard },
+        { id: 'tax', label: 'Tax Ledger', icon: Wallet, isComingSoon: true },
+        { id: 'maintenance', label: 'Smart Maintenance', icon: Settings, isComingSoon: true },
+        { id: 'strategy', label: 'AI Strategy', icon: Compass, isComingSoon: true },
+        { id: 'weather', label: 'Work Conditions', icon: CloudRain, isComingSoon: true },
+        { id: 'milestones', label: 'Records & Achievements', icon: Trophy, isComingSoon: true },
+    ];
+
+    const futureWidgets = [
+        { id: 'mileage', label: 'AI Mileage tracking', icon: MapPin },
+        { id: 'tax-ai', label: 'Tax Prediction AI', icon: Brain },
+        { id: 'expense-ai', label: 'Smart Categorization', icon: Zap },
+    ];
+
+    return (
+        <Sheet>
+            <SheetTrigger asChild>
+                <SidebarMenuButton
+                    tooltip="Customize Dashboard"
+                    className="h-10 rounded-xl transition-all duration-200 text-slate-600 hover:text-neon-primary hover:bg-neon-primary/[0.04] group/cust"
+                >
+                    <div className="flex items-center gap-3">
+                        <div className="p-1 rounded-lg group-hover/cust:bg-neon-primary/10 transition-colors">
+                            <Sparkles className="size-4" />
+                        </div>
+                        <span className="text-[13px] tracking-tight group-data-[collapsible=icon]:hidden">Customize</span>
+                    </div>
+                </SidebarMenuButton>
+            </SheetTrigger>
+            <SheetContent side="right" className="bg-slate-950/98 border-white/5 backdrop-blur-2xl w-[320px] sm:w-[400px] p-0 flex flex-col">
+                <SheetHeader className="p-8 pb-4 border-b border-white/5">
+                    <SheetTitle className="text-2xl font-display font-bold text-white text-left">Customize Layout</SheetTitle>
+                    <SheetDescription className="text-slate-400 text-left">
+                        Toggle dashboard widgets to personalize your workspace.
+                    </SheetDescription>
+                </SheetHeader>
+
+                <div className="flex-1 overflow-y-auto p-8 pt-6 space-y-8 scrollbar-none">
+                    <div className="space-y-4">
+                        <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-500">Active Widgets</h3>
+
+                        {widgets.map((widget) => {
+                            const isComingSoon = (widget as any).isComingSoon;
+                            const isActive = visibleWidgets[widget.id as keyof typeof visibleWidgets] && !isComingSoon;
+
+                            return (
+                                <div
+                                    key={widget.id}
+                                    className={cn(
+                                        "flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group/widget",
+                                        isComingSoon ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                                    )}
+                                    onClick={() => !isComingSoon && toggleWidget(widget.id as any)}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className={cn(
+                                            "p-2 rounded-xl transition-colors",
+                                            visibleWidgets[widget.id as keyof typeof visibleWidgets] ? "bg-neon-primary/10 text-neon-primary" : "bg-slate-900 text-slate-500"
+                                        )}>
+                                            <widget.icon className="size-4" />
+                                        </div>
+                                        <div>
+                                            <p className={cn(
+                                                "text-sm font-bold transition-colors",
+                                                isActive ? "text-slate-200" : "text-slate-500"
+                                            )}>
+                                                {widget.label}
+                                            </p>
+                                            {isComingSoon && (
+                                                <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-1 mt-0.5">
+                                                    <Sparkles className="size-3" /> Coming Soon
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className={cn(
+                                        "w-10 h-5 rounded-full transition-all relative",
+                                        isActive ? "bg-neon-primary shadow-[0_0_10px_rgba(57,255,20,0.3)]" : "bg-slate-800"
+                                    )}>
+                                        <div className={cn(
+                                            "absolute top-1 size-3 rounded-full bg-white transition-all duration-300",
+                                            isActive ? "translate-x-6" : "translate-x-1"
+                                        )} />
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    <div className="space-y-4 pt-8 border-t border-white/5 mt-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Coming Soon</h3>
+                                <Sparkles className="size-3 text-neon-primary animate-pulse" />
+                            </div>
+                            <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent ml-4" />
+                        </div>
+
+                        {futureWidgets.map((widget) => (
+                            <div
+                                key={widget.id}
+                                className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-dashed border-white/10 opacity-70 grayscale-[0.3] group/future relative overflow-hidden transition-all hover:opacity-100 hover:grayscale-0"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-xl bg-slate-900 text-slate-400 group-hover/future:text-neon-primary transition-colors">
+                                        <widget.icon className="size-4" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-slate-400 group-hover/future:text-slate-200 transition-colors">
+                                            {widget.label}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="px-2.5 py-1 rounded-lg bg-neon-primary/10 border border-neon-primary/20 shadow-[0_0_10px_rgba(57,255,20,0.1)]">
+                                    <span className="text-[9px] font-black text-neon-primary uppercase tracking-wider">Pro</span>
+                                </div>
+
+                                {/* Status Dot */}
+                                <div className="absolute top-0 right-0 w-16 h-16 -mr-8 -mt-8 bg-neon-primary/5 blur-2xl rounded-full" />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-neon-primary/5 border border-neon-primary/10 mt-auto mb-4">
+                        <p className="text-xs text-neon-primary/90 font-medium leading-relaxed">
+                            💡 <b>Tip:</b> Toggle widgets on or off to customize your dashboard. The layout adapts automatically for the best look!
+                        </p>
+                    </div>
+                </div>
+            </SheetContent>
+        </Sheet>
     );
 }

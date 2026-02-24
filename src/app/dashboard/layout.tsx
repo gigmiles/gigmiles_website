@@ -72,12 +72,12 @@ export default async function DashboardLayout({
                             <div className="h-4 w-px bg-white/10" />
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-slate-500 hover:bg-white/5 active:scale-90 transition-all">
-                                <Bell className="size-5" />
+                        <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all">
+                                <Bell className="size-6" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl text-slate-500 hover:bg-white/5 active:scale-90 transition-all">
-                                <HelpCircle className="size-5" />
+                            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all">
+                                <HelpCircle className="size-6" />
                             </Button>
                         </div>
                     </div>

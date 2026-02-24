@@ -48,37 +48,21 @@ export function DailyMotivation({ hasEntry, userName, className }: DailyMotivati
         : "You haven't tracked anything yet today. Let's make it a profitable shift!"
 
     return (
-        <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className={cn(
-                    "relative overflow-hidden group rounded-2xl glass-card border-white/5 p-5 shadow-lg shadow-emerald-500/5",
-                    className
-                )}
-            >
-                {/* Subtle background glow */}
-                <div className="absolute top-0 left-0 w-32 h-32 bg-emerald-500/10 blur-[50px] rounded-full pointer-events-none group-hover:bg-emerald-500/15 transition-all duration-700" />
-
-                <div className="flex items-start gap-4 relative z-10">
-                    <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0">
-                        <Sparkles className="size-5" />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-display font-bold text-slate-900 dark:text-white tracking-tight mb-0.5">
-                            {greeting}{userName ? `, ${userName}` : ''}
-                        </h3>
-                        <p className="text-xs text-slate-500 font-medium italic mb-2">
-                            "{quote}"
-                        </p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-emerald-500/80">
-                            {message}
-                        </p>
-                    </div>
-                </div>
-            </motion.div>
-        </AnimatePresence>
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className={cn(
+                "flex items-center gap-2.5 text-sm",
+                className
+            )}
+        >
+            <Sparkles className="size-3.5 text-emerald-400 shrink-0" />
+            <span className="text-slate-400 font-medium truncate">
+                <span className="text-slate-200 font-bold">{greeting}{userName ? `, ${userName.split('@')[0]}` : ''}</span>
+                {' · '}
+                <span className="italic text-slate-500">&quot;{quote}&quot;</span>
+            </span>
+        </motion.div>
     )
 }

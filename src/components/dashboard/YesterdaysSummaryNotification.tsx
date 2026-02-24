@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { getYesterdaysSummary } from '@/app/dashboard/actions'
-import { X, Calendar, ArrowRight } from 'lucide-react'
+import { X, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
@@ -18,8 +18,7 @@ export function YesterdaysSummaryNotification() {
     const [isVisible, setIsVisible] = useState(false)
 
     useEffect(() => {
-        // Check local storage if we already dismissed today
-        const today = new Date().toLocaleDateString('en-CA') // YYYY-MM-DD local format
+        const today = new Date().toLocaleDateString('en-CA')
         const dismissed = localStorage.getItem(`dismissed_yesterday_summary_${today}`)
 
         if (dismissed) return
@@ -59,46 +58,44 @@ export function YesterdaysSummaryNotification() {
         <AnimatePresence>
             {isVisible && (
                 <motion.div
-                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
-                    className="mb-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-500/10 to-indigo-700/5 border border-indigo-500/20 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 glass-card shadow-lg shadow-indigo-500/5 group"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="flex items-center gap-1.5 rounded-2xl bg-slate-900/80 border border-white/10 backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-indigo-500/20 transition-all duration-700" />
-
-                    <div className="flex items-start sm:items-center gap-4 relative z-10 w-full">
-                        <div className="p-3 rounded-2xl bg-indigo-500/10 text-indigo-400 shrink-0">
-                            <Calendar className="size-6" />
+                    <Link
+                        href={`/dashboard/reports?startDate=${summary.date}&endDate=${summary.date}`}
+                        className="flex items-center gap-4 px-5 py-3 rounded-l-2xl hover:bg-white/5 transition-colors group/link"
+                    >
+                        <div className={`p-2 rounded-xl ${isPositive ? 'bg-neon-primary/10 shadow-[0_0_10px_rgba(57,255,20,0.2)]' : 'bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.2)]'}`}>
+                            {isPositive
+                                ? <TrendingUp className="size-4 text-neon-primary" />
+                                : <TrendingDown className="size-4 text-red-500" />
+                            }
                         </div>
 
-                        <div className="flex-1 min-w-0 pr-4">
-                            <div className="flex items-center gap-2 mb-1">
-                                <h3 className="text-lg font-display font-bold text-slate-900 dark:text-white tracking-tight">Yesterday&apos;s Summary</h3>
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-slate-500 dark:text-slate-400 border border-white/5 uppercase tracking-wider">{summary.date}</span>
-                            </div>
-                            <p className="text-sm text-slate-500 font-medium">
-                                {isPositive ? "Great job! You made" : "You recorded"} <span className={isPositive ? "text-emerald-500 font-bold" : "text-rose-500 font-bold"}>
-                                    ${Math.abs(summary.netProfit).toFixed(2)}
-                                </span> {isPositive ? "net profit" : "net loss"} in <span className="text-slate-900 dark:text-slate-300 font-bold">{summary.hours.toFixed(1)} hrs</span>.
-                            </p>
+                        <div className="flex items-center gap-3">
+                            <span className="text-slate-400 font-black uppercase tracking-widest text-xs hidden sm:inline">Yesterday</span>
+                            <span className={`font-display font-extrabold text-lg tracking-tight ${isPositive ? 'text-neon-primary drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]' : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]'}`}>
+                                {isPositive ? '+' : '-'}${Math.abs(summary.netProfit).toFixed(2)}
+                            </span>
+                            <span className="text-slate-600 font-bold hidden md:inline">·</span>
+                            <span className="text-slate-400 font-bold text-sm hidden md:inline">{summary.hours.toFixed(1)}h</span>
                         </div>
 
-                        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto mx-auto sm:ml-auto w-full sm:w-auto">
-                            <Link href="/dashboard/reports" className="flex-1 sm:flex-none">
-                                <button className="w-full flex justify-center items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-indigo-500 hover:bg-indigo-600 rounded-xl transition-all shadow-md shadow-indigo-500/20 active:scale-95">
-                                    View Reports
-                                    <ArrowRight className="size-3" />
-                                </button>
-                            </Link>
-                            <button
-                                onClick={handleDismiss}
-                                className="p-2.5 text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/10 rounded-xl transition-all shrink-0"
-                                aria-label="Dismiss notification"
-                            >
-                                <X className="size-4" />
-                            </button>
+                        <div className="flex items-center gap-1 ml-2 px-3 py-1 rounded-lg bg-white/5 border border-white/5 group-hover/link:bg-white/10 group-hover/link:border-white/10 transition-all">
+                            <span className="text-xs font-bold text-slate-300 group-hover/link:text-white transition-colors">Details</span>
+                            <ArrowRight className="size-3 text-slate-400 group-hover/link:translate-x-0.5 transition-transform" />
                         </div>
-                    </div>
+                    </Link>
+
+                    <button
+                        onClick={handleDismiss}
+                        className="p-3.5 text-slate-500 hover:text-white hover:bg-white/10 transition-colors"
+                        aria-label="Dismiss"
+                    >
+                        <X className="size-3" />
+                    </button>
                 </motion.div>
             )}
         </AnimatePresence>
