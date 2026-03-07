@@ -49,7 +49,7 @@ export function TrustSection() {
                             transition={{ duration: 0.5, delay: idx * 0.1 }}
                             className="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800"
                         >
-                            <div className="size-12 rounded-xl bg-neon-primary/10 text-neon-primary flex items-center justify-center mb-6">
+                            <div className="size-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-6">
                                 <feature.icon className="size-6" />
                             </div>
                             <h3 className="font-bold text-navy-dark dark:text-white mb-2">{feature.title}</h3>

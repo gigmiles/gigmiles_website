@@ -29,7 +29,7 @@ export function Testimonials() {
         <section className="py-10 bg-[#080c14] relative overflow-hidden">
             <div className="container mx-auto px-6 relative z-10">
                 <div className="text-center max-w-2xl mx-auto mb-8">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neon-primary/60 mb-3">Feedback</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/60 mb-3">Feedback</p>
                     <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white tracking-tight">
                         Built with gig workers across the US.
                     </h2>
@@ -56,7 +56,7 @@ export function Testimonials() {
                             </p>
 
                             <div className="flex items-center gap-3 pt-3 border-t border-white/[0.06]">
-                                <div className="size-8 rounded-full bg-gradient-to-br from-neon-primary to-emerald-600 flex items-center justify-center text-[#0a0e17] font-bold text-sm shadow-[0_0_8px_rgba(57,255,20,0.15)]">
+                                <div className="size-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-[#0a0e17] font-bold text-sm shadow-[0_0_8px_rgba(57,255,20,0.15)]">
                                     {t.author.charAt(0)}
                                 </div>
                                 <div>

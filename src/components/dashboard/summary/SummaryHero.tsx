@@ -54,7 +54,7 @@ export function SummaryHero({
             {/* Glowing background effect */}
             <div className={cn(
                 "absolute -top-32 -right-32 w-64 h-64 blur-[100px] rounded-full pointer-events-none transition-colors duration-1000",
-                hourlyRate >= 25 ? "bg-neon-primary/15" : hourlyRate >= 15 ? "bg-amber-500/15" : "bg-red-500/15"
+                hourlyRate >= 25 ? "bg-emerald-500/15" : hourlyRate >= 15 ? "bg-amber-500/15" : "bg-red-500/15"
             )} />
 
             <div className="relative z-10 space-y-5">
@@ -67,7 +67,7 @@ export function SummaryHero({
                             initial={{ y: 12, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ type: "spring", stiffness: 120 }}
-                            className="font-display font-extrabold tracking-tighter text-neon-primary drop-shadow-[0_0_15px_rgba(57,255,20,0.3)] text-4xl md:text-5xl"
+                            className="font-display font-extrabold tracking-tighter text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)] text-4xl md:text-5xl"
                         >
                             {netProfit.toFixed(2)}
                         </motion.p>
@@ -205,15 +205,15 @@ export function SummaryHero({
                             <button className="flex flex-col gap-1.5 bg-white/5 rounded-xl p-3.5 border border-white/5 transition-all hover:bg-white/10 text-left group">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
-                                        <div className="p-1 rounded-md bg-neon-primary/10 border border-neon-primary/20">
-                                            <Route className="size-3 text-neon-primary" />
+                                        <div className="p-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
+                                            <Route className="size-3 text-emerald-500" />
                                         </div>
                                         <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Miles</span>
                                     </div>
                                     <ChevronRight className="size-2.5 text-slate-700 group-hover:text-slate-500 transition-colors" />
                                 </div>
                                 <span className="text-white font-bold text-lg truncate">{miles.toFixed(1)}</span>
-                                <span className="text-[8px] text-neon-primary/70 font-bold uppercase tracking-wider">${profitPerMile.toFixed(2)}/mi</span>
+                                <span className="text-[8px] text-emerald-500/70 font-bold uppercase tracking-wider">${profitPerMile.toFixed(2)}/mi</span>
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-56 bg-slate-900 border-white/10 p-3 rounded-xl shadow-2xl backdrop-blur-xl">
@@ -277,7 +277,7 @@ export function SummaryHero({
                         </div>
                         <div className={cn(
                             "px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider",
-                            hourlyRate >= 25 ? "bg-neon-primary/15 text-neon-primary border border-neon-primary/20" :
+                            hourlyRate >= 25 ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/20" :
                                 hourlyRate >= 15 ? "bg-amber-500/15 text-amber-500 border border-amber-500/20" :
                                     "bg-red-500/15 text-red-500 border border-red-500/20"
                         )}>
@@ -291,7 +291,7 @@ export function SummaryHero({
                             transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
                             className={cn(
                                 "h-full rounded-full",
-                                hourlyRate >= 25 ? "bg-neon-primary shadow-[0_0_8px_#39FF14]" :
+                                hourlyRate >= 25 ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" :
                                     hourlyRate >= 15 ? "bg-amber-400" : "bg-red-500"
                             )}
                         />

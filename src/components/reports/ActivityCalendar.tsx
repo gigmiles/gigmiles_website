@@ -145,6 +145,19 @@ export function ActivityCalendar({ data }: ActivityCalendarProps) {
                             )
                         })}
                     </div>
+
+                    {/* Heat Legend */}
+                    <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-white/5">
+                        <span className="text-[8px] font-bold text-slate-600 uppercase tracking-wider">Less</span>
+                        <div className="flex gap-1">
+                            <div className="size-3 rounded bg-white/5 border border-white/5" />
+                            <div className="size-3 rounded bg-emerald-900/20 border border-emerald-500/20" />
+                            <div className="size-3 rounded bg-emerald-900/40 border border-emerald-500/30" />
+                            <div className="size-3 rounded bg-emerald-500/20 border border-emerald-500/40" />
+                            <div className="size-3 rounded bg-emerald-500 border border-emerald-400" />
+                        </div>
+                        <span className="text-[8px] font-bold text-slate-600 uppercase tracking-wider">More</span>
+                    </div>
                 </div>
             </div>
 

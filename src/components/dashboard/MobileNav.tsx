@@ -30,7 +30,7 @@ export function MobileNav() {
                             className={cn(
                                 'flex flex-1 flex-col items-center gap-1 rounded-xl p-2 transition-all active:scale-90 min-h-[48px] justify-center',
                                 isActive
-                                    ? 'text-neon-primary'
+                                    ? 'text-emerald-500'
                                     : 'text-slate-500 hover:text-slate-300'
                             )}
                         >
@@ -46,7 +46,7 @@ export function MobileNav() {
                 <div className="flex flex-1 justify-center relative -top-6">
                     <Link
                         href="/dashboard/entry/new"
-                        className="flex h-16 w-16 items-center justify-center rounded-full bg-neon-primary text-slate-950 shadow-[0_8px_30px_rgba(57,255,20,0.25)] active:scale-95 transition-transform border-[6px] border-slate-950"
+                        className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 text-slate-950 shadow-[0_8px_30px_rgba(16,185,129,0.25)] active:scale-95 transition-transform border-[6px] border-slate-950"
                     >
                         <Plus className="size-8" strokeWidth={2.5} />
                     </Link>
@@ -61,7 +61,7 @@ export function MobileNav() {
                             className={cn(
                                 'flex flex-1 flex-col items-center gap-1 rounded-xl p-2 transition-all active:scale-90 min-h-[48px] justify-center',
                                 isActive
-                                    ? 'text-neon-primary'
+                                    ? 'text-emerald-500'
                                     : 'text-slate-500 hover:text-slate-300'
                             )}
                         >

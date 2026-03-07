@@ -35,7 +35,7 @@ export function FAQ() {
         <section className="py-14 bg-[#080c14] relative">
             <div className="container mx-auto px-6 max-w-3xl relative z-10">
                 <div className="text-center mb-10">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neon-primary/60 mb-4">FAQ</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/60 mb-4">FAQ</p>
                     <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
                         Frequently Asked Questions
                     </h2>
@@ -57,7 +57,7 @@ export function FAQ() {
                                 className={cn(
                                     "border rounded-2xl overflow-hidden transition-all duration-300",
                                     isOpen
-                                        ? "bg-[#0d1220] border-neon-primary/20 shadow-[0_0_20px_rgba(57,255,20,0.03)]"
+                                        ? "bg-[#0d1220] border-emerald-500/20 shadow-[0_0_20px_rgba(57,255,20,0.03)]"
                                         : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.1] hover:bg-white/[0.03]"
                                 )}
                             >
@@ -67,14 +67,14 @@ export function FAQ() {
                                 >
                                     <span className={cn(
                                         "font-bold text-lg transition-colors",
-                                        isOpen ? "text-neon-primary" : "text-white"
+                                        isOpen ? "text-emerald-500" : "text-white"
                                     )}>
                                         {faq.question}
                                     </span>
                                     <ChevronDown
                                         className={cn(
                                             "size-5 text-slate-600 transition-transform duration-300 shrink-0 ml-4",
-                                            isOpen ? "rotate-180 text-neon-primary" : ""
+                                            isOpen ? "rotate-180 text-emerald-500" : ""
                                         )}
                                     />
                                 </button>

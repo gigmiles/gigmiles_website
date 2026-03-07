@@ -19,7 +19,7 @@ interface PlatformDistributionProps {
 }
 
 const PLATFORM_COLORS: Record<string, string> = {
-    'uber': 'text-black dark:text-white',
+    'uber': 'text-white',
     'uber eats': 'text-[#06C167]',
     'lyft': 'text-[#FF00BF]',
     'doordash': 'text-[#FF3008]',
@@ -27,11 +27,16 @@ const PLATFORM_COLORS: Record<string, string> = {
     'instacart': 'text-[#43B02A]',
     'spark': 'text-[#0071CE]',
     'amazon flex': 'text-[#FF9900]',
+    'roadie': 'text-[#10B981]',
+    'shipt': 'text-[#6366F1]',
+    'gopuff': 'text-[#00A3E0]',
+    'favor': 'text-[#F59E0B]',
+    'point pickup': 'text-[#8B5CF6]',
     'other': 'text-slate-500'
 }
 
 const PLATFORM_BG_COLORS: Record<string, string> = {
-    'uber': 'bg-black dark:bg-white',
+    'uber': 'bg-white',
     'uber eats': 'bg-[#06C167]',
     'lyft': 'bg-[#FF00BF]',
     'doordash': 'bg-[#FF3008]',
@@ -39,19 +44,29 @@ const PLATFORM_BG_COLORS: Record<string, string> = {
     'instacart': 'bg-[#43B02A]',
     'spark': 'bg-[#0071CE]',
     'amazon flex': 'bg-[#FF9900]',
+    'roadie': 'bg-[#10B981]',
+    'shipt': 'bg-[#6366F1]',
+    'gopuff': 'bg-[#00A3E0]',
+    'favor': 'bg-[#F59E0B]',
+    'point pickup': 'bg-[#8B5CF6]',
     'other': 'bg-slate-500'
 }
 
 const PLATFORM_RING_SHADOWS: Record<string, string> = {
-    'uber': 'ring-white shadow-[0_0_6px_rgba(255,255,255,0.4)]',
-    'uber eats': 'ring-[#06C167] shadow-[0_0_6px_rgba(6,193,103,0.4)]',
-    'lyft': 'ring-[#FF00BF] shadow-[0_0_6px_rgba(255,0,191,0.4)]',
-    'doordash': 'ring-[#FF3008] shadow-[0_0_6px_rgba(255,48,8,0.4)]',
-    'grubhub': 'ring-[#F6343F] shadow-[0_0_6px_rgba(246,52,63,0.4)]',
-    'instacart': 'ring-[#43B02A] shadow-[0_0_6px_rgba(67,176,42,0.4)]',
-    'spark': 'ring-[#0071CE] shadow-[0_0_6px_rgba(0,113,206,0.4)]',
-    'amazon flex': 'ring-[#FF9900] shadow-[0_0_6px_rgba(255,153,0,0.4)]',
-    'other': 'ring-slate-500 shadow-[0_0_6px_rgba(100,116,139,0.4)]'
+    'uber': 'ring-white shadow-[0_0_8px_rgba(255,255,255,0.4)]',
+    'uber eats': 'ring-[#06C167] shadow-[0_0_8px_rgba(6,193,103,0.4)]',
+    'lyft': 'ring-[#FF00BF] shadow-[0_0_8px_rgba(255,0,191,0.4)]',
+    'doordash': 'ring-[#FF3008] shadow-[0_0_8px_rgba(255,48,8,0.4)]',
+    'grubhub': 'ring-[#F6343F] shadow-[0_0_8px_rgba(246,52,63,0.4)]',
+    'instacart': 'ring-[#43B02A] shadow-[0_0_8px_rgba(67,176,42,0.4)]',
+    'spark': 'ring-[#0071CE] shadow-[0_0_8px_rgba(0,113,206,0.4)]',
+    'amazon flex': 'ring-[#FF9900] shadow-[0_0_8px_rgba(255,153,0,0.4)]',
+    'roadie': 'ring-[#10B981] shadow-[0_0_8px_rgba(16,185,129,0.4)]',
+    'shipt': 'ring-[#6366F1] shadow-[0_0_8px_rgba(99,102,241,0.4)]',
+    'gopuff': 'ring-[#00A3E0] shadow-[0_0_8px_rgba(0,163,224,0.4)]',
+    'favor': 'ring-[#F59E0B] shadow-[0_0_8px_rgba(245,158,11,0.4)]',
+    'point pickup': 'ring-[#8B5CF6] shadow-[0_0_8px_rgba(139,92,246,0.4)]',
+    'other': 'ring-slate-500 shadow-[0_0_8px_rgba(100,116,139,0.4)]'
 }
 
 export const PlatformDistributionChart = React.memo(function PlatformDistributionChart({ data }: PlatformDistributionProps) {
@@ -72,36 +87,40 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
 
     if (data.length === 0) {
         return (
-            <Card className="bg-white/[0.03] border-white/5 flex flex-col items-center justify-center p-6 text-center">
-                <PieIcon className="size-8 text-slate-700 mb-3" />
-                <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">No Platform Data</p>
-                <p className="text-[9px] text-slate-600 mt-1 italic">Log earnings to see your sources</p>
+            <Card className="flex flex-col items-center justify-center p-8 text-center min-h-[300px]">
+                <div className="size-16 rounded-[1.5rem] bg-[#10B981]/10 flex items-center justify-center mb-4">
+                    <PieIcon className="size-8 text-[#10B981]" />
+                </div>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]">No Platform Data</p>
+                <p className="text-[9px] text-[#A1A1AA]/60 mt-2 font-medium">Log earnings to see your sources</p>
             </Card>
         )
     }
 
     return (
-        <Card className="bg-white/[0.03] border-white/5 flex flex-col overflow-hidden">
-            <CardHeader className="p-4 pb-0">
+        <Card className="flex flex-col overflow-hidden">
+            <CardHeader className="p-5 pb-0">
                 <div className="flex items-center justify-between">
-                    <div>
-                        <CardTitle className="text-sm font-bold text-white flex items-center gap-2">
-                            <div className="p-1 rounded-md bg-indigo-500/10 text-indigo-500">
-                                <PieIcon className="size-3" />
+                    <div className="space-y-1">
+                        <CardTitle className="text-sm flex items-center gap-2.5">
+                            <div className="size-8 rounded-xl bg-[#10B981]/10 flex items-center justify-center text-[#10B981]">
+                                <PieIcon className="size-4" />
                             </div>
-                            Platform Efficiency
+                            Platform Mix
                         </CardTitle>
-                        <CardDescription className="text-[9px] font-medium text-slate-600 uppercase tracking-wider">
-                            Weekly Mix & Performance
+                        <CardDescription className="text-[9px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60 ml-[2.625rem]">
+                            Weekly Performance
                         </CardDescription>
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="flex-1 pb-0 px-4 pt-2">
-                {/* Donut Chart — larger with glow */}
-                <div className="relative mx-auto w-full max-w-[220px]">
-                    {/* Outer glow ring */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-500/5 via-blue-500/5 to-indigo-500/5 blur-xl pointer-events-none" />
+                {/* Donut Chart — Premium Vibe */}
+                <div className="relative mx-auto w-full max-w-[240px]">
+                    {/* Outer ambient glow */}
+                    <div className="absolute inset-[-10%] rounded-full bg-gradient-to-br from-[#10B981]/8 via-transparent to-indigo-500/5 blur-[40px] pointer-events-none animate-pulse" />
+                    {/* Outer ring decoration */}
+                    <div className="absolute inset-[2%] rounded-full border border-white/[0.04] pointer-events-none" />
 
                     <ChartContainer
                         config={chartConfig}
@@ -109,9 +128,8 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                     >
                         <PieChart>
                             <defs>
-                                {/* Glow filter for the chart */}
-                                <filter id="chart-glow">
-                                    <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                                <filter id="segment-glow">
+                                    <feGaussianBlur stdDeviation="4" result="coloredBlur" />
                                     <feMerge>
                                         <feMergeNode in="coloredBlur" />
                                         <feMergeNode in="SourceGraphic" />
@@ -126,13 +144,13 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                                 data={data}
                                 dataKey="value"
                                 nameKey="name"
-                                innerRadius="55%"
-                                outerRadius="85%"
-                                strokeWidth={3}
-                                stroke="rgba(15, 23, 42, 0.8)"
-                                paddingAngle={2}
-                                cornerRadius={4}
-                                filter="url(#chart-glow)"
+                                innerRadius="52%"
+                                outerRadius="88%"
+                                strokeWidth={4}
+                                stroke="rgba(13, 15, 20, 0.9)"
+                                paddingAngle={3}
+                                cornerRadius={6}
+                                filter="url(#segment-glow)"
                             >
                                 {data.map((entry, idx) => (
                                     <Cell key={idx} fill={entry.fill} />
@@ -149,15 +167,17 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                                                 >
                                                     <tspan
                                                         x={viewBox.cx}
-                                                        y={(viewBox.cy || 0) - 4}
-                                                        className="fill-white text-3xl font-extrabold font-display tracking-tighter"
+                                                        y={(viewBox.cy || 0) - 6}
+                                                        className="fill-white text-4xl font-black tracking-tighter"
+                                                        style={{ fontStyle: 'italic' }}
                                                     >
                                                         ${totalEarnings.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
-                                                        y={(viewBox.cy || 0) + 18}
-                                                        className="fill-emerald-400 text-[9px] uppercase font-black tracking-[0.2em]"
+                                                        y={(viewBox.cy || 0) + 20}
+                                                        className="fill-[#10B981] text-[8px] uppercase font-black"
+                                                        style={{ letterSpacing: '0.35em' }}
                                                     >
                                                         Gross
                                                     </tspan>
@@ -172,41 +192,43 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                     </ChartContainer>
                 </div>
             </CardContent>
-            <CardFooter className="flex-col gap-1.5 text-sm p-4 pt-3 border-t border-white/5 bg-white/[0.02]">
+            <CardFooter className="flex-col gap-2 text-sm p-4 pt-3 border-t border-white/[0.06] bg-white/[0.01]">
                 <div className="grid grid-cols-1 gap-1.5 w-full">
                     {data.map((item, idx) => {
                         const hRate = item.hours > 0 ? item.value / item.hours : 0
                         const tipPct = item.value > 0 ? (item.tips / item.value) * 100 : 0
+                        const pct = totalEarnings > 0 ? ((item.value / totalEarnings) * 100).toFixed(0) : '0'
 
                         return (
-                            <div key={idx} className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-all">
-                                <div className="flex items-center gap-2">
+                            <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all group">
+                                <div className="flex items-center gap-2.5">
                                     <div
                                         className={cn(
-                                            "size-2.5 rounded-full shrink-0 ring-2 ring-offset-1 ring-offset-slate-950",
+                                            "size-3 rounded-full shrink-0 ring-2 ring-offset-1 ring-offset-[#0D0F14]",
                                             PLATFORM_BG_COLORS[item.name.toLowerCase()] || "bg-slate-500",
                                             PLATFORM_RING_SHADOWS[item.name.toLowerCase()] || PLATFORM_RING_SHADOWS.other
                                         )}
                                     />
                                     <span
                                         className={cn(
-                                            "text-xs font-bold",
+                                            "text-[11px] font-black uppercase tracking-[0.05em]",
                                             PLATFORM_COLORS[item.name.toLowerCase()] || "text-slate-500"
                                         )}
                                     >
                                         {item.name}
                                     </span>
+                                    <span className="text-[9px] font-bold text-[#A1A1AA]/40">{pct}%</span>
                                 </div>
-                                <div className="flex items-center gap-2.5">
+                                <div className="flex items-center gap-3">
                                     {hRate > 0 && (
-                                        <span className="text-[9px] text-blue-400 font-bold">${hRate.toFixed(0)}/h</span>
+                                        <span className="text-[9px] text-blue-400 font-black uppercase">${hRate.toFixed(0)}/h</span>
                                     )}
                                     {tipPct > 0 && (
-                                        <span className="text-[9px] text-amber-400 font-bold">{tipPct.toFixed(0)}% tip</span>
+                                        <span className="text-[9px] text-amber-400 font-black uppercase">{tipPct.toFixed(0)}% tip</span>
                                     )}
-                                    <div className="flex items-baseline gap-0.5">
-                                        <span className="text-sm font-extrabold text-white">${item.value.toFixed(0)}</span>
-                                        <span className="text-[7px] text-emerald-500/60 font-black uppercase tracking-wider">gross</span>
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-sm font-black text-white italic">${item.value.toFixed(0)}</span>
+                                        <span className="text-[7px] text-[#10B981]/60 font-black uppercase tracking-wider">gross</span>
                                     </div>
                                 </div>
                             </div>

@@ -4,7 +4,7 @@ import { Charts } from '@/components/reports/Charts'
 import { ExpenseBreakdown } from '@/components/reports/ExpenseBreakdown'
 import { ActivityCalendar } from '@/components/reports/ActivityCalendar'
 import Link from 'next/link'
-import { TrendingUp, ChevronLeft, DollarSign, LayoutGrid } from 'lucide-react'
+import { TrendingUp, ChevronLeft, MapPin, Lightbulb } from 'lucide-react'
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ startDate?: string, endDate?: string }> }) {
     const { startDate, endDate } = await searchParams
@@ -12,11 +12,40 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
     if (!data) return <div className="p-8 text-center text-muted-foreground">Generating reports...</div>
 
-    const totalWeekly = data.dailyData.reduce((acc, curr) => acc + curr.earnings, 0)
+    const totalGross = data.dailyData.reduce((acc, curr) => acc + curr.earnings, 0)
     const totalNetProfit = data.dailyData.reduce((acc, curr) => acc + curr.netProfit, 0)
-    const avgDaily = totalWeekly / (data.dailyData.length || 1)
-    void avgDaily
-    const topPlatform = data.platformData.sort((a, b) => b.value - a.value)[0]?.name || 'N/A'
+    const totalMiles = data.dailyData.reduce((acc, curr) => acc + curr.miles, 0)
+    const totalHours = data.platformData.reduce((acc, curr) => acc + curr.hours, 0)
+    const margin = totalGross > 0 ? ((totalNetProfit / totalGross) * 100) : 0
+    const avgHourly = totalHours > 0 ? totalNetProfit / totalHours : 0
+    const topPlatform = data.platformData.sort((a, b) => b.value - a.value)[0]
+    const topPlatformName = topPlatform?.name || 'N/A'
+    const topPlatformRate = topPlatform?.hourlyRate || 0
+
+    // Dynamic Insights
+    const insights: { text: string; highlight?: string }[] = []
+    if (topPlatform && topPlatformRate > 0) {
+        insights.push({
+            text: `${topPlatformName} leads with`,
+            highlight: `$${topPlatformRate.toFixed(0)}/hr`
+        })
+    }
+    if (totalGross > 0) {
+        const totalExpenses = totalGross - totalNetProfit
+        const costRatio = ((totalExpenses / totalGross) * 100).toFixed(0)
+        insights.push({
+            text: `Total costs are ${costRatio}% of your gross — `,
+            highlight: Number(costRatio) < 40 ? 'efficient!' : 'room to optimize'
+        })
+    }
+    if (data.dailyData.filter(d => d.earnings > 0).length >= 3) {
+        const activeDays = data.dailyData.filter(d => d.earnings > 0)
+        const avgPerDay = activeDays.reduce((a, d) => a + d.netProfit, 0) / activeDays.length
+        insights.push({
+            text: `Averaging`,
+            highlight: `$${avgPerDay.toFixed(0)}/active day`
+        })
+    }
 
     return (
         <div className="space-y-8 animate-fade-in pb-16">
@@ -40,32 +69,45 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                 </div>
             </div>
 
-            {/* KPI Strip — 3 compact inline cards */}
-            <div className="grid grid-cols-3 gap-3">
+            {/* KPI Strip — 4 compact cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
                     <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Net Profit</p>
                     <h3 className="text-2xl font-display font-bold text-emerald-500 tracking-tighter">
-                        ${totalNetProfit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${totalNetProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </h3>
+                    <p className="text-[9px] font-bold text-emerald-500/50 mt-0.5">{margin.toFixed(1)}% margin</p>
                 </div>
                 <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
                     <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Gross Revenue</p>
                     <h3 className="text-2xl font-display font-bold text-white tracking-tighter">
-                        ${totalWeekly.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${totalGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </h3>
+                    {totalHours > 0 && <p className="text-[9px] font-bold text-blue-400/50 mt-0.5">${avgHourly.toFixed(0)}/hr net</p>}
+                </div>
+                <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
+                    <div className="flex items-center gap-1.5 mb-1">
+                        <MapPin className="size-2.5 text-slate-600" />
+                        <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600">Total Miles</p>
+                    </div>
+                    <h3 className="text-2xl font-display font-bold text-white tracking-tighter">
+                        {totalMiles.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    </h3>
+                    {totalMiles > 0 && <p className="text-[9px] font-bold text-slate-500 mt-0.5">${(totalMiles * 0.67).toFixed(0)} IRS deduction</p>}
                 </div>
                 <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
                     <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Top Platform</p>
                     <h3 className="text-2xl font-display font-bold text-white tracking-tighter truncate">
-                        {topPlatform}
+                        {topPlatformName}
                     </h3>
+                    {topPlatformRate > 0 && <p className="text-[9px] font-bold text-blue-400/50 mt-0.5">${topPlatformRate.toFixed(0)}/hr</p>}
                 </div>
             </div>
 
             {/* Activity Calendar */}
             <ActivityCalendar data={data.dailyData} />
 
-            {/* Charts — tighter card */}
+            {/* Charts */}
             <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 border border-white/5">
                 <div className="flex items-center justify-between mb-5">
                     <div>
@@ -76,7 +118,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                 <Charts dailyData={data.dailyData} platformData={data.platformData} />
             </div>
 
-            {/* Platform Efficiency — compact horizontal cards */}
+            {/* Platform Efficiency */}
             <div className="space-y-3">
                 <div className="flex items-center gap-2 px-1">
                     <TrendingUp className="size-3.5 text-emerald-500" />
@@ -84,24 +126,28 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                 </div>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                     {data.platformData.map((plat, idx: number) => {
-                        const platStyle = { color: plat.fill || 'var(--foreground)' };
-                        const barWidth = Math.min(100, (plat.hourlyRate / 50) * 100);
+                        const platColor = plat.fill || '#64748B'
+                        const barWidth = Math.min(100, (plat.hourlyRate / 50) * 100)
                         return (
                             <div key={idx} className="bg-white/[0.03] rounded-xl p-4 border border-white/5 hover:bg-white/[0.05] transition-all">
                                 <div className="flex items-center justify-between mb-3">
                                     <span
-                                        className={`text-xs font-extrabold tracking-tight ${plat.name.toLowerCase().includes('uber') ? 'uber-halo-text' : ''}`}
-                                        {...({ style: platStyle } as Record<string, unknown>)}
+                                        className="text-xs font-extrabold tracking-tight"
+                                        {...({ style: { color: platColor } } as Record<string, unknown>)}
                                     >
                                         {plat.name}
                                     </span>
                                     <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-white/5 text-slate-500 font-bold">
-                                        {((plat.gross / totalWeekly) * 100).toFixed(0)}%
+                                        {totalGross > 0 ? ((plat.gross / totalGross) * 100).toFixed(0) : 0}%
                                     </span>
                                 </div>
                                 <div className="flex items-baseline justify-between mb-1">
                                     <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">$/hr</span>
                                     <span className="text-sm font-bold text-blue-400">${plat.hourlyRate.toFixed(2)}</span>
+                                </div>
+                                <div className="flex items-baseline justify-between mb-1">
+                                    <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">$/mile</span>
+                                    <span className="text-xs font-bold text-slate-300">${plat.earningsPerMile.toFixed(2)}</span>
                                 </div>
                                 <div className="flex items-baseline justify-between mb-2">
                                     <span className="text-[8px] text-slate-600 font-bold uppercase tracking-wider">Tips</span>
@@ -109,12 +155,12 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                                 </div>
                                 <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-emerald-500/40 rounded-full"
-                                        {...({ style: { width: `${barWidth}%` } } as Record<string, unknown>)}
+                                        className="h-full rounded-full transition-all duration-700"
+                                        {...({ style: { width: `${barWidth}%`, backgroundColor: `${platColor}66` } } as Record<string, unknown>)}
                                     />
                                 </div>
                             </div>
-                        );
+                        )
                     })}
                 </div>
             </div>
@@ -122,23 +168,24 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
             {/* Cost Distribution */}
             <ExpenseBreakdown data={data.expenseBreakdown} />
 
-            {/* Insight Banner — slim */}
-            <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/5 rounded-xl p-5 border border-emerald-500/10 flex items-center gap-4">
-                <div className="p-2.5 rounded-xl bg-emerald-500/10 shrink-0">
-                    <TrendingUp className="size-5 text-emerald-400" />
+            {/* Dynamic Insights */}
+            {insights.length > 0 && (
+                <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/5 rounded-xl p-5 border border-emerald-500/10">
+                    <div className="flex items-center gap-2 mb-3">
+                        <div className="p-1.5 rounded-lg bg-emerald-500/10">
+                            <Lightbulb className="size-3.5 text-emerald-400" />
+                        </div>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/60">Insights</span>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                        {insights.map((insight, i) => (
+                            <div key={i} className="text-xs text-slate-400 font-medium">
+                                {insight.text} <span className="text-emerald-400 font-bold">{insight.highlight}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-white mb-0.5">Boost your hourly output</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                        <span className="text-emerald-400 font-bold">{topPlatform}</span> remains your strongest hourly driver.
-                        {data.dailyData.length > 3 ? (
-                            <> Maximize active sessions on <span className="text-white font-bold">weekends</span> to increase net profit.</>
-                        ) : (
-                            <> Consistently logging shifts will help us identify more precise patterns.</>
-                        )}
-                    </p>
-                </div>
-            </div>
+            )}
         </div>
     )
 }

@@ -67,16 +67,16 @@ export function YesterdaysSummaryNotification() {
                         href={`/dashboard/reports?startDate=${summary.date}&endDate=${summary.date}`}
                         className="flex items-center gap-4 px-5 py-3 rounded-l-2xl hover:bg-white/5 transition-colors group/link"
                     >
-                        <div className={`p-2 rounded-xl ${isPositive ? 'bg-neon-primary/10 shadow-[0_0_10px_rgba(57,255,20,0.2)]' : 'bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.2)]'}`}>
+                        <div className={`p-2 rounded-xl ${isPositive ? 'bg-emerald-500/10 shadow-[0_0_10px_rgba(16,185,129,0.2)]' : 'bg-red-500/10 shadow-[0_0_10px_rgba(239,68,68,0.2)]'}`}>
                             {isPositive
-                                ? <TrendingUp className="size-4 text-neon-primary" />
+                                ? <TrendingUp className="size-4 text-emerald-500" />
                                 : <TrendingDown className="size-4 text-red-500" />
                             }
                         </div>
 
                         <div className="flex items-center gap-3">
                             <span className="text-slate-400 font-black uppercase tracking-widest text-xs hidden sm:inline">Yesterday</span>
-                            <span className={`font-display font-extrabold text-lg tracking-tight ${isPositive ? 'text-neon-primary drop-shadow-[0_0_8px_rgba(57,255,20,0.4)]' : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]'}`}>
+                            <span className={`font-display font-extrabold text-lg tracking-tight ${isPositive ? 'text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]'}`}>
                                 {isPositive ? '+' : '-'}${Math.abs(summary.netProfit).toFixed(2)}
                             </span>
                             <span className="text-slate-600 font-bold hidden md:inline">·</span>

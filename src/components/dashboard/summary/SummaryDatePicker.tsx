@@ -35,7 +35,7 @@ export function SummaryDatePicker({
                     <span className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
                         {date ? format(date, 'MM/dd/yyyy') : format(new Date(), 'MM/dd/yyyy')}
                     </span>
-                    {isPending && <RefreshCw className="size-3 animate-spin text-neon-primary" />}
+                    {isPending && <RefreshCw className="size-3 animate-spin text-emerald-500" />}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900" align="end">

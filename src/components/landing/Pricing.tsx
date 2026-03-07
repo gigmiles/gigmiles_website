@@ -9,11 +9,11 @@ export function Pricing() {
     return (
         <section id="pricing" className="py-10 bg-[#0a0e17] relative overflow-hidden">
             {/* Ambient glow */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-neon-primary/[0.03] blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/[0.03] blur-[120px] rounded-full pointer-events-none" />
 
             <div className="container mx-auto px-6 relative z-10">
                 <div className="text-center max-w-3xl mx-auto mb-8">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neon-primary/60 mb-3">Plans</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/60 mb-3">Plans</p>
                     <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">
                         Clarity that pays for itself.
                     </h2>
@@ -50,7 +50,7 @@ export function Pricing() {
                                 const bold = typeof item === 'object' && item.bold
                                 return (
                                     <li key={idx} className="flex gap-3 text-slate-300">
-                                        <Check className="size-5 text-neon-primary shrink-0" />
+                                        <Check className="size-5 text-emerald-500 shrink-0" />
                                         <span className={bold ? 'font-bold' : ''}>{text}</span>
                                     </li>
                                 )
@@ -70,15 +70,15 @@ export function Pricing() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="bg-[#080c14] rounded-2xl p-6 border border-neon-primary/20 shadow-[0_0_40px_rgba(57,255,20,0.05)] relative overflow-hidden"
+                        className="bg-[#080c14] rounded-2xl p-6 border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.1)] relative overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-neon-primary/[0.06] blur-[100px] rounded-full"></div>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/[0.06] blur-[100px] rounded-full"></div>
 
                         <div className="relative z-10">
                             <div className="flex justify-between items-center mb-2">
                                 <h3 className="text-xl font-bold text-white">Annual</h3>
                                 <div className="flex flex-col items-end">
-                                    <span className="px-3 py-1 bg-neon-primary/[0.08] text-neon-primary border border-neon-primary/20 rounded-full text-[10px] font-black uppercase tracking-[0.15em] mb-1 shadow-[0_0_10px_rgba(57,255,20,0.1)]">
+                                    <span className="px-3 py-1 bg-emerald-500/[0.08] text-emerald-500 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.15em] mb-1 shadow-[0_0_10px_rgba(16,185,129,0.15)]">
                                         Best Value
                                     </span>
                                     <span className="text-[10px] text-slate-600 font-bold uppercase tracking-wider">Save 16%</span>
@@ -87,7 +87,7 @@ export function Pricing() {
                             <p className="text-slate-500 mb-4 text-sm font-medium">For those who treat this like a business.</p>
 
                             <div className="mb-5">
-                                <span className="text-4xl font-extrabold text-neon-primary drop-shadow-[0_0_15px_rgba(57,255,20,0.2)]">$99.99</span>
+                                <span className="text-4xl font-extrabold text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">$99.99</span>
                                 <span className="text-slate-500 font-medium">/year</span>
                             </div>
 
@@ -102,7 +102,7 @@ export function Pricing() {
                                     const bold = typeof item === 'object' && item.bold
                                     return (
                                         <li key={idx} className="flex gap-3 text-white">
-                                            <Check className="size-5 text-neon-primary shrink-0" />
+                                            <Check className="size-5 text-emerald-500 shrink-0" />
                                             <span className={bold ? 'font-bold' : ''}>{text}</span>
                                         </li>
                                     )
@@ -110,7 +110,7 @@ export function Pricing() {
                             </ul>
 
                             <Link href="/login?signup=true">
-                                <Button className="w-full h-12 bg-neon-primary text-[#0a0e17] hover:bg-neon-primary/90 font-bold rounded-xl shadow-[0_0_20px_rgba(57,255,20,0.2)] transition-all">
+                                <Button className="w-full h-12 bg-emerald-500 text-[#0a0e17] hover:bg-emerald-500/90 font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all">
                                     Start 14-Day Free Trial
                                 </Button>
                             </Link>

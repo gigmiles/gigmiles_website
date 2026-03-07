@@ -35,7 +35,7 @@ import { deleteVehicleAction } from "@/app/dashboard/settings/vehicle/actions";
 import { signOut } from "@/app/auth/actions";
 import { toast } from "sonner";
 import { Vehicle } from "@/app/dashboard/types";
-import { Logo } from "@/components/brand/Logo";
+import { VibeLogo } from "@/components/brand/VibeLogo";
 import { cn } from "@/lib/utils";
 
 import {
@@ -148,18 +148,16 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
         <Sidebar
             collapsible="icon"
             {...props}
-            className="border-r border-white/[0.04] bg-[#0a0e17]/95 backdrop-blur-2xl overflow-hidden"
+            className="border-r border-white/[0.04] bg-[#0D0F14]/95 backdrop-blur-2xl overflow-hidden"
         >
             {/* Ambient living gradient — subtle, slow-moving */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute -top-32 -left-16 w-40 h-40 bg-neon-primary/[0.03] rounded-full blur-[80px] animate-pulse" />
+                <div className="absolute -top-32 -left-16 w-40 h-40 bg-emerald-500/[0.03] rounded-full blur-[80px] animate-pulse" />
                 <div className="absolute bottom-20 -right-10 w-32 h-32 bg-blue-500/[0.03] rounded-full blur-[60px] animate-pulse [animation-delay:2s]" />
             </div>
 
             <SidebarHeader className="h-auto border-b border-white/[0.04] p-4 bg-transparent flex flex-col gap-4 relative z-10">
-                <Link href="/dashboard" className="transition-transform active:scale-95">
-                    <Logo className="px-2" />
-                </Link>
+                    <VibeLogo className="px-2" iconOnly />
 
                 {/* Vehicle Switcher */}
                 <div className="px-1 group-data-[collapsible=icon]:hidden">
@@ -170,7 +168,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 className="h-14 w-full justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-all active:scale-[0.98] group/switcher"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-neon-primary/10 text-neon-primary shadow-[0_0_12px_rgba(57,255,20,0.1)] group-hover/switcher:shadow-[0_0_16px_rgba(57,255,20,0.2)] transition-all">
+                                    <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.1)] group-hover/switcher:shadow-[0_0_16px_rgba(16,185,129,0.2)] transition-all">
                                         <Car className="size-5" />
                                     </div>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
@@ -183,8 +181,8 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                                     {activeVehicle.year}
                                                     <span className="text-slate-700">•</span>
                                                     <span className="flex items-center gap-1">
-                                                        <span className="size-1.5 rounded-full bg-neon-primary animate-pulse shadow-[0_0_6px_rgba(57,255,20,0.6)]" />
-                                                        <span className="text-neon-primary/80">Active</span>
+                                                        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
+                                                        <span className="text-emerald-500/80">Active</span>
                                                     </span>
                                                 </>
                                             ) : "Please set vehicle"}
@@ -195,7 +193,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                             </SidebarMenuButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
-                            className="w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl bg-[#0a0e17]/98 border border-white/[0.06] p-3"
+                            className="w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl bg-[#0D0F14]/98 border border-white/[0.06] p-3"
                             side="bottom"
                             align="start"
                             sideOffset={8}
@@ -213,7 +211,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                             className={cn(
                                                 "rounded-xl py-3 px-3 transition-all cursor-pointer flex items-center gap-3 group/item relative overflow-hidden",
                                                 isCurrentVehicle
-                                                    ? "bg-neon-primary/[0.06] border border-neon-primary/15 shadow-[0_0_12px_rgba(57,255,20,0.05)]"
+                                                    ? "bg-emerald-500/[0.06] border border-emerald-500/15 shadow-[0_0_12px_rgba(16,185,129,0.05)]"
                                                     : "bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] hover:border-white/[0.08]"
                                             )}
                                             onClick={() => handleSwitchVehicle(v.id)}
@@ -222,7 +220,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                             <div className={cn(
                                                 "flex aspect-square size-8 items-center justify-center rounded-lg shrink-0 transition-all",
                                                 isCurrentVehicle
-                                                    ? "bg-neon-primary/15 text-neon-primary shadow-[0_0_8px_rgba(57,255,20,0.15)]"
+                                                    ? "bg-emerald-500/15 text-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.15)]"
                                                     : "bg-white/[0.04] text-slate-500 group-hover/item:text-slate-300"
                                             )}>
                                                 <Car className="size-4" />
@@ -238,13 +236,13 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                                         {v.make} {v.model}
                                                     </span>
                                                     {isCurrentVehicle && (
-                                                        <div className="size-1.5 shrink-0 rounded-full bg-neon-primary animate-pulse shadow-[0_0_6px_rgba(57,255,20,0.5)]" />
+                                                        <div className="size-1.5 shrink-0 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
                                                     )}
                                                 </div>
                                                 <span className="text-[10px] text-slate-600 font-medium tracking-wide truncate flex items-center gap-1.5">
                                                     {v.year}
                                                     <span className="text-slate-700">•</span>
-                                                    <span className={isCurrentVehicle ? "text-neon-primary/70" : "text-slate-600"}>
+                                                    <span className={isCurrentVehicle ? "text-emerald-500/70" : "text-slate-600"}>
                                                         {isCurrentVehicle ? 'Currently Active' : 'Available'}
                                                     </span>
                                                 </span>
@@ -292,27 +290,27 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                     className={cn(
                                         "h-11 rounded-xl transition-all duration-200 group/nav relative overflow-hidden",
                                         isActive
-                                            ? "bg-neon-primary/[0.08] text-white font-semibold"
+                                            ? "bg-emerald-500/[0.08] text-white font-semibold"
                                             : "text-slate-500 hover:text-white hover:bg-white/[0.04]"
                                     )}
                                 >
                                     <Link href={item.url} className="flex items-center gap-3">
                                         {/* Active indicator bar */}
                                         {isActive && (
-                                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-neon-primary shadow-[0_0_8px_rgba(57,255,20,0.5)]" />
+                                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                                         )}
                                         <div className={cn(
                                             "p-1.5 rounded-lg transition-all",
                                             isActive
-                                                ? "bg-neon-primary text-[#0a0e17] shadow-[0_0_12px_rgba(57,255,20,0.3)]"
+                                                ? "bg-emerald-500 text-[#0a0e17] shadow-[0_0_12px_rgba(16,185,129,0.3)]"
                                                 : "text-slate-500 group-hover/nav:text-slate-300"
                                         )}>
                                             <item.icon className="size-4" />
                                         </div>
-                                        <span className="text-sm font-medium tracking-tight">{item.title}</span>
+                                        <span className="text-[11px] font-black uppercase tracking-[0.1em]">{item.title}</span>
                                         {/* Live dot for active */}
                                         {isActive && (
-                                            <div className="ml-auto size-1.5 rounded-full bg-neon-primary animate-pulse shadow-[0_0_6px_rgba(57,255,20,0.6)]" />
+                                            <div className="ml-auto size-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
                                         )}
                                     </Link>
                                 </SidebarMenuButton>
@@ -409,16 +407,16 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 <SidebarMenuButton
                                     className="data-[state=open]:bg-white/[0.06] data-[state=open]:text-white rounded-2xl border border-white/[0.06] hover:border-white/10 transition-all hover:bg-white/[0.04] bg-white/[0.02] group h-auto py-2.5"
                                 >
-                                    <Avatar className="h-9 w-9 rounded-xl shadow-lg border-2 border-neon-primary/20">
-                                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-neon-primary to-emerald-600 text-[#0a0e17] font-bold text-xs">
+                                    <Avatar className="h-9 w-9 rounded-xl shadow-lg border-2 border-emerald-500/20">
+                                        <AvatarFallback className="rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-[#0a0e17] font-bold text-xs">
                                             {user.full_name?.charAt(0) || "U"}
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-xs leading-tight group-data-[collapsible=icon]:hidden ml-2">
                                         <span className="truncate font-bold text-white text-[13px]">{user.full_name}</span>
                                         <span className="truncate text-[10px] font-semibold tracking-tight flex items-center gap-1.5">
-                                            <span className="size-1.5 rounded-full bg-neon-primary animate-pulse shadow-[0_0_4px_rgba(57,255,20,0.5)]" />
-                                            <span className="text-neon-primary/80">Active Professional</span>
+                                            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
+                                            <span className="text-emerald-500/80">Active Professional</span>
                                         </span>
                                     </div>
                                     <ChevronRight className="ml-auto size-4 text-slate-600 group-data-[collapsible=icon]:hidden transition-transform group-hover:translate-x-0.5" />
@@ -433,7 +431,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 <DropdownMenuLabel className="p-2 font-normal">
                                     <div className="flex items-center gap-3 px-1 py-1.5 text-left text-sm">
                                         <Avatar className="h-10 w-10 rounded-xl">
-                                            <AvatarFallback className="rounded-xl bg-neon-primary/20 text-neon-primary font-bold">
+                                            <AvatarFallback className="rounded-xl bg-emerald-500/20 text-emerald-500 font-bold">
                                                 {user.full_name?.charAt(0) || "U"}
                                             </AvatarFallback>
                                         </Avatar>
@@ -445,7 +443,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator className="bg-white/5 mx-2 my-2" />
                                 <DropdownMenuGroup className="space-y-1">
-                                    <DropdownMenuItem className="rounded-xl focus:bg-neon-primary/10 focus:text-white py-2.5 transition-colors cursor-pointer" asChild>
+                                    <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer" asChild>
                                         <Link href="/dashboard/settings/profile" className="flex items-center w-full">
                                             <div className="p-2 rounded-lg bg-white/5 mr-3">
                                                 <User className="size-4" />
@@ -549,10 +547,10 @@ function SidebarCustomizer() {
             <SheetTrigger asChild>
                 <SidebarMenuButton
                     tooltip="Customize Dashboard"
-                    className="h-10 rounded-xl transition-all duration-200 text-slate-600 hover:text-neon-primary hover:bg-neon-primary/[0.04] group/cust"
+                    className="h-10 rounded-xl transition-all duration-200 text-slate-600 hover:text-emerald-500 hover:bg-emerald-500/[0.04] group/cust"
                 >
                     <div className="flex items-center gap-3">
-                        <div className="p-1 rounded-lg group-hover/cust:bg-neon-primary/10 transition-colors">
+                        <div className="p-1 rounded-lg group-hover/cust:bg-emerald-500/10 transition-colors">
                             <Sparkles className="size-4" />
                         </div>
                         <span className="text-[13px] tracking-tight group-data-[collapsible=icon]:hidden">Customize</span>
@@ -587,7 +585,7 @@ function SidebarCustomizer() {
                                     <div className="flex items-center gap-3">
                                         <div className={cn(
                                             "p-2 rounded-xl transition-colors",
-                                            visibleWidgets[widget.id as keyof typeof visibleWidgets] ? "bg-neon-primary/10 text-neon-primary" : "bg-slate-900 text-slate-500"
+                                            visibleWidgets[widget.id as keyof typeof visibleWidgets] ? "bg-emerald-500/10 text-emerald-500" : "bg-slate-900 text-slate-500"
                                         )}>
                                             <widget.icon className="size-4" />
                                         </div>
@@ -607,7 +605,7 @@ function SidebarCustomizer() {
                                     </div>
                                     <div className={cn(
                                         "w-10 h-5 rounded-full transition-all relative",
-                                        isActive ? "bg-neon-primary shadow-[0_0_10px_rgba(57,255,20,0.3)]" : "bg-slate-800"
+                                        isActive ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]" : "bg-slate-800"
                                     )}>
                                         <div className={cn(
                                             "absolute top-1 size-3 rounded-full bg-white transition-all duration-300",
@@ -623,7 +621,7 @@ function SidebarCustomizer() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Coming Soon</h3>
-                                <Sparkles className="size-3 text-neon-primary animate-pulse" />
+                                <Sparkles className="size-3 text-emerald-500 animate-pulse" />
                             </div>
                             <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent ml-4" />
                         </div>
@@ -634,7 +632,7 @@ function SidebarCustomizer() {
                                 className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-dashed border-white/10 opacity-70 grayscale-[0.3] group/future relative overflow-hidden transition-all hover:opacity-100 hover:grayscale-0"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 rounded-xl bg-slate-900 text-slate-400 group-hover/future:text-neon-primary transition-colors">
+                                    <div className="p-2 rounded-xl bg-slate-900 text-slate-400 group-hover/future:text-emerald-500 transition-colors">
                                         <widget.icon className="size-4" />
                                     </div>
                                     <div>
@@ -643,18 +641,18 @@ function SidebarCustomizer() {
                                         </p>
                                     </div>
                                 </div>
-                                <div className="px-2.5 py-1 rounded-lg bg-neon-primary/10 border border-neon-primary/20 shadow-[0_0_10px_rgba(57,255,20,0.1)]">
-                                    <span className="text-[9px] font-black text-neon-primary uppercase tracking-wider">Pro</span>
+                                <div className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                                    <span className="text-[9px] font-black text-emerald-500 uppercase tracking-wider">Pro</span>
                                 </div>
 
                                 {/* Status Dot */}
-                                <div className="absolute top-0 right-0 w-16 h-16 -mr-8 -mt-8 bg-neon-primary/5 blur-2xl rounded-full" />
+                                <div className="absolute top-0 right-0 w-16 h-16 -mr-8 -mt-8 bg-emerald-500/5 blur-2xl rounded-full" />
                             </div>
                         ))}
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-neon-primary/5 border border-neon-primary/10 mt-auto mb-4">
-                        <p className="text-xs text-neon-primary/90 font-medium leading-relaxed">
+                    <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 mt-auto mb-4">
+                        <p className="text-xs text-emerald-500/90 font-medium leading-relaxed">
                             💡 <b>Tip:</b> Toggle widgets on or off to customize your dashboard. The layout adapts automatically for the best look!
                         </p>
                     </div>

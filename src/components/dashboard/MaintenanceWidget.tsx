@@ -56,7 +56,7 @@ export const MaintenanceWidget = memo(function MaintenanceWidget({
                                 transition={{ duration: 1, ease: "easeOut" }}
                                 className={cn(
                                     "h-full transition-colors duration-500",
-                                    milesToNextService < 500 ? "bg-amber-500" : "bg-neon-primary"
+                                    milesToNextService < 500 ? "bg-amber-500" : "bg-emerald-500"
                                 )}
                             />
                         </div>

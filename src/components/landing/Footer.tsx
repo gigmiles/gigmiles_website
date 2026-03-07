@@ -19,21 +19,21 @@ export function Footer() {
                     <div>
                         <h4 className="font-black text-white mb-6 uppercase text-[10px] tracking-[0.2em]">Product</h4>
                         <ul className="space-y-4 text-sm text-slate-500 font-medium">
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">Interactive Dashboard</Link></li>
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">Shift Tracking</Link></li>
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">Expense & Tax Management</Link></li>
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">Detailed History Log</Link></li>
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">GigBot AI Assistant</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">Interactive Dashboard</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">Shift Tracking</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">Expense & Tax Management</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">Detailed History Log</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">GigBot AI Assistant</Link></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-black text-white mb-6 uppercase text-[10px] tracking-[0.2em]">Company</h4>
                         <ul className="space-y-4 text-sm text-slate-500 font-medium">
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">About Us</Link></li>
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">Privacy Policy</Link></li>
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">Terms of Service</Link></li>
-                            <li><Link href="#" className="hover:text-neon-primary transition-colors">Security</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">About Us</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">Privacy Policy</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">Terms of Service</Link></li>
+                            <li><Link href="#" className="hover:text-emerald-500 transition-colors">Security</Link></li>
                         </ul>
                     </div>
 
@@ -41,14 +41,14 @@ export function Footer() {
                         <h4 className="font-black text-white mb-2 uppercase text-[10px] tracking-[0.2em]">Stay Updated</h4>
                         <div className="flex gap-2">
                             <input
-                                className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm px-4 py-2.5 focus:ring-1 focus:ring-neon-primary/50 focus:border-neon-primary/30 outline-none transition-all placeholder:text-slate-600 text-white"
+                                className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm px-4 py-2.5 focus:ring-1 focus:ring-neon-primary/50 focus:border-emerald-500/30 outline-none transition-all placeholder:text-slate-600 text-white"
                                 placeholder="Email address"
                                 type="email"
                             />
                             <button
                                 type="submit"
                                 aria-label="Subscribe to newsletter"
-                                className="bg-neon-primary hover:bg-neon-primary/90 text-[#0a0e17] px-4 py-2 rounded-xl transition-all font-bold text-sm shadow-[0_0_15px_rgba(57,255,20,0.15)]"
+                                className="bg-emerald-500 hover:bg-emerald-500/90 text-[#0a0e17] px-4 py-2 rounded-xl transition-all font-bold text-sm shadow-[0_0_15px_rgba(57,255,20,0.15)]"
                             >
                                 <ArrowRight className="size-4" />
                             </button>

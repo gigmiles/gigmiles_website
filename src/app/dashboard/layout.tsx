@@ -10,7 +10,7 @@ import {
 import { Bell, HelpCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from "next/link"; // Added import
-import { Logo } from '@/components/brand/Logo';
+import { VibeLogo } from '@/components/brand/VibeLogo';
 
 export default async function DashboardLayout({
     children,
@@ -57,19 +57,19 @@ export default async function DashboardLayout({
     return (
         <SidebarProvider>
             <AppSidebar user={userData} vehicles={vehicles as any || []} activeVehicleId={activeVehicleId} />
-            <SidebarInset className="relative overflow-hidden bg-white dark:bg-slate-950 flex flex-col">
-                {/* Global Animated Mesh Gradient */}
-                <div className="absolute inset-0 pointer-events-none opacity-40 dark:opacity-20 overflow-hidden">
-                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/30 rounded-full blur-[120px] animate-pulse" />
-                    <div className="absolute bottom-[10%] right-[-5%] w-[35%] h-[35%] bg-indigo-500/20 rounded-full blur-[100px] animate-pulse delay-700" />
+            <SidebarInset className="relative overflow-hidden bg-[#0D0F14] flex flex-col">
+                {/* Global Animated Mesh Gradient (Premium Emerald/Blue) */}
+                <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
+                    <div className="absolute bottom-[10%] right-[-5%] w-[35%] h-[35%] bg-indigo-500/10 rounded-full blur-[100px] animate-pulse delay-700" />
                     <div className="absolute top-[20%] right-[10%] w-[25%] h-[25%] bg-blue-500/10 rounded-full blur-[80px] animate-pulse delay-1000" />
                 </div>
 
-                <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center border-b border-white/5 bg-background/40 backdrop-blur-xl px-6 md:px-10">
+                <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center border-b border-white/[0.06] bg-[#0D0F14]/80 backdrop-blur-3xl px-6 md:px-10">
                     <div className="mx-auto max-w-[1600px] w-full flex items-center justify-between gap-2">
                         <div className="flex items-center gap-4">
-                            <SidebarTrigger className="-ml-1 text-slate-500 hover:text-emerald-500 transition-colors" />
-                            <div className="h-4 w-px bg-white/10" />
+                            <SidebarTrigger className="-ml-1 text-slate-400 hover:text-white transition-colors" />
+                            <div className="h-4 w-px bg-white/[0.06]" />
                         </div>
 
                         <div className="flex items-center gap-2">

@@ -40,23 +40,26 @@ interface ExpenseCategory {
     items: ExpenseItemDetail[]
 }
 
-const knownPlatforms = [
-    'uber',
-    'uber eats',
-    'lyft',
-    'doordash',
-    'grubhub',
-    'instacart',
-    'spark',
-    'amazon flex'
-]
+const PLATFORM_FILL_COLORS: Record<string, string> = {
+    'uber': '#FFFFFF',
+    'uber eats': '#06C167',
+    'lyft': '#FF00BF',
+    'doordash': '#FF3008',
+    'grubhub': '#F6343F',
+    'instacart': '#43B02A',
+    'spark': '#0071CE',
+    'amazon flex': '#FF9900',
+    'roadie': '#10B981',
+    'shipt': '#6366F1',
+    'gopuff': '#00A3E0',
+    'favor': '#F59E0B',
+    'point pickup': '#8B5CF6',
+    'other': '#64748B',
+}
+const FALLBACK_COLORS = ['#10B981', '#6366F1', '#F59E0B', '#EC4899', '#06B6D4', '#F97316']
 
-function getPlatformColor(name: string): string {
-    const normalized = name.toLowerCase()
-    if (knownPlatforms.includes(normalized)) {
-        return `var(--color-${normalized.replace(/\s+/g, '-')})`
-    }
-    return 'var(--color-other)'
+function getPlatformColor(name: string, idx: number = 0): string {
+    return PLATFORM_FILL_COLORS[name.toLowerCase()] || FALLBACK_COLORS[idx % FALLBACK_COLORS.length]
 }
 
 export async function getReportsData(startDate?: string, endDate?: string) {
@@ -86,13 +89,14 @@ export async function getReportsData(startDate?: string, endDate?: string) {
         return { dailyData: [], platformData: [], expenseBreakdown: [] }
     }
 
-    // Fetch user's primary vehicle for calculations
-    const { data: vehicle } = await supabase
-        .from('vehicles')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('is_primary', true)
-        .single()
+    // Fetch user's profile and primary vehicle for calculations
+    const [{ data: vehicle }, { data: profile }] = await Promise.all([
+        supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).single(),
+        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).single()
+    ])
+
+    const userStateCode = profile?.state_code || 'DEFAULT'
+    const userGasPrice = profile?.default_gas_price || 3.50
 
     const { calculateFinancials } = await import('@/utils/calculations')
 
@@ -130,7 +134,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
     const typedEntries = entries as unknown as DatabaseEntry[]
 
     // Current gas price (could be fetched dynamically, using default for now)
-    const currentGasPrice = 4.50
+    const currentGasPrice = userGasPrice
 
     typedEntries.forEach((entry) => {
         const dayStat = dailyDataMap.get(entry.date)
@@ -208,7 +212,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
                 grossEarnings: dailyEarnings,
                 expenses: dailyCashExpenses,
                 miles: dailyMiles,
-                stateCode: 'CA', // Defaulting to CA or should come from user settings? Using placeholder from logic.
+                stateCode: userStateCode,
                 mpg: vehicle?.mpg || 25,
                 gasPrice: currentGasPrice,
                 wearRate: vehicle?.depreciation_rate || 0.15,
@@ -287,7 +291,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
     // 3. Convert Maps to Arrays and Add efficiency metrics
     const dailyData = Array.from(dailyDataMap.values())
 
-    const platformData = Array.from(platformMap.entries()).map(([name, stats]) => {
+    const platformData = Array.from(platformMap.entries()).map(([name, stats], idx) => {
         const hourlyRate = stats.hours > 0 ? stats.gross / stats.hours : 0
         const tipPct = stats.gross > 0 ? (stats.tips / stats.gross) * 100 : 0
         const earningsPerMile = stats.miles > 0 ? stats.gross / stats.miles : 0
@@ -302,7 +306,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
             hourlyRate,
             tipPct,
             earningsPerMile,
-            fill: getPlatformColor(name)
+            fill: getPlatformColor(name, idx)
         }
     }).sort((a, b) => b.gross - a.gross)
 

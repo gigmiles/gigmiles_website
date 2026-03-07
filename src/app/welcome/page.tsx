@@ -1,39 +1,40 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, ArrowRight } from 'lucide-react'
-import { Logo } from '@/components/brand/Logo'
+import { VibeLogo } from '@/components/brand/VibeLogo'
 
 export default function WelcomeScreen() {
     return (
-        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-            {/* Background Glows */}
-            <div className="absolute top-1/4 -left-32 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="min-h-screen bg-[#0D0F14] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+            {/* Vibe Ambient Blobs */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-[#10B981]/5 blur-[150px] animate-pulse" />
+                <div className="absolute bottom-[10%] left-[-5%] w-[50%] h-[50%] rounded-full bg-[#E2E8F0]/5 blur-[150px] animate-pulse [animation-delay:3s]" />
+            </div>
 
-            <div className="relative z-10 w-full max-w-md flex flex-col items-center text-center animate-fade-in-up">
-                <Logo className="mb-12 scale-125" />
+            <div className="relative z-10 w-full max-w-md flex flex-col items-center text-center animate-fade-in-up space-y-10">
+                <VibeLogo />
 
-                <div className="size-20 bg-emerald-500/10 rounded-full flex items-center justify-center mb-8 border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.2)]">
-                    <CheckCircle2 className="size-10 text-emerald-400" />
+                <div className="size-24 bg-[#10B981]/10 rounded-[2rem] flex items-center justify-center border border-[#10B981]/20 shadow-[0_0_60px_rgba(16,185,129,0.2)]">
+                    <CheckCircle2 className="size-12 text-[#10B981]" />
                 </div>
 
-                <h1 className="text-4xl font-display font-bold text-white tracking-tight mb-4">
-                    Account Verified
-                </h1>
-
-                <p className="text-lg text-slate-400 mb-10 leading-relaxed font-medium">
-                    Welcome to GigMiles. Your email has been successfully verified.
-                    You're ready to start maximizing your gig economy earnings.
-                </p>
-
-                <div className="space-y-4 w-full">
-                    <Link href="/dashboard" className="w-full block">
-                        <Button className="w-full h-14 text-base font-bold bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-2xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-all group">
-                            Continue to App
-                            <ArrowRight className="ml-2 size-5 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                    </Link>
+                <div className="space-y-4">
+                    <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter italic text-white leading-[0.9]">
+                        ACCOUNT <br /> VERIFIED.
+                    </h1>
+                    <p className="text-lg text-[#A1A1AA] leading-relaxed font-medium max-w-sm mx-auto">
+                        Welcome to GigMiles. Your email has been successfully verified.
+                        You&apos;re ready to start maximizing your gig economy earnings.
+                    </p>
                 </div>
+
+                <Link href="/dashboard" className="w-full">
+                    <Button className="w-full h-20 bg-[#10B981] text-black text-xl font-black rounded-[2rem] uppercase tracking-tighter hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 group">
+                        Continue to App
+                        <ArrowRight className="ml-3 size-6 group-hover:translate-x-2 transition-transform" />
+                    </Button>
+                </Link>
             </div>
         </div>
     )

@@ -49,7 +49,7 @@ export function ProblemSection() {
                     {/* Header row */}
                     <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.06]">
                         <div className="flex items-center gap-2.5">
-                            <div className="size-9 rounded-lg bg-neon-primary/10 text-neon-primary flex items-center justify-center">
+                            <div className="size-9 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                                 <Receipt className="size-4" />
                             </div>
                             <div>
@@ -84,7 +84,7 @@ export function ProblemSection() {
                         </div>
                         <div className="text-right">
                             <p className="text-[9px] text-slate-600 font-black uppercase tracking-[0.15em]">Net</p>
-                            <p className="text-2xl font-extrabold text-neon-primary drop-shadow-[0_0_15px_rgba(57,255,20,0.3)]">$360</p>
+                            <p className="text-2xl font-extrabold text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">$360</p>
                         </div>
                     </div>
                 </motion.div>

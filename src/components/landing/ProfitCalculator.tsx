@@ -19,7 +19,7 @@ export function ProfitCalculator() {
 
     // Burnout logic
     let burnoutRisk = 'Healthy'
-    let burnoutColor = 'text-neon-primary bg-neon-primary/10 border-neon-primary/20'
+    let burnoutColor = 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20'
     let burnoutMessage = 'Sustainable pace. Keep it up!'
     let notificationText = `Last week you worked ${hours} hours, your real net is $${realHourly.toFixed(2)}/hr. You are on track.`
 
@@ -43,7 +43,7 @@ export function ProfitCalculator() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neon-primary/[0.08] border border-neon-primary/15 text-neon-primary font-bold text-[11px] uppercase tracking-[0.15em] mb-6"
+                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/[0.08] border border-emerald-500/15 text-emerald-500 font-bold text-[11px] uppercase tracking-[0.15em] mb-6"
                     >
                         <Calculator className="size-4" />
                         Interactive Profit Checker
@@ -86,7 +86,7 @@ export function ProfitCalculator() {
                             <div>
                                 <label className="block text-sm font-bold text-slate-300 mb-2">Primary App</label>
                                 <select
-                                    className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-neon-primary/50 focus:border-neon-primary/30 focus:outline-none transition-all"
+                                    className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-neon-primary/50 focus:border-emerald-500/30 focus:outline-none transition-all"
                                     value={platform}
                                     onChange={(e) => setPlatform(e.target.value)}
                                     title="Select your primary app"
@@ -109,7 +109,7 @@ export function ProfitCalculator() {
                                         min="0"
                                         value={gross}
                                         onChange={(e) => setGross(Number(e.target.value))}
-                                        className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl pl-8 pr-4 py-3 text-white focus:ring-1 focus:ring-neon-primary/50 focus:border-neon-primary/30 focus:outline-none transition-all"
+                                        className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl pl-8 pr-4 py-3 text-white focus:ring-1 focus:ring-neon-primary/50 focus:border-emerald-500/30 focus:outline-none transition-all"
                                         title="Gross Earnings"
                                         aria-label="Gross Earnings"
                                         placeholder="0"
@@ -126,7 +126,7 @@ export function ProfitCalculator() {
                                         max="100"
                                         value={hours}
                                         onChange={(e) => setHours(Number(e.target.value))}
-                                        className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl pl-4 pr-12 py-3 text-white focus:ring-1 focus:ring-neon-primary/50 focus:border-neon-primary/30 focus:outline-none transition-all"
+                                        className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl pl-4 pr-12 py-3 text-white focus:ring-1 focus:ring-neon-primary/50 focus:border-emerald-500/30 focus:outline-none transition-all"
                                         title="Online Hours"
                                         aria-label="Online Hours"
                                         placeholder="0"
@@ -155,13 +155,13 @@ export function ProfitCalculator() {
                         className="bg-[#080c14] rounded-[2rem] p-6 lg:p-8 border border-white/[0.06] shadow-[0_8px_40px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col h-full justify-between"
                     >
                         {/* Decorative glow */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-neon-primary/[0.06] blur-[100px] rounded-full"></div>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/[0.06] blur-[100px] rounded-full"></div>
 
                         <div className="relative z-10 space-y-5">
                             <div className="text-center pb-5 border-b border-white/[0.06]">
                                 <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-2">Actual Net Value</p>
                                 <div className="flex justify-center items-end gap-2 text-white">
-                                    <span className="text-5xl md:text-6xl font-extrabold text-neon-primary tracking-tight">
+                                    <span className="text-5xl md:text-6xl font-extrabold text-emerald-500 tracking-tight">
                                         ${realHourly.toFixed(2)}
                                     </span>
                                     <span className="text-xl text-slate-400 font-bold pb-2">/ hr</span>
@@ -179,7 +179,7 @@ export function ProfitCalculator() {
                                 </motion.div>
                                 <motion.div whileHover={{ scale: 1.05, y: -2 }} className="bg-white/5 hover:bg-white/10 transition-colors rounded-2xl p-4 cursor-default">
                                     <div className="flex items-center gap-2 text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">
-                                        <TrendingUp className="size-4 text-neon-primary" />
+                                        <TrendingUp className="size-4 text-emerald-500" />
                                         Net Take-home
                                     </div>
                                     <p className="text-2xl font-bold text-white">${netProfit.toFixed(0)}</p>
@@ -202,7 +202,7 @@ export function ProfitCalculator() {
                             <div className="pt-2">
                                 <p className="text-center text-red-400 font-bold text-xs mb-3">This is why most gig workers burn out.</p>
                                 <Link href="/signup">
-                                    <Button className="w-full h-12 bg-neon-primary text-slate-950 hover:bg-neon-primary/90 font-extrabold text-base rounded-xl shadow-lg shadow-neon-primary/20 hover:shadow-neon-primary/40 transition-all flex items-center justify-center gap-2 group">
+                                    <Button className="w-full h-12 bg-emerald-500 text-slate-950 hover:bg-emerald-500/90 font-extrabold text-base rounded-xl shadow-lg shadow-neon-primary/20 hover:shadow-neon-primary/40 transition-all flex items-center justify-center gap-2 group">
                                         Unlock Full Reality Report
                                         <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
                                     </Button>

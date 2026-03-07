@@ -19,12 +19,12 @@ export const StrategyWidget = memo(function StrategyWidget({
     return (
         <Card className="glass-card border-slate-200 dark:border-white/5 overflow-hidden group relative">
             {/* Animated Pulsing Glow */}
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-neon-primary/10 blur-[60px] rounded-full pointer-events-none group-hover:bg-neon-primary/20 transition-all duration-700 animate-pulse" />
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 blur-[60px] rounded-full pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-700 animate-pulse" />
 
             <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-neon-primary/10 text-neon-primary">
+                        <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
                             <Compass className="size-4" />
                         </div>
                         <div>
@@ -61,7 +61,7 @@ export const StrategyWidget = memo(function StrategyWidget({
                         </div>
                     </div>
 
-                    <button className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-neon-primary/10 text-neon-primary hover:bg-neon-primary/20 transition-all text-xs font-bold group/btn">
+                    <button className="w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-all text-xs font-bold group/btn">
                         Optimize Schedule <ArrowRight className="size-3 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
                 </div>

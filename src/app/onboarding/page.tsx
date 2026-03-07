@@ -15,7 +15,7 @@ import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
 import { getDepreciationRate } from '@/utils/calculations'
 import { EV_MODELS } from '@/utils/vehicle-data'
 import { toast } from 'sonner'
-import { Logo } from '@/components/brand/Logo'
+import { VibeLogo } from '@/components/brand/VibeLogo'
 import { CheckCircle2, ChevronRight, ArrowLeft, Loader2 } from 'lucide-react'
 import { US_STATES, CAR_MAKES } from '@/utils/constants'
 
@@ -389,22 +389,25 @@ export default function OnboardingPage() {
 
     if (checkingPersistence) {
         return (
-            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-                <div className="flex flex-col items-center gap-4 max-w-sm text-center">
-                    <Loader2 className="size-10 text-emerald-500 animate-spin" />
-                    <p className="text-sm font-medium text-slate-500 animate-pulse">Syncing your session...</p>
-                    <div className="pt-8 space-y-4 border-t border-slate-200 dark:border-slate-800 mt-4">
-                        <p className="text-xs text-slate-400">Oturum senkronizasyonu beklenenden uzun sürüyorsa manuel devam edebilirsiniz.</p>
+            <div className="min-h-screen bg-[#0D0F14] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+                <div className="fixed inset-0 z-0 pointer-events-none">
+                    <div className="absolute top-[10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-[#10B981]/5 blur-[150px] animate-pulse" />
+                </div>
+                <div className="relative z-10 flex flex-col items-center gap-6 max-w-sm text-center">
+                    <Loader2 className="size-10 text-[#10B981] animate-spin" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA] animate-pulse">Syncing your session...</p>
+                    <div className="pt-8 space-y-4 border-t border-white/[0.06] mt-4">
+                        <p className="text-xs text-[#A1A1AA]/60 font-medium">If sync takes too long, you can continue manually.</p>
                         <Button
                             variant="outline"
                             size="sm"
-                            className="text-xs"
+                            className="text-[10px] font-black uppercase tracking-widest border-white/[0.08] bg-white/[0.02] text-white hover:bg-white/[0.05] rounded-xl"
                             onClick={() => {
                                 console.log("[Persistence] Manual skip triggered by user");
                                 setCheckingPersistence(false);
                             }}
                         >
-                            Senkronizasyonu Atla & Manuel Kurulum
+                            Skip & Manual Setup
                         </Button>
                     </div>
                 </div>
@@ -413,30 +416,35 @@ export default function OnboardingPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-
-            <div className="w-full max-w-lg mb-6 md:mb-8 flex flex-col items-center text-center px-4">
-                <Logo className="mb-2" />
-                <p className="text-sm md:text-base text-muted-foreground italic">Let&apos;s set up your financial copilot.</p>
+        <div className="min-h-screen bg-[#0D0F14] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+            {/* Vibe Ambient Blobs */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[5%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#10B981]/5 blur-[150px] animate-pulse" />
+                <div className="absolute bottom-[5%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#E2E8F0]/5 blur-[150px] animate-pulse [animation-delay:3s]" />
             </div>
 
-            <Card className="w-full max-w-lg border-border/50 shadow-xl shadow-slate-200/50 dark:shadow-none bg-card/50 backdrop-blur-sm">
-                <CardHeader className="p-4 md:p-6 pb-2">
+            <div className="relative z-10 w-full max-w-lg mb-8 flex flex-col items-center text-center px-4">
+                <VibeLogo className="mb-4" />
+                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#A1A1AA] opacity-60">Setup Your Engine</p>
+            </div>
+
+            <Card className="relative z-10 w-full max-w-lg rounded-[2.5rem] bg-white/[0.02] border border-white/[0.08] backdrop-blur-3xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
+                <CardHeader className="p-6 md:p-8 pb-4">
                     <div className="flex items-center justify-between mb-4">
-                        <CardTitle className="text-lg md:text-xl">
+                        <CardTitle className="text-2xl font-black uppercase tracking-tighter text-white">
                             {step === 1 && "Personal Details"}
-                            {step === 2 && "Vehicle Information"}
-                            {step === 3 && "Select Platforms"}
+                            {step === 2 && "Vehicle Info"}
+                            {step === 3 && "Platforms"}
                         </CardTitle>
-                        <span className="text-[10px] md:text-xs font-medium px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20">
                             Step {step}/3
                         </span>
                     </div>
-                    {/* Progress Bar */}
-                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    {/* Progress Bar — Vibe Style */}
+                    <div className="h-1 w-full bg-white/[0.04] rounded-full overflow-hidden">
                         <div
                             className={cn(
-                                "h-full bg-emerald-500 transition-all duration-500 ease-out",
+                                "h-full bg-[#10B981] transition-all duration-500 ease-out shadow-[0_0_10px_rgba(16,185,129,0.4)]",
                                 step === 1 ? "w-1/3" : step === 2 ? "w-2/3" : "w-full"
                             )}
                         />

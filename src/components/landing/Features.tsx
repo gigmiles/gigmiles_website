@@ -18,7 +18,7 @@ export function Features() {
                     transition={{ duration: 0.8 }}
                     className="text-center max-w-3xl mx-auto mb-10"
                 >
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neon-primary/60 mb-3">Core Features</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/60 mb-3">Core Features</p>
                     <h2 className="font-display text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">
                         Everything you need in one dashboard.
                     </h2>
@@ -39,8 +39,8 @@ export function Features() {
                             transition={{ duration: 0.4 }}
                             className="md:col-span-1 p-6 bg-[#0d1220] rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.3)] border border-white/[0.06] hover:border-white/[0.1] transition-all group relative overflow-hidden"
                         >
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-neon-primary/[0.04] rounded-full blur-3xl -z-10 group-hover:bg-neon-primary/[0.07] transition-colors" />
-                            <div className="size-11 bg-neon-primary/10 text-neon-primary rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-neon-primary group-hover:text-[#0a0e17] group-hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] transition-all duration-300">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/[0.04] rounded-full blur-3xl -z-10 group-hover:bg-emerald-500/[0.07] transition-colors" />
+                            <div className="size-11 bg-emerald-500/10 text-emerald-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-[#0a0e17] group-hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-300">
                                 <MousePointerClick className="size-6" />
                             </div>
                             <h3 className="font-display text-xl font-bold text-white mb-2">
@@ -164,7 +164,7 @@ export function Features() {
                             transition={{ duration: 0.4, delay: 0.3 }}
                             className="h-full p-6 bg-[#080c14] rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.4)] relative overflow-hidden border border-white/[0.06]"
                         >
-                            <div className="absolute right-0 bottom-0 w-64 h-64 bg-neon-primary/[0.05] blur-[100px] rounded-full pointer-events-none" />
+                            <div className="absolute right-0 bottom-0 w-64 h-64 bg-emerald-500/[0.05] blur-[100px] rounded-full pointer-events-none" />
 
                             <h3 className="font-display text-lg font-bold text-white mb-5 border-b border-white/[0.06] pb-3">
                                 Built on Trust & Total Privacy
@@ -178,7 +178,7 @@ export function Features() {
                                     { icon: ShieldCheck, title: 'Your Data is Yours', desc: 'We make money from our service, not from selling your driving data.' },
                                 ].map((item) => (
                                     <div key={item.title} className="space-y-2">
-                                        <div className="flex items-center gap-3 text-neon-primary font-bold">
+                                        <div className="flex items-center gap-3 text-emerald-500 font-bold">
                                             <item.icon className="size-5" />
                                             {item.title}
                                         </div>

@@ -231,13 +231,31 @@ export async function getDashboardStats(dateStr?: string) {
         })
     })
 
-    const platformDistribution = Array.from(platformMap.entries()).map(([name, stats]) => ({
+    const PLATFORM_FILL_COLORS: Record<string, string> = {
+        'uber': '#FFFFFF',
+        'uber eats': '#06C167',
+        'lyft': '#FF00BF',
+        'doordash': '#FF3008',
+        'grubhub': '#F6343F',
+        'instacart': '#43B02A',
+        'spark': '#0071CE',
+        'amazon flex': '#FF9900',
+        'roadie': '#10B981',
+        'shipt': '#6366F1',
+        'gopuff': '#00A3E0',
+        'favor': '#F59E0B',
+        'point pickup': '#8B5CF6',
+        'other': '#64748B',
+    }
+    const FALLBACK_COLORS = ['#10B981', '#6366F1', '#F59E0B', '#EC4899', '#06B6D4', '#F97316']
+
+    const platformDistribution = Array.from(platformMap.entries()).map(([name, stats], idx) => ({
         name,
         value: stats.gross,
         tips: stats.tips,
         hours: stats.hours,
         miles: stats.miles,
-        fill: `var(--color-${name.toLowerCase().replace(/\s+/g, '-')})`
+        fill: PLATFORM_FILL_COLORS[name.toLowerCase()] || FALLBACK_COLORS[idx % FALLBACK_COLORS.length]
     })).sort((a, b) => b.value - a.value)
 
     return {

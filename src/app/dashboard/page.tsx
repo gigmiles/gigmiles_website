@@ -34,10 +34,10 @@ export default async function DashboardPage({
             {/* Header: Title + Yesterday Summary inline */}
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+                    <h1 className="text-4xl font-black uppercase tracking-tighter italic text-white">
                         Financial Overview
                     </h1>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]">
                         Track your performance and tax estimates in real-time.
                     </p>
                 </div>

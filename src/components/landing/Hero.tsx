@@ -33,7 +33,7 @@ export function Hero() {
         <section className="relative overflow-hidden pt-24 pb-10 lg:pt-32 lg:pb-14">
             {/* Background — ambient gradient mesh */}
             <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[60%] bg-gradient-to-b from-neon-primary/[0.06] via-neon-primary/[0.02] to-transparent blur-3xl" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[60%] bg-gradient-to-b from-emerald-500/[0.06] via-emerald-500/[0.02] to-transparent blur-3xl" />
                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/[0.04] blur-[120px] rounded-full" />
                 <div className="absolute top-1/3 left-0 w-64 h-64 bg-indigo-500/[0.03] blur-[100px] rounded-full" />
                 {/* Grid pattern overlay */}
@@ -52,11 +52,11 @@ export function Hero() {
                         {/* Badge */}
                         <motion.div
                             variants={itemVariants}
-                            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neon-primary/[0.08] border border-neon-primary/20 text-neon-primary font-bold text-[11px] uppercase tracking-[0.15em] self-start shadow-[0_0_15px_rgba(57,255,20,0.05)]"
+                            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-500 font-bold text-[11px] uppercase tracking-[0.15em] self-start shadow-[0_0_15px_rgba(16,185,129,0.15)]"
                         >
                             <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-primary opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-primary"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
                             New: Burnout Risk Analysis
                         </motion.div>
@@ -73,7 +73,7 @@ export function Hero() {
                                 className="font-display text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.05] tracking-tight"
                             >
                                 You&apos;re working harder than you think.<br />
-                                <span className="text-neon-primary text-4xl md:text-5xl lg:text-6xl mt-4 block drop-shadow-[0_0_25px_rgba(57,255,20,0.25)]">You&apos;re earning less than you think.</span>
+                                <span className="text-emerald-500 text-4xl md:text-5xl lg:text-6xl mt-4 block drop-shadow-[0_0_25px_rgba(16,185,129,0.4)]">You&apos;re earning less than you think.</span>
                             </motion.h1>
                         </motion.div>
 
@@ -100,7 +100,7 @@ export function Hero() {
                         >
                             <Link href="#calculator">
                                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                                    <Button size="lg" className="h-14 px-8 rounded-2xl bg-neon-primary text-[#0a0e17] font-extrabold hover:bg-neon-primary/90 shadow-[0_0_30px_rgba(57,255,20,0.2)] hover:shadow-[0_0_50px_rgba(57,255,20,0.3)] transition-all flex items-center justify-center gap-2 group relative overflow-hidden text-lg">
+                                    <Button size="lg" className="h-14 px-8 rounded-2xl bg-emerald-500 text-[#0a0e17] font-extrabold hover:bg-emerald-500/90 shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_50px_rgba(16,185,129,0.4)] transition-all flex items-center justify-center gap-2 group relative overflow-hidden text-lg">
                                         <span className="relative z-10 flex items-center gap-2">
                                             Run My Free Profit Check
                                             <ArrowRight className="size-5 group-hover:translate-x-1 transition-transform" />
@@ -169,7 +169,7 @@ export function Hero() {
                         className="relative group perspective-lg"
                     >
                         {/* Ambient glow behind mockup */}
-                        <div className="absolute inset-0 bg-neon-primary/10 blur-[100px] rounded-full -z-10 group-hover:bg-neon-primary/15 transition-all duration-700"></div>
+                        <div className="absolute inset-0 bg-emerald-500/10 blur-[100px] rounded-full -z-10 group-hover:bg-emerald-500/15 transition-all duration-700"></div>
 
                         {/* Main Dashboard Window */}
                         <motion.div
@@ -197,7 +197,7 @@ export function Hero() {
                                         </div>
                                         <motion.span
                                             whileHover={{ scale: 1.1 }}
-                                            className="px-2.5 py-1 rounded-lg bg-neon-primary/[0.08] text-neon-primary text-xs font-bold flex items-center gap-1 cursor-default border border-neon-primary/10"
+                                            className="px-2.5 py-1 rounded-lg bg-emerald-500/[0.08] text-emerald-500 text-xs font-bold flex items-center gap-1 cursor-default border border-emerald-500/10"
                                         >
                                             <TrendingUp className="size-3" />
                                             +12.4%
@@ -211,8 +211,8 @@ export function Hero() {
                                                 animate={{ height: `${h}%` }}
                                                 transition={{ duration: 1, delay: 1.2 + (i * 0.1) }}
                                                 className={cn(
-                                                    "flex-1 rounded-t-lg transition-colors group-hover/card:bg-neon-primary",
-                                                    i === 6 ? "bg-neon-primary shadow-[0_0_10px_rgba(57,255,20,0.3)]" : "bg-neon-primary/30"
+                                                    "flex-1 rounded-t-lg transition-colors group-hover/card:bg-emerald-500",
+                                                    i === 6 ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" : "bg-emerald-500/30"
                                                 )}
                                             />
                                         ))}
@@ -227,7 +227,7 @@ export function Hero() {
                                             {[
                                                 { label: 'Fuel', value: 30, color: 'bg-blue-500' },
                                                 { label: 'Maintenance', value: 15, color: 'bg-amber-500' },
-                                                { label: 'Taxes', value: 20, color: 'bg-neon-primary' }
+                                                { label: 'Taxes', value: 20, color: 'bg-emerald-500' }
                                             ].map((item, idx) => (
                                                 <div key={item.label} className="space-y-1.5">
                                                     <div className="flex justify-between text-[10px] font-bold">
@@ -266,14 +266,14 @@ export function Hero() {
                                                     className={cn(
                                                         "flex items-center justify-between p-2.5 rounded-xl border transition-colors",
                                                         p.active
-                                                            ? "bg-neon-primary/[0.05] border-neon-primary/10"
+                                                            ? "bg-emerald-500/[0.05] border-emerald-500/10"
                                                             : "bg-white/[0.02] border-white/[0.04]"
                                                     )}
                                                 >
                                                     <span className="font-bold text-xs text-white">{p.name}</span>
                                                     <span className={cn(
                                                         "text-[10px] font-black",
-                                                        p.active ? "text-neon-primary" : "text-slate-500"
+                                                        p.active ? "text-emerald-500" : "text-slate-500"
                                                     )}>
                                                         ${p.rate.toFixed(2)} / hr
                                                     </span>
