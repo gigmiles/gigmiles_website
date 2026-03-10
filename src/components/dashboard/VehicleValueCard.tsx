@@ -4,6 +4,7 @@ import { useState, memo } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { GlassTooltip } from '@/components/ui/GlassTooltip'
 import { Car, RefreshCw, TrendingDown, DollarSign } from 'lucide-react'
 import { checkVehicleValue } from '@/app/dashboard/actions/vehicle'
 import { toast } from 'sonner'
@@ -51,7 +52,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
 
     if (!vehicle) {
         return (
-            <Card className="h-full border-dashed border border-white/10 bg-white/[0.02]">
+            <Card className="glass-card h-full border-dashed border-white/10 shadow-none">
                 <CardContent className="flex flex-col items-center justify-center h-full p-5 text-center">
                     <Car className="size-8 text-slate-700 mb-3" />
                     <p className="text-xs text-slate-500 font-medium">Add a vehicle to track its value.</p>
@@ -61,11 +62,16 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
     }
 
     return (
-        <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5 flex flex-col flex-1">
+        <Card className="glass-card p-4 flex flex-col flex-1 overflow-hidden relative">
+            <div className="absolute -bottom-10 -right-10 w-28 h-28 bg-purple-500/10 blur-[60px] rounded-full pointer-events-none z-0" />
+            <div className="relative z-10 flex flex-col flex-1">
             <div className="flex items-center justify-between mb-3">
-                <div>
-                    <h2 className="text-sm font-bold text-white tracking-tight">Asset Value</h2>
-                    <p className="text-[9px] text-slate-600 font-bold uppercase tracking-wider">Market Valuation</p>
+                <div className="flex flex-row items-center gap-2">
+                    <div>
+                        <h2 className="text-sm font-bold text-white tracking-tight">Asset Value</h2>
+                        <p className="text-[9px] text-slate-600 font-bold uppercase tracking-wider">Market Valuation</p>
+                    </div>
+                    <GlassTooltip content="Displays the estimated current market value and potential equity of your selected vehicle." side="right" />
                 </div>
                 <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
                     <Car className="size-3.5" />
@@ -97,7 +103,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
                     <div>
                         <div className="flex items-baseline gap-0.5">
                             <span className="text-[9px] font-bold text-slate-600">$</span>
-                            <span className="text-3xl font-extrabold tracking-tighter text-white">
+                            <span className="animate-number-pop text-3xl font-extrabold tracking-tighter text-white">
                                 {value.toLocaleString()}
                             </span>
                             <span className="text-[9px] text-slate-600 font-bold ml-1 uppercase">USD</span>
@@ -146,6 +152,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
                     </Button>
                 </div>
             </div>
-        </div>
+            </div>
+        </Card>
     )
 })

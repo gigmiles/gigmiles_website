@@ -23,7 +23,7 @@ const PLATFORM_COLORS: Record<string, string> = {
     'uber eats': 'text-[#06C167]',
     'lyft': 'text-[#FF00BF]',
     'doordash': 'text-[#FF3008]',
-    'grubhub': 'text-[#F6343F]',
+    'grubhub': 'text-[#FF8000]',
     'instacart': 'text-[#43B02A]',
     'spark': 'text-[#0071CE]',
     'amazon flex': 'text-[#FF9900]',
@@ -40,7 +40,7 @@ const PLATFORM_BG_COLORS: Record<string, string> = {
     'uber eats': 'bg-[#06C167]',
     'lyft': 'bg-[#FF00BF]',
     'doordash': 'bg-[#FF3008]',
-    'grubhub': 'bg-[#F6343F]',
+    'grubhub': 'bg-[#FF8000]',
     'instacart': 'bg-[#43B02A]',
     'spark': 'bg-[#0071CE]',
     'amazon flex': 'bg-[#FF9900]',
@@ -57,7 +57,7 @@ const PLATFORM_RING_SHADOWS: Record<string, string> = {
     'uber eats': 'ring-[#06C167] shadow-[0_0_8px_rgba(6,193,103,0.4)]',
     'lyft': 'ring-[#FF00BF] shadow-[0_0_8px_rgba(255,0,191,0.4)]',
     'doordash': 'ring-[#FF3008] shadow-[0_0_8px_rgba(255,48,8,0.4)]',
-    'grubhub': 'ring-[#F6343F] shadow-[0_0_8px_rgba(246,52,63,0.4)]',
+    'grubhub': 'ring-[#FF8000] shadow-[0_0_8px_rgba(255,128,0,0.4)]',
     'instacart': 'ring-[#43B02A] shadow-[0_0_8px_rgba(67,176,42,0.4)]',
     'spark': 'ring-[#0071CE] shadow-[0_0_8px_rgba(0,113,206,0.4)]',
     'amazon flex': 'ring-[#FF9900] shadow-[0_0_8px_rgba(255,153,0,0.4)]',
@@ -87,7 +87,7 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
 
     if (data.length === 0) {
         return (
-            <Card className="flex flex-col items-center justify-center p-8 text-center min-h-[300px]">
+            <Card className="glass-card flex flex-col items-center justify-center p-8 text-center min-h-[300px]">
                 <div className="size-16 rounded-[1.5rem] bg-[#10B981]/10 flex items-center justify-center mb-4">
                     <PieIcon className="size-8 text-[#10B981]" />
                 </div>
@@ -98,7 +98,7 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
     }
 
     return (
-        <Card className="flex flex-col overflow-hidden">
+        <Card className="glass-card flex flex-col overflow-hidden">
             <CardHeader className="p-5 pb-0">
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">

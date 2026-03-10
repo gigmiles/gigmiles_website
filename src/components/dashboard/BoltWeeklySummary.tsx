@@ -3,6 +3,7 @@
 import { TrendingUp, Calendar, ArrowRight, Edit, Trash2, Loader2 } from 'lucide-react';
 import { useState, memo } from 'react';
 import Link from 'next/link';
+import { GlassTooltip } from '@/components/ui/GlassTooltip';
 import { calculateHourlyRate } from '@/utils/calculations';
 import { DailyEntry } from '@/app/dashboard/types';
 import { deleteDailyEntry } from '@/app/dashboard/actions';
@@ -73,11 +74,14 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5 cursor-pointer hover:bg-white/[0.05] transition-all flex flex-col flex-1 group">
+                <div className="glass-card glass-card-hover p-4 cursor-pointer flex flex-col flex-1 group">
                     <div className="flex items-center justify-between mb-3">
-                        <div>
-                            <h2 className="text-sm font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors">Weekly Performance</h2>
-                            <p className="text-[9px] text-slate-600 font-medium">Tap for daily breakdown</p>
+                        <div className="flex items-center gap-2">
+                            <div>
+                                <h2 className="text-sm font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors">Weekly Performance</h2>
+                                <p className="text-[9px] text-slate-600 font-medium">Tap for daily breakdown</p>
+                            </div>
+                            <GlassTooltip content="Your net take-home pay, calculated by subtracting all logged expenses from your gross income." side="right" />
                         </div>
                         <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-white/5 text-slate-500 font-bold group-hover:bg-blue-500/20 group-hover:text-blue-300 transition-all">
                             {entries.length}d Active
@@ -89,7 +93,7 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
                         <p className="text-[9px] font-bold uppercase tracking-wider opacity-70 mb-0.5">Total Net Profit</p>
                         <div className="flex items-baseline gap-1">
                             <span className="text-xl font-bold opacity-50">$</span>
-                            <p className="text-2xl font-extrabold tracking-tighter">{totalNetProfit.toFixed(2)}</p>
+                            <p className="animate-number-pop text-2xl font-extrabold tracking-tighter">{totalNetProfit.toFixed(2)}</p>
                         </div>
                         <span className="inline-block mt-2 px-1.5 py-0.5 rounded-md bg-white/10 text-[9px] font-bold">
                             Avg ${avgDailyProfit.toFixed(2)}/day

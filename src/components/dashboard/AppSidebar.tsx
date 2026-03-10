@@ -36,6 +36,7 @@ import { signOut } from "@/app/auth/actions";
 import { toast } from "sonner";
 import { Vehicle } from "@/app/dashboard/types";
 import { VibeLogo } from "@/components/brand/VibeLogo";
+import { MagneticCTA } from "@/components/ui/MagneticCTA";
 import { cn } from "@/lib/utils";
 
 import {
@@ -148,10 +149,11 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
         <Sidebar
             collapsible="icon"
             {...props}
-            className="border-r border-white/[0.04] bg-[#0D0F14]/95 backdrop-blur-2xl overflow-hidden"
+            className="border-r border-white/[0.04] bg-[#0B1120]/95 backdrop-blur-2xl overflow-hidden"
         >
-            {/* Ambient living gradient — subtle, slow-moving */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Ambient living gradient & Noise — subtle, slow-moving */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay" />
                 <div className="absolute -top-32 -left-16 w-40 h-40 bg-emerald-500/[0.03] rounded-full blur-[80px] animate-pulse" />
                 <div className="absolute bottom-20 -right-10 w-32 h-32 bg-blue-500/[0.03] rounded-full blur-[60px] animate-pulse [animation-delay:2s]" />
             </div>
@@ -193,7 +195,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                             </SidebarMenuButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
-                            className="w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl bg-[#0D0F14]/98 border border-white/[0.06] p-3"
+                            className="w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl bg-[#0B1120]/98 border border-white/[0.06] p-3"
                             side="bottom"
                             align="start"
                             sideOffset={8}
@@ -491,18 +493,15 @@ function SidebarCustomizer() {
         vehicle: true,
         weekly: true,
         recent: true,
-        maintenance: true,
         tax: true,
-        weather: true,
-        milestones: true,
-        strategy: true
     });
 
     React.useEffect(() => {
         const saved = localStorage.getItem('gigmiles_dashboard_widgets');
         if (saved) {
             try {
-                setVisibleWidgets(JSON.parse(saved));
+                const parsed = JSON.parse(saved);
+                setVisibleWidgets(prev => ({ ...prev, ...parsed }));
             } catch (e) {
                 console.error('Failed to parse dashboard settings');
             }
@@ -529,11 +528,7 @@ function SidebarCustomizer() {
         { id: 'vehicle', label: 'Asset Value', icon: Car },
         { id: 'weekly', label: 'Weekly Performance', icon: TrendingUp },
         { id: 'recent', label: 'Recent Activity', icon: LayoutDashboard },
-        { id: 'tax', label: 'Tax Ledger', icon: Wallet, isComingSoon: true },
-        { id: 'maintenance', label: 'Smart Maintenance', icon: Settings, isComingSoon: true },
-        { id: 'strategy', label: 'AI Strategy', icon: Compass, isComingSoon: true },
-        { id: 'weather', label: 'Work Conditions', icon: CloudRain, isComingSoon: true },
-        { id: 'milestones', label: 'Records & Achievements', icon: Trophy, isComingSoon: true },
+        { id: 'tax', label: 'Tax Shield', icon: Wallet },
     ];
 
     const futureWidgets = [
@@ -545,17 +540,21 @@ function SidebarCustomizer() {
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <SidebarMenuButton
-                    tooltip="Customize Dashboard"
-                    className="h-10 rounded-xl transition-all duration-200 text-slate-600 hover:text-emerald-500 hover:bg-emerald-500/[0.04] group/cust"
-                >
-                    <div className="flex items-center gap-3">
-                        <div className="p-1 rounded-lg group-hover/cust:bg-emerald-500/10 transition-colors">
-                            <Sparkles className="size-4" />
-                        </div>
-                        <span className="text-[13px] tracking-tight group-data-[collapsible=icon]:hidden">Customize</span>
-                    </div>
-                </SidebarMenuButton>
+                <div>
+                    <MagneticCTA>
+                        <SidebarMenuButton
+                            tooltip="Customize Dashboard"
+                            className="h-10 rounded-xl transition-all duration-200 text-slate-600 hover:text-emerald-500 hover:bg-emerald-500/[0.04] group/cust"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="p-1 rounded-lg group-hover/cust:bg-emerald-500/10 transition-colors">
+                                    <Sparkles className="size-4" />
+                                </div>
+                                <span className="text-[13px] tracking-tight group-data-[collapsible=icon]:hidden">Customize</span>
+                            </div>
+                        </SidebarMenuButton>
+                    </MagneticCTA>
+                </div>
             </SheetTrigger>
             <SheetContent side="right" className="bg-slate-950/98 border-white/5 backdrop-blur-2xl w-[320px] sm:w-[400px] p-0 flex flex-col">
                 <SheetHeader className="p-8 pb-4 border-b border-white/5">

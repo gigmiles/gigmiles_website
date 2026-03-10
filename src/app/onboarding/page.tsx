@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { MagneticCTA } from '@/components/ui/MagneticCTA'
 import { getEstimatedMPG, getVehicleModels } from '@/utils/api/external'
 import { getDepreciationRate } from '@/utils/calculations'
 import { EV_MODELS } from '@/utils/vehicle-data'
@@ -389,8 +390,9 @@ export default function OnboardingPage() {
 
     if (checkingPersistence) {
         return (
-            <div className="min-h-screen bg-[#0D0F14] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+            <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center p-4 relative overflow-hidden">
                 <div className="fixed inset-0 z-0 pointer-events-none">
+                    <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay" />
                     <div className="absolute top-[10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-[#10B981]/5 blur-[150px] animate-pulse" />
                 </div>
                 <div className="relative z-10 flex flex-col items-center gap-6 max-w-sm text-center">
@@ -416,9 +418,10 @@ export default function OnboardingPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0D0F14] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center p-4 relative overflow-hidden">
             {/* Vibe Ambient Blobs */}
             <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay" />
                 <div className="absolute top-[5%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#10B981]/5 blur-[150px] animate-pulse" />
                 <div className="absolute bottom-[5%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#E2E8F0]/5 blur-[150px] animate-pulse [animation-delay:3s]" />
             </div>
@@ -699,9 +702,11 @@ export default function OnboardingPage() {
                                 <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1">
                                     <ArrowLeft className="mr-2 size-4" /> Back
                                 </Button>
-                                <Button type="submit" className="flex-1 bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950">
-                                    Continue <ChevronRight className="ml-2 size-4" />
-                                </Button>
+                                <MagneticCTA className="flex-[2]">
+                                    <Button type="submit" className="w-full h-14 bg-[#10B981] text-black font-black uppercase tracking-tighter hover:bg-[#10B981]/90 rounded-2xl group transition-all hover-spring">
+                                        Continue <ChevronRight className="ml-2 size-4" />
+                                    </Button>
+                                </MagneticCTA>
                             </div>
                         </form>
                     )}
@@ -728,16 +733,14 @@ export default function OnboardingPage() {
                             </div>
 
                             <div className="flex gap-3 pt-4">
-                                <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1">
+                                <Button type="button" variant="outline" onClick={() => setStep(2)} className="flex-1" disabled={loading}>
                                     <ArrowLeft className="mr-2 size-4" /> Back
                                 </Button>
-                                <Button
-                                    onClick={handleFinalSubmit}
-                                    className="flex-1 bg-slate-900 text-white dark:bg-emerald-500 dark:text-slate-950"
-                                    disabled={loading}
-                                >
-                                    {loading ? 'Setting up...' : 'Complete Setup'}
-                                </Button>
+                                <MagneticCTA className="flex-[2]">
+                                    <Button onClick={handleFinalSubmit} className="w-full h-14 bg-[#10B981] text-black font-black uppercase tracking-tighter hover:bg-[#10B981]/90 rounded-2xl group transition-all hover-spring" disabled={loading}>
+                                        {loading ? 'Setting up...' : 'Complete Setup'}
+                                    </Button>
+                                </MagneticCTA>
                             </div>
                         </div>
                     )}

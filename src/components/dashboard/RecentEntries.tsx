@@ -17,7 +17,7 @@ export function RecentEntries({ entries, primaryVehicle, stateCode = 'CA' }: Rec
     if (!entries || entries.length === 0) return null
 
     return (
-        <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5 flex flex-col">
+        <div className="glass-card p-4 flex flex-col">
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <h2 className="text-sm font-bold text-white tracking-tight">Recent Activity</h2>

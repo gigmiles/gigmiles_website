@@ -9,6 +9,7 @@ import { BoltWeeklySummary } from './BoltWeeklySummary'
 import { PlatformDistributionChart } from './PlatformDistributionChart'
 import { VehicleValueCard } from './VehicleValueCard'
 import { BoltTodaySummary } from './BoltTodaySummary'
+import { TaxLedgerWidget } from './TaxLedgerWidget'
 
 interface DashboardGridProps {
     todayStats: any
@@ -54,18 +55,16 @@ export function DashboardGrid({
         vehicle: true,
         weekly: true,
         recent: true,
-        maintenance: true,
         tax: true,
-        weather: true,
-        milestones: true,
-        strategy: true
     })
 
     useEffect(() => {
         const savedWidgets = localStorage.getItem('gigmiles_dashboard_widgets')
         if (savedWidgets) {
             try {
-                setVisibleWidgets(JSON.parse(savedWidgets))
+                const parsed = JSON.parse(savedWidgets)
+                // Merge parsed state with default state to ensure new widgets (like tax) default to true if missing
+                setVisibleWidgets(prev => ({ ...prev, ...parsed }))
             } catch (e) {
                 console.error('Failed to parse dashboard settings')
             }
@@ -131,8 +130,18 @@ export function DashboardGrid({
                             <RecentEntries entries={recentEntries} primaryVehicle={primaryVehicle} stateCode={stateCode || ''} />
                         </motion.div>
                     )}
+                    {visibleWidgets.tax && (
+                        <motion.div {...fadeIn} transition={{ delay: 0.2, duration: 0.3 }} className="rounded-xl border-l-2 border-l-cyan-500/40">
+                            <TaxLedgerWidget 
+                                grossIncome={weekly.gross} 
+                                totalRealCosts={weekly.gross - weekly.netProfit} 
+                                estimatedTax={todayStats.estimatedTax} 
+                                stateCode={stateCode || 'DEFAULT'}
+                            />
+                        </motion.div>
+                    )}
                     {visibleWidgets.vehicle && (
-                        <motion.div {...fadeIn} transition={{ delay: 0.2, duration: 0.3 }} className="flex-1 flex flex-col rounded-xl border-l-2 border-l-purple-500/40">
+                        <motion.div {...fadeIn} transition={{ delay: 0.25, duration: 0.3 }} className="flex-1 flex flex-col rounded-xl border-l-2 border-l-purple-500/40">
                             <VehicleValueCard vehicles={vehicles} activeVehicleId={activeVehicleId} />
                         </motion.div>
                     )}

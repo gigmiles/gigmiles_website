@@ -35,7 +35,7 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
 
     if (!data || data.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-8 bg-white/[0.02] rounded-xl border border-dashed border-white/10">
+            <div className="glass-card flex flex-col items-center justify-center p-8 border-dashed shadow-none">
                 <Receipt className="size-8 text-slate-700 mb-3" />
                 <p className="text-slate-500 font-medium text-xs">No expenses found for this period.</p>
             </div>
@@ -61,7 +61,7 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
                         <button
                             key={idx}
                             onClick={() => setSelectedCategory(category)}
-                            className="bg-white/[0.03] rounded-xl p-4 border border-white/5 hover:bg-white/[0.05] transition-all text-left active:scale-[0.98] group"
+                            className="glass-card glass-card-hover p-4 transition-all text-left active:scale-[0.98] group hover-spring"
                         >
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-white/5 text-slate-500 font-bold">
@@ -72,7 +72,7 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
 
                             <h4 className="text-sm font-bold text-slate-300 mb-1">{category.category}</h4>
                             <div className="flex items-baseline gap-1.5">
-                                <span className="text-lg font-bold text-red-400">${category.total.toFixed(2)}</span>
+                                <span className="animate-number-pop text-lg font-bold text-red-400">${category.total.toFixed(2)}</span>
                                 <span className="text-[9px] text-slate-600 font-bold">{pct.toFixed(0)}%</span>
                             </div>
 
@@ -89,7 +89,7 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
 
             {/* Drill-down Sheet */}
             <Sheet open={!!selectedCategory} onOpenChange={(open) => !open && setSelectedCategory(null)}>
-                <SheetContent className="bg-[#020617]/95 backdrop-blur-3xl border-white/5 w-full sm:max-w-md p-0 overflow-hidden">
+                <SheetContent className="bg-[#0B1120]/95 backdrop-blur-3xl border-white/5 w-full sm:max-w-md p-0 overflow-hidden">
                     <div className="h-full flex flex-col">
                         <div className="p-6 border-b border-white/5 bg-gradient-to-b from-red-500/5 to-transparent">
                             <div className="flex items-center gap-3 mb-3">
@@ -102,7 +102,7 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
                                 </div>
                             </div>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-display font-bold text-white tracking-tighter">
+                                <span className="animate-number-pop text-4xl font-display font-bold text-white tracking-tighter">
                                     ${selectedCategory?.total.toFixed(2)}
                                 </span>
                                 <span className="text-xs text-slate-500 font-medium">Total</span>
@@ -112,13 +112,13 @@ export function ExpenseBreakdown({ data }: ExpenseBreakdownProps) {
                         <ScrollArea className="flex-1 p-5">
                             <div className="space-y-3">
                                 {selectedCategory?.items.map((item, i) => (
-                                    <div key={i} className="bg-white/[0.03] rounded-xl p-4 border border-white/5 hover:bg-white/[0.05] transition-colors">
+                                    <div key={i} className="glass-card glass-card-hover p-4 transition-colors">
                                         <div className="flex justify-between items-center mb-1.5">
                                             <div className="flex items-center gap-1.5">
                                                 <CalendarIcon className="size-2.5 text-slate-600" />
                                                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{item.date}</span>
                                             </div>
-                                            <span className="text-sm font-bold text-white">${item.amount.toFixed(2)}</span>
+                                            <span className="animate-number-pop text-sm font-bold text-white">${item.amount.toFixed(2)}</span>
                                         </div>
                                         <p className="text-xs text-slate-400 font-medium italic">&quot;{item.description}&quot;</p>
                                     </div>

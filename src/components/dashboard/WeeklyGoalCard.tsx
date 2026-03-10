@@ -53,8 +53,9 @@ export const WeeklyGoalCard = memo(function WeeklyGoalCard({
     }, [])
 
     return (
-        <Card className="bg-white/[0.03] border-white/5 overflow-hidden relative">
-            <CardContent className="p-4">
+        <Card className="glass-card overflow-hidden relative">
+            <div className="absolute -bottom-10 -right-10 w-28 h-28 bg-amber-500/10 blur-[60px] rounded-full pointer-events-none" />
+            <CardContent className="p-4 relative z-10">
                 <div className="flex items-center justify-between mb-4">
                     <div>
                         <h2 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
@@ -71,7 +72,7 @@ export const WeeklyGoalCard = memo(function WeeklyGoalCard({
                     <div>
                         <div className="flex items-end justify-between mb-2">
                             <div className="flex items-baseline gap-1 group/goal cursor-pointer" onClick={() => !isEditing && setIsEditing(true)}>
-                                <span className="text-2xl font-black tracking-tighter text-white">${currentNet.toFixed(0)}</span>
+                                <span className="animate-number-pop text-2xl font-black tracking-tighter text-white">${currentNet.toFixed(0)}</span>
 
                                 {isEditing ? (
                                     <div className="flex items-center gap-1 animate-in slide-in-from-left-2 duration-300">

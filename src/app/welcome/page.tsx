@@ -2,11 +2,13 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, ArrowRight } from 'lucide-react'
 import { VibeLogo } from '@/components/brand/VibeLogo'
+import { MagneticCTA } from '@/components/ui/MagneticCTA'
 
 export default function WelcomeScreen() {
     return (
-        <div className="min-h-screen bg-[#0D0F14] flex flex-col items-center justify-center p-6 relative overflow-hidden">
-            {/* Vibe Ambient Blobs */}
+        <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+            {/* NOISE & BLOBS */}
+            <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay pointer-events-none" />
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute top-[10%] right-[-5%] w-[50%] h-[50%] rounded-full bg-[#10B981]/5 blur-[150px] animate-pulse" />
                 <div className="absolute bottom-[10%] left-[-5%] w-[50%] h-[50%] rounded-full bg-[#E2E8F0]/5 blur-[150px] animate-pulse [animation-delay:3s]" />
@@ -30,10 +32,12 @@ export default function WelcomeScreen() {
                 </div>
 
                 <Link href="/dashboard" className="w-full">
-                    <Button className="w-full h-20 bg-[#10B981] text-black text-xl font-black rounded-[2rem] uppercase tracking-tighter hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 group">
-                        Continue to App
-                        <ArrowRight className="ml-3 size-6 group-hover:translate-x-2 transition-transform" />
-                    </Button>
+                    <MagneticCTA>
+                        <Button className="w-full h-20 bg-[#10B981] text-black text-xl font-black rounded-[2rem] uppercase tracking-tighter hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 group">
+                            Continue to App
+                            <ArrowRight className="ml-3 size-6 group-hover:translate-x-2 transition-transform" />
+                        </Button>
+                    </MagneticCTA>
                 </Link>
             </div>
         </div>

@@ -3,7 +3,7 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-export const alt = 'GigMiles | Professional Earnings Performance'
+export const alt = 'GigMiles | Real Net Profit for Gig Workers'
 export const size = {
     width: 1200,
     height: 630,
@@ -92,7 +92,7 @@ export default async function Image() {
                 <div {...{ style: styles.meshGradientBottom }} />
 
                 <div {...{ style: styles.contentWrapper }}>
-                    {/* Logo Icon */}
+                    {/* Logo Icon — G mark (Satori-safe: no filters) */}
                     <div {...{ style: styles.logoWrapper }}>
                         <svg
                             width="100"
@@ -101,19 +101,25 @@ export default async function Image() {
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
                         >
-                            <path
-                                d="M20 20L50 10L80 20L90 50L80 80L50 90L20 80L10 50L20 20Z"
-                                fill="#10b98122"
-                                stroke="#10b981"
-                                strokeWidth="2"
+                            {/* Dark rounded-square background */}
+                            <rect x="3" y="3" width="94" height="94" rx="22"
+                                fill="#0D2318"
                             />
+                            <rect x="3" y="3" width="94" height="94" rx="22"
+                                stroke="#10B981" strokeWidth="1.5" opacity="0.25"
+                            />
+                            {/* G letter: large CCW arc from top(50,17) to right(83,50) + crossbar + stub */}
                             <path
-                                d="M75 35C75 25 60 20 50 20C30 20 20 35 20 50C20 65 30 80 50 80C65 80 75 70 75 55H55V45H85"
-                                stroke="#ffffff"
-                                strokeWidth="8"
+                                d="M 50 17 A 33 33 0 1 0 83 50 L 57 50 L 57 65"
+                                stroke="#10B981"
+                                strokeWidth="11"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
+                                fill="none"
                             />
+                            {/* Accent dots */}
+                            <circle cx="50" cy="17" r="3.5" fill="#6EE7B7" opacity="0.6" />
+                            <circle cx="57" cy="65" r="3"   fill="#C1FF72" opacity="0.7" />
                         </svg>
                     </div>
 
@@ -122,7 +128,7 @@ export default async function Image() {
                             Gig<span {...{ style: styles.brandMiles }}>Miles</span>
                         </div>
                         <div {...{ style: styles.subtitle }}>
-                            Professional Performance
+                            Real Net Profit
                         </div>
                     </div>
                 </div>

@@ -5,6 +5,7 @@ import { ExpenseBreakdown } from '@/components/reports/ExpenseBreakdown'
 import { ActivityCalendar } from '@/components/reports/ActivityCalendar'
 import Link from 'next/link'
 import { TrendingUp, ChevronLeft, MapPin, Lightbulb } from 'lucide-react'
+import { ExportButton } from '@/components/reports/ExportButton'
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ startDate?: string, endDate?: string }> }) {
     const { startDate, endDate } = await searchParams
@@ -55,12 +56,13 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                     <Link href="/dashboard" className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
                         <ChevronLeft className="size-4 text-slate-400 group-hover:text-emerald-500" />
                     </Link>
-                    <div>
+                    <div className="flex-1">
                         <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                             Reports
                         </h1>
                         <p className="text-xs text-slate-500 font-medium">Performance analytics for the selected period.</p>
                     </div>
+                    <ExportButton dailyData={data.dailyData} platformData={data.platformData} />
                 </div>
 
                 {/* Controls */}
@@ -71,33 +73,33 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
             {/* KPI Strip — 4 compact cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
+                <div className="glass-card p-4">
                     <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Net Profit</p>
-                    <h3 className="text-2xl font-display font-bold text-emerald-500 tracking-tighter">
+                    <h3 className="animate-number-pop text-2xl font-display font-bold text-emerald-500 tracking-tighter">
                         ${totalNetProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </h3>
                     <p className="text-[9px] font-bold text-emerald-500/50 mt-0.5">{margin.toFixed(1)}% margin</p>
                 </div>
-                <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
+                <div className="glass-card p-4">
                     <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Gross Revenue</p>
-                    <h3 className="text-2xl font-display font-bold text-white tracking-tighter">
+                    <h3 className="animate-number-pop text-2xl font-display font-bold text-white tracking-tighter">
                         ${totalGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </h3>
                     {totalHours > 0 && <p className="text-[9px] font-bold text-blue-400/50 mt-0.5">${avgHourly.toFixed(0)}/hr net</p>}
                 </div>
-                <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
+                <div className="glass-card p-4">
                     <div className="flex items-center gap-1.5 mb-1">
                         <MapPin className="size-2.5 text-slate-600" />
                         <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600">Total Miles</p>
                     </div>
-                    <h3 className="text-2xl font-display font-bold text-white tracking-tighter">
+                    <h3 className="animate-number-pop text-2xl font-display font-bold text-white tracking-tighter">
                         {totalMiles.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </h3>
                     {totalMiles > 0 && <p className="text-[9px] font-bold text-slate-500 mt-0.5">${(totalMiles * 0.67).toFixed(0)} IRS deduction</p>}
                 </div>
-                <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5">
+                <div className="glass-card p-4">
                     <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Top Platform</p>
-                    <h3 className="text-2xl font-display font-bold text-white tracking-tighter truncate">
+                    <h3 className="animate-number-pop text-2xl font-display font-bold text-white tracking-tighter truncate">
                         {topPlatformName}
                     </h3>
                     {topPlatformRate > 0 && <p className="text-[9px] font-bold text-blue-400/50 mt-0.5">${topPlatformRate.toFixed(0)}/hr</p>}
@@ -108,7 +110,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
             <ActivityCalendar data={data.dailyData} />
 
             {/* Charts */}
-            <div className="bg-white/[0.02] rounded-2xl p-5 md:p-6 border border-white/5">
+            <div className="glass-card p-5 md:p-6">
                 <div className="flex items-center justify-between mb-5">
                     <div>
                         <h2 className="text-base font-display font-bold text-white">Performance Visualizer</h2>
@@ -129,7 +131,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                         const platColor = plat.fill || '#64748B'
                         const barWidth = Math.min(100, (plat.hourlyRate / 50) * 100)
                         return (
-                            <div key={idx} className="bg-white/[0.03] rounded-xl p-4 border border-white/5 hover:bg-white/[0.05] transition-all">
+                            <div key={idx} className="glass-card glass-card-hover p-4 transition-all hover-spring">
                                 <div className="flex items-center justify-between mb-3">
                                     <span
                                         className="text-xs font-extrabold tracking-tight"

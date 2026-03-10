@@ -202,7 +202,7 @@ export function BoltTodaySummary({
     const totalGrandCosts = expenses + tax;
 
     return (
-        <div className="bg-white/[0.03] rounded-xl p-4 border border-white/5 relative overflow-hidden">
+        <div className="glass-card p-4 relative overflow-hidden">
 
             <div className="flex items-center justify-between mb-4">
                 <div>

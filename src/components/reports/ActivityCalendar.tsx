@@ -175,27 +175,27 @@ export function ActivityCalendar({ data }: ActivityCalendarProps) {
                     {selectedDay && (
                         <ScrollArea className="h-[calc(100vh-120px)] mt-6 pr-4">
                             <div className="space-y-6">
-                                <div className="space-y-1 text-center py-6 bg-white/5 rounded-2xl border border-emerald-500/20">
+                                <div className="glass-card space-y-1 text-center py-6 border-emerald-500/20">
                                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Net Profit</p>
-                                    <p className="text-4xl font-extrabold text-emerald-400 text-glow-emerald">
+                                    <p className="animate-number-pop text-4xl font-extrabold text-emerald-400 text-glow-emerald">
                                         ${selectedDay.netProfit.toFixed(2)}
                                     </p>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <div className="glass-card p-4">
                                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Gross Earnings</p>
-                                        <p className="text-lg font-bold text-white">${selectedDay.earnings.toFixed(2)}</p>
+                                        <p className="animate-number-pop text-lg font-bold text-white">${selectedDay.earnings.toFixed(2)}</p>
                                     </div>
-                                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <div className="glass-card p-4">
                                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Total Expenses</p>
-                                        <p className="text-lg font-bold text-rose-400">-${selectedDay.expenses.toFixed(2)}</p>
+                                        <p className="animate-number-pop text-lg font-bold text-rose-400">-${selectedDay.expenses.toFixed(2)}</p>
                                     </div>
-                                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <div className="glass-card p-4">
                                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Miles Driven</p>
-                                        <p className="text-lg font-bold text-blue-400">{selectedDay.miles}</p>
+                                        <p className="animate-number-pop text-lg font-bold text-blue-400">{selectedDay.miles}</p>
                                     </div>
-                                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
+                                    <div className="glass-card p-4">
                                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Items Processed</p>
                                         <p className="text-lg font-bold text-amber-400">—</p>
                                     </div>

@@ -86,7 +86,7 @@
 
 :root {
   /* Enforce dark theme as default for Refined Profit */
-  --background: #0D0F14; /* Vibe Night */
+  --background: #0B1120; /* Deep Space Slate (brighter than #0D0F14) */
   --foreground: #f8fafc;
   --card: #0d1220;
   --card-foreground: #f8fafc;
@@ -109,8 +109,8 @@
   --ring: rgba(16, 185, 129, 0.5); /* Emerald focus ring */
   --radius: 1rem;
 
-  --glass-bg: rgba(13, 15, 20, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(15, 23, 42, 0.5); /* Lighter slate glass */
+  --glass-border: rgba(255, 255, 255, 0.08);
 
   /* Chart Colors */
   --chart-1: #10b981;
@@ -120,7 +120,7 @@
   --chart-5: #6366f1;
 
   /* Sidebar */
-  --sidebar-background: #0D0F14; /* Vibe Night */
+  --sidebar-background: #0B1120; /* Deep Space Slate */
   --sidebar-foreground: #f8fafc;
   --sidebar-primary: #10b981;
   --sidebar-primary-foreground: #0D0F14;
@@ -132,7 +132,7 @@
 
 .dark {
   /* Redundant in enforced dark mode, but kept for compatibility */
-  --background: #0D0F14;
+  --background: #0B1120;
   --foreground: #f8fafc;
   --card: #0d1220;
   --card-foreground: #f8fafc;
@@ -154,10 +154,10 @@
   --input: rgba(255, 255, 255, 0.03);
   --ring: rgba(16, 185, 129, 0.5);
 
-  --glass-bg: rgba(10, 14, 23, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(15, 23, 42, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.08);
 
-  --sidebar-background: #080c14;
+  --sidebar-background: #0B1120;
   --sidebar-foreground: #f8fafc;
   --sidebar-primary: #10b981;
   --sidebar-primary-foreground: #080c14;
@@ -184,11 +184,14 @@ body {
 
 @utility glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-glass);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    var(--shadow-glass),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.05); /* Glassmorphism 2.0 inner light */
+  border-radius: 1.5rem; /* Bento Grid Signature Radius */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @utility animate-gradient-x {
@@ -261,6 +264,38 @@ body {
 @utility uber-halo-text {
   &:is(.dark *) {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Kinetic Typography Animations */
+@keyframes number-pop {
+  0% { transform: scale(0.9); opacity: 0; filter: blur(4px); }
+  60% { transform: scale(1.05); opacity: 1; filter: blur(0px); }
+  100% { transform: scale(1); }
+}
+
+@utility animate-number-pop {
+  animation: number-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes metric-pulse {
+  0% { font-variation-settings: 'wght' 400; }
+  50% { font-variation-settings: 'wght' 900; color: var(--color-emerald-400); transform: scale(1.02); }
+  100% { font-variation-settings: 'wght' 700; }
+}
+
+@utility animate-metric-update {
+  animation: metric-pulse 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Motion with Intention (Hover Springs) */
+@utility hover-spring {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  &:hover {
+    transform: scale(1.02) translateY(-2px);
+  }
+  &:active {
+    transform: scale(0.98);
   }
 }
 
@@ -412,4 +447,9 @@ body {
     linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 60px 60px;
+}
+
+@utility bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
 }

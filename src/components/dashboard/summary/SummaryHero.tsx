@@ -49,7 +49,7 @@ export function SummaryHero({
 
     return (
         <div className={cn(
-            "relative overflow-hidden bg-slate-950 rounded-2xl lg:rounded-3xl p-5 md:p-6 border border-white/5 shadow-2xl cursor-default",
+            "relative overflow-hidden group cursor-default h-full flex flex-col justify-center px-4 py-6 md:p-8",
         )}>
             {/* Glowing background effect */}
             <div className={cn(
@@ -67,7 +67,7 @@ export function SummaryHero({
                             initial={{ y: 12, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ type: "spring", stiffness: 120 }}
-                            className="font-display font-extrabold tracking-tighter text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)] text-4xl md:text-5xl"
+                            className="animate-number-pop font-display font-extrabold tracking-tighter text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)] text-4xl md:text-5xl"
                         >
                             {netProfit.toFixed(2)}
                         </motion.p>
@@ -79,7 +79,7 @@ export function SummaryHero({
                     {/* Gross Income — Clickable with per-app breakdown */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-xl p-3.5 border border-white/5 transition-all hover:bg-white/10 text-left group">
+                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-2xl p-3.5 border border-white/5 transition-all hover:bg-white/10 hover-spring text-left group">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
@@ -123,7 +123,7 @@ export function SummaryHero({
                     {/* Total Costs — Clickable with itemized breakdown */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-xl p-3.5 border border-white/5 transition-all hover:bg-white/10 text-left group">
+                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-2xl p-3.5 border border-white/5 transition-all hover:bg-white/10 hover-spring text-left group">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-red-500/10 border border-red-500/20">
@@ -202,7 +202,7 @@ export function SummaryHero({
                     {/* Miles Driven */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-xl p-3.5 border border-white/5 transition-all hover:bg-white/10 text-left group">
+                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-2xl p-3.5 border border-white/5 transition-all hover:bg-white/10 hover-spring text-left group">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
@@ -236,7 +236,7 @@ export function SummaryHero({
                     {/* Active Hours */}
                     <Popover>
                         <PopoverTrigger asChild>
-                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-xl p-3.5 border border-white/5 transition-all hover:bg-white/10 text-left group">
+                            <button className="flex flex-col gap-1.5 bg-white/5 rounded-2xl p-3.5 border border-white/5 transition-all hover:bg-white/10 hover-spring text-left group">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-blue-500/10 border border-blue-500/20">

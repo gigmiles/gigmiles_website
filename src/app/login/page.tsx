@@ -9,6 +9,7 @@ import { VibeLogo } from '@/components/brand/VibeLogo'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { useEffect, Suspense } from 'react'
+import { MagneticCTA } from '@/components/ui/MagneticCTA'
 
 function LoginContent() {
     const [email, setEmail] = useState('')
@@ -105,9 +106,10 @@ function LoginContent() {
     }
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0D0F14]">
-            {/* Vibe Ambient Blobs */}
+        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0B1120]">
+            {/* Vibe Ambient Blobs & Cinematic Noise */}
             <div className="fixed inset-0 z-0 pointer-events-none">
+                <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay" />
                 <div className="absolute top-[5%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#10B981]/5 blur-[150px] animate-pulse" />
                 <div className="absolute bottom-[5%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#E2E8F0]/5 blur-[150px] animate-pulse [animation-delay:3s]" />
             </div>
@@ -186,20 +188,22 @@ function LoginContent() {
                                     </div>
                                 )}
 
-                                <Button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full h-16 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] hover:scale-[1.02] transition-all active:scale-95 group"
-                                >
-                                    {loading ? (
-                                        <Loader2 className="size-6 animate-spin" />
-                                    ) : (
-                                        <>
-                                            {isSignUp ? 'Create Account' : 'Sign In'}
-                                            <ArrowRight className="ml-3 size-5 group-hover:translate-x-2 transition-transform" />
-                                        </>
-                                    )}
-                                </Button>
+                                <MagneticCTA>
+                                    <Button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="w-full h-16 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] transition-all active:scale-95 group"
+                                    >
+                                        {loading ? (
+                                            <Loader2 className="size-6 animate-spin" />
+                                        ) : (
+                                            <>
+                                                {isSignUp ? 'Create Account' : 'Sign In'}
+                                                <ArrowRight className="ml-3 size-5 group-hover:translate-x-2 transition-transform" />
+                                            </>
+                                        )}
+                                    </Button>
+                                </MagneticCTA>
                             </form>
                         </>
                     ) : (
@@ -225,13 +229,15 @@ function LoginContent() {
                                     </div>
                                 </div>
 
-                                <Button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full h-16 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] transition-all active:scale-95"
-                                >
-                                    {loading ? <Loader2 className="size-6 animate-spin" /> : 'Send Reset Link'}
-                                </Button>
+                                <MagneticCTA>
+                                    <Button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="w-full h-16 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:shadow-[0_0_50px_rgba(16,185,129,0.3)] transition-all active:scale-95"
+                                    >
+                                        {loading ? <Loader2 className="size-6 animate-spin" /> : 'Send Reset Link'}
+                                    </Button>
+                                </MagneticCTA>
 
                                 <button
                                     type="button"
@@ -250,7 +256,7 @@ function LoginContent() {
                             <div className="w-full h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent"></div>
                         </div>
                         <div className="relative flex justify-center">
-                            <span className="px-4 bg-[#0D0F14]/0 text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/40">Or</span>
+                            <span className="px-4 bg-[#0B1120]/0 text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/40">Or</span>
                         </div>
                     </div>
 
@@ -274,7 +280,7 @@ function LoginContent() {
 export default function LoginPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-[#0D0F14]">
+            <div className="min-h-screen flex items-center justify-center bg-[#0B1120]">
                 <Loader2 className="size-10 text-[#10B981] animate-spin" />
             </div>
         }>

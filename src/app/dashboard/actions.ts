@@ -236,7 +236,7 @@ export async function getDashboardStats(dateStr?: string) {
         'uber eats': '#06C167',
         'lyft': '#FF00BF',
         'doordash': '#FF3008',
-        'grubhub': '#F6343F',
+        'grubhub': '#FF8000',
         'instacart': '#43B02A',
         'spark': '#0071CE',
         'amazon flex': '#FF9900',

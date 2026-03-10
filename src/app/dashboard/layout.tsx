@@ -7,9 +7,8 @@ import {
     SidebarTrigger,
     SidebarInset,
 } from '@/components/ui/sidebar'
-import { Bell, HelpCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import Link from "next/link"; // Added import
+import { HeaderActions } from '@/components/dashboard/HeaderActions'
+import Link from "next/link";
 import { VibeLogo } from '@/components/brand/VibeLogo';
 
 export default async function DashboardLayout({
@@ -57,29 +56,23 @@ export default async function DashboardLayout({
     return (
         <SidebarProvider>
             <AppSidebar user={userData} vehicles={vehicles as any || []} activeVehicleId={activeVehicleId} />
-            <SidebarInset className="relative overflow-hidden bg-[#0D0F14] flex flex-col">
-                {/* Global Animated Mesh Gradient (Premium Emerald/Blue) */}
-                <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
+            <SidebarInset className="relative overflow-hidden bg-[#0B1120] flex flex-col">
+                {/* Global Animated Mesh Gradient & Noise (Premium Emerald/Blue) */}
+                <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay pointer-events-none z-0" />
+                <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden z-0">
                     <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
                     <div className="absolute bottom-[10%] right-[-5%] w-[35%] h-[35%] bg-indigo-500/10 rounded-full blur-[100px] animate-pulse delay-700" />
                     <div className="absolute top-[20%] right-[10%] w-[25%] h-[25%] bg-blue-500/10 rounded-full blur-[80px] animate-pulse delay-1000" />
                 </div>
 
-                <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center border-b border-white/[0.06] bg-[#0D0F14]/80 backdrop-blur-3xl px-6 md:px-10">
+                <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center border-b border-white/[0.06] bg-[#0B1120]/80 backdrop-blur-3xl px-6 md:px-10">
                     <div className="mx-auto max-w-[1600px] w-full flex items-center justify-between gap-2">
                         <div className="flex items-center gap-4">
                             <SidebarTrigger className="-ml-1 text-slate-400 hover:text-white transition-colors" />
                             <div className="h-4 w-px bg-white/[0.06]" />
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all">
-                                <Bell className="size-6" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all">
-                                <HelpCircle className="size-6" />
-                            </Button>
-                        </div>
+                        <HeaderActions />
                     </div>
                 </header>
 

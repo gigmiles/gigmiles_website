@@ -17,6 +17,19 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "GigMiles | Professional Earnings Performance",
   description: "Maximize your performance. Track gig earnings, expenses, and vehicle depreciation with GigMiles.",
+  manifest: "/manifest.json",
+  themeColor: "#0B1120",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "GigMiles",
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    viewportFit: "cover",
+  },
 };
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -42,6 +55,17 @@ export default function RootLayout({
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js').catch(() => {});
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Activity, Calculator, Settings, Plus } from 'lucide-react'
+import { Home, BarChart3, Calculator, Settings, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const leftNavItems = [
     { title: 'Home', href: '/dashboard', icon: Home },
-    { title: 'Activity', href: '/dashboard/activity', icon: Activity },
+    { title: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
 ]
 
 const rightNavItems = [
@@ -43,12 +43,12 @@ export function MobileNav() {
                 })}
 
                 {/* Center FAB */}
-                <div className="flex flex-1 justify-center relative -top-6">
+                <div className="flex flex-1 justify-center relative -top-4">
                     <Link
                         href="/dashboard/entry/new"
-                        className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 text-slate-950 shadow-[0_8px_30px_rgba(16,185,129,0.25)] active:scale-95 transition-transform border-[6px] border-slate-950"
+                        className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-slate-950 shadow-[0_8px_30px_rgba(16,185,129,0.25)] active:scale-95 transition-transform border-4 border-slate-950"
                     >
-                        <Plus className="size-8" strokeWidth={2.5} />
+                        <Plus className="size-7" strokeWidth={2.5} />
                     </Link>
                 </div>
 

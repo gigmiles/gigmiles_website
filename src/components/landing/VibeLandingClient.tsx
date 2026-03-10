@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -19,6 +19,7 @@ import {
 import { VibeLogo as Logo } from "@/components/brand/VibeLogo";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { MagneticCTA } from "@/components/ui/MagneticCTA";
 
 const staggerContainer = {
   hidden: {},
@@ -117,9 +118,12 @@ export function VibeLandingClient() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0D0F14] text-white font-sans selection:bg-[#10B981] selection:text-black overflow-x-hidden">
+    <div className="min-h-screen bg-[#0B1120] text-white font-sans selection:bg-[#10B981] selection:text-black overflow-x-hidden">
       {/* Background Ambience — Orbital */}
       <div className="fixed inset-0 z-0 pointer-events-none">
+        {/* Cinematic Noise Layer */}
+        <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay" />
+        
         <div className="absolute top-[5%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#10B981]/5 blur-[150px] animate-orbit" />
         <div className="absolute bottom-[5%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#E2E8F0]/5 blur-[150px] animate-orbit-reverse" />
         <div className="absolute top-[40%] left-[20%] w-[40%] h-[40%] rounded-full bg-indigo-500/3 blur-[120px] animate-orbit [animation-delay:5s]" />
@@ -143,7 +147,7 @@ export function VibeLandingClient() {
               {showFeatures && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowFeatures(false)} />
-                  <div className="absolute top-full left-0 mt-4 w-[520px] p-6 rounded-3xl bg-[#0D0F14]/98 backdrop-blur-3xl border border-white/[0.08] shadow-[0_8px_40px_rgba(0,0,0,0.5)] z-50">
+                  <div className="absolute top-full left-0 mt-4 w-[520px] p-6 rounded-3xl bg-[#0B1120]/98 backdrop-blur-3xl border border-white/[0.08] shadow-[0_8px_40px_rgba(0,0,0,0.5)] z-50">
                     <div className="space-y-5">
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#10B981]/60">Current Features</p>
                       <div className="grid grid-cols-2 gap-2">
@@ -264,17 +268,44 @@ export function VibeLandingClient() {
 
           {/* CTA — scale in */}
           <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-8 pt-6">
-            <Link href="/login?signup=true">
-              <Button className="h-24 px-16 rounded-[2.5rem] bg-[#10B981] text-black text-2xl font-black uppercase tracking-tighter hover:scale-105 hover:shadow-[0_0_60px_#10B98166] transition-all duration-500 group">
-                Get Started
-                <ArrowRight className="size-8 ml-4 group-hover:translate-x-3 transition-transform" />
-              </Button>
-            </Link>
+            <MagneticCTA>
+              <Link href="/login?signup=true" className="block">
+                <Button className="h-24 px-16 rounded-[2.5rem] bg-[#10B981] text-black text-2xl font-black uppercase tracking-tighter hover:scale-105 hover:shadow-[0_0_60px_#10B98166] transition-all duration-500 group">
+                  Get Started
+                  <ArrowRight className="size-8 ml-4 group-hover:translate-x-3 transition-transform" />
+                </Button>
+              </Link>
+            </MagneticCTA>
             <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/[0.02] border border-white/[0.08]">
               <ShieldCheck className="size-5 text-[#10B981]" />
               <p className="text-xs font-black uppercase tracking-widest text-[#A1A1AA]">
                 Built by Gig Drivers, For Gig Drivers
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* SEMANTIC LOGO MARQUEE */}
+        <section className="py-12 border-y border-white/[0.05] bg-black/20 overflow-hidden flex flex-col items-center justify-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60 mb-8 text-center px-4">
+            Built for the platforms you drive for
+          </p>
+          <div className="relative flex overflow-hidden w-full max-w-7xl mx-auto [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+            <div className="animate-marquee flex w-max min-w-full shrink-0 flex-row items-center justify-around gap-16 py-4 px-8">
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">UBER</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">DOORDASH</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">LYFT</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">AMAZON FLEX</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">INSTACART</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">GRUBHUB</span>
+            </div>
+            <div aria-hidden="true" className="animate-marquee flex w-max min-w-full shrink-0 flex-row items-center justify-around gap-16 py-4 px-8">
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">UBER</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">DOORDASH</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">LYFT</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">AMAZON FLEX</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">INSTACART</span>
+              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">GRUBHUB</span>
             </div>
           </div>
         </section>
@@ -297,43 +328,56 @@ export function VibeLandingClient() {
             </h2>
           </motion.div>
 
-          <motion.div variants={staggerContainer} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <motion.div variants={staggerContainer} className="grid grid-cols-1 md:grid-cols-12 md:auto-rows-[minmax(280px,auto)] gap-6">
             {[
               {
                 title: "No Ads",
                 desc: "Your focus is your profit. We keep the experience 100% ad-free.",
-                icon: <EyeOff className="size-6" />,
+                icon: <EyeOff className="size-8" />,
+                className: "md:col-span-8 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-[#10B981]/10 text-[#10B981]",
               },
               {
                 title: "Privacy First",
                 desc: "Your data is encrypted. We never sell your earnings info.",
-                icon: <Lock className="size-6" />,
+                icon: <Lock className="size-8" />,
+                className: "md:col-span-4 md:row-span-2 flex flex-col justify-between",
+                iconBg: "bg-indigo-500/10 text-indigo-400",
               },
               {
                 title: "Tax Ready",
                 desc: "Export clean reports for tax season in one tap.",
-                icon: <Receipt className="size-6" />,
+                icon: <Receipt className="size-8" />,
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-amber-500/10 text-amber-500",
               },
               {
                 title: "Speed",
                 desc: "Ultralight performance. Works where you work.",
-                icon: <Zap className="size-6" />,
+                icon: <Zap className="size-8" />,
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-rose-500/10 text-rose-500",
               },
             ].map((f, i) => (
               <motion.div
                 key={i}
                 variants={sectionReveal}
-                className="p-8 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.08] hover:border-[#10B981]/30 transition-all group"
+                className={`p-10 rounded-[2.5rem] glass-card glass-card-hover hover-spring group relative overflow-hidden ${f.className}`}
               >
-                <div className="size-12 rounded-2xl bg-[#10B981]/10 flex items-center justify-center text-[#10B981] mb-6 group-hover:scale-110 transition-transform">
+                {/* Subtle card-specific glow */}
+                <div className={`absolute -top-10 -right-10 w-48 h-48 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none ${f.iconBg.split(' ')[0]}`} />
+                
+                <div className={`size-14 rounded-2xl flex items-center justify-center mb-8 relative z-10 group-hover:scale-110 transition-transform ${f.iconBg}`}>
                   {f.icon}
                 </div>
-                <h4 className="text-xl font-black uppercase tracking-tighter mb-2">
-                  {f.title}
-                </h4>
-                <p className="text-xs font-medium text-[#A1A1AA] leading-relaxed italic">
-                  {f.desc}
-                </p>
+                <div className="relative z-10 w-full mt-auto">
+                  <h4 className="text-2xl font-black uppercase tracking-tighter mb-3">
+                    {f.title}
+                  </h4>
+                  <p className="text-sm font-medium text-[#A1A1AA] leading-relaxed italic max-w-[90%]">
+                    {f.desc}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -353,7 +397,7 @@ export function VibeLandingClient() {
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Dynamic Waterfall Breakdown Card */}
-            <div className="md:col-span-12 lg:col-span-7 group relative p-10 lg:p-14 rounded-[4rem] bg-white/[0.02] border border-white/[0.08] backdrop-blur-3xl overflow-hidden hover:border-white/20 transition-all duration-500">
+            <div className="md:col-span-12 lg:col-span-7 group relative p-10 lg:p-14 rounded-[4rem] glass-card overflow-hidden hover:border-white/20 transition-all duration-500">
               {/* Background ambient */}
               <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-red-500/5 blur-[100px] rounded-full pointer-events-none" />
               
@@ -483,8 +527,7 @@ export function VibeLandingClient() {
 
             {/* Profit Calculator */}
             <div
-              id="calculator"
-              className="md:col-span-12 lg:col-span-12 p-12 lg:p-16 rounded-[5rem] bg-[#15181E] border border-white/[0.08] relative overflow-hidden group"
+              className="md:col-span-12 lg:col-span-12 p-12 lg:p-16 rounded-[5rem] glass-card relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-16 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Calculator className="size-44 text-[#10B981]" />
@@ -529,11 +572,11 @@ export function VibeLandingClient() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-black/40 border border-white/[0.08] backdrop-blur-2xl rounded-[4rem] p-12 flex flex-col justify-center items-center text-center space-y-6">
+                <div className="glass-card rounded-[4rem] p-12 flex flex-col justify-center items-center text-center space-y-6">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#10B981]">
                     True Earnings
                   </span>
-                  <p className="text-8xl font-black tracking-tighter text-white italic">
+                  <p key={realHourly} className="text-8xl font-black tracking-tighter text-white italic animate-number-pop">
                     ${realHourly.toFixed(2)}
                   </p>
                   <p className="text-[#A1A1AA] font-bold text-lg">
@@ -620,11 +663,13 @@ export function VibeLandingClient() {
                       No Subscription Fee
                     </span>
                     <div className="w-full pt-6">
-                      <Link href="/login?signup=true">
-                        <Button className="w-full h-20 bg-[#10B981] text-black text-xl font-black rounded-3xl uppercase tracking-tighter hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
-                          Claim Free Access
-                        </Button>
-                      </Link>
+                      <MagneticCTA>
+                        <Link href="/login?signup=true" className="block w-full">
+                          <Button className="w-full h-20 bg-[#10B981] text-black text-xl font-black rounded-3xl uppercase tracking-tighter hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
+                            Claim Free Access
+                          </Button>
+                        </Link>
+                      </MagneticCTA>
                     </div>
                     <p className="text-[9px] font-bold text-[#10B981] uppercase tracking-widest pt-2">
                       Free for a limited time during beta
@@ -689,16 +734,18 @@ export function VibeLandingClient() {
               LIMITED <br />{" "}
               <span className="text-[#10B981]">BETA.</span>
             </h2>
-            <Link href="/login?signup=true">
-              <Button className="h-28 px-20 rounded-[3rem] bg-[#10B981] text-black text-3xl font-black uppercase tracking-tighter hover:scale-110 hover:shadow-[0_0_80px_#10B98188] transition-all duration-700">
-                Join Gigmiles Free
-              </Button>
-            </Link>
+            <MagneticCTA className="mx-auto max-w-fit">
+              <Link href="/login?signup=true" className="block">
+                <Button className="h-28 px-20 rounded-[3rem] bg-[#10B981] text-black text-3xl font-black uppercase tracking-tighter hover:scale-110 hover:shadow-[0_0_80px_#10B98188] transition-all duration-700">
+                  Join Gigmiles Free
+                </Button>
+              </Link>
+            </MagneticCTA>
           </div>
         </section>
       </main>
 
-      <footer className="py-20 border-t border-white/[0.05] relative z-10 bg-[#0D0F14]">
+      <footer className="py-20 border-t border-white/[0.05] relative z-10 bg-[#0B1120]">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
           <Logo
             className="grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"
