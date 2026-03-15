@@ -4,14 +4,14 @@ import { Charts } from '@/components/reports/Charts'
 import { ExpenseBreakdown } from '@/components/reports/ExpenseBreakdown'
 import { ActivityCalendar } from '@/components/reports/ActivityCalendar'
 import Link from 'next/link'
-import { TrendingUp, ChevronLeft, MapPin, Lightbulb } from 'lucide-react'
+import { TrendingUp, TrendingDown, ChevronLeft, MapPin, Lightbulb } from 'lucide-react'
 import { ExportButton } from '@/components/reports/ExportButton'
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ startDate?: string, endDate?: string }> }) {
     const { startDate, endDate } = await searchParams
     const data = await getReportsData(startDate, endDate)
 
-    if (!data) return <div className="p-8 text-center text-muted-foreground">Generating reports...</div>
+    if (!data) return null
 
     const totalGross = data.dailyData.reduce((acc, curr) => acc + curr.earnings, 0)
     const totalNetProfit = data.dailyData.reduce((acc, curr) => acc + curr.netProfit, 0)
@@ -19,6 +19,16 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
     const totalHours = data.platformData.reduce((acc, curr) => acc + curr.hours, 0)
     const margin = totalGross > 0 ? ((totalNetProfit / totalGross) * 100) : 0
     const avgHourly = totalHours > 0 ? totalNetProfit / totalHours : 0
+
+    // Trend helpers
+    const prev = data.prevTotals
+    const trendPct = (curr: number, prevVal: number) => {
+        if (prevVal === 0) return null
+        return ((curr - prevVal) / prevVal) * 100
+    }
+    const netTrend = trendPct(totalNetProfit, prev.net)
+    const grossTrend = trendPct(totalGross, prev.gross)
+    const milesTrend = trendPct(totalMiles, prev.miles)
     const topPlatform = data.platformData.sort((a, b) => b.value - a.value)[0]
     const topPlatformName = topPlatform?.name || 'N/A'
     const topPlatformRate = topPlatform?.hourlyRate || 0
@@ -74,23 +84,32 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
             {/* KPI Strip — 4 compact cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <div className="glass-card p-4">
-                    <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Net Profit</p>
+                    <div className="flex items-center justify-between mb-1">
+                        <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600">Net Profit</p>
+                        <TrendBadge pct={netTrend} />
+                    </div>
                     <h3 className="animate-number-pop text-2xl font-display font-bold text-emerald-500 tracking-tighter">
                         ${totalNetProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </h3>
                     <p className="text-[9px] font-bold text-emerald-500/50 mt-0.5">{margin.toFixed(1)}% margin</p>
                 </div>
                 <div className="glass-card p-4">
-                    <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600 mb-1">Gross Revenue</p>
+                    <div className="flex items-center justify-between mb-1">
+                        <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600">Gross Revenue</p>
+                        <TrendBadge pct={grossTrend} />
+                    </div>
                     <h3 className="animate-number-pop text-2xl font-display font-bold text-white tracking-tighter">
                         ${totalGross.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </h3>
                     {totalHours > 0 && <p className="text-[9px] font-bold text-blue-400/50 mt-0.5">${avgHourly.toFixed(0)}/hr net</p>}
                 </div>
                 <div className="glass-card p-4">
-                    <div className="flex items-center gap-1.5 mb-1">
-                        <MapPin className="size-2.5 text-slate-600" />
-                        <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600">Total Miles</p>
+                    <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-1">
+                            <MapPin className="size-2.5 text-slate-600" />
+                            <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-600">Total Miles</p>
+                        </div>
+                        <TrendBadge pct={milesTrend} />
                     </div>
                     <h3 className="animate-number-pop text-2xl font-display font-bold text-white tracking-tighter">
                         {totalMiles.toLocaleString(undefined, { maximumFractionDigits: 0 })}
@@ -189,5 +208,27 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                 </div>
             )}
         </div>
+    )
+}
+
+function TrendBadge({ pct }: { pct: number | null }) {
+    if (pct === null) return null
+    const up = pct >= 0
+    const abs = Math.abs(pct)
+    if (abs < 0.5) return null
+    return (
+        <span
+            className="inline-flex items-center gap-0.5 text-[9px] font-black px-1.5 py-0.5 rounded-md"
+            style={{
+                color: up ? '#10b981' : '#e11d48',
+                background: up ? 'rgba(16,185,129,0.1)' : 'rgba(225,29,72,0.1)',
+            }}
+        >
+            {up
+                ? <TrendingUp className="size-2.5" />
+                : <TrendingDown className="size-2.5" />
+            }
+            {abs.toFixed(0)}%
+        </span>
     )
 }

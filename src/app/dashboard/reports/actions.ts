@@ -91,8 +91,8 @@ export async function getReportsData(startDate?: string, endDate?: string) {
 
     // Fetch user's profile and primary vehicle for calculations
     const [{ data: vehicle }, { data: profile }] = await Promise.all([
-        supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).single(),
-        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).single()
+        supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).maybeSingle(),
+        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).maybeSingle()
     ])
 
     const userStateCode = profile?.state_code || 'DEFAULT'
@@ -215,7 +215,7 @@ export async function getReportsData(startDate?: string, endDate?: string) {
                 stateCode: userStateCode,
                 mpg: vehicle?.mpg || 25,
                 gasPrice: currentGasPrice,
-                wearRate: vehicle?.depreciation_rate || 0.15,
+                wearRate: vehicle?.depreciation_rate || 0.35,
                 manualFuel: fuelOverride,
                 manualWear: wearOverride,
                 manualInsurance: insuranceOverride,
@@ -312,9 +312,41 @@ export async function getReportsData(startDate?: string, endDate?: string) {
 
     const expenseBreakdown = Array.from(expenseMap.values()).sort((a, b) => b.total - a.total)
 
+    // Previous period — same duration, shifted back
+    const periodMs = end.getTime() - start.getTime()
+    const prevEnd = new Date(start.getTime() - 1)
+    const prevStart = new Date(prevEnd.getTime() - periodMs)
+
+    const { data: prevEntries } = await supabase
+        .from('daily_entries')
+        .select('platform_earnings ( amount, tips, miles ), expenses ( amount, category )')
+        .eq('user_id', user.id)
+        .gte('date', format(prevStart, 'yyyy-MM-dd'))
+        .lte('date', format(prevEnd, 'yyyy-MM-dd'))
+
+    let prevGross = 0, prevNet = 0, prevMiles = 0
+    if (prevEntries) {
+        for (const entry of prevEntries as any[]) {
+            let dayGross = 0, dayMiles = 0, dayExpenses = 0
+            for (const p of entry.platform_earnings || []) {
+                dayGross += (p.amount || 0) + (p.tips || 0)
+                dayMiles += p.miles || 0
+            }
+            for (const e of entry.expenses || []) {
+                if (!['__FUEL_OVERRIDE__', '__WEAR_OVERRIDE__', '__INSURANCE_OVERRIDE__'].includes(e.category)) {
+                    dayExpenses += e.amount || 0
+                }
+            }
+            prevGross += dayGross
+            prevNet += dayGross - dayExpenses
+            prevMiles += dayMiles
+        }
+    }
+
     return {
         dailyData,
         platformData,
-        expenseBreakdown
+        expenseBreakdown,
+        prevTotals: { gross: prevGross, net: prevNet, miles: prevMiles }
     }
 }

@@ -1,23 +1,14 @@
 'use client'
 
-import { Bell, HelpCircle } from 'lucide-react'
+import { HelpCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { NotificationsPanel } from './NotificationsPanel'
 
 export function HeaderActions() {
     return (
-        <div className="flex items-center gap-2">
-            <Button
-                variant="ghost"
-                size="icon"
-                className="h-12 w-12 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
-                onClick={() => toast('Notifications coming soon!', {
-                    description: 'You\'ll get alerts for tax deadlines, weekly summaries, and earning milestones.',
-                    duration: 3000,
-                })}
-            >
-                <Bell className="size-6" />
-            </Button>
+        <div className="flex items-center gap-1">
+            <NotificationsPanel />
             <Button
                 variant="ghost"
                 size="icon"
@@ -27,7 +18,7 @@ export function HeaderActions() {
                     duration: 4000,
                 })}
             >
-                <HelpCircle className="size-6" />
+                <HelpCircle className="size-5" />
             </Button>
         </div>
     )
