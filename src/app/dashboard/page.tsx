@@ -1,6 +1,7 @@
 import { getDashboardStats, getRecentEntries, getDatesWithEntries } from './actions'
+import { logToFile } from '@/utils/debug'
 import { BoltQuickActions } from '@/components/dashboard/BoltQuickActions'
-import { EarningsChart } from '@/components/dashboard/EarningsChart'
+import { DashboardEarningsChart } from '@/components/dashboard/DashboardEarningsChart'
 import { YesterdaysSummaryNotification } from '@/components/dashboard/YesterdaysSummaryNotification'
 import { DailyMotivation } from '@/components/dashboard/DailyMotivation'
 import { DashboardGrid } from '@/components/dashboard/DashboardGrid'
@@ -14,18 +15,20 @@ export default async function DashboardPage({
     const { date } = await searchParams
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
+    
+    logToFile(`[DashboardPage] User detected: ${user?.id || "None"}`)
 
     // Parallel fetching
     const [stats, vehicleResult, recentEntries, activeDates] = await Promise.all([
         getDashboardStats(date),
-        user ? supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).single() : Promise.resolve({ data: null }),
+        user ? supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).maybeSingle() : Promise.resolve({ data: null }),
         getRecentEntries(5),
         getDatesWithEntries()
     ])
 
     const vehicle = vehicleResult?.data
 
-    if (!stats) return <div className="p-8 text-center text-muted-foreground">Loading insights...</div>
+    if (!stats) return null
 
     const { today, weekly, chartData } = stats
 
@@ -72,7 +75,7 @@ export default async function DashboardPage({
 
             {/* Earnings Chart at the very bottom as requested */}
             <div className="mt-8">
-                <EarningsChart data={chartData} />
+                <DashboardEarningsChart data={chartData} />
             </div>
         </div>
     )
