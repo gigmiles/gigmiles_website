@@ -36,8 +36,8 @@ export async function sendWeeklyReport(emailTo?: string) {
             .lte('date', today.toISOString().split('T')[0])
 
         // 2. Fetch Profile/Vehicle for Calculations
-        const { data: profile } = await supabase.from('profiles').select('state_code').eq('id', user.id).single()
-        const { data: vehicle } = await supabase.from('vehicles').select('mpg').eq('user_id', user.id).eq('is_primary', true).single()
+        const { data: profile } = await supabase.from('profiles').select('state_code').eq('id', user.id).maybeSingle()
+        const { data: vehicle } = await supabase.from('vehicles').select('mpg').eq('user_id', user.id).eq('is_primary', true).maybeSingle()
 
         const stateCode = profile?.state_code || 'DEFAULT'
         const mpg = vehicle?.mpg || 25

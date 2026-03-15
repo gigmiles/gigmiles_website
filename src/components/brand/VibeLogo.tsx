@@ -40,89 +40,24 @@ export function VibeLogo({
     >
       {/* ── Icon Mark ──────────────────────────────────────────────────── */}
       <div className="relative flex-shrink-0">
-        {/* Ambient glow blob — dark mode only */}
         {!light && (
           <div
-            className="absolute inset-0 rounded-2xl bg-[#10B981]/10 blur-xl scale-150
-                        group-hover:bg-[#10B981]/20 transition-all duration-500 pointer-events-none"
+            className="absolute inset-0 rounded-2xl bg-[#10B981]/15 blur-xl scale-125
+                        group-hover:bg-[#10B981]/25 transition-all duration-500 pointer-events-none"
           />
         )}
 
-        <svg
-          viewBox="0 0 100 100"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className={cn(
-            iconClass,
-            "relative z-10 transition-all duration-300",
-            "group-hover:scale-[1.04] group-hover:drop-shadow-[0_0_14px_rgba(16,185,129,0.55)]"
-          )}
-          aria-hidden="true"
-        >
-          <defs>
-            {/* Rounded-square background gradient */}
-            <linearGradient id={bgGradId} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%"   stopColor={light ? "#FFFFFF" : "#0D2318"} />
-              <stop offset="100%" stopColor={light ? "#F0FDF4" : "#060E0A"} />
-            </linearGradient>
-
-            {/* Glow filter applied to bars + chevron group */}
-            <filter id={filterId} x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* ── Background rounded square ── */}
-          <rect
-            x="3" y="3" width="94" height="94" rx="22"
-            fill={`url(#${bgGradId})`}
+        <div className={cn(
+          iconClass,
+          "relative z-10 transition-all duration-300 overflow-hidden rounded-xl bg-[#030712] shadow-[inset_0_0_12px_rgba(0,0,0,0.6)]",
+          "group-hover:scale-[1.08] group-hover:shadow-[0_0_25px_rgba(16,185,129,0.3),inset_0_0_12px_rgba(0,0,0,0.6)]"
+        )}>
+          <img 
+            src="/logo-gauge.png" 
+            alt="GigMiles Logo" 
+            className="w-full h-full object-cover scale-[1.2] transform-gpu origin-center" 
           />
-          {/* Outer border */}
-          <rect
-            x="3" y="3" width="94" height="94" rx="22"
-            stroke="#10B981"
-            strokeWidth="1.5"
-            strokeOpacity={light ? "0.35" : "0.18"}
-          />
-
-          {/* ── Road perspective bars + chevron arrow ── */}
-          <g filter={`url(#${filterId})`}>
-
-            {/* Upward chevron — bold V pointing UP, peak at y≈20 */}
-            <polyline
-              points="35,34 50,20 65,34"
-              stroke="#10B981"
-              strokeWidth="7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            />
-
-            {/* Top bar — narrowest (w=24), brightest */}
-            <rect x="38" y="42" width="24" height="6.5" rx="3.2"
-              fill="#10B981" opacity="0.80"
-            />
-
-            {/* Middle bar — medium (w=38) */}
-            <rect x="31" y="56" width="38" height="6.5" rx="3.2"
-              fill="#10B981" opacity="0.55"
-            />
-
-            {/* Bottom bar — widest (w=54), dimmest */}
-            <rect x="23" y="71" width="54" height="6.5" rx="3.2"
-              fill="#10B981" opacity="0.30"
-            />
-
-          </g>
-
-          {/* Lime accent dot at chevron peak */}
-          <circle cx="50" cy="20" r="3.2" fill="#C1FF72" opacity="0.90" />
-
-        </svg>
+        </div>
       </div>
 
       {/* ── Wordmark ───────────────────────────────────────────────────── */}
@@ -158,6 +93,7 @@ export function VibeLogo({
           </span>
         </div>
       )}
+
     </div>
   );
 }

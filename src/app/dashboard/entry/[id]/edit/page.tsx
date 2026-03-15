@@ -3,6 +3,10 @@ import { EditEntryForm } from '@/components/entry/EditEntryForm'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 
+export function generateStaticParams() {
+    return [];
+}
+
 export default async function EditEntryPage({ params }: { params: Promise<{ id: string }> }) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()

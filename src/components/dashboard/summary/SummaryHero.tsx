@@ -49,7 +49,7 @@ export function SummaryHero({
 
     return (
         <div className={cn(
-            "relative overflow-hidden group cursor-default h-full flex flex-col justify-center px-4 py-6 md:p-8",
+            "relative overflow-hidden group cursor-default h-full flex flex-col justify-center px-4 py-5 md:p-6",
         )}>
             {/* Glowing background effect */}
             <div className={cn(
@@ -62,12 +62,12 @@ export function SummaryHero({
                 <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Real Take-Home Profit</p>
                     <div className="flex items-baseline gap-1.5">
-                        <span className="text-2xl font-bold text-slate-500">$</span>
+                        <span className="text-xl font-bold text-slate-500">$</span>
                         <motion.p
                             initial={{ y: 12, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ type: "spring", stiffness: 120 }}
-                            className="animate-number-pop font-display font-extrabold tracking-tighter text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)] text-4xl md:text-5xl"
+                            className="animate-number-pop font-display font-extrabold tracking-tighter text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)] text-3xl md:text-4xl"
                         >
                             {netProfit.toFixed(2)}
                         </motion.p>
@@ -83,13 +83,13 @@ export function SummaryHero({
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
-                                            <DollarSign className="size-3 text-emerald-400" />
+                                            <DollarSign className="size-2.5 text-emerald-400" />
                                         </div>
-                                        <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Gross</span>
+                                        <span className="text-[8px] text-slate-500 uppercase font-black tracking-widest">Gross</span>
                                     </div>
-                                    <ChevronRight className="size-2.5 text-slate-700 group-hover:text-slate-500 transition-colors" />
+                                    <ChevronRight className="size-2 text-slate-700 group-hover:text-slate-500 transition-colors" />
                                 </div>
-                                <span className="text-white font-bold text-lg truncate">${gross.toFixed(2)}</span>
+                                <span className="text-white font-bold text-base truncate">${gross.toFixed(2)}</span>
                                 {tips > 0 && (
                                     <span className="text-[8px] text-emerald-400/70 font-bold uppercase tracking-wider">${tips.toFixed(2)} tips</span>
                                 )}
@@ -127,13 +127,13 @@ export function SummaryHero({
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-red-500/10 border border-red-500/20">
-                                            <TrendingDown className="size-3 text-red-400" />
+                                            <TrendingDown className="size-2.5 text-red-400" />
                                         </div>
-                                        <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Costs</span>
+                                        <span className="text-[8px] text-slate-500 uppercase font-black tracking-widest">Costs</span>
                                     </div>
-                                    <ChevronRight className="size-2.5 text-slate-700 group-hover:text-slate-500 transition-colors" />
+                                    <ChevronRight className="size-2 text-slate-700 group-hover:text-slate-500 transition-colors" />
                                 </div>
-                                <span className="text-red-400 font-bold text-lg truncate">-${totalGrandCosts.toFixed(2)}</span>
+                                <span className="text-red-400 font-bold text-base truncate">-${totalGrandCosts.toFixed(2)}</span>
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-64 bg-slate-900 border-white/10 p-3 rounded-xl shadow-2xl backdrop-blur-xl">
@@ -206,14 +206,14 @@ export function SummaryHero({
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-emerald-500/10 border border-emerald-500/20">
-                                            <Route className="size-3 text-emerald-500" />
+                                            <Route className="size-2.5 text-emerald-500" />
                                         </div>
-                                        <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Miles</span>
+                                        <span className="text-[8px] text-slate-500 uppercase font-black tracking-widest">Miles</span>
                                     </div>
-                                    <ChevronRight className="size-2.5 text-slate-700 group-hover:text-slate-500 transition-colors" />
+                                    <ChevronRight className="size-2 text-slate-700 group-hover:text-slate-500 transition-colors" />
                                 </div>
-                                <span className="text-white font-bold text-lg truncate">{miles.toFixed(1)}</span>
-                                <span className="text-[8px] text-emerald-500/70 font-bold uppercase tracking-wider">${profitPerMile.toFixed(2)}/mi</span>
+                                <span className="text-white font-bold text-base truncate">{miles.toFixed(1)}</span>
+                                <span className="text-[7px] text-emerald-500/70 font-bold uppercase tracking-wider">${profitPerMile.toFixed(2)}/mi</span>
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-56 bg-slate-900 border-white/10 p-3 rounded-xl shadow-2xl backdrop-blur-xl">
@@ -240,14 +240,14 @@ export function SummaryHero({
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-1.5">
                                         <div className="p-1 rounded-md bg-blue-500/10 border border-blue-500/20">
-                                            <Clock className="size-3 text-blue-400" />
+                                            <Clock className="size-2.5 text-blue-400" />
                                         </div>
-                                        <span className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Active</span>
+                                        <span className="text-[8px] text-slate-500 uppercase font-black tracking-widest">Active</span>
                                     </div>
-                                    <ChevronRight className="size-2.5 text-slate-700 group-hover:text-slate-500 transition-colors" />
+                                    <ChevronRight className="size-2 text-slate-700 group-hover:text-slate-500 transition-colors" />
                                 </div>
-                                <span className="text-white font-bold text-lg truncate">{hours.toFixed(1)}h</span>
-                                <span className="text-[8px] text-blue-400/70 font-bold uppercase tracking-wider">${hourlyRate.toFixed(2)}/hr</span>
+                                <span className="text-white font-bold text-base truncate">{hours.toFixed(1)}h</span>
+                                <span className="text-[7px] text-blue-400/70 font-bold uppercase tracking-wider">${hourlyRate.toFixed(2)}/hr</span>
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-56 bg-slate-900 border-white/10 p-3 rounded-xl shadow-2xl backdrop-blur-xl">
@@ -273,7 +273,7 @@ export function SummaryHero({
                     <div className="flex justify-between items-center mb-3">
                         <div className="flex items-center gap-2">
                             <p className="text-[9px] font-black uppercase tracking-[0.15em] text-slate-500">Burnout</p>
-                            <span className="text-lg font-bold text-white">${hourlyRate.toFixed(0)}<span className="text-xs text-slate-500 font-bold">/hr</span></span>
+                            <span className="text-base font-bold text-white">${hourlyRate.toFixed(0)}<span className="text-[10px] text-slate-500 font-bold">/hr</span></span>
                         </div>
                         <div className={cn(
                             "px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider",

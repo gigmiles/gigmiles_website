@@ -3,6 +3,7 @@
  * Compare all 3 logo concepts side by side.
  * DELETE this file after choosing a concept.
  */
+import React from "react";
 import { VibeLogo }   from "@/components/brand/VibeLogo";
 import { VibeLogo_B } from "@/components/brand/VibeLogo_B";
 import { VibeLogo_C } from "@/components/brand/VibeLogo_C";

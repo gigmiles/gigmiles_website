@@ -105,8 +105,8 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
             try {
                 const modelsList = await getVehicleModels(year, make)
                 setModels(modelsList)
-            } catch (error) {
-                console.error("Failed to load models:", error)
+            } catch {
+                toast.error('Failed to load vehicle models. Please try again.')
             } finally {
                 setFetchingModels(false)
             }
@@ -119,7 +119,7 @@ export function VehicleSettingsForm({ initialVehicles }: VehicleSettingsFormProp
         async function syncVehicleData() {
             if (!year || !make || !model) return
 
-            const newRate = getDepreciationRate(make, model, parseInt(year))
+            const newRate = getDepreciationRate(make, model, parseInt(year, 10))
             setDepreciationRate(newRate)
 
             try {

@@ -26,7 +26,7 @@ export async function getTaxOverview() {
         .from('profiles')
         .select('state_code')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
     const stateCode = profile?.state_code || 'DEFAULT'
 
@@ -136,7 +136,7 @@ export async function getTaxForDateRange(startDate: string, endDate: string) {
         .from('profiles')
         .select('state_code')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
     const stateCode = profile?.state_code || 'DEFAULT'
 

@@ -57,7 +57,7 @@ export default function NewEntryPage() {
                 .select('fuel_type')
                 .eq('user_id', user.id)
                 .eq('is_primary', true)
-                .single()
+                .maybeSingle()
             if (data?.fuel_type) setFuelType(data.fuel_type)
         }
         fetchVehicle()

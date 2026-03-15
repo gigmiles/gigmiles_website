@@ -31,7 +31,7 @@ export default async function DashboardLayout({
         .from('profiles')
         .select('full_name, state_code')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
     if (!profile || !profile.full_name || !profile.state_code) {
         redirect('/onboarding')

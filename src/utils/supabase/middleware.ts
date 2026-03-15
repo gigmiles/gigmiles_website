@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { logToFile } from '../debug'
+
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
         request,
@@ -12,12 +14,12 @@ export async function updateSession(request: NextRequest) {
         {
             cookies: {
                 getAll() {
-                    return request.cookies.getAll()
+                    const allCookies = request.cookies.getAll()
+                    logToFile(`[Middleware] Cookies count: ${allCookies.length} | Names: ${allCookies.map(c => c.name).join(', ')}`)
+                    return allCookies
                 },
                 setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value }) =>
-                        request.cookies.set(name, value)
-                    )
+                    cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
                     supabaseResponse = NextResponse.next({
                         request,
                     })
@@ -29,15 +31,11 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    // IMPORTANT: Avoid writing any logic between createServerClient and
-    // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-    // issues with users being randomly logged out.
-
     const {
         data: { user },
     } = await supabase.auth.getUser()
 
-    console.log("[Middleware] Route:", request.nextUrl.pathname, "| User ID:", user?.id)
+    logToFile(`[Middleware] Path: ${request.nextUrl.pathname} | User: ${user?.id || "None"}`)
 
     const isAuthRoute = request.nextUrl.pathname.startsWith('/login') ||
         request.nextUrl.pathname.startsWith('/auth') ||
@@ -45,7 +43,7 @@ export async function updateSession(request: NextRequest) {
         request.nextUrl.pathname === '/'
 
     if (!user && !isAuthRoute) {
-        console.log("[Middleware] Unauthenticated access to protected route, redirecting to /login")
+        logToFile(`[Middleware] Unauthenticated access to ${request.nextUrl.pathname}, redirecting to /login`)
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)

@@ -16,7 +16,7 @@ export default async function ProfileSettingsPage() {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
     const { data: vehicles } = await supabase
         .from('vehicles')

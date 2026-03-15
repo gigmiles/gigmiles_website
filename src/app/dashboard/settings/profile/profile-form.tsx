@@ -21,7 +21,7 @@ interface Profile {
 interface ProfileSettingsFormProps {
     profile: Profile | null
     vehicles: Vehicle[]
-    userPlatforms: any[]
+    userPlatforms: { platform_name: string }[]
 }
 
 const PLATFORM_OPTIONS = [
@@ -59,9 +59,11 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
                     setCity(place['place name'])
                     setStateCode(place['state abbreviation'])
                     toast.success('Location updated from ZIP')
+                } else {
+                    toast.error('Invalid ZIP code. Please enter location manually.')
                 }
-            } catch (err) {
-                console.error('Zip lookup failed:', err)
+            } catch {
+                toast.error('Could not find location. Please enter manually.')
             } finally {
                 setIsLookingUp(false)
             }
@@ -69,14 +71,23 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
     }
 
     const togglePlatform = async (name: string) => {
+        const prevPlatforms = platforms
         const newPlatforms = platforms.includes(name)
             ? platforms.filter(p => p !== name)
             : [...platforms, name]
 
         setPlatforms(newPlatforms)
-        // Auto-save platforms when toggled
-        const { updateUserPlatforms } = await import('./actions')
-        await updateUserPlatforms(newPlatforms)
+        try {
+            const { updateUserPlatforms } = await import('./actions')
+            const result = await updateUserPlatforms(newPlatforms)
+            if (result && !result.success) {
+                setPlatforms(prevPlatforms)
+                toast.error(result.error || 'Failed to update platforms')
+            }
+        } catch {
+            setPlatforms(prevPlatforms)
+            toast.error('Failed to update platforms. Please try again.')
+        }
     }
 
     const handleAddCustom = async () => {
@@ -85,13 +96,24 @@ export function ProfileSettingsForm({ profile, vehicles, userPlatforms }: Profil
             toast.error('Platform already added')
             return
         }
+        const prevPlatforms = platforms
         const newPlatforms = [...platforms, customPlatform]
         setPlatforms(newPlatforms)
-        const { updateUserPlatforms } = await import('./actions')
-        await updateUserPlatforms(newPlatforms)
-        setCustomPlatform('')
-        setIsAddingCustom(false)
-        toast.success(`${customPlatform} added!`)
+        try {
+            const { updateUserPlatforms } = await import('./actions')
+            const result = await updateUserPlatforms(newPlatforms)
+            if (result && !result.success) {
+                setPlatforms(prevPlatforms)
+                toast.error(result.error || 'Failed to add platform')
+                return
+            }
+            setCustomPlatform('')
+            setIsAddingCustom(false)
+            toast.success(`${customPlatform} added!`)
+        } catch {
+            setPlatforms(prevPlatforms)
+            toast.error('Failed to add platform. Please try again.')
+        }
     }
 
     async function handleSubmit(formData: FormData) {

@@ -22,7 +22,7 @@ export async function getDashboardStats(dateStr?: string) {
 
     // 1. Parallel fetch for all core requirements
     const [profileRes, vehiclesRes, todayEntryRes, weeklyEntriesRes] = await Promise.all([
-        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).single(),
+        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).maybeSingle(),
         supabase.from('vehicles').select('*').eq('user_id', user.id).order('is_primary', { ascending: false }),
         supabase.from('daily_entries').select(`
             id,
@@ -31,7 +31,7 @@ export async function getDashboardStats(dateStr?: string) {
             gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
-        `).eq('user_id', user.id).eq('date', targetDateStr).single(),
+        `).eq('user_id', user.id).eq('date', targetDateStr).maybeSingle(),
         supabase.from('daily_entries').select(`
             id,
             date,
@@ -40,7 +40,10 @@ export async function getDashboardStats(dateStr?: string) {
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
         `).eq('user_id', user.id).gte('date', startOfRangeStr).lte('date', targetDateStr).order('date', { ascending: true })
-    ])
+    ]).catch((err) => {
+        console.error('[getDashboardStats] Parallel fetch failed:', err)
+        throw new Error('Failed to load dashboard data. Please try again.')
+    })
 
     const profile = profileRes.data
     const vehicles = vehiclesRes.data
@@ -113,8 +116,8 @@ export async function getDashboardStats(dateStr?: string) {
     const { guardDailyFinancials } = await import('@/utils/sanity-guards');
     const guarded = guardDailyFinancials(todayGross, todayMiles, todayHours);
 
-    if (!guarded.isValid) {
-        console.warn(`[DashboardStats] Today's Sanity Guard triggered: ${guarded.reason}`);
+    if (!guarded.isValid && process.env.NODE_ENV === 'development') {
+        console.warn(`[DashboardStats] Today's Sanity Guard triggered: ${guarded.reason}`)
     }
 
     // We update the financials if the guard found issues, though here we primarily use it for UI warning/stabilization
@@ -185,10 +188,8 @@ export async function getDashboardStats(dateStr?: string) {
 
             // If the guard finds issues, we might adjust the values or log a warning.
             // For now, we'll just log a warning if the instruction was to "catch unrealistic values early".
-            if (!guardedDaily.isValid) {
-                console.warn(`[DashboardStats] Sanity Guard triggered for date ${dateStr}: ${guardedDaily.reason}.`);
-                // Optionally, you could adjust dGross, dMiles, dHours, or dFinancials here
-                // For example, if dGross is unrealistic, you might cap it or set it to 0 for chart display.
+            if (!guardedDaily.isValid && process.env.NODE_ENV === 'development') {
+                console.warn(`[DashboardStats] Sanity Guard triggered for date ${dateStr}: ${guardedDaily.reason}`)
             }
 
             chartData.push({
@@ -345,10 +346,12 @@ export async function createDailyEntry(entryData: { date: string, notes?: string
         .select('id')
         .eq('user_id', user.id)
         .eq('date', entryData.date)
-        .single()
+        .maybeSingle()
 
     if (existingEntry) {
-        console.log("Entry exists, appending new data:", existingEntry.id)
+        if (process.env.NODE_ENV === 'development') {
+            console.log('[createDailyEntry] Entry exists, appending:', existingEntry.id)
+        }
         entryId = existingEntry.id
     } else {
         const { data: entry, error: entryError } = await supabase
@@ -424,7 +427,7 @@ export async function getYesterdaysSummary() {
     const yesterdayStr = format(yesterday, 'yyyy-MM-dd')
 
     const [profileRes, vehiclesRes, entryRes] = await Promise.all([
-        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).single(),
+        supabase.from('profiles').select('state_code, default_gas_price').eq('id', user.id).maybeSingle(),
         supabase.from('vehicles').select('*').eq('user_id', user.id).order('is_primary', { ascending: false }),
         supabase.from('daily_entries').select(`
             id,
@@ -432,8 +435,11 @@ export async function getYesterdaysSummary() {
             gas_price,
             platform_earnings ( id, amount, tips, miles, hours ),
             expenses ( id, category, amount )
-        `).eq('user_id', user.id).eq('date', yesterdayStr).single()
-    ])
+        `).eq('user_id', user.id).eq('date', yesterdayStr).maybeSingle()
+    ]).catch((err) => {
+        console.error('[getYesterdaysSummary] Parallel fetch failed:', err)
+        throw new Error('Failed to load yesterday summary.')
+    })
 
     const entry = entryRes.data
     if (!entry) return null
@@ -544,17 +550,21 @@ export async function getEntryById(id: string) {
         `)
         .eq('user_id', user.id)
         .eq('id', id)
-        .single()
+        .maybeSingle()
 
     return data
 }
 
 export async function deleteDailyEntry(id: string) {
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { success: false, error: 'Not authenticated' }
+
     const { error } = await supabase
         .from('daily_entries')
         .delete()
         .eq('id', id)
+        .eq('user_id', user.id)
 
     revalidatePath('/dashboard')
     return { success: !error, error }
@@ -566,12 +576,21 @@ export async function updateDailyEntry(id: string, entryData: { date: string, no
 
     if (!user) return { success: false, error: 'Not authenticated' }
 
+    // Verify ownership before any mutation
+    const { data: owned } = await supabase
+        .from('daily_entries')
+        .select('id')
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .maybeSingle()
+    if (!owned) return { success: false, error: 'Not found or unauthorized' }
+
     // 1. Update Base Entry
     await supabase.from('daily_entries').update({
         date: entryData.date,
         notes: entryData.notes,
         gas_price: entryData.gas_price
-    }).eq('id', id)
+    }).eq('id', id).eq('user_id', user.id)
 
     // 2. Handle Earnings
     await supabase.from('platform_earnings').delete().eq('entry_id', id)
@@ -606,6 +625,7 @@ export async function updateDailyEntry(id: string, entryData: { date: string, no
         await supabase.from('expenses').insert(formattedExpenses)
     }
 
+    revalidatePath('/dashboard')
     return { success: true }
 }
 
@@ -623,7 +643,7 @@ export async function saveCostOverride(date: string, category: string, amount: n
         .select('id')
         .eq('user_id', user.id)
         .eq('date', date)
-        .single()
+        .maybeSingle()
 
     if (!entry) {
         const { data: newEntry, error: createError } = await supabase
@@ -634,6 +654,8 @@ export async function saveCostOverride(date: string, category: string, amount: n
         if (createError) throw createError
         entry = newEntry
     }
+
+    if (!entry) throw new Error('Failed to get or create daily entry')
 
     const entryId = entry.id
 
@@ -675,7 +697,7 @@ export async function addExpense(date: string, expense: { category: string, amou
         .select('id')
         .eq('user_id', user.id)
         .eq('date', date)
-        .single()
+        .maybeSingle()
 
     if (!entry) {
         const { data: newEntry, error: createError } = await supabase
@@ -686,6 +708,8 @@ export async function addExpense(date: string, expense: { category: string, amou
         if (createError) throw createError
         entry = newEntry
     }
+
+    if (!entry) throw new Error('Failed to get or create daily entry')
 
     const { error } = await supabase
         .from('expenses')
@@ -710,6 +734,15 @@ export async function deleteExpense(expenseId: string) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // Verify ownership via join
+    const { data: owned } = await supabase
+        .from('expenses')
+        .select('id, daily_entries!inner(user_id)')
+        .eq('id', expenseId)
+        .eq('daily_entries.user_id', user.id)
+        .maybeSingle()
+    if (!owned) throw new Error('Not found or unauthorized')
+
     const { error } = await supabase
         .from('expenses')
         .delete()
@@ -733,12 +766,18 @@ export async function updatePlatformEarning(
     const { guardDailyFinancials } = await import('@/utils/sanity-guards')
     const guarded = guardDailyFinancials(data.amount + data.tips, data.miles, data.hours)
 
-    if (!guarded.isValid) {
-        // If really insane, maybe reject? Or just warn?
-        // For direct user edits, let's just warn but proceed, or verify with user.
-        // For now, we'll log it.
+    if (!guarded.isValid && process.env.NODE_ENV === 'development') {
         console.warn(`[UpdateEarning] Sanity Warning: ${guarded.reason}`)
     }
+
+    // Verify ownership via join
+    const { data: owned } = await supabase
+        .from('platform_earnings')
+        .select('id, daily_entries!inner(user_id)')
+        .eq('id', id)
+        .eq('daily_entries.user_id', user.id)
+        .maybeSingle()
+    if (!owned) throw new Error('Not found or unauthorized')
 
     const { error } = await supabase
         .from('platform_earnings')
@@ -760,6 +799,15 @@ export async function deletePlatformEarning(id: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
+
+    // Verify ownership via join
+    const { data: owned } = await supabase
+        .from('platform_earnings')
+        .select('id, daily_entries!inner(user_id)')
+        .eq('id', id)
+        .eq('daily_entries.user_id', user.id)
+        .maybeSingle()
+    if (!owned) throw new Error('Not found or unauthorized')
 
     const { error } = await supabase
         .from('platform_earnings')

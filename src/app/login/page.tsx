@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Mail, Lock, Loader2, ArrowRight } from 'lucide-react'
@@ -8,8 +8,8 @@ import Link from 'next/link'
 import { VibeLogo } from '@/components/brand/VibeLogo'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { useEffect, Suspense } from 'react'
 import { MagneticCTA } from '@/components/ui/MagneticCTA'
+import { signIn as signInAction, signUp as signUpAction } from '@/app/auth/actions'
 
 function LoginContent() {
     const [email, setEmail] = useState('')
@@ -42,7 +42,7 @@ function LoginContent() {
         }
         setLoading(true)
 
-        const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/auth/reset-password`
+        const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/auth/callback`
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo,
         })
@@ -66,19 +66,13 @@ function LoginContent() {
 
         if (isSignUp) {
             const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/auth/callback`
-            const { error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    emailRedirectTo: redirectTo,
-                },
-            })
+            const result = await signUpAction({ email, password, redirectTo })
 
-            if (error) {
-                if (error.message.includes('rate limit') || error.code === 'rate_limit') {
+            if (result.error) {
+                if (result.error.includes('rate limit')) {
                     toast.error('Email limit exceeded. Please try again later or contact support.')
                 } else {
-                    toast.error(error.message)
+                    toast.error(result.error)
                 }
                 setLoading(false)
             } else {
@@ -86,21 +80,18 @@ function LoginContent() {
                 setLoading(false)
             }
         } else {
-            const { error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            })
+            const result = await signInAction({ email, password })
 
-            if (error) {
-                if (error.message.includes('rate limit') || error.code === 'rate_limit') {
+            if (result.error) {
+                if (result.error.includes('rate limit')) {
                     toast.error('Too many sign-in attempts. Please wait a moment.')
                 } else {
-                    toast.error(error.message)
+                    toast.error(result.error)
                 }
                 setLoading(false)
             } else {
-                router.push('/')
-                router.refresh()
+                toast.success('Sign in successful!')
+                window.location.href = '/dashboard'
             }
         }
     }

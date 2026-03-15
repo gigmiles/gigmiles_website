@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -62,7 +63,7 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
                 .select('fuel_type')
                 .eq('user_id', user.id)
                 .eq('is_primary', true)
-                .single()
+                .maybeSingle()
             if (data?.fuel_type) setFuelType(data.fuel_type)
         }
         fetchVehicle()
@@ -110,18 +111,24 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
                 description: e.description
             })) || []
 
-            await updateDailyEntry(entry.id, {
+            const result = await updateDailyEntry(entry.id, {
                 date: data.date,
                 notes: data.notes || '',
                 gas_price: data.gas_price ? parseFloat(data.gas_price) : undefined
             }, earningsData, expensesData)
 
+            if (result?.success === false) {
+                toast.error(result.error || 'Failed to update entry')
+                return
+            }
+
+            toast.success('Entry updated!')
             router.push('/dashboard')
             router.refresh()
         } catch (error) {
-            const err = error as Error;
-            console.error('Error:', err)
-            alert(`Error updating entry: ${err.message}`)
+            const err = error as Error
+            console.error('[EditEntryForm] update error:', err)
+            toast.error(`Failed to update entry: ${err.message}`)
         } finally {
             setLoading(false)
         }
@@ -131,12 +138,17 @@ export function EditEntryForm({ entry, availablePlatforms }: EditEntryFormProps)
         if (!confirm('Are you sure you want to delete this entry? This action cannot be undone.')) return
         setDeleting(true)
         try {
-            await deleteDailyEntry(entry.id)
+            const result = await deleteDailyEntry(entry.id)
+            if (result?.success === false) {
+                toast.error('Failed to delete entry')
+                setDeleting(false)
+                return
+            }
             router.push('/dashboard')
             router.refresh()
         } catch (error) {
-            const err = error as Error;
-            alert(`Error deleting entry: ${err.message}`)
+            const err = error as Error
+            toast.error(`Failed to delete entry: ${err.message}`)
             setDeleting(false)
         }
     }

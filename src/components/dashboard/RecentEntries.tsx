@@ -1,11 +1,15 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Edit, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 import { DailyEntry, Vehicle } from '@/app/dashboard/types'
 import { calculateFinancials } from '@/utils/calculations'
+import { SwipeableCard } from '@/components/ui/SwipeableCard'
+import { MobileCard } from '@/components/ui/MobileCard'
+import { EmptyState } from '@/components/ui/EmptyState'
 
 interface RecentEntriesProps {
     entries: DailyEntry[]
@@ -14,18 +18,29 @@ interface RecentEntriesProps {
 }
 
 export function RecentEntries({ entries, primaryVehicle, stateCode = 'CA' }: RecentEntriesProps) {
-    if (!entries || entries.length === 0) return null
+    const router = useRouter()
+
+    if (!entries || entries.length === 0) {
+        return (
+            <MobileCard pressable={false} className="flex flex-col h-full">
+                <EmptyState
+                    title="No recent activity"
+                    description="When you track earnings, your shifts will appear here."
+                />
+            </MobileCard>
+        )
+    }
 
     return (
-        <div className="glass-card p-4 flex flex-col">
-            <div className="flex items-center justify-between mb-4">
+        <MobileCard pressable={false} className="flex flex-col h-full bg-transparent border-0 shadow-none p-0 md:bg-card md:border md:shadow-sm md:p-6">
+            <div className="flex items-center justify-between mb-4 px-2 md:px-0">
                 <div>
-                    <h2 className="text-sm font-bold text-white tracking-tight">Recent Activity</h2>
-                    <p className="text-[9px] text-slate-600 font-medium">History of tracked shifts</p>
+                    <h2 className="text-sm md:text-xl font-bold text-foreground tracking-tight">Recent Activity</h2>
+                    <p className="text-[9px] md:text-sm text-muted-foreground font-medium">History of tracked shifts</p>
                 </div>
             </div>
 
-            <div className="space-y-2 flex-1">
+            <div className="space-y-3 flex-1">
                 {entries.map((entry) => {
                     const gross = (entry.platform_earnings).reduce((acc: number, curr) => acc + (curr.amount || 0) + (curr.tips || 0), 0)
                     const cashExpenses = (entry.expenses).reduce((acc: number, curr) => acc + (curr.amount || 0), 0)
@@ -51,29 +66,33 @@ export function RecentEntries({ entries, primaryVehicle, stateCode = 'CA' }: Rec
                     const net = financials.netProfit
 
                     return (
-                        <div key={entry.id} className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-all group/row">
-                            <div className="flex items-center gap-3">
-                                <div className="p-1.5 rounded-md bg-blue-500/10 text-blue-500">
-                                    <Calendar className="size-3" />
-                                </div>
-                                <div>
-                                    <p className="font-bold text-xs text-white tracking-tight">{format(new Date(entry.date), 'MM/dd/yyyy')}</p>
-                                    <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="text-[9px] font-bold text-emerald-400">${net.toFixed(2)} net</span>
-                                        <span className="text-[9px] text-slate-600">·</span>
-                                        <span className="text-[9px] text-slate-500 font-bold">${gross.toFixed(2)} gross</span>
+                        <SwipeableCard 
+                            key={entry.id}
+                            onEdit={() => router.push(`/dashboard/entry/${entry.id}/edit`)}
+                        >
+                            <MobileCard 
+                                pressable={true}
+                                onClick={() => router.push(`/dashboard/entry/${entry.id}/edit`)}
+                                className="flex items-center justify-between p-4 group/row !bg-background !border-border !rounded-xl"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 rounded-xl bg-primary/10 text-primary">
+                                        <Calendar className="size-5" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-base text-foreground tracking-tight">{format(new Date(entry.date), 'MM/dd/yyyy')}</p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <span className="text-xs font-bold text-emerald-500">${net.toFixed(2)} net</span>
+                                            <span className="text-xs text-muted-foreground">·</span>
+                                            <span className="text-xs text-muted-foreground font-medium">${gross.toFixed(2)} gross</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <Link href={`/dashboard/entry/${entry.id}/edit`}>
-                                <Button variant="ghost" size="icon" className="size-7 rounded-md bg-white/[0.03] hover:bg-blue-500/20 text-slate-600 hover:text-blue-400 transition-all">
-                                    <Edit className="size-3" />
-                                </Button>
-                            </Link>
-                        </div>
+                            </MobileCard>
+                        </SwipeableCard>
                     )
                 })}
             </div>
-        </div>
+        </MobileCard>
     )
 }

@@ -167,16 +167,16 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                                                 >
                                                     <tspan
                                                         x={viewBox.cx}
-                                                        y={(viewBox.cy || 0) - 6}
-                                                        className="fill-white text-4xl font-black tracking-tighter"
+                                                        y={(viewBox.cy || 0) - 2}
+                                                        className="fill-white text-2xl font-black tracking-tighter"
                                                         style={{ fontStyle: 'italic' }}
                                                     >
                                                         ${totalEarnings.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                                     </tspan>
                                                     <tspan
                                                         x={viewBox.cx}
-                                                        y={(viewBox.cy || 0) + 20}
-                                                        className="fill-[#10B981] text-[8px] uppercase font-black"
+                                                        y={(viewBox.cy || 0) + 16}
+                                                        className="fill-[#10B981] text-[7px] uppercase font-black"
                                                         style={{ letterSpacing: '0.35em' }}
                                                     >
                                                         Gross
@@ -200,35 +200,32 @@ export const PlatformDistributionChart = React.memo(function PlatformDistributio
                         const pct = totalEarnings > 0 ? ((item.value / totalEarnings) * 100).toFixed(0) : '0'
 
                         return (
-                            <div key={idx} className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all group">
-                                <div className="flex items-center gap-2.5">
+                            <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all group">
+                                <div className="flex items-center gap-2">
                                     <div
                                         className={cn(
-                                            "size-3 rounded-full shrink-0 ring-2 ring-offset-1 ring-offset-[#0D0F14]",
+                                            "size-2.5 rounded-full shrink-0 ring-2 ring-offset-1 ring-offset-[#0D0F14]",
                                             PLATFORM_BG_COLORS[item.name.toLowerCase()] || "bg-slate-500",
                                             PLATFORM_RING_SHADOWS[item.name.toLowerCase()] || PLATFORM_RING_SHADOWS.other
                                         )}
                                     />
                                     <span
                                         className={cn(
-                                            "text-[11px] font-black uppercase tracking-[0.05em]",
+                                            "text-[10px] font-black uppercase tracking-[0.05em]",
                                             PLATFORM_COLORS[item.name.toLowerCase()] || "text-slate-500"
                                         )}
                                     >
                                         {item.name}
                                     </span>
-                                    <span className="text-[9px] font-bold text-[#A1A1AA]/40">{pct}%</span>
+                                    <span className="text-[8px] font-bold text-[#A1A1AA]/40">{pct}%</span>
                                 </div>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2.5">
                                     {hRate > 0 && (
-                                        <span className="text-[9px] text-blue-400 font-black uppercase">${hRate.toFixed(0)}/h</span>
-                                    )}
-                                    {tipPct > 0 && (
-                                        <span className="text-[9px] text-amber-400 font-black uppercase">{tipPct.toFixed(0)}% tip</span>
+                                        <span className="text-[8px] text-blue-400/80 font-black uppercase">${hRate.toFixed(0)}/h</span>
                                     )}
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-sm font-black text-white italic">${item.value.toFixed(0)}</span>
-                                        <span className="text-[7px] text-[#10B981]/60 font-black uppercase tracking-wider">gross</span>
+                                        <span className="text-xs font-black text-white italic">${item.value.toFixed(0)}</span>
+                                        <span className="text-[6px] text-[#10B981]/60 font-black uppercase tracking-wider">gross</span>
                                     </div>
                                 </div>
                             </div>

@@ -15,6 +15,8 @@ import {
   EyeOff,
   Lock,
   Star,
+  Layers,
+  Brain,
 } from "lucide-react";
 import { VibeLogo as Logo } from "@/components/brand/VibeLogo";
 import { Button } from "@/components/ui/button";
@@ -227,15 +229,15 @@ export function VibeLandingClient() {
 
       <main className="relative z-10">
         {/* HERO SECTION — Cinematic Reveal (Pure CSS) */}
-        <section className="pt-52 pb-32 px-6 text-center max-w-7xl mx-auto space-y-16">
+        <section className="pt-32 md:pt-40 pb-20 px-6 text-center max-w-7xl mx-auto space-y-12">
           {/* Badge — first to appear */}
-          <div className="hero-badge inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-[10px] font-black uppercase tracking-[0.3em]">
-            <div className="w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
+          <div className="hero-badge inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-[8px] font-black uppercase tracking-[0.3em]">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-ping" />
             The Future of Gig Work
           </div>
 
           {/* Motto — CSS Stagger reveal */}
-          <h1 className="text-7xl md:text-[11rem] font-black tracking-tighter leading-[0.8] uppercase">
+          <h1 className="text-6xl md:text-[clamp(4.5rem,8vw,8rem)] font-black tracking-tighter leading-[0.85] uppercase">
             <span className="block hero-line-1">
               BEYOND THE
             </span>
@@ -261,18 +263,18 @@ export function VibeLandingClient() {
           </h1>
 
           {/* Subtitle — fade in after motto */}
-          <p className="hero-subtitle text-xl md:text-3xl text-[#A1A1AA] max-w-3xl mx-auto leading-[1.4] font-medium tracking-tight">
+          <p className="hero-subtitle text-lg md:text-xl text-[#A1A1AA] max-w-2xl mx-auto leading-[1.6] font-medium tracking-tight">
             Stop guessing your net profit. Real-time intelligence for the
             drivers who take their earnings seriously.
           </p>
 
           {/* CTA — scale in */}
-          <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-8 pt-6">
+          <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
             <MagneticCTA>
               <Link href="/login?signup=true" className="block">
-                <Button className="h-24 px-16 rounded-[2.5rem] bg-[#10B981] text-black text-2xl font-black uppercase tracking-tighter hover:scale-105 hover:shadow-[0_0_60px_#10B98166] transition-all duration-500 group">
+                <Button className="h-18 px-12 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter hover:scale-105 hover:shadow-[0_0_60px_#10B98166] transition-all duration-500 group">
                   Get Started
-                  <ArrowRight className="size-8 ml-4 group-hover:translate-x-3 transition-transform" />
+                  <ArrowRight className="size-6 ml-3 group-hover:translate-x-2 transition-transform" />
                 </Button>
               </Link>
             </MagneticCTA>
@@ -320,10 +322,10 @@ export function VibeLandingClient() {
           variants={staggerContainer}
         >
           <motion.div variants={sectionReveal} className="space-y-6">
-            <span className="text-[#A1A1AA] font-black uppercase tracking-[0.4em] text-xs">
+            <span className="text-[#A1A1AA] font-black uppercase tracking-[0.4em] text-[10px]">
               The Engine
             </span>
-            <h2 className="text-5xl md:text-8xl font-black tracking-tighter italic leading-none uppercase">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none uppercase">
               Features Built <br /> For Performance.
             </h2>
           </motion.div>
@@ -334,14 +336,21 @@ export function VibeLandingClient() {
                 title: "No Ads",
                 desc: "Your focus is your profit. We keep the experience 100% ad-free.",
                 icon: <EyeOff className="size-8" />,
-                className: "md:col-span-8 md:row-span-1 flex flex-col justify-between",
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
                 iconBg: "bg-[#10B981]/10 text-[#10B981]",
+              },
+              {
+                title: "Burnout Guard",
+                desc: "Real-time fatigue monitoring. Know exactly when your ROI drops.",
+                icon: <AlertCircle className="size-8" />,
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-amber-500/10 text-amber-500",
               },
               {
                 title: "Privacy First",
                 desc: "Your data is encrypted. We never sell your earnings info.",
                 icon: <Lock className="size-8" />,
-                className: "md:col-span-4 md:row-span-2 flex flex-col justify-between",
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
                 iconBg: "bg-indigo-500/10 text-indigo-400",
               },
               {
@@ -349,7 +358,7 @@ export function VibeLandingClient() {
                 desc: "Export clean reports for tax season in one tap.",
                 icon: <Receipt className="size-8" />,
                 className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
-                iconBg: "bg-amber-500/10 text-amber-500",
+                iconBg: "bg-emerald-500/10 text-emerald-500",
               },
               {
                 title: "Speed",
@@ -358,23 +367,30 @@ export function VibeLandingClient() {
                 className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
                 iconBg: "bg-rose-500/10 text-rose-500",
               },
+              {
+                title: "Reality Scan",
+                desc: "Instant breakdown of fuel, wear, and taxes. No hidden losses.",
+                icon: <TrendingDown className="size-8" />,
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-blue-500/10 text-blue-400",
+              },
             ].map((f, i) => (
               <motion.div
                 key={i}
                 variants={sectionReveal}
-                className={`p-10 rounded-[2.5rem] glass-card glass-card-hover hover-spring group relative overflow-hidden ${f.className}`}
+                className={`p-8 rounded-3xl glass-card glass-card-hover hover-spring group relative overflow-hidden ${f.className}`}
               >
                 {/* Subtle card-specific glow */}
                 <div className={`absolute -top-10 -right-10 w-48 h-48 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none ${f.iconBg.split(' ')[0]}`} />
                 
-                <div className={`size-14 rounded-2xl flex items-center justify-center mb-8 relative z-10 group-hover:scale-110 transition-transform ${f.iconBg}`}>
-                  {f.icon}
+                <div className={`size-12 rounded-xl flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform ${f.iconBg}`}>
+                  <div className="scale-75">{f.icon}</div>
                 </div>
                 <div className="relative z-10 w-full mt-auto">
-                  <h4 className="text-2xl font-black uppercase tracking-tighter mb-3">
+                  <h4 className="text-xl font-black uppercase tracking-tighter mb-2">
                     {f.title}
                   </h4>
-                  <p className="text-sm font-medium text-[#A1A1AA] leading-relaxed italic max-w-[90%]">
+                  <p className="text-[13px] font-medium text-[#A1A1AA] leading-relaxed italic max-w-[90%]">
                     {f.desc}
                   </p>
                 </div>
@@ -383,36 +399,36 @@ export function VibeLandingClient() {
           </motion.div>
 
           {/* REALITY CHECK — Gig Reality Engine */}
-          <div className="space-y-6 pt-20">
-            <span className="text-[#A1A1AA] font-black uppercase tracking-[0.4em] text-xs">
+          <div className="space-y-4 pt-16">
+            <span className="text-[#A1A1AA] font-black uppercase tracking-[0.4em] text-[10px]">
               The Truth
             </span>
-            <h2 className="text-5xl md:text-8xl font-black tracking-tighter italic leading-none">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none uppercase">
               THE REALITY <br /> ENGINE.
             </h2>
-            <p className="text-xl text-[#A1A1AA] font-medium max-w-2xl leading-relaxed">
+            <p className="text-lg text-[#A1A1AA] font-medium max-w-xl leading-relaxed">
               Most drivers only see what the app pays them. GigMiles shows you what you actually take home — after every hidden cost.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Dynamic Waterfall Breakdown Card */}
-            <div className="md:col-span-12 lg:col-span-7 group relative p-10 lg:p-14 rounded-[4rem] glass-card overflow-hidden hover:border-white/20 transition-all duration-500">
+            <div className="md:col-span-12 lg:col-span-7 group relative p-8 lg:p-10 rounded-3xl glass-card overflow-hidden hover:border-white/20 transition-all duration-500">
               {/* Background ambient */}
               <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-red-500/5 blur-[100px] rounded-full pointer-events-none" />
               
-              <div className="relative z-10 space-y-10">
+              <div className="relative z-10 space-y-8">
                 {/* Two-column comparison header */}
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/[0.06] text-center">
-                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60 mb-2">What Drivers See</p>
-                    <p className="text-4xl font-black text-white italic tracking-tighter">${gross.toLocaleString()}</p>
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#A1A1AA]/40 mt-1">Weekly Gross</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] text-center">
+                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60 mb-1.5">What Drivers See</p>
+                    <p className="text-3xl font-black text-white italic tracking-tighter">${gross.toLocaleString()}</p>
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[#A1A1AA]/40 mt-1">Weekly Gross</p>
                   </div>
-                  <div className="p-6 rounded-3xl bg-[#10B981]/5 border border-[#10B981]/20 text-center">
-                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#10B981]/60 mb-2">What They Keep</p>
-                    <p className="text-4xl font-black text-[#10B981] italic tracking-tighter">${Math.round(netProfit).toLocaleString()}</p>
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#10B981]/40 mt-1">True Net</p>
+                  <div className="p-5 rounded-2xl bg-[#10B981]/5 border border-[#10B981]/20 text-center">
+                    <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#10B981]/60 mb-1.5">What They Keep</p>
+                    <p className="text-3xl font-black text-[#10B981] italic tracking-tighter">${Math.round(netProfit).toLocaleString()}</p>
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[#10B981]/40 mt-1">True Net</p>
                   </div>
                 </div>
 
@@ -460,8 +476,8 @@ export function VibeLandingClient() {
                         <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white">Estimated Take-Home</span>
                       </div>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-[#10B981] italic tracking-tighter">${Math.round(netProfit).toLocaleString()}</span>
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#10B981]/60">
+                        <span className="text-xl font-black text-[#10B981] italic tracking-tighter">${Math.round(netProfit).toLocaleString()}</span>
+                        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-[#10B981]/60">
                           ~{((netProfit / gross) * 100).toFixed(0)}% kept
                         </span>
                       </div>
@@ -497,10 +513,10 @@ export function VibeLandingClient() {
                 <Receipt className="size-16 fill-black mb-6" />
                 
                 <div className="space-y-6 flex-1">
-                  <h3 className="text-5xl font-black tracking-tighter leading-[0.9]">
+                  <h3 className="text-4xl font-black tracking-tighter leading-[0.9]">
                     EVERY <br /> MILE <br /> COUNTS.
                   </h3>
-                  <p className="text-black/70 text-lg font-bold leading-snug">
+                  <p className="text-black/70 text-base font-bold leading-snug">
                     Every untracked mile is money left on the table. Every missed receipt is a tax deduction you&apos;ll never get back.
                   </p>
                   <div className="space-y-3 py-4">
@@ -518,7 +534,7 @@ export function VibeLandingClient() {
                 </div>
 
                 <Link href="/login?signup=true">
-                  <Button className="w-full h-16 rounded-2xl bg-black text-[#10B981] font-black uppercase tracking-tighter text-lg mt-4 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-[1.02] transition-all">
+                  <Button className="w-full h-14 rounded-xl bg-black text-[#10B981] font-black uppercase tracking-tighter text-base mt-4 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-[1.02] transition-all">
                     Start Tracking Now
                   </Button>
                 </Link>
@@ -533,13 +549,13 @@ export function VibeLandingClient() {
                 <Calculator className="size-44 text-[#10B981]" />
               </div>
               <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16">
-                <div className="space-y-8">
-                  <h3 className="text-5xl lg:text-7xl font-black tracking-tighter italic">
+                <div className="space-y-6">
+                  <h3 className="text-4xl lg:text-6xl font-black tracking-tighter italic uppercase">
                     THE <br /> CALCULATOR.
                   </h3>
-                  <div className="space-y-8">
-                    <div className="space-y-4">
-                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <label className="text-[9px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
                         Weekly Revenue
                       </label>
                       <input
@@ -550,12 +566,12 @@ export function VibeLandingClient() {
                         onChange={(e) => setGross(Number(e.target.value))}
                         className="w-full accent-[#10B981] h-1"
                       />
-                      <p className="text-4xl font-black text-white italic">
+                      <p className="text-3xl font-black text-white italic">
                         ${gross.toLocaleString()}
                       </p>
                     </div>
-                    <div className="space-y-4">
-                      <label className="text-[10px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
+                    <div className="space-y-3">
+                      <label className="text-[9px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
                         Online Hours
                       </label>
                       <input
@@ -566,46 +582,46 @@ export function VibeLandingClient() {
                         onChange={(e) => setHours(Number(e.target.value))}
                         className="w-full accent-[#10B981] h-1"
                       />
-                      <p className="text-4xl font-black text-white italic">
+                      <p className="text-3xl font-black text-white italic">
                         {hours} HOURS
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="glass-card rounded-[4rem] p-12 flex flex-col justify-center items-center text-center space-y-6">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#10B981]">
+                <div className="glass-card rounded-3xl p-10 flex flex-col justify-center items-center text-center space-y-5">
+                  <span className="text-[9px] font-black uppercase tracking-[0.5em] text-[#10B981]">
                     True Earnings
                   </span>
-                  <p key={realHourly} className="text-8xl font-black tracking-tighter text-white italic animate-number-pop">
+                  <p key={realHourly} className="text-6xl font-black tracking-tighter text-white italic animate-number-pop">
                     ${realHourly.toFixed(2)}
                   </p>
-                  <p className="text-[#A1A1AA] font-bold text-lg">
+                  <p className="text-[#A1A1AA] font-bold text-base">
                     Net Hourly Revenue
                   </p>
 
                   {/* Burnout Widget */}
                   <div
-                    className={`w-full p-6 rounded-3xl border ${burnoutStatus.borderColor} ${burnoutStatus.bgColor} transition-all duration-500 flex items-start gap-4 text-left group/burnout`}
+                    className={`w-full p-5 rounded-2xl border ${burnoutStatus.borderColor} ${burnoutStatus.bgColor} transition-all duration-500 flex items-start gap-4 text-left group/burnout`}
                   >
                     <div
-                      className={`size-10 rounded-2xl flex items-center justify-center shrink-0 bg-white/5 ${burnoutStatus.color} group-hover/burnout:scale-110 transition-transform`}
+                      className={`size-9 rounded-xl flex items-center justify-center shrink-0 bg-white/5 ${burnoutStatus.color} group-hover/burnout:scale-110 transition-transform`}
                     >
-                      {burnoutStatus.icon}
+                      <div className="scale-75">{burnoutStatus.icon}</div>
                     </div>
                     <div className="space-y-1">
                       <h4
-                        className={`font-black uppercase tracking-tighter text-sm ${burnoutStatus.color}`}
+                        className={`font-black uppercase tracking-tighter text-xs ${burnoutStatus.color}`}
                       >
                         {burnoutStatus.label}
                       </h4>
-                      <p className="text-[11px] font-bold text-[#A1A1AA] leading-snug">
+                      <p className="text-[10px] font-bold text-[#A1A1AA] leading-snug">
                         {burnoutStatus.description}
                       </p>
                     </div>
                   </div>
 
                   <Link href="/login?signup=true" className="w-full">
-                    <Button className="w-full h-20 bg-[#10B981] text-black text-xl font-black rounded-3xl uppercase tracking-tighter">
+                    <Button className="w-full h-16 bg-[#10B981] text-black text-lg font-black rounded-2xl uppercase tracking-tighter">
                       Claim This Reality
                     </Button>
                   </Link>
@@ -624,10 +640,10 @@ export function VibeLandingClient() {
 
               <div className="relative z-10 flex flex-col items-center text-center space-y-10">
                 <div className="space-y-4">
-                  <span className="px-5 py-2 rounded-full bg-[#10B981] text-black text-[10px] font-black uppercase tracking-[0.3em]">
+                  <span className="px-4 py-1.5 rounded-full bg-[#10B981] text-black text-[9px] font-black uppercase tracking-[0.3em]">
                     Limited Beta
                   </span>
-                  <h3 className="text-6xl md:text-8xl font-black tracking-tighter italic uppercase">
+                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter italic uppercase">
                     The Beta <br /> Pass.
                   </h3>
                 </div>
@@ -657,21 +673,21 @@ export function VibeLandingClient() {
                     </ul>
                   </div>
 
-                  <div className="bg-black/40 border border-white/5 rounded-[3rem] p-12 flex flex-col items-center justify-center space-y-4 min-w-[300px]">
-                    <span className="text-7xl font-black italic">$0.00</span>
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
+                  <div className="bg-black/40 border border-white/5 rounded-3xl p-10 flex flex-col items-center justify-center space-y-4 min-w-[280px]">
+                    <span className="text-6xl font-black italic">$0.00</span>
+                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
                       No Subscription Fee
                     </span>
-                    <div className="w-full pt-6">
+                    <div className="w-full pt-4">
                       <MagneticCTA>
                         <Link href="/login?signup=true" className="block w-full">
-                          <Button className="w-full h-20 bg-[#10B981] text-black text-xl font-black rounded-3xl uppercase tracking-tighter hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
+                          <Button className="w-full h-18 bg-[#10B981] text-black text-lg font-black rounded-2xl uppercase tracking-tighter hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
                             Claim Free Access
                           </Button>
                         </Link>
                       </MagneticCTA>
                     </div>
-                    <p className="text-[9px] font-bold text-[#10B981] uppercase tracking-widest pt-2">
+                    <p className="text-[8px] font-bold text-[#10B981] uppercase tracking-widest pt-2">
                       Free for a limited time during beta
                     </p>
                   </div>
@@ -729,14 +745,14 @@ export function VibeLandingClient() {
         {/* BOTTOM CTA */}
         <section className="py-44 px-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-[#10B981]/10 via-transparent to-transparent" />
-          <div className="max-w-5xl mx-auto relative z-10 text-center space-y-12">
-            <h2 className="text-6xl md:text-9xl font-black tracking-tighter uppercase italic leading-[0.85]">
+          <div className="max-w-5xl mx-auto relative z-10 text-center space-y-10">
+            <h2 className="text-5xl md:text-8xl font-black tracking-tighter uppercase italic leading-[0.85]">
               LIMITED <br />{" "}
               <span className="text-[#10B981]">BETA.</span>
             </h2>
             <MagneticCTA className="mx-auto max-w-fit">
               <Link href="/login?signup=true" className="block">
-                <Button className="h-28 px-20 rounded-[3rem] bg-[#10B981] text-black text-3xl font-black uppercase tracking-tighter hover:scale-110 hover:shadow-[0_0_80px_#10B98188] transition-all duration-700">
+                <Button className="h-24 px-16 rounded-2xl bg-[#10B981] text-black text-2xl font-black uppercase tracking-tighter hover:scale-110 hover:shadow-[0_0_80px_#10B98188] transition-all duration-700">
                   Join Gigmiles Free
                 </Button>
               </Link>

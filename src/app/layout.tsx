@@ -7,11 +7,13 @@ import { Toaster } from "@/components/ui/sonner"
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -33,6 +35,7 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { MobileAppConfig } from "@/components/MobileAppConfig";
 
 export default function RootLayout({
   children,
@@ -50,6 +53,7 @@ export default function RootLayout({
           forcedTheme="dark"
           disableTransitionOnChange
         >
+          <MobileAppConfig />
           <TooltipProvider>
             {children}
             <Toaster />
@@ -60,7 +64,7 @@ export default function RootLayout({
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js').catch(() => {});
+                  navigator.serviceWorker.register('/sw.js').catch((err) => { console.error('Service Worker registration failed:', err); });
                 });
               }
             `,

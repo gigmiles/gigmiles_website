@@ -64,10 +64,6 @@ export async function analyzeReceiptImage(base64Image: string, mimeType: string)
         const response = await result.response;
         const text = response.text();
 
-        console.log("=== GEMINI RECEIPT SCAN DEBUG ===");
-        console.log("Raw Response:", text);
-        console.log("Response length:", text.length);
-
         // Validate response is not empty
         if (!text || text.trim().length === 0) {
             console.error("Gemini returned empty response");
@@ -84,7 +80,6 @@ export async function analyzeReceiptImage(base64Image: string, mimeType: string)
                 return null;
             }
 
-            console.log("Successfully parsed receipt:", parsed);
             return parsed;
         } catch (parseError) {
             console.error("Failed to parse Gemini JSON response:", parseError);

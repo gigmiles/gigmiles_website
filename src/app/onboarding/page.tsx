@@ -1,5 +1,9 @@
 'use client'
 
+const devLog = (...args: unknown[]) => {
+    if (process.env.NODE_ENV === 'development') console.log(...args)
+}
+
 import { useState, useEffect, useRef } from 'react'
 import { useForm, Controller, Control, UseFormWatch, UseFormSetValue } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -73,7 +77,6 @@ export default function OnboardingPage() {
     const [checkingPersistence, setCheckingPersistence] = useState(true)
     const persistenceCheckStarted = useRef(false)
 
-    console.log("[Onboarding] Render State:", { step, loading, checkingPersistence });
 
     // Step 1 Form
     const { register: register1, handleSubmit: handleSubmit1, control: control1, setValue: setValue1, reset: reset1, formState: { errors: errors1 } } = useForm({
@@ -105,9 +108,9 @@ export default function OnboardingPage() {
 
         async function checkPersistence() {
             try {
-                console.log("[Persistence] Starting check...")
+                devLog("[Persistence] Starting check...")
                 const { data: { user }, error: userError } = await supabase.auth.getUser()
-                console.log("[Persistence] Auth response received:", { user: user?.id, error: userError })
+                devLog("[Persistence] Auth response received:", { user: user?.id, error: userError })
 
                 if (!isMounted) return
 
@@ -118,40 +121,40 @@ export default function OnboardingPage() {
                 }
 
                 if (!user) {
-                    console.log("[Persistence] No user found.")
+                    devLog("[Persistence] No user found.")
                     setCheckingPersistence(false)
                     return
                 }
 
-                console.log("[Persistence] Fetching profile for ID:", user.id)
+                devLog("[Persistence] Fetching profile for ID:", user.id)
                 const { data: profile, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', user.id)
-                    .single()
-                console.log("[Persistence] Profile result:", !!profile, profileError)
+                    .maybeSingle()
+                devLog("[Persistence] Profile result:", !!profile, profileError)
 
                 if (!isMounted) return
 
                 // 2. Fetch Vehicle
-                console.log("[Persistence] Fetching vehicle...")
+                devLog("[Persistence] Fetching vehicle...")
                 const { data: vehicle, error: vehicleError } = await supabase
                     .from('vehicles')
                     .select('*')
                     .eq('user_id', user.id)
                     .eq('is_primary', true)
                     .maybeSingle()
-                console.log("[Persistence] Vehicle result:", !!vehicle, vehicleError)
+                devLog("[Persistence] Vehicle result:", !!vehicle, vehicleError)
 
                 if (!isMounted) return
 
                 // 3. Fetch Platforms
-                console.log("[Persistence] Fetching platforms...")
+                devLog("[Persistence] Fetching platforms...")
                 const { data: platforms, error: platformsError } = await supabase
                     .from('user_platforms')
                     .select('platform_name')
                     .eq('user_id', user.id)
-                console.log("[Persistence] Platforms result:", platforms?.length, platformsError)
+                devLog("[Persistence] Platforms result:", platforms?.length, platformsError)
 
                 if (!isMounted) return
 
@@ -159,7 +162,7 @@ export default function OnboardingPage() {
                 const hasVehicle = !!(vehicle?.make && vehicle?.model && vehicle?.year && vehicle?.mpg)
                 const hasPlatforms = !!(platforms && platforms.length > 0)
 
-                console.log("[Persistence] Progress:", { hasProfile, hasVehicle, hasPlatforms })
+                devLog("[Persistence] Progress:", { hasProfile, hasVehicle, hasPlatforms })
 
                 // Populate Forms initially with reset() 
                 if (profile) {
@@ -200,7 +203,7 @@ export default function OnboardingPage() {
 
                 // Redirection / Step Logic
                 if (hasProfile && hasVehicle && hasPlatforms) {
-                    console.log("[Persistence] Onboarding complete, redirecting to dashboard...")
+                    devLog("[Persistence] Onboarding complete, redirecting to dashboard...")
                     router.push('/dashboard')
                     return
                 } else if (hasProfile && hasVehicle) {
@@ -215,7 +218,7 @@ export default function OnboardingPage() {
                 console.error("[Persistence] Unexpected error:", error)
             } finally {
                 if (isMounted) {
-                    console.log("[Persistence] Finishing check.")
+                    devLog("[Persistence] Finishing check.")
                     setCheckingPersistence(false)
                 }
             }
@@ -263,21 +266,25 @@ export default function OnboardingPage() {
                 const res = await fetch(`https://api.zippopotam.us/us/${zip}`)
                 if (res.ok) {
                     const data = await res.json()
-                    const place = data.places[0]
-                    setValue1('city', place['place name'], { shouldValidate: true, shouldDirty: true })
-                    setValue1('state', place['state abbreviation'], { shouldValidate: true, shouldDirty: true })
-                    toast.success(`Found: ${place['place name']}, ${place['state abbreviation']}`, { id: toastId })
+                    const place = data?.places?.[0]
+                    if (place) {
+                        setValue1('city', place['place name'], { shouldValidate: true, shouldDirty: true })
+                        setValue1('state', place['state abbreviation'], { shouldValidate: true, shouldDirty: true })
+                        toast.success(`Found: ${place['place name']}, ${place['state abbreviation']}`, { id: toastId })
+                    } else {
+                        toast.error('Invalid ZIP code. Enter location manually.', { id: toastId })
+                    }
                 } else {
-                    toast.dismiss(toastId)
+                    toast.error('Could not find location. Enter manually.', { id: toastId })
                 }
-            } catch (error) {
-                console.error("Zip lookup failed", error)
+            } catch {
+                toast.error('Location lookup failed. Please enter manually.')
             }
         }
     }
 
     const handleFinalSubmit = async () => {
-        console.log("Submit clicked. Current formData:", formData)
+        devLog("Submit clicked. Current formData:", formData)
 
         if (formData.platforms.length === 0) {
             console.warn("Validation failed: No platforms selected")
@@ -288,7 +295,7 @@ export default function OnboardingPage() {
         setLoading(true)
 
         try {
-            console.log("Checking auth...")
+            devLog("Checking auth...")
             const { data: { user }, error: authError } = await supabase.auth.getUser()
 
             if (authError) {
@@ -300,10 +307,10 @@ export default function OnboardingPage() {
                 throw new Error('No user found')
             }
 
-            console.log("User found:", user.id)
+            devLog("User found:", user.id)
 
             // 1. Update Profile
-            console.log("Updating profile...")
+            devLog("Updating profile...")
             const profileUpdate = await supabase.from('profiles').upsert({
                 id: user.id,
                 full_name: formData.full_name,
@@ -318,17 +325,17 @@ export default function OnboardingPage() {
             }
 
             // 2. Insert/Update Vehicle
-            console.log("Saving vehicle...")
+            devLog("Saving vehicle...")
             const { data: existingVehicle } = await supabase
                 .from('vehicles')
                 .select('id')
                 .eq('user_id', user.id)
                 .eq('is_primary', true)
-                .single()
+                .maybeSingle()
 
             let vehicleResult;
             if (existingVehicle) {
-                console.log("Updating existing vehicle:", existingVehicle.id)
+                devLog("Updating existing vehicle:", existingVehicle.id)
                 const depreciation_rate = getDepreciationRate(formData.make, formData.model, parseInt(formData.year))
                 vehicleResult = await supabase.from('vehicles').update({
                     make: formData.make,
@@ -338,7 +345,7 @@ export default function OnboardingPage() {
                     depreciation_rate: depreciation_rate
                 }).eq('id', existingVehicle.id)
             } else {
-                console.log("Inserting new vehicle")
+                devLog("Inserting new vehicle")
                 const depreciation_rate = getDepreciationRate(formData.make, formData.model, parseInt(formData.year))
                 vehicleResult = await supabase.from('vehicles').insert({
                     user_id: user.id,
@@ -360,7 +367,7 @@ export default function OnboardingPage() {
             }
 
             // 3. Insert/Update Platforms
-            console.log("Upserting platforms...")
+            devLog("Upserting platforms...")
             const platformInserts = formData.platforms.map(p => ({
                 user_id: user.id,
                 platform_name: p,
@@ -374,7 +381,7 @@ export default function OnboardingPage() {
                 throw new Error("Platforms setup failed: " + platformsInsert.error.message)
             }
 
-            console.log("All operations successful. Redirecting...")
+            devLog("All operations successful. Redirecting...")
             router.push('/dashboard')
             router.refresh()
             toast.success("Welcome to GigMiles!")
@@ -405,7 +412,7 @@ export default function OnboardingPage() {
                             size="sm"
                             className="text-[10px] font-black uppercase tracking-widest border-white/[0.08] bg-white/[0.02] text-white hover:bg-white/[0.05] rounded-xl"
                             onClick={() => {
-                                console.log("[Persistence] Manual skip triggered by user");
+                                devLog("[Persistence] Manual skip triggered by user");
                                 setCheckingPersistence(false);
                             }}
                         >
@@ -772,13 +779,13 @@ function VehicleModelSelect({ control, watch, setValue }: {
     const make = watch('make')
 
     useEffect(() => {
-        console.log("[VehicleModelSelect] Effect Triggered:", { year, make })
+        devLog("[VehicleModelSelect] Effect Triggered:", { year, make })
         async function fetchModels() {
             if (!year || !make) {
-                console.log("[VehicleModelSelect] Missing year or make, skipping fetch.")
+                devLog("[VehicleModelSelect] Missing year or make, skipping fetch.")
                 return
             }
-            console.log("[VehicleModelSelect] Starting fetch for:", { year, make })
+            devLog("[VehicleModelSelect] Starting fetch for:", { year, make })
             setLoading(true)
 
             // Check if we have local EV models for this make first

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
+export const dynamic = 'force-static'
 
 export const alt = 'GigMiles | Real Net Profit for Gig Workers'
 export const size = {
@@ -64,6 +64,8 @@ const styles = {
         alignItems: 'flex-start' as const,
     },
     title: {
+        display: 'flex' as const,
+        flexDirection: 'row' as const,
         fontSize: '84px',
         fontWeight: '900',
         color: 'white',

@@ -91,7 +91,8 @@ export async function deleteVehicleAction(vehicleId: string) {
         .from('vehicles')
         .select('is_primary')
         .eq('id', vehicleId)
-        .single()
+        .eq('user_id', user.id)
+        .maybeSingle()
 
     if (vehicle?.is_primary) {
         const { count } = await supabase
