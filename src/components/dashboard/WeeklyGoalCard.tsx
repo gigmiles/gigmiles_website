@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { memo, useMemo, useState, useEffect } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { GmIcon } from "@/components/ui/GmIcon"
 import { cn } from "@/lib/utils"
 
 interface WeeklyGoalCardProps {
@@ -63,9 +64,7 @@ export const WeeklyGoalCard = memo(function WeeklyGoalCard({
                         </h2>
                         <p className="text-[9px] text-slate-600 font-bold uppercase tracking-wider">Progress to Target</p>
                     </div>
-                    <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
-                        <Target className="size-3.5" />
-                    </div>
+                    <GmIcon icon={Target} accent="#f59e0b" size="sm" glow />
                 </div>
 
                 <div className="space-y-4">

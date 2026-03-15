@@ -6,6 +6,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { TrendingUp } from "lucide-react"
 import { memo } from "react"
 import { cn } from "@/lib/utils"
+import { GmIcon } from "@/components/ui/GmIcon"
 
 interface EarningsChartProps {
     data: {
@@ -43,9 +44,7 @@ export const EarningsChart = memo(function EarningsChart({ data }: EarningsChart
             <CardHeader className="flex flex-row items-center justify-between p-5 pb-3">
                 <div className="space-y-1">
                     <CardTitle className="text-sm flex items-center gap-2.5">
-                        <div className="size-8 rounded-xl bg-[#10B981]/10 flex items-center justify-center text-[#10B981]">
-                            <TrendingUp className="size-4" />
-                        </div>
+                        <GmIcon icon={TrendingUp} accent="#10b981" size="sm" glow />
                         Financial Velocity
                     </CardTitle>
                     <CardDescription className="text-[9px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60 ml-[2.625rem]">

@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Shield, ShieldAlert, ShieldCheck, Info, Zap } from 'lucide-react'
 import { GlassTooltip } from '@/components/ui/GlassTooltip'
 import { MagneticCTA } from '@/components/ui/MagneticCTA'
+import { GmIcon } from '@/components/ui/GmIcon'
 import { useRouter } from 'next/navigation'
 
 import { STATE_TAX_RATES, FEDERAL_SE_TAX_RATE } from '@/utils/calculations'
@@ -78,15 +79,21 @@ export const TaxLedgerWidget = memo(function TaxLedgerWidget({
                 <div>
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <motion.div 
-                                animate={shieldPercentage >= 80 ? { scale: [1, 1.1, 1] } : {}}
+                            <motion.div
+                                animate={shieldPercentage >= 80 ? { scale: [1, 1.05, 1] } : {}}
                                 transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                                className={`p-2.5 rounded-xl border ${shieldColor} transition-colors duration-500 relative`}
                             >
-                                <Icon className="size-5" />
-                                {shieldPercentage >= 80 && (
-                                    <div className="absolute inset-0 bg-emerald-500/20 rounded-xl blur-md animate-pulse" />
-                                )}
+                                <GmIcon
+                                    icon={Icon}
+                                    accent={
+                                        shieldPercentage >= 80 ? '#10b981'
+                                        : shieldPercentage >= 40 ? '#6366f1'
+                                        : grossIncome === 0 ? '#475569'
+                                        : '#f59e0b'
+                                    }
+                                    size="md"
+                                    glow={shieldPercentage >= 40}
+                                />
                             </motion.div>
                             <div>
                                 <h3 className="text-sm font-black text-slate-900 dark:text-white leading-none tracking-tight">The Tax Shield</h3>

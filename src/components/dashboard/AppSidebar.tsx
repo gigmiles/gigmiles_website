@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { Vehicle } from "@/app/dashboard/types";
 import { VibeLogo } from "@/components/brand/VibeLogo";
 import { MagneticCTA } from "@/components/ui/MagneticCTA";
+import { GmIcon } from "@/components/ui/GmIcon";
 import { cn } from "@/lib/utils";
 
 import {
@@ -83,19 +84,19 @@ const mainNav = [
         title: "Dashboard",
         url: "/dashboard",
         icon: LayoutDashboard,
-        accent: "neon-primary",
+        accent: "#10b981",
     },
     {
         title: "Reports",
         url: "/dashboard/reports",
         icon: BarChart3,
-        accent: "blue-500",
+        accent: "#3b82f6",
     },
     {
         title: "Tax Center",
         url: "/dashboard/tax",
         icon: Calculator,
-        accent: "amber-500",
+        accent: "#f59e0b",
     },
 ];
 
@@ -170,9 +171,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 className="h-14 w-full justify-between rounded-2xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/10 shadow-[0_1px_2px_rgba(0,0,0,0.5)] transition-all active:scale-[0.98] group/switcher"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.1)] group-hover/switcher:shadow-[0_0_16px_rgba(16,185,129,0.2)] transition-all">
-                                        <Car className="size-5" />
-                                    </div>
+                                    <GmIcon icon={Car} accent="#10b981" size="sm" glow />
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-bold text-white text-[13px]">
                                             {activeVehicle ? `${activeVehicle.make} ${activeVehicle.model}` : "No Vehicle"}
@@ -219,14 +218,12 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                             onClick={() => handleSwitchVehicle(v.id)}
                                         >
                                             {/* Vehicle icon */}
-                                            <div className={cn(
-                                                "flex aspect-square size-8 items-center justify-center rounded-lg shrink-0 transition-all",
-                                                isCurrentVehicle
-                                                    ? "bg-emerald-500/15 text-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.15)]"
-                                                    : "bg-white/[0.04] text-slate-500 group-hover/item:text-slate-300"
-                                            )}>
-                                                <Car className="size-4" />
-                                            </div>
+                                            <GmIcon
+                                                icon={Car}
+                                                accent={isCurrentVehicle ? '#10b981' : '#475569'}
+                                                size="xs"
+                                                glow={isCurrentVehicle}
+                                            />
 
                                             {/* Vehicle info */}
                                             <div className="flex flex-col flex-1 min-w-0">
@@ -299,20 +296,30 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                     <Link href={item.url} className="flex items-center gap-3">
                                         {/* Active indicator bar */}
                                         {isActive && (
-                                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                            <div
+                                                className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+                                                style={{
+                                                    background: item.accent,
+                                                    boxShadow: `0 0 8px ${item.accent}80`,
+                                                }}
+                                            />
                                         )}
-                                        <div className={cn(
-                                            "p-1.5 rounded-lg transition-all",
-                                            isActive
-                                                ? "bg-emerald-500 text-[#0a0e17] shadow-[0_0_12px_rgba(16,185,129,0.3)]"
-                                                : "text-slate-500 group-hover/nav:text-slate-300"
-                                        )}>
-                                            <item.icon className="size-4" />
-                                        </div>
+                                        <GmIcon
+                                            icon={item.icon}
+                                            accent={isActive ? item.accent : '#64748b'}
+                                            size="sm"
+                                            glow={isActive}
+                                        />
                                         <span className="text-[11px] font-black uppercase tracking-[0.1em]">{item.title}</span>
                                         {/* Live dot for active */}
                                         {isActive && (
-                                            <div className="ml-auto size-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
+                                            <div
+                                                className="ml-auto size-1.5 rounded-full animate-pulse"
+                                                style={{
+                                                    background: item.accent,
+                                                    boxShadow: `0 0 6px ${item.accent}99`,
+                                                }}
+                                            />
                                         )}
                                     </Link>
                                 </SidebarMenuButton>
@@ -344,12 +351,12 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                     )}
                                 >
                                     <Link href={item.url} className="flex items-center gap-3">
-                                        <div className={cn(
-                                            "p-1 rounded-lg transition-colors",
-                                            isActive ? "text-slate-300" : "text-slate-600"
-                                        )}>
-                                            <item.icon className="size-4" />
-                                        </div>
+                                        <GmIcon
+                                            icon={item.icon}
+                                            accent={isActive ? '#94a3b8' : '#475569'}
+                                            size="xs"
+                                            glow={false}
+                                        />
                                         <span className="text-[13px] tracking-tight">{item.title}</span>
                                     </Link>
                                 </SidebarMenuButton>
@@ -447,22 +454,16 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                 <DropdownMenuGroup className="space-y-1">
                                     <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer" asChild>
                                         <Link href="/dashboard/settings/profile" className="flex items-center w-full">
-                                            <div className="p-2 rounded-lg bg-white/5 mr-3">
-                                                <User className="size-4" />
-                                            </div>
+                                            <GmIcon icon={User} accent="#10b981" size="xs" className="mr-3" />
                                             <span className="font-medium">My Profile</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer">
-                                        <div className="p-2 rounded-lg bg-white/5 mr-3">
-                                            <Bell className="size-4" />
-                                        </div>
+                                        <GmIcon icon={Bell} accent="#f59e0b" size="xs" className="mr-3" />
                                         <span className="font-medium">Notifications</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="rounded-xl focus:bg-emerald-500/10 focus:text-white py-2.5 transition-colors cursor-pointer">
-                                        <div className="p-2 rounded-lg bg-white/5 mr-3">
-                                            <CreditCard className="size-4" />
-                                        </div>
+                                        <GmIcon icon={CreditCard} accent="#3b82f6" size="xs" className="mr-3" />
                                         <span className="font-medium">Billing & Plan</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
@@ -471,9 +472,7 @@ export function AppSidebar({ user, vehicles, activeVehicleId, ...props }: AppSid
                                     className="rounded-xl text-ruby-500 focus:bg-ruby-500/10 focus:text-ruby-400 py-2.5 transition-colors cursor-pointer"
                                     onClick={() => signOut()}
                                 >
-                                    <div className="p-2 rounded-lg bg-ruby-500/10 mr-3">
-                                        <LogOut className="size-4" />
-                                    </div>
+                                    <GmIcon icon={LogOut} accent="#e11d48" size="xs" className="mr-3" />
                                     <span className="font-bold">Sign Out</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

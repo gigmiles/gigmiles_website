@@ -1,6 +1,7 @@
 'use client';
 
 import { TrendingUp, Calendar, ArrowRight, Edit, Trash2, Loader2 } from 'lucide-react';
+import { GmIcon } from '@/components/ui/GmIcon';
 import { useState, memo } from 'react';
 import Link from 'next/link';
 import { GlassTooltip } from '@/components/ui/GlassTooltip';
@@ -76,7 +77,8 @@ export const BoltWeeklySummary = memo(function BoltWeeklySummary({
             <SheetTrigger asChild>
                 <div className="glass-card glass-card-hover p-4 cursor-pointer flex flex-col flex-1 group">
                     <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
+                            <GmIcon icon={TrendingUp} accent="#3b82f6" size="sm" glow />
                             <div>
                                 <h2 className="text-sm font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors">Weekly Performance</h2>
                                 <p className="text-[9px] text-slate-600 font-medium">Tap for daily breakdown</p>

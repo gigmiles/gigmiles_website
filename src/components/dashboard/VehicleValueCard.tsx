@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { GlassTooltip } from '@/components/ui/GlassTooltip'
 import { Car, RefreshCw, TrendingDown, DollarSign } from 'lucide-react'
+import { GmIcon } from '@/components/ui/GmIcon'
 import { checkVehicleValue } from '@/app/dashboard/actions/vehicle'
 import { toast } from 'sonner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -54,7 +55,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
         return (
             <Card className="glass-card h-full border-dashed border-white/10 shadow-none">
                 <CardContent className="flex flex-col items-center justify-center h-full p-5 text-center">
-                    <Car className="size-8 text-slate-700 mb-3" />
+                    <GmIcon icon={Car} accent="#475569" size="lg" className="mb-3" />
                     <p className="text-xs text-slate-500 font-medium">Add a vehicle to track its value.</p>
                 </CardContent>
             </Card>
@@ -73,9 +74,7 @@ export const VehicleValueCard = memo(function VehicleValueCard({ vehicles, activ
                     </div>
                     <GlassTooltip content="Displays the estimated current market value and potential equity of your selected vehicle." side="right" />
                 </div>
-                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
-                    <Car className="size-3.5" />
-                </div>
+                <GmIcon icon={Car} accent="#6366f1" size="sm" glow />
             </div>
 
             <Select
