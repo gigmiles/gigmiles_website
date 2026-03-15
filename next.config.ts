@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  optimizeFonts: false,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
