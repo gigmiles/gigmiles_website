@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { User, Car, Shield, Bell, ChevronRight } from 'lucide-react'
 import { GmIcon } from '@/components/ui/GmIcon'
 import { DeleteAccountDialog } from './DeleteAccountDialog'
+import { ReferralCard } from '@/components/ui/ReferralCard'
 
 const settingsOptions = [
     {
@@ -43,6 +44,17 @@ export default async function SettingsPage() {
 
     if (!user) redirect('/login')
 
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('referral_code, referral_bonus_days')
+        .eq('id', user.id)
+        .single()
+
+    const { count: referralCount } = await supabase
+        .from('referrals')
+        .select('*', { count: 'exact', head: true })
+        .eq('referrer_id', user.id)
+
     return (
         <div className="space-y-8 animate-fade-in">
             <div>
@@ -68,6 +80,15 @@ export default async function SettingsPage() {
                     </Link>
                 ))}
             </div>
+
+            {/* Referral Card */}
+            {profile?.referral_code && (
+                <ReferralCard
+                    referralCode={profile.referral_code}
+                    bonusDays={profile.referral_bonus_days ?? 0}
+                    referralCount={referralCount ?? 0}
+                />
+            )}
 
             <Card className="max-w-3xl border-red-500/20 bg-red-500/[0.03]">
                 <CardHeader>

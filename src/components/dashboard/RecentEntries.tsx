@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Edit, Calendar } from 'lucide-react'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { DailyEntry, Vehicle } from '@/app/dashboard/types'
 import { calculateFinancials } from '@/utils/calculations'
 import { SwipeableCard } from '@/components/ui/SwipeableCard'
@@ -80,7 +80,7 @@ export function RecentEntries({ entries, primaryVehicle, stateCode = 'CA' }: Rec
                                         <Calendar className="size-5" />
                                     </div>
                                     <div>
-                                        <p className="font-bold text-base text-foreground tracking-tight">{format(new Date(entry.date), 'MM/dd/yyyy')}</p>
+                                        <p className="font-bold text-base text-foreground tracking-tight">{format(parseISO(entry.date), 'MMM d, yyyy')}</p>
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="text-xs font-bold text-emerald-500">${net.toFixed(2)} net</span>
                                             <span className="text-xs text-muted-foreground">·</span>

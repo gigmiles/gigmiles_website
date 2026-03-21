@@ -38,7 +38,8 @@
   ],
   "exclude": [
     "node_modules",
-    "gigmiles-mobile"
+    "gigmiles-mobile",
+    "GIGMILES-APP-NATIVE"
   ],
   "extends": "expo/tsconfig.base"
 }

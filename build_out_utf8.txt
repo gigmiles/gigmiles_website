@@ -1,0 +1,24 @@
+
+> antigravity@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 9.1s
+  Running TypeScript ...
+Failed to compile.
+
+./GIGMILES-APP-NATIVE/src/components/DashboardCustomizer.tsx:9:28
+Type error: Cannot find module '@/hooks/useHaptics' or its corresponding type declarations.
+
+[0m [90m  7 |[39m [36mimport[39m { [33mDrawer[39m } [36mfrom[39m [32m'vaul'[39m
+ [90m  8 |[39m [36mimport[39m { cn } [36mfrom[39m [32m'@/lib/utils'[39m
+[31m[1m>[22m[39m[90m  9 |[39m [36mimport[39m { useHaptics } [36mfrom[39m [32m'@/hooks/useHaptics'[39m
+ [90m    |[39m                            [31m[1m^[22m[39m
+ [90m 10 |[39m
+ [90m 11 |[39m [36mexport[39m type [33mWidgetId[39m [33m=[39m [32m'motivation'[39m [33m|[39m [32m'today'[39m [33m|[39m [32m'shift'[39m [33m|[39m [32m'weekly'[39m [33m|[39m [32m'goals'[39m [33m|[39m [32m'tax'[39m [33m|[39m [32m'platforms'[39m [33m|[39m [32m'recent'[39m [33m|[39m [32m'vehicle'[39m
+ [90m 12 |[39m[0m
+Next.js build worker exited with code: 1 and signal: null

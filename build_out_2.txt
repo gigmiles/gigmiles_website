@@ -1,0 +1,24 @@
+
+> antigravity@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 6.7s
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/dashboard/reports/page.tsx:29:47
+Type error: 'prev' is possibly 'undefined'.
+
+[0m [90m 27 |[39m         [36mreturn[39m ((curr [33m-[39m prevVal) [33m/[39m prevVal) [33m*[39m [35m100[39m
+ [90m 28 |[39m     }
+[31m[1m>[22m[39m[90m 29 |[39m     [36mconst[39m netTrend [33m=[39m trendPct(totalNetProfit[33m,[39m prev[33m.[39mnet)
+ [90m    |[39m                                               [31m[1m^[22m[39m
+ [90m 30 |[39m     [36mconst[39m grossTrend [33m=[39m trendPct(totalGross[33m,[39m prev[33m.[39mgross)
+ [90m 31 |[39m     [36mconst[39m milesTrend [33m=[39m trendPct(totalMiles[33m,[39m prev[33m.[39mmiles)
+ [90m 32 |[39m     [36mconst[39m topPlatform [33m=[39m data[33m.[39mplatformData[33m.[39msort((a[33m,[39m b) [33m=>[39m b[33m.[39mvalue [33m-[39m a[33m.[39mvalue)[[35m0[39m][0m
+Next.js build worker exited with code: 1 and signal: null

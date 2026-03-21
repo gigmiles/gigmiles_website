@@ -13,15 +13,14 @@ export default async function AdminMessagesPage() {
         redirect('/login')
     }
 
-    // Basic admin check - you can expand this later
-    // For now, we'll allow the user who asked for this feature
-    const isAdmin = user.email === 'kayihanozgenc1@gmail.com' || user.email?.includes('admin')
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+    const isAdmin = ADMIN_EMAIL ? user.email === ADMIN_EMAIL : false
 
-    // If not admin, you might want to redirect, but since the user is the one who asked, 
-    // and it's their private project, we'll proceed for them.
-    // if (!isAdmin) redirect('/dashboard')
+    if (!isAdmin) {
+        redirect('/dashboard')
+    }
 
-    const tickets = await getSupportTickets()
+    const tickets = await getSupportTickets(user.email!)
 
     if (!tickets) {
         return (

@@ -15,8 +15,10 @@ import {
   EyeOff,
   Lock,
   Star,
-  Layers,
   Brain,
+  Users,
+  Menu,
+  X,
 } from "lucide-react";
 import { VibeLogo as Logo } from "@/components/brand/VibeLogo";
 import { Button } from "@/components/ui/button";
@@ -82,6 +84,18 @@ export function VibeLandingClient() {
   const [gross, setGross] = useState<number>(1200);
   const [hours, setHours] = useState<number>(45);
   const [showFeatures, setShowFeatures] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [memberCount, setMemberCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/member-count")
+      .then((r) => r.json())
+      .then((d) => setMemberCount(d.count ?? 0))
+      .catch(() => setMemberCount(null));
+  }, []);
+
+  const spotsRemaining = memberCount !== null ? Math.max(0, 500 - memberCount) : null;
+  const spotsProgress = memberCount !== null ? Math.min(100, (memberCount / 500) * 100) : 0;
 
   const estimatedExpenses = gross * 0.35;
   const estimatedTaxes = gross * 0.153;
@@ -121,11 +135,9 @@ export function VibeLandingClient() {
 
   return (
     <div className="min-h-screen bg-[#0B1120] text-white font-sans selection:bg-[#10B981] selection:text-black overflow-x-hidden">
-      {/* Background Ambience — Orbital */}
+      {/* Background Ambience */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        {/* Cinematic Noise Layer */}
         <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay" />
-        
         <div className="absolute top-[5%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#10B981]/5 blur-[150px] animate-orbit" />
         <div className="absolute bottom-[5%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#E2E8F0]/5 blur-[150px] animate-orbit-reverse" />
         <div className="absolute top-[40%] left-[20%] w-[40%] h-[40%] rounded-full bg-indigo-500/3 blur-[120px] animate-orbit [animation-delay:5s]" />
@@ -135,6 +147,8 @@ export function VibeLandingClient() {
       <nav className="fixed top-0 w-full z-50 p-6 md:p-10">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Logo className="scale-110 hover:scale-115 transition-transform" />
+
+          {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1 bg-white/[0.02] border border-white/[0.08] backdrop-blur-3xl rounded-2xl p-1 px-2">
             {/* Features Dropdown */}
             <div className="relative">
@@ -180,10 +194,10 @@ export function VibeLandingClient() {
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-amber-500/60">Coming Soon</p>
                       <div className="grid grid-cols-2 gap-2">
                         {[
-                          { icon: <TrendingDown className="size-4" />, name: "Tax Ledger", desc: "Automated tax calculations" },
-                          { icon: <Zap className="size-4" />, name: "AI Strategy", desc: "Smart earning insights" },
-                          { icon: <AlertCircle className="size-4" />, name: "Smart Maintenance", desc: "Predictive service alerts" },
-                          { icon: <Star className="size-4" />, name: "AI Mileage Tracking", desc: "Automatic trip logging" },
+                          { icon: <Brain className="size-4" />, name: "AI Strategy", desc: "Smart earning insights" },
+                          { icon: <Zap className="size-4" />, name: "Smart Maintenance", desc: "Predictive service alerts" },
+                          { icon: <AlertCircle className="size-4" />, name: "AI Mileage Tracking", desc: "Automatic trip logging" },
+                          { icon: <Star className="size-4" />, name: "Multi-App Export", desc: "One-tap tax season reports" },
                         ].map((f) => (
                           <div key={f.name} className="flex items-start gap-3 p-3 rounded-2xl bg-white/[0.01] opacity-60 cursor-default">
                             <div className="size-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
@@ -219,25 +233,91 @@ export function VibeLandingClient() {
               Sign In
             </Link>
           </div>
-          <Link href="/login?signup=true">
-            <Button className="bg-[#10B981] text-black font-black px-8 py-6 rounded-2xl hover:shadow-[0_0_30px_#10B98188] transition-all uppercase tracking-tighter text-sm">
-              Join Beta
-            </Button>
-          </Link>
+
+          <div className="flex items-center gap-3">
+            <Link href="/login?signup=true" className="hidden md:block">
+              <Button className="bg-[#10B981] text-black font-black px-8 py-6 rounded-2xl hover:shadow-[0_0_30px_#10B98188] transition-all uppercase tracking-tighter text-sm">
+                Join Beta
+              </Button>
+            </Link>
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden p-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 mx-auto max-w-7xl rounded-2xl bg-[#0B1120]/98 border border-white/[0.08] backdrop-blur-3xl p-6 space-y-1">
+            {[
+              { label: "Features", href: "#features" },
+              { label: "Calculator", href: "#calculator" },
+              { label: "Pricing", href: "#pricing" },
+              { label: "Sign In", href: "/login" },
+            ].map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-sm font-black uppercase tracking-widest text-[#A1A1AA] hover:text-[#10B981] hover:bg-white/[0.03] rounded-xl transition-colors"
+              >
+                {item.label}
+              </a>
+            ))}
+            <div className="pt-3 border-t border-white/[0.06]">
+              <Link href="/login?signup=true" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full bg-[#10B981] text-black font-black rounded-xl uppercase tracking-tighter text-sm py-6">
+                  Join Beta — Free
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main className="relative z-10">
-        {/* HERO SECTION — Cinematic Reveal (Pure CSS) */}
-        <section className="pt-32 md:pt-40 pb-20 px-6 text-center max-w-7xl mx-auto space-y-12">
-          {/* Badge — first to appear */}
+        {/* HERO SECTION */}
+        <section className="pt-32 md:pt-40 pb-20 px-6 text-center max-w-7xl mx-auto space-y-10">
+          {/* Badge */}
           <div className="hero-badge inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-[8px] font-black uppercase tracking-[0.3em]">
             <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-ping" />
-            The Future of Gig Work
+            First 500 Members · 1 Year Free
           </div>
 
-          {/* Motto — CSS Stagger reveal */}
-          <h1 className="text-6xl md:text-[clamp(4.5rem,8vw,8rem)] font-black tracking-tighter leading-[0.85] uppercase">
+          {/* Member Counter */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.08]">
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-red-400">Live</span>
+              </div>
+              <div className="w-px h-4 bg-white/10" />
+              {memberCount !== null ? (
+                <span className="text-xs font-black text-white">
+                  <span className="text-[#10B981]">{memberCount}</span>
+                  <span className="text-[#A1A1AA]"> / 500 early spots claimed</span>
+                </span>
+              ) : (
+                <span className="text-xs font-black text-[#A1A1AA]">Join the founding members</span>
+              )}
+            </div>
+            {memberCount !== null && (
+              <div className="w-48 h-1 bg-white/[0.06] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#10B981] rounded-full transition-all duration-1000"
+                  style={{ width: `${spotsProgress}%` }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Motto */}
+          <h1 className="text-4xl md:text-6xl md:text-[clamp(4.5rem,8vw,8rem)] font-black tracking-tighter leading-[0.85] uppercase">
             <span className="block hero-line-1">
               BEYOND THE
             </span>
@@ -262,18 +342,23 @@ export function VibeLandingClient() {
             </span>
           </h1>
 
-          {/* Subtitle — fade in after motto */}
-          <p className="hero-subtitle text-lg md:text-xl text-[#A1A1AA] max-w-2xl mx-auto leading-[1.6] font-medium tracking-tight">
-            Stop guessing your net profit. Real-time intelligence for the
-            drivers who take their earnings seriously.
-          </p>
+          {/* Subtitle */}
+          <div className="space-y-3">
+            <p className="hero-subtitle text-lg md:text-xl text-[#A1A1AA] max-w-2xl mx-auto leading-[1.6] font-medium tracking-tight">
+              Stop guessing your net profit. Real-time intelligence for the
+              drivers who take their earnings seriously.
+            </p>
+            <p className="text-sm text-[#10B981]/70 font-medium max-w-md mx-auto">
+              Join today as one of our first 500 members and get 1 full year of GigMiles completely free.
+            </p>
+          </div>
 
-          {/* CTA — scale in */}
+          {/* CTA */}
           <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
             <MagneticCTA>
               <Link href="/login?signup=true" className="block">
                 <Button className="h-18 px-12 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter hover:scale-105 hover:shadow-[0_0_60px_#10B98166] transition-all duration-500 group">
-                  Get Started
+                  Claim Your Spot
                   <ArrowRight className="size-6 ml-3 group-hover:translate-x-2 transition-transform" />
                 </Button>
               </Link>
@@ -287,27 +372,21 @@ export function VibeLandingClient() {
           </div>
         </section>
 
-        {/* SEMANTIC LOGO MARQUEE */}
+        {/* LOGO MARQUEE */}
         <section className="py-12 border-y border-white/[0.05] bg-black/20 overflow-hidden flex flex-col items-center justify-center">
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60 mb-8 text-center px-4">
             Built for the platforms you drive for
           </p>
           <div className="relative flex overflow-hidden w-full max-w-7xl mx-auto [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
             <div className="animate-marquee flex w-max min-w-full shrink-0 flex-row items-center justify-around gap-16 py-4 px-8">
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">UBER</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">DOORDASH</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">LYFT</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">AMAZON FLEX</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">INSTACART</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">GRUBHUB</span>
+              {["UBER", "DOORDASH", "LYFT", "AMAZON FLEX", "INSTACART", "GRUBHUB"].map((b) => (
+                <span key={b} className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">{b}</span>
+              ))}
             </div>
             <div aria-hidden="true" className="animate-marquee flex w-max min-w-full shrink-0 flex-row items-center justify-around gap-16 py-4 px-8">
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">UBER</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">DOORDASH</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">LYFT</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">AMAZON FLEX</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">INSTACART</span>
-              <span className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">GRUBHUB</span>
+              {["UBER", "DOORDASH", "LYFT", "AMAZON FLEX", "INSTACART", "GRUBHUB"].map((b) => (
+                <span key={b} className="text-2xl md:text-3xl font-black italic text-[#A1A1AA]/20 uppercase tracking-tighter">{b}</span>
+              ))}
             </div>
           </div>
         </section>
@@ -380,9 +459,7 @@ export function VibeLandingClient() {
                 variants={sectionReveal}
                 className={`p-8 rounded-3xl glass-card glass-card-hover hover-spring group relative overflow-hidden ${f.className}`}
               >
-                {/* Subtle card-specific glow */}
                 <div className={`absolute -top-10 -right-10 w-48 h-48 rounded-full blur-[80px] opacity-20 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none ${f.iconBg.split(' ')[0]}`} />
-                
                 <div className={`size-12 rounded-xl flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform ${f.iconBg}`}>
                   <div className="scale-75">{f.icon}</div>
                 </div>
@@ -398,7 +475,7 @@ export function VibeLandingClient() {
             ))}
           </motion.div>
 
-          {/* REALITY CHECK — Gig Reality Engine */}
+          {/* REALITY ENGINE */}
           <div className="space-y-4 pt-16">
             <span className="text-[#A1A1AA] font-black uppercase tracking-[0.4em] text-[10px]">
               The Truth
@@ -412,13 +489,10 @@ export function VibeLandingClient() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-            {/* Dynamic Waterfall Breakdown Card */}
+            {/* Waterfall Breakdown */}
             <div className="md:col-span-12 lg:col-span-7 group relative p-8 lg:p-10 rounded-3xl glass-card overflow-hidden hover:border-white/20 transition-all duration-500">
-              {/* Background ambient */}
               <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-red-500/5 blur-[100px] rounded-full pointer-events-none" />
-              
               <div className="relative z-10 space-y-8">
-                {/* Two-column comparison header */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] text-center">
                     <p className="text-[8px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60 mb-1.5">What Drivers See</p>
@@ -432,7 +506,6 @@ export function VibeLandingClient() {
                   </div>
                 </div>
 
-                {/* Waterfall Breakdown */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60">
@@ -460,7 +533,7 @@ export function VibeLandingClient() {
                         </div>
                       </div>
                       <div className="h-1.5 w-full bg-white/[0.03] rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className={`h-full ${item.color} rounded-full transition-all duration-1000 ease-out`}
                           style={{ width: `${item.pct * 2}%` }}
                         />
@@ -468,7 +541,6 @@ export function VibeLandingClient() {
                     </div>
                   ))}
 
-                  {/* Result line */}
                   <div className="pt-4 mt-4 border-t border-white/[0.06]">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -483,7 +555,7 @@ export function VibeLandingClient() {
                       </div>
                     </div>
                     <div className="h-2 w-full bg-white/[0.03] rounded-full overflow-hidden mt-2">
-                      <div 
+                      <div
                         className="h-full bg-[#10B981] rounded-full shadow-[0_0_12px_rgba(16,185,129,0.3)] transition-all duration-1000 ease-out"
                         style={{ width: `${(netProfit / gross) * 100}%` }}
                       />
@@ -491,7 +563,6 @@ export function VibeLandingClient() {
                   </div>
                 </div>
 
-                {/* Personalization CTA */}
                 <div className="p-5 rounded-2xl bg-[#10B981]/5 border border-[#10B981]/15 flex items-start gap-4">
                   <ShieldCheck className="size-5 text-[#10B981] shrink-0 mt-0.5" />
                   <div className="space-y-1">
@@ -504,14 +575,11 @@ export function VibeLandingClient() {
               </div>
             </div>
 
-            {/* Smart Logging Card — Hook-Driven */}
-            <div className="md:col-span-12 lg:col-span-5 p-12 rounded-[4rem] bg-[#10B981] text-black flex flex-col justify-between hover:scale-[1.02] transition-transform duration-500 group relative overflow-hidden">
-              {/* Background pattern */}
+            {/* Every Mile Counts */}
+            <div className="md:col-span-12 lg:col-span-5 p-10 md:p-12 rounded-[2rem] md:rounded-[4rem] bg-[#10B981] text-black flex flex-col justify-between hover:scale-[1.02] transition-transform duration-500 group relative overflow-hidden">
               <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-black/5 rounded-full blur-[80px] pointer-events-none" />
-              
               <div className="relative z-10 flex flex-col h-full">
                 <Receipt className="size-16 fill-black mb-6" />
-                
                 <div className="space-y-6 flex-1">
                   <h3 className="text-4xl font-black tracking-tighter leading-[0.9]">
                     EVERY <br /> MILE <br /> COUNTS.
@@ -521,7 +589,7 @@ export function VibeLandingClient() {
                   </p>
                   <div className="space-y-3 py-4">
                     {[
-                      { stat: "$0.67/mi", label: "IRS Standard Deduction" },
+                      { stat: "$0.70/mi", label: "IRS Mileage Rate 2025" },
                       { stat: "Your Car", label: "Personalized Cost Data" },
                       { stat: "30 sec", label: "To Log a Trip" },
                     ].map((item) => (
@@ -532,7 +600,6 @@ export function VibeLandingClient() {
                     ))}
                   </div>
                 </div>
-
                 <Link href="/login?signup=true">
                   <Button className="w-full h-14 rounded-xl bg-black text-[#10B981] font-black uppercase tracking-tighter text-base mt-4 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-[1.02] transition-all">
                     Start Tracking Now
@@ -541,9 +608,10 @@ export function VibeLandingClient() {
               </div>
             </div>
 
-            {/* Profit Calculator */}
+            {/* Calculator */}
             <div
-              className="md:col-span-12 lg:col-span-12 p-12 lg:p-16 rounded-[5rem] glass-card relative overflow-hidden group"
+              id="calculator"
+              className="md:col-span-12 lg:col-span-12 p-8 md:p-12 lg:p-16 rounded-[2rem] md:rounded-[5rem] glass-card relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-16 opacity-10 group-hover:opacity-20 transition-opacity">
                 <Calculator className="size-44 text-[#10B981]" />
@@ -564,7 +632,7 @@ export function VibeLandingClient() {
                         max="5000"
                         value={gross}
                         onChange={(e) => setGross(Number(e.target.value))}
-                        className="w-full accent-[#10B981] h-1"
+                        className="w-full accent-[#10B981] h-2 cursor-pointer"
                       />
                       <p className="text-3xl font-black text-white italic">
                         ${gross.toLocaleString()}
@@ -580,7 +648,7 @@ export function VibeLandingClient() {
                         max="100"
                         value={hours}
                         onChange={(e) => setHours(Number(e.target.value))}
-                        className="w-full accent-[#10B981] h-1"
+                        className="w-full accent-[#10B981] h-2 cursor-pointer"
                       />
                       <p className="text-3xl font-black text-white italic">
                         {hours} HOURS
@@ -599,7 +667,6 @@ export function VibeLandingClient() {
                     Net Hourly Revenue
                   </p>
 
-                  {/* Burnout Widget */}
                   <div
                     className={`w-full p-5 rounded-2xl border ${burnoutStatus.borderColor} ${burnoutStatus.bgColor} transition-all duration-500 flex items-start gap-4 text-left group/burnout`}
                   >
@@ -609,9 +676,7 @@ export function VibeLandingClient() {
                       <div className="scale-75">{burnoutStatus.icon}</div>
                     </div>
                     <div className="space-y-1">
-                      <h4
-                        className={`font-black uppercase tracking-tighter text-xs ${burnoutStatus.color}`}
-                      >
+                      <h4 className={`font-black uppercase tracking-tighter text-xs ${burnoutStatus.color}`}>
                         {burnoutStatus.label}
                       </h4>
                       <p className="text-[10px] font-bold text-[#A1A1AA] leading-snug">
@@ -629,69 +694,123 @@ export function VibeLandingClient() {
               </div>
             </div>
 
-            {/* Beta Pass Card */}
+            {/* PRICING */}
             <div
               id="pricing"
-              className="md:col-span-12 p-12 lg:p-20 rounded-[5rem] bg-gradient-to-br from-[#10B981]/10 to-transparent border border-[#10B981]/20 backdrop-blur-3xl relative overflow-hidden group"
+              className="md:col-span-12 space-y-10"
             >
-              <div className="absolute top-0 right-0 p-20 opacity-5 group-hover:opacity-10 transition-opacity">
-                <Star className="size-64 text-[#10B981]" />
+              <div className="text-center space-y-4">
+                <span className="text-[#A1A1AA] font-black uppercase tracking-[0.4em] text-[10px]">Pricing</span>
+                <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic uppercase leading-none">
+                  Simple, Honest <br /> Pricing.
+                </h2>
+                <p className="text-lg text-[#A1A1AA] font-medium">
+                  Start free. Stay free if you&apos;re early enough.
+                </p>
               </div>
 
-              <div className="relative z-10 flex flex-col items-center text-center space-y-10">
-                <div className="space-y-4">
-                  <span className="px-4 py-1.5 rounded-full bg-[#10B981] text-black text-[9px] font-black uppercase tracking-[0.3em]">
-                    Limited Beta
-                  </span>
-                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter italic uppercase">
-                    The Beta <br /> Pass.
-                  </h3>
-                </div>
-
-                <div className="flex flex-col md:flex-row items-center gap-12">
-                  <div className="text-left space-y-6 max-w-md">
-                    <p className="text-[#A1A1AA] text-lg font-medium leading-relaxed">
-                      We&apos;re building the future of gig economy
-                      intelligence. Join the Beta to shape the product and
-                      secure early-access benefits.
-                    </p>
-                    <ul className="space-y-4">
-                      {[
-                        "Full Access to All Features",
-                        "No Ads. No Distractions.",
-                        "No Credit Card Required",
-                        "Priority Support",
-                        "Early Adopter Status",
-                      ].map((t) => (
-                        <li
-                          key={t}
-                          className="flex items-center gap-4 text-sm font-black text-white/80"
-                        >
-                          <Check className="size-5 text-[#10B981]" /> {t}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="bg-black/40 border border-white/5 rounded-3xl p-10 flex flex-col items-center justify-center space-y-4 min-w-[280px]">
-                    <span className="text-6xl font-black italic">$0.00</span>
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
-                      No Subscription Fee
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Founding Member */}
+                <div className="relative p-8 rounded-3xl bg-[#10B981]/5 border-2 border-[#10B981]/40 flex flex-col gap-6 hover:border-[#10B981]/60 transition-colors">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="px-4 py-1 rounded-full bg-[#10B981] text-black text-[9px] font-black uppercase tracking-[0.3em]">
+                      First 500 Only
                     </span>
-                    <div className="w-full pt-4">
-                      <MagneticCTA>
-                        <Link href="/login?signup=true" className="block w-full">
-                          <Button className="w-full h-18 bg-[#10B981] text-black text-lg font-black rounded-2xl uppercase tracking-tighter hover:scale-105 transition-transform shadow-[0_0_40px_rgba(16,185,129,0.3)]">
-                            Claim Free Access
-                          </Button>
-                        </Link>
-                      </MagneticCTA>
-                    </div>
-                    <p className="text-[8px] font-bold text-[#10B981] uppercase tracking-widest pt-2">
-                      Free for a limited time during beta
-                    </p>
                   </div>
+                  <div className="space-y-2 pt-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#10B981]/60">Founding Member</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-6xl font-black text-white italic tracking-tighter">FREE</span>
+                    </div>
+                    <p className="text-sm text-[#A1A1AA] font-medium">1 Full Year · No Credit Card</p>
+                  </div>
+                  <ul className="space-y-3 flex-1">
+                    {["Full Access to All Features", "No Ads. Ever.", "Early Adopter Badge", "Priority Support", "Founding Member #"].map((t) => (
+                      <li key={t} className="flex items-center gap-3 text-sm font-bold text-white/80">
+                        <Check className="size-4 text-[#10B981] shrink-0" /> {t}
+                      </li>
+                    ))}
+                  </ul>
+                  {spotsRemaining !== null && (
+                    <p className="text-[10px] font-black text-[#10B981]/60 uppercase tracking-widest text-center">
+                      {spotsRemaining} spots remaining
+                    </p>
+                  )}
+                  <Link href="/login?signup=true">
+                    <Button className="w-full h-14 bg-[#10B981] text-black font-black rounded-2xl uppercase tracking-tighter hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all">
+                      Claim Your Spot
+                    </Button>
+                  </Link>
                 </div>
+
+                {/* Monthly */}
+                <div className="p-8 rounded-3xl glass-card flex flex-col gap-6">
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60">Monthly</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-6xl font-black text-white italic tracking-tighter">$7.99</span>
+                      <span className="text-sm text-[#A1A1AA] font-bold">/mo</span>
+                    </div>
+                    <p className="text-sm text-[#A1A1AA] font-medium">After 14-day free trial</p>
+                  </div>
+                  <ul className="space-y-3 flex-1">
+                    {["Full Access to All Features", "No Ads. Ever.", "Cancel Anytime"].map((t) => (
+                      <li key={t} className="flex items-center gap-3 text-sm font-bold text-white/80">
+                        <Check className="size-4 text-[#10B981] shrink-0" /> {t}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/login?signup=true">
+                    <Button className="w-full h-14 bg-white/5 border border-white/10 text-white font-black rounded-2xl uppercase tracking-tighter hover:bg-white/10 transition-all">
+                      Start Free Trial
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Annual */}
+                <div className="relative p-8 rounded-3xl glass-card flex flex-col gap-6">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="px-4 py-1 rounded-full bg-amber-500 text-black text-[9px] font-black uppercase tracking-[0.3em]">
+                      Best Value
+                    </span>
+                  </div>
+                  <div className="space-y-2 pt-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60">Annual</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-6xl font-black text-white italic tracking-tighter">$59.99</span>
+                      <span className="text-sm text-[#A1A1AA] font-bold">/yr</span>
+                    </div>
+                    <p className="text-sm text-[#10B981] font-bold">~$5/mo · Save 37%</p>
+                  </div>
+                  <ul className="space-y-3 flex-1">
+                    {["Full Access to All Features", "No Ads. Ever.", "2 Months Free", "Priority Support", "Cancel Anytime"].map((t) => (
+                      <li key={t} className="flex items-center gap-3 text-sm font-bold text-white/80">
+                        <Check className="size-4 text-[#10B981] shrink-0" /> {t}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/login?signup=true">
+                    <Button className="w-full h-14 bg-white/5 border border-white/10 text-white font-black rounded-2xl uppercase tracking-tighter hover:bg-white/10 transition-all">
+                      Start Free Trial
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* REFERRAL */}
+            <div className="md:col-span-12 p-8 md:p-10 rounded-3xl border border-[#10B981]/20 bg-[#10B981]/5 flex flex-col md:flex-row items-center gap-8">
+              <div className="size-16 rounded-2xl bg-[#10B981]/10 flex items-center justify-center text-[#10B981] shrink-0">
+                <Users className="size-8" />
+              </div>
+              <div className="flex-1 text-center md:text-left space-y-2">
+                <h3 className="text-2xl font-black uppercase tracking-tighter">Invite Friends. Both Win.</h3>
+                <p className="text-[#A1A1AA] font-medium text-sm leading-relaxed max-w-lg">
+                  Share your referral link after signing up. For every friend who joins, you both get <span className="text-[#10B981] font-black">+30 days free</span> added to your account. No limits.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <span className="text-xs font-black text-[#10B981]/60 uppercase tracking-widest">Available after signup →</span>
               </div>
             </div>
           </div>
@@ -753,32 +872,27 @@ export function VibeLandingClient() {
             <MagneticCTA className="mx-auto max-w-fit">
               <Link href="/login?signup=true" className="block">
                 <Button className="h-24 px-16 rounded-2xl bg-[#10B981] text-black text-2xl font-black uppercase tracking-tighter hover:scale-110 hover:shadow-[0_0_80px_#10B98188] transition-all duration-700">
-                  Join Gigmiles Free
+                  Claim Your Free Year
                 </Button>
               </Link>
             </MagneticCTA>
+            <p className="text-sm text-[#A1A1AA]/60 font-bold uppercase tracking-widest">
+              Free for founding members · No credit card required
+            </p>
           </div>
         </section>
       </main>
 
       <footer className="py-20 border-t border-white/[0.05] relative z-10 bg-[#0B1120]">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
-          <Logo
-            className="grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer"
-          />
+          <Logo className="grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
           <div className="flex gap-8 text-[10px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
-            <span className="hover:text-white cursor-pointer transition-colors">
-              Security
-            </span>
-            <span className="hover:text-white cursor-pointer transition-colors">
-              Privacy
-            </span>
-            <span className="hover:text-white cursor-pointer transition-colors">
-              Terms
-            </span>
+            <span className="hover:text-white cursor-pointer transition-colors">Security</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Terms</span>
           </div>
           <p className="text-[#A1A1AA] text-[10px] font-black uppercase tracking-widest opacity-40">
-            © 2026 GIGMILES
+            © 2025 GIGMILES
           </p>
         </div>
       </footer>

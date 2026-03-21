@@ -17,6 +17,8 @@ function LoginContent() {
     const [loading, setLoading] = useState(false)
     const [isSignUp, setIsSignUp] = useState(false)
     const [isResetMode, setIsResetMode] = useState(false)
+    const [referralCode, setReferralCode] = useState<string | null>(null)
+    const [referrerName, setReferrerName] = useState<string | null>(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const supabase = createClient()
@@ -24,13 +26,23 @@ function LoginContent() {
     useEffect(() => {
         const error = searchParams.get('error')
         const signup = searchParams.get('signup')
+        const ref = searchParams.get('ref')
 
         if (error === 'auth-callback-error') {
             toast.error('Authentication failed. Please try signing in again.')
         }
-
         if (signup === 'true') {
             setIsSignUp(true)
+        }
+        if (ref) {
+            const code = ref.toUpperCase()
+            setReferralCode(code)
+            setIsSignUp(true)
+            // Validate code and get referrer name
+            fetch(`/api/referral/${code}`)
+                .then(r => r.json())
+                .then(data => { if (data.valid) setReferrerName(data.referrerName) })
+                .catch(() => {})
         }
     }, [searchParams])
 
@@ -66,7 +78,7 @@ function LoginContent() {
 
         if (isSignUp) {
             const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL || window.location.origin}/auth/callback`
-            const result = await signUpAction({ email, password, redirectTo })
+            const result = await signUpAction({ email, password, redirectTo, referralCode })
 
             if (result.error) {
                 if (result.error.includes('rate limit')) {
@@ -135,6 +147,15 @@ function LoginContent() {
                                     Create Account
                                 </button>
                             </div>
+
+                            {/* Referral Banner */}
+                            {referralCode && (
+                                <div className="mb-6 px-4 py-3 rounded-2xl bg-[#10B981]/10 border border-[#10B981]/20 text-center">
+                                    <p className="text-[#10B981] text-[11px] font-black uppercase tracking-widest">
+                                        🎉 {referrerName ? `${referrerName} invited you` : 'You were invited'} · +30 days free for both of you
+                                    </p>
+                                </div>
+                            )}
 
                             <form onSubmit={handleAuth} className="space-y-5">
                                 <div className="space-y-2">

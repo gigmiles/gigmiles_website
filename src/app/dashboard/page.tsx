@@ -1,10 +1,12 @@
 import { getDashboardStats, getRecentEntries, getDatesWithEntries } from './actions'
+import { getActiveShift } from './actions/shift'
 import { logToFile } from '@/utils/debug'
 import { BoltQuickActions } from '@/components/dashboard/BoltQuickActions'
 import { DashboardEarningsChart } from '@/components/dashboard/DashboardEarningsChart'
 import { YesterdaysSummaryNotification } from '@/components/dashboard/YesterdaysSummaryNotification'
 import { DailyMotivation } from '@/components/dashboard/DailyMotivation'
 import { DashboardGrid } from '@/components/dashboard/DashboardGrid'
+import { ActiveShiftBanner } from '@/components/dashboard/ActiveShiftBanner'
 import { createClient } from '@/utils/supabase/server'
 
 export default async function DashboardPage({
@@ -19,11 +21,12 @@ export default async function DashboardPage({
     logToFile(`[DashboardPage] User detected: ${user?.id || "None"}`)
 
     // Parallel fetching
-    const [stats, vehicleResult, recentEntries, activeDates] = await Promise.all([
+    const [stats, vehicleResult, recentEntries, activeDates, activeShift] = await Promise.all([
         getDashboardStats(date),
         user ? supabase.from('vehicles').select('*').eq('user_id', user.id).eq('is_primary', true).maybeSingle() : Promise.resolve({ data: null }),
         getRecentEntries(5),
-        getDatesWithEntries()
+        getDatesWithEntries(),
+        getActiveShift(),
     ])
 
     const vehicle = vehicleResult?.data
@@ -34,6 +37,15 @@ export default async function DashboardPage({
 
     return (
         <div className="space-y-6 animate-fade-in pb-12">
+            {/* Active Shift Banner */}
+            {activeShift && (
+                <ActiveShiftBanner
+                    shiftId={activeShift.id}
+                    startTime={activeShift.start_time}
+                    platform={activeShift.platform}
+                />
+            )}
+
             {/* Header: Title + Yesterday Summary inline */}
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>

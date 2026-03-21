@@ -29,9 +29,9 @@ export async function signIn(formData: any) {
 }
 
 export async function signUp(formData: any) {
-    const { email, password, redirectTo } = formData
+    const { email, password, redirectTo, referralCode } = formData
     logToFile(`[Action:SignUp] Attempting sign-up for: ${email}`)
-    
+
     const supabase = await createClient()
 
     const { error } = await supabase.auth.signUp({
@@ -39,6 +39,7 @@ export async function signUp(formData: any) {
         password,
         options: {
             emailRedirectTo: redirectTo,
+            data: referralCode ? { referred_by_code: referralCode.toUpperCase() } : undefined,
         },
     })
 

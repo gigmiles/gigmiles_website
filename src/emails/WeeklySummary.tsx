@@ -21,6 +21,8 @@ interface WeeklySummaryEmailProps {
     dateRange: string;
 }
 
+const APP_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://gigmiles.app'
+
 export const WeeklySummaryEmail = ({
     gross = 1250.50,
     expenses = 320.10,
@@ -75,7 +77,7 @@ export const WeeklySummaryEmail = ({
                         <Section className="text-center mt-[32px] mb-[32px]">
                             <Button
                                 className="bg-[#000000] rounded text-white text-[12px] font-semibold no-underline text-center px-5 py-3"
-                                href="http://localhost:3000/dashboard"
+                                href={`${APP_URL}/dashboard`}
                             >
                                 View Full Dashboard
                             </Button>

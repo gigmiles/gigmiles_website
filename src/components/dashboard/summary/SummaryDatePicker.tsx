@@ -33,7 +33,7 @@ export function SummaryDatePicker({
                 >
                     <CalendarIcon className="size-4 text-emerald-500" />
                     <span className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
-                        {date ? format(date, 'MM/dd/yyyy') : format(new Date(), 'MM/dd/yyyy')}
+                        {date ? format(date, 'MMM d, yyyy') : format(new Date(), 'MMM d, yyyy')}
                     </span>
                     {isPending && <RefreshCw className="size-3 animate-spin text-emerald-500" />}
                 </Button>

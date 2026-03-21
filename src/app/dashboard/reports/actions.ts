@@ -86,7 +86,12 @@ export async function getReportsData(startDate?: string, endDate?: string) {
 
     if (error || !entries) {
         console.error('Error fetching reports data:', error)
-        return { dailyData: [], platformData: [], expenseBreakdown: [] }
+        return { 
+            dailyData: [], 
+            platformData: [], 
+            expenseBreakdown: [],
+            prevTotals: { gross: 0, net: 0, miles: 0 } 
+        }
     }
 
     // Fetch user's profile and primary vehicle for calculations

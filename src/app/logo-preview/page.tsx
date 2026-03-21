@@ -47,7 +47,7 @@ function ConceptBlock({
           {(["xs", "sm", "md", "lg"] as const).map((s) => (
             <div key={s} className="flex items-center gap-3">
               <span className="text-[9px] w-5 text-white/20 uppercase">{s}</span>
-              {React.cloneElement(logo as React.ReactElement, { size: s })}
+              {React.cloneElement(logo as any, { size: s })}
             </div>
           ))}
         </div>
@@ -58,7 +58,7 @@ function ConceptBlock({
         <p className="text-[9px] text-white/25 uppercase tracking-widest">Icon only (sidebar)</p>
         <div className="flex items-center gap-4">
           {(["xs", "sm", "md", "lg"] as const).map((s) => (
-            React.cloneElement(logo as React.ReactElement, { size: s, iconOnly: true, key: s })
+            React.cloneElement(logo as any, { size: s, iconOnly: true, key: s })
           ))}
         </div>
       </div>
@@ -66,7 +66,7 @@ function ConceptBlock({
       {/* Light bg */}
       <div className="bg-white rounded-2xl p-5 border border-black/[0.06] space-y-2">
         <p className="text-[9px] text-black/30 uppercase tracking-widest">Light background</p>
-        {React.cloneElement(logo as React.ReactElement, { light: true })}
+        {React.cloneElement(logo as any, { light: true })}
       </div>
     </div>
   );

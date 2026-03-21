@@ -3,14 +3,15 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function getSupportTickets() {
+export async function getSupportTickets(callerEmail: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return null
 
-    // For now, allow access if the user is authenticated. 
-    // In a real app, you'd check for an 'is_admin' flag or similar.
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+    if (!ADMIN_EMAIL || user.email !== ADMIN_EMAIL || user.email !== callerEmail) return null
+
     const { data, error } = await supabase
         .from('support_tickets')
         .select(`
@@ -32,6 +33,9 @@ export async function updateTicketStatus(id: string, status: string) {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) return { success: false }
+
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+    if (!ADMIN_EMAIL || user.email !== ADMIN_EMAIL) return { success: false }
 
     const { error } = await supabase
         .from('support_tickets')
