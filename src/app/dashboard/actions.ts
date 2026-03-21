@@ -31,7 +31,7 @@ export async function getDashboardStats(dateStr?: string) {
             gas_price,
             platform_earnings ( id, platform_name, amount, tips, miles, hours ),
             expenses ( id, category, amount, description )
-        `).eq('user_id', user.id).eq('date', targetDateStr).maybeSingle(),
+        `).eq('user_id', user.id).eq('date', targetDateStr).limit(1).maybeSingle(),
         supabase.from('daily_entries').select(`
             id,
             date,
@@ -130,13 +130,13 @@ export async function getDashboardStats(dateStr?: string) {
     let weeklyMiles = 0
     let weeklyHours = 0
 
-    const entryMap = new Map(weeklyEntries.map(e => [e.date, e]))
+    // Removed map to handle duplicates below
 
     for (let i = 0; i < 7; i++) {
         const d = new Date(startOfRange)
         d.setDate(d.getDate() + i)
-        const dateStr = format(d, 'yyyy-MM-dd')
-        const entry = entryMap.get(dateStr)
+        const entriesForDate = weeklyEntries.filter(e => e.date === dateStr)
+        const entry = entriesForDate.length > 0 ? entriesForDate[entriesForDate.length - 1] : undefined
 
         let dGross = 0
         let dExpenses = 0
@@ -346,6 +346,7 @@ export async function createDailyEntry(entryData: { date: string, notes?: string
         .select('id')
         .eq('user_id', user.id)
         .eq('date', entryData.date)
+        .limit(1)
         .maybeSingle()
 
     if (existingEntry) {
@@ -435,7 +436,7 @@ export async function getYesterdaysSummary() {
             gas_price,
             platform_earnings ( id, amount, tips, miles, hours ),
             expenses ( id, category, amount )
-        `).eq('user_id', user.id).eq('date', yesterdayStr).maybeSingle()
+        `).eq('user_id', user.id).eq('date', yesterdayStr).limit(1).maybeSingle()
     ]).catch((err) => {
         console.error('[getYesterdaysSummary] Parallel fetch failed:', err)
         throw new Error('Failed to load yesterday summary.')
@@ -643,6 +644,7 @@ export async function saveCostOverride(date: string, category: string, amount: n
         .select('id')
         .eq('user_id', user.id)
         .eq('date', date)
+        .limit(1)
         .maybeSingle()
 
     if (!entry) {
@@ -697,6 +699,7 @@ export async function addExpense(date: string, expense: { category: string, amou
         .select('id')
         .eq('user_id', user.id)
         .eq('date', date)
+        .limit(1)
         .maybeSingle()
 
     if (!entry) {
