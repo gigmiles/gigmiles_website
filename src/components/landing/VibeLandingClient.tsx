@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { APP_STORE_URL } from "@/config/app";
 import Link from "next/link";
 import {
@@ -85,14 +85,6 @@ export function VibeLandingClient() {
   const [hours, setHours] = useState<number>(45);
   const [showFeatures, setShowFeatures] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [memberCount, setMemberCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch("/api/member-count")
-      .then((r) => r.json())
-      .then((d) => setMemberCount(d.count ?? 0))
-      .catch(() => setMemberCount(null));
-  }, []);
 
   const estimatedExpenses = gross * 0.35;
   const estimatedTaxes = gross * 0.153;
@@ -278,25 +270,6 @@ export function VibeLandingClient() {
             Early Access · Now Available on iOS
           </div>
 
-          {/* Driver Counter */}
-          <div className="flex flex-col items-center gap-3">
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.08]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
-                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-red-400">Live</span>
-              </div>
-              <div className="w-px h-4 bg-white/10" />
-              {memberCount !== null ? (
-                <span className="text-xs font-black text-white">
-                  <span className="text-[#10B981]">{memberCount}+</span>
-                  <span className="text-[#A1A1AA]"> gig drivers already tracking</span>
-                </span>
-              ) : (
-                <span className="text-xs font-black text-[#A1A1AA]">Join gig drivers already tracking</span>
-              )}
-            </div>
-          </div>
-
           {/* Motto */}
           <h1 className="text-4xl md:text-6xl md:text-[clamp(4.5rem,8vw,8rem)] font-black tracking-tighter leading-[0.85] uppercase">
             <span className="block hero-line-1">
@@ -390,46 +363,74 @@ export function VibeLandingClient() {
           <motion.div variants={staggerContainer} className="grid grid-cols-1 md:grid-cols-12 md:auto-rows-[minmax(280px,auto)] gap-6">
             {[
               {
-                title: "No Ads",
-                desc: "Your focus is your profit. We keep the experience 100% ad-free.",
-                icon: <EyeOff className="size-8" />,
-                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                title: "Net Profit Dashboard",
+                desc: "Real-time gross vs. take-home breakdown. See what you actually earned — not just what the app paid.",
+                icon: <TrendingUp className="size-8" />,
+                className: "md:col-span-6 md:row-span-1 flex flex-col justify-between",
                 iconBg: "bg-[#10B981]/10 text-[#10B981]",
               },
               {
+                title: "Tax Ledger",
+                desc: "Self-employment tax calculated automatically as you earn. No surprises at filing.",
+                icon: <Receipt className="size-8" />,
+                className: "md:col-span-6 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-emerald-500/10 text-emerald-500",
+              },
+              {
+                title: "Expense Tracking",
+                desc: "Log fuel, maintenance, and gear. Every cost categorized and deduction-ready.",
+                icon: <TrendingDown className="size-8" />,
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-blue-500/10 text-blue-400",
+              },
+              {
+                title: "Vehicle Depreciation",
+                desc: "Year, make & model based depreciation built in. Know your true cost per mile.",
+                icon: <Calculator className="size-8" />,
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-rose-500/10 text-rose-500",
+              },
+              {
+                title: "Platform Analytics",
+                desc: "Compare your real hourly rate across Uber, DoorDash, Lyft & more side by side.",
+                icon: <Star className="size-8" />,
+                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-violet-500/10 text-violet-400",
+              },
+              {
                 title: "Burnout Guard",
-                desc: "Real-time fatigue monitoring. Know exactly when your ROI drops.",
+                desc: "Real-time fatigue monitoring. Know exactly when long hours stop making financial sense.",
                 icon: <AlertCircle className="size-8" />,
                 className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
                 iconBg: "bg-amber-500/10 text-amber-500",
               },
               {
-                title: "Privacy First",
-                desc: "Your data is encrypted. We never sell your earnings info.",
-                icon: <Lock className="size-8" />,
+                title: "Year in Review",
+                desc: "Your full-year earnings wrapped into one shareable card. Flex your hustle.",
+                icon: <Zap className="size-8" />,
                 className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
                 iconBg: "bg-indigo-500/10 text-indigo-400",
               },
               {
-                title: "Tax Ready",
-                desc: "Export clean reports for tax season in one tap.",
-                icon: <Receipt className="size-8" />,
+                title: "No Ads. Ever.",
+                desc: "Your focus is your profit. Zero ads, zero distractions — always.",
+                icon: <EyeOff className="size-8" />,
                 className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
-                iconBg: "bg-emerald-500/10 text-emerald-500",
+                iconBg: "bg-[#10B981]/10 text-[#10B981]",
               },
               {
-                title: "Speed",
-                desc: "Ultralight performance. Works where you work.",
-                icon: <Zap className="size-8" />,
-                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
-                iconBg: "bg-rose-500/10 text-rose-500",
+                title: "Privacy First",
+                desc: "Your data is encrypted end-to-end. We never sell or share your earnings information.",
+                icon: <Lock className="size-8" />,
+                className: "md:col-span-6 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-slate-500/10 text-slate-400",
               },
               {
-                title: "Reality Scan",
-                desc: "Instant breakdown of fuel, wear, and taxes. No hidden losses.",
-                icon: <TrendingDown className="size-8" />,
-                className: "md:col-span-4 md:row-span-1 flex flex-col justify-between",
-                iconBg: "bg-blue-500/10 text-blue-400",
+                title: "Mileage Tracking",
+                desc: "Log every business mile. Maximize your deductible and reduce your tax bill.",
+                icon: <ShieldCheck className="size-8" />,
+                className: "md:col-span-6 md:row-span-1 flex flex-col justify-between",
+                iconBg: "bg-teal-500/10 text-teal-400",
               },
             ].map((f, i) => (
               <motion.div
