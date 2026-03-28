@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import { APP_STORE_URL } from "@/config/app";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -16,7 +17,6 @@ import {
   Lock,
   Star,
   Brain,
-  Users,
   Menu,
   X,
 } from "lucide-react";
@@ -93,9 +93,6 @@ export function VibeLandingClient() {
       .then((d) => setMemberCount(d.count ?? 0))
       .catch(() => setMemberCount(null));
   }, []);
-
-  const spotsRemaining = memberCount !== null ? Math.max(0, 500 - memberCount) : null;
-  const spotsProgress = memberCount !== null ? Math.min(100, (memberCount / 500) * 100) : 0;
 
   const estimatedExpenses = gross * 0.35;
   const estimatedTaxes = gross * 0.153;
@@ -225,21 +222,14 @@ export function VibeLandingClient() {
                 {item}
               </a>
             ))}
-            <div className="w-px h-4 bg-white/10 mx-2" />
-            <Link
-              href="/login"
-              className="px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white hover:text-[#10B981] transition-colors"
-            >
-              Sign In
-            </Link>
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href="/login?signup=true" className="hidden md:block">
+            <a href={APP_STORE_URL} className="hidden md:block">
               <Button className="bg-[#10B981] text-black font-black px-8 py-6 rounded-2xl hover:shadow-[0_0_30px_#10B98188] transition-all uppercase tracking-tighter text-sm">
-                Join Beta
+                Download App
               </Button>
-            </Link>
+            </a>
             {/* Mobile hamburger */}
             <button
               className="md:hidden p-2 rounded-xl bg-white/[0.05] border border-white/[0.08] text-white"
@@ -258,7 +248,6 @@ export function VibeLandingClient() {
               { label: "Features", href: "#features" },
               { label: "Calculator", href: "#calculator" },
               { label: "Pricing", href: "#pricing" },
-              { label: "Sign In", href: "/login" },
             ].map((item) => (
               <a
                 key={item.label}
@@ -270,11 +259,11 @@ export function VibeLandingClient() {
               </a>
             ))}
             <div className="pt-3 border-t border-white/[0.06]">
-              <Link href="/login?signup=true" onClick={() => setMobileMenuOpen(false)}>
+              <a href={APP_STORE_URL} onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full bg-[#10B981] text-black font-black rounded-xl uppercase tracking-tighter text-sm py-6">
-                  Join Beta — Free
+                  Download on App Store
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         )}
@@ -286,10 +275,10 @@ export function VibeLandingClient() {
           {/* Badge */}
           <div className="hero-badge inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-[8px] font-black uppercase tracking-[0.3em]">
             <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-ping" />
-            First 500 Members · 1 Year Free
+            Early Access · Now Available on iOS
           </div>
 
-          {/* Member Counter */}
+          {/* Driver Counter */}
           <div className="flex flex-col items-center gap-3">
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.08]">
               <div className="flex items-center gap-1.5">
@@ -299,21 +288,13 @@ export function VibeLandingClient() {
               <div className="w-px h-4 bg-white/10" />
               {memberCount !== null ? (
                 <span className="text-xs font-black text-white">
-                  <span className="text-[#10B981]">{memberCount}</span>
-                  <span className="text-[#A1A1AA]"> / 500 early spots claimed</span>
+                  <span className="text-[#10B981]">{memberCount}+</span>
+                  <span className="text-[#A1A1AA]"> gig drivers already tracking</span>
                 </span>
               ) : (
-                <span className="text-xs font-black text-[#A1A1AA]">Join the founding members</span>
+                <span className="text-xs font-black text-[#A1A1AA]">Join gig drivers already tracking</span>
               )}
             </div>
-            {memberCount !== null && (
-              <div className="w-48 h-1 bg-white/[0.06] rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#10B981] rounded-full transition-all duration-1000"
-                  style={{ width: `${spotsProgress}%` }}
-                />
-              </div>
-            )}
           </div>
 
           {/* Motto */}
@@ -348,20 +329,17 @@ export function VibeLandingClient() {
               Stop guessing your net profit. Real-time intelligence for the
               drivers who take their earnings seriously.
             </p>
-            <p className="text-sm text-[#10B981]/70 font-medium max-w-md mx-auto">
-              Join today as one of our first 500 members and get 1 full year of GigMiles completely free.
-            </p>
           </div>
 
           {/* CTA */}
           <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
             <MagneticCTA>
-              <Link href="/login?signup=true" className="block">
+              <a href={APP_STORE_URL} className="block">
                 <Button className="h-18 px-12 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter hover:scale-105 hover:shadow-[0_0_60px_#10B98166] transition-all duration-500 group">
-                  Claim Your Spot
+                  Download on App Store
                   <ArrowRight className="size-6 ml-3 group-hover:translate-x-2 transition-transform" />
                 </Button>
-              </Link>
+              </a>
             </MagneticCTA>
             <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/[0.02] border border-white/[0.08]">
               <ShieldCheck className="size-5 text-[#10B981]" />
@@ -589,7 +567,7 @@ export function VibeLandingClient() {
                   </p>
                   <div className="space-y-3 py-4">
                     {[
-                      { stat: "$0.70/mi", label: "IRS Mileage Rate 2025" },
+                      { stat: "$0.725/mi", label: "IRS Mileage Rate 2026" },
                       { stat: "Your Car", label: "Personalized Cost Data" },
                       { stat: "30 sec", label: "To Log a Trip" },
                     ].map((item) => (
@@ -600,11 +578,11 @@ export function VibeLandingClient() {
                     ))}
                   </div>
                 </div>
-                <Link href="/login?signup=true">
+                <a href={APP_STORE_URL}>
                   <Button className="w-full h-14 rounded-xl bg-black text-[#10B981] font-black uppercase tracking-tighter text-base mt-4 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-[1.02] transition-all">
-                    Start Tracking Now
+                    Download on App Store
                   </Button>
-                </Link>
+                </a>
               </div>
             </div>
 
@@ -685,11 +663,11 @@ export function VibeLandingClient() {
                     </div>
                   </div>
 
-                  <Link href="/login?signup=true" className="w-full">
+                  <a href={APP_STORE_URL} className="w-full block">
                     <Button className="w-full h-16 bg-[#10B981] text-black text-lg font-black rounded-2xl uppercase tracking-tighter">
-                      Claim This Reality
+                      Download on App Store
                     </Button>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>
@@ -710,37 +688,32 @@ export function VibeLandingClient() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Founding Member */}
+                {/* Free Trial */}
                 <div className="relative p-8 rounded-3xl bg-[#10B981]/5 border-2 border-[#10B981]/40 flex flex-col gap-6 hover:border-[#10B981]/60 transition-colors">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="px-4 py-1 rounded-full bg-[#10B981] text-black text-[9px] font-black uppercase tracking-[0.3em]">
-                      First 500 Only
+                      Early Access
                     </span>
                   </div>
                   <div className="space-y-2 pt-4">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#10B981]/60">Founding Member</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#10B981]/60">Free Trial</p>
                     <div className="flex items-baseline gap-2">
                       <span className="text-6xl font-black text-white italic tracking-tighter">FREE</span>
                     </div>
-                    <p className="text-sm text-[#A1A1AA] font-medium">1 Full Year · No Credit Card</p>
+                    <p className="text-sm text-[#A1A1AA] font-medium">14 Days · No Credit Card</p>
                   </div>
                   <ul className="space-y-3 flex-1">
-                    {["Full Access to All Features", "No Ads. Ever.", "Early Adopter Badge", "Priority Support", "Founding Member #"].map((t) => (
+                    {["Full Access to All Features", "No Ads. Ever.", "Early Access Perks", "Priority Support"].map((t) => (
                       <li key={t} className="flex items-center gap-3 text-sm font-bold text-white/80">
                         <Check className="size-4 text-[#10B981] shrink-0" /> {t}
                       </li>
                     ))}
                   </ul>
-                  {spotsRemaining !== null && (
-                    <p className="text-[10px] font-black text-[#10B981]/60 uppercase tracking-widest text-center">
-                      {spotsRemaining} spots remaining
-                    </p>
-                  )}
-                  <Link href="/login?signup=true">
+                  <a href={APP_STORE_URL}>
                     <Button className="w-full h-14 bg-[#10B981] text-black font-black rounded-2xl uppercase tracking-tighter hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all">
-                      Claim Your Spot
+                      Download on App Store
                     </Button>
-                  </Link>
+                  </a>
                 </div>
 
                 {/* Monthly */}
@@ -760,11 +733,11 @@ export function VibeLandingClient() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/login?signup=true">
+                  <a href={APP_STORE_URL}>
                     <Button className="w-full h-14 bg-white/5 border border-white/10 text-white font-black rounded-2xl uppercase tracking-tighter hover:bg-white/10 transition-all">
                       Start Free Trial
                     </Button>
-                  </Link>
+                  </a>
                 </div>
 
                 {/* Annual */}
@@ -789,30 +762,15 @@ export function VibeLandingClient() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/login?signup=true">
+                  <a href={APP_STORE_URL}>
                     <Button className="w-full h-14 bg-white/5 border border-white/10 text-white font-black rounded-2xl uppercase tracking-tighter hover:bg-white/10 transition-all">
                       Start Free Trial
                     </Button>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>
 
-            {/* REFERRAL */}
-            <div className="md:col-span-12 p-8 md:p-10 rounded-3xl border border-[#10B981]/20 bg-[#10B981]/5 flex flex-col md:flex-row items-center gap-8">
-              <div className="size-16 rounded-2xl bg-[#10B981]/10 flex items-center justify-center text-[#10B981] shrink-0">
-                <Users className="size-8" />
-              </div>
-              <div className="flex-1 text-center md:text-left space-y-2">
-                <h3 className="text-2xl font-black uppercase tracking-tighter">Invite Friends. Both Win.</h3>
-                <p className="text-[#A1A1AA] font-medium text-sm leading-relaxed max-w-lg">
-                  Share your referral link after signing up. For every friend who joins, you both get <span className="text-[#10B981] font-black">+30 days free</span> added to your account. No limits.
-                </p>
-              </div>
-              <div className="shrink-0">
-                <span className="text-xs font-black text-[#10B981]/60 uppercase tracking-widest">Available after signup →</span>
-              </div>
-            </div>
           </div>
         </motion.section>
 
@@ -866,18 +824,18 @@ export function VibeLandingClient() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#10B981]/10 via-transparent to-transparent" />
           <div className="max-w-5xl mx-auto relative z-10 text-center space-y-10">
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter uppercase italic leading-[0.85]">
-              LIMITED <br />{" "}
-              <span className="text-[#10B981]">BETA.</span>
+              EARLY <br />{" "}
+              <span className="text-[#10B981]">ACCESS.</span>
             </h2>
             <MagneticCTA className="mx-auto max-w-fit">
-              <Link href="/login?signup=true" className="block">
+              <a href={APP_STORE_URL} className="block">
                 <Button className="h-24 px-16 rounded-2xl bg-[#10B981] text-black text-2xl font-black uppercase tracking-tighter hover:scale-110 hover:shadow-[0_0_80px_#10B98188] transition-all duration-700">
-                  Claim Your Free Year
+                  Download on App Store
                 </Button>
-              </Link>
+              </a>
             </MagneticCTA>
             <p className="text-sm text-[#A1A1AA]/60 font-bold uppercase tracking-widest">
-              Free for founding members · No credit card required
+              14-day free trial · No credit card required
             </p>
           </div>
         </section>
@@ -887,12 +845,11 @@ export function VibeLandingClient() {
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
           <Logo className="grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
           <div className="flex gap-8 text-[10px] font-black uppercase tracking-[0.4em] text-[#A1A1AA]">
-            <span className="hover:text-white cursor-pointer transition-colors">Security</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Privacy</span>
-            <span className="hover:text-white cursor-pointer transition-colors">Terms</span>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
           </div>
           <p className="text-[#A1A1AA] text-[10px] font-black uppercase tracking-widest opacity-40">
-            © 2025 GIGMILES
+            © 2026 GIGMILES
           </p>
         </div>
       </footer>

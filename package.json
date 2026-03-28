@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "build:mobile": "next build && npx cap sync",
+    "build:mobile": "STATIC_EXPORT=1 next build && npx cap sync",
     "sync": "npx cap sync",
     "ios": "npm run build:mobile && npx cap open ios",
     "android": "npm run build:mobile && npx cap open android",

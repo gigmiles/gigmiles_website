@@ -2,7 +2,7 @@
   "name": "GigMiles",
   "short_name": "GigMiles",
   "description": "Track earnings, expenses, and maximize your gig economy profits.",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0B1120",
   "theme_color": "#0B1120",

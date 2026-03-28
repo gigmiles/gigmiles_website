@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "XXXXXXXXXX.com.gigmiles.gigmilesApp",
+        "paths": [
+          "/download",
+          "/join/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "XXXXXXXXXX.com.gigmiles.gigmilesApp"
+    ]
+  }
+}

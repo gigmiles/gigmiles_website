@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.gigmiles.gigmilesApp",
+      "sha256_cert_fingerprints": [
+        "TODO: Add SHA-256 fingerprint from Google Play Console"
+      ]
+    }
+  }
+]

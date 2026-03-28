@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,8 +18,19 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "GigMiles | Professional Earnings Performance",
-  description: "Maximize your performance. Track gig earnings, expenses, and vehicle depreciation with GigMiles.",
+  metadataBase: new URL("https://gigmiles.app"),
+  title: "GigMiles — Know What You Actually Earn",
+  description:
+    "Stop guessing your net profit. GigMiles tracks real earnings, vehicle costs, mileage deductions, and taxes for Uber, DoorDash, Lyft, and Amazon Flex drivers.",
+  keywords: [
+    "gig worker app",
+    "rideshare earnings tracker",
+    "DoorDash mileage tracker",
+    "Uber driver expenses",
+    "self-employment tax calculator",
+    "gig economy income",
+    "delivery driver app",
+  ],
   manifest: "/manifest.json",
   themeColor: "#0B1120",
   appleWebApp: {
@@ -26,16 +38,33 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "GigMiles",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    viewportFit: "cover",
+  openGraph: {
+    type: "website",
+    url: "https://gigmiles.app",
+    title: "GigMiles — Know What You Actually Earn",
+    description:
+      "Real-time earnings intelligence for gig drivers. Track net profit, mileage deductions, vehicle costs, and taxes — all in one app.",
+    siteName: "GigMiles",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "GigMiles — Gig Worker Earnings Tracker",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GigMiles — Know What You Actually Earn",
+    description:
+      "Real-time earnings intelligence for gig drivers. Track net profit, mileage, vehicle costs, and taxes.",
+    images: ["/opengraph-image"],
+  },
+  alternates: {
+    canonical: "https://gigmiles.app",
   },
 };
-
-import { ThemeProvider } from "@/components/theme-provider";
-import { MobileAppConfig } from "@/components/MobileAppConfig";
 
 export default function RootLayout({
   children,
@@ -44,32 +73,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${outfit.variable} font-sans`}
-      >
+      <body className={`${inter.variable} ${outfit.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           forcedTheme="dark"
           disableTransitionOnChange
         >
-          <MobileAppConfig />
           <TooltipProvider>
             {children}
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js').catch((err) => { console.error('Service Worker registration failed:', err); });
-                });
-              }
-            `,
-          }}
-        />
       </body>
     </html>
   );
