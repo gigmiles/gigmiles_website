@@ -217,7 +217,7 @@ export function VibeLandingClient() {
           </div>
 
           <div className="flex items-center gap-3">
-            <a href={APP_STORE_URL} className="hidden md:block">
+            <a href="/waitlist" className="hidden md:block">
               <Button className="bg-[#10B981] text-black font-black px-8 py-6 rounded-2xl hover:shadow-[0_0_30px_#10B98188] transition-all uppercase tracking-tighter text-sm">
                 Download App
               </Button>
@@ -251,9 +251,9 @@ export function VibeLandingClient() {
               </a>
             ))}
             <div className="pt-3 border-t border-white/[0.06]">
-              <a href={APP_STORE_URL} onClick={() => setMobileMenuOpen(false)}>
+              <a href="/waitlist" onClick={() => setMobileMenuOpen(false)}>
                 <Button className="w-full bg-[#10B981] text-black font-black rounded-xl uppercase tracking-tighter text-sm py-6">
-                  Download on App Store
+                  Join the Waitlist →
                 </Button>
               </a>
             </div>
@@ -307,9 +307,9 @@ export function VibeLandingClient() {
           {/* CTA */}
           <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
             <MagneticCTA>
-              <a href={APP_STORE_URL} className="block">
+              <a href="/waitlist" className="block">
                 <Button className="h-18 px-12 rounded-2xl bg-[#10B981] text-black text-lg font-black uppercase tracking-tighter hover:scale-105 hover:shadow-[0_0_60px_#10B98166] transition-all duration-500 group">
-                  Download on App Store
+                  Join the Waitlist →
                   <ArrowRight className="size-6 ml-3 group-hover:translate-x-2 transition-transform" />
                 </Button>
               </a>
@@ -579,9 +579,9 @@ export function VibeLandingClient() {
                     ))}
                   </div>
                 </div>
-                <a href={APP_STORE_URL}>
+                <a href="/waitlist">
                   <Button className="w-full h-14 rounded-xl bg-black text-[#10B981] font-black uppercase tracking-tighter text-base mt-4 group-hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:scale-[1.02] transition-all">
-                    Download on App Store
+                    Join the Waitlist →
                   </Button>
                 </a>
               </div>
@@ -664,9 +664,9 @@ export function VibeLandingClient() {
                     </div>
                   </div>
 
-                  <a href={APP_STORE_URL} className="w-full block">
+                  <a href="/waitlist" className="w-full block">
                     <Button className="w-full h-16 bg-[#10B981] text-black text-lg font-black rounded-2xl uppercase tracking-tighter">
-                      Download on App Store
+                      Join the Waitlist →
                     </Button>
                   </a>
                 </div>
@@ -710,9 +710,9 @@ export function VibeLandingClient() {
                       </li>
                     ))}
                   </ul>
-                  <a href={APP_STORE_URL}>
+                  <a href="/waitlist">
                     <Button className="w-full h-14 bg-[#10B981] text-black font-black rounded-2xl uppercase tracking-tighter hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all">
-                      Download on App Store
+                      Join the Waitlist →
                     </Button>
                   </a>
                 </div>
@@ -722,7 +722,7 @@ export function VibeLandingClient() {
                   <div className="space-y-2">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60">Monthly</p>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-6xl font-black text-white italic tracking-tighter">$7.99</span>
+                      <span className="text-6xl font-black text-white italic tracking-tighter">$9.99</span>
                       <span className="text-sm text-[#A1A1AA] font-bold">/mo</span>
                     </div>
                     <p className="text-sm text-[#A1A1AA] font-medium">After 14-day free trial</p>
@@ -734,9 +734,9 @@ export function VibeLandingClient() {
                       </li>
                     ))}
                   </ul>
-                  <a href={APP_STORE_URL}>
+                  <a href="/waitlist">
                     <Button className="w-full h-14 bg-white/5 border border-white/10 text-white font-black rounded-2xl uppercase tracking-tighter hover:bg-white/10 transition-all">
-                      Start Free Trial
+                      Join the Waitlist →
                     </Button>
                   </a>
                 </div>
@@ -751,21 +751,21 @@ export function VibeLandingClient() {
                   <div className="space-y-2 pt-4">
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#A1A1AA]/60">Annual</p>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-6xl font-black text-white italic tracking-tighter">$59.99</span>
+                      <span className="text-6xl font-black text-white italic tracking-tighter">$99.99</span>
                       <span className="text-sm text-[#A1A1AA] font-bold">/yr</span>
                     </div>
-                    <p className="text-sm text-[#10B981] font-bold">~$5/mo · Save 37%</p>
+                    <p className="text-sm text-[#10B981] font-bold">~$8.33/mo · Save 17%</p>
                   </div>
                   <ul className="space-y-3 flex-1">
-                    {["Full Access to All Features", "No Ads. Ever.", "2 Months Free", "Priority Support", "Cancel Anytime"].map((t) => (
+                    {["Full Access to All Features", "No Ads. Ever.", "Best Value", "Priority Support", "Cancel Anytime"].map((t) => (
                       <li key={t} className="flex items-center gap-3 text-sm font-bold text-white/80">
                         <Check className="size-4 text-[#10B981] shrink-0" /> {t}
                       </li>
                     ))}
                   </ul>
-                  <a href={APP_STORE_URL}>
+                  <a href="/waitlist">
                     <Button className="w-full h-14 bg-white/5 border border-white/10 text-white font-black rounded-2xl uppercase tracking-tighter hover:bg-white/10 transition-all">
-                      Start Free Trial
+                      Join the Waitlist →
                     </Button>
                   </a>
                 </div>
@@ -829,9 +829,9 @@ export function VibeLandingClient() {
               <span className="text-[#10B981]">ACCESS.</span>
             </h2>
             <MagneticCTA className="mx-auto max-w-fit">
-              <a href={APP_STORE_URL} className="block">
+              <a href="/waitlist" className="block">
                 <Button className="h-24 px-16 rounded-2xl bg-[#10B981] text-black text-2xl font-black uppercase tracking-tighter hover:scale-110 hover:shadow-[0_0_80px_#10B98188] transition-all duration-700">
-                  Download on App Store
+                  Join the Waitlist →
                 </Button>
               </a>
             </MagneticCTA>
