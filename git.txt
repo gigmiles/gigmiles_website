@@ -1,0 +1,376 @@
+commit 2830bafee5dd0232a97a09c98f7db0420946a5af
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sat Mar 21 16:37:39 2026 +0300
+
+    fix(dashboard): protect daily_entries queries with limit(1) to avoid maybeSingle failures on duplicates
+
+M	src/app/dashboard/actions.ts
+
+commit c5bd84fa91e49c4040ba77bfe9523637d082c54f
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sat Mar 21 16:28:37 2026 +0300
+
+    fix(dashboard): resolve SSR crash on reports page and TS errors
+
+M	.antigravity/rules.md
+M	.claude/skills/linggen/scripts/start_linggen_server.sh
+A	.expo/README.md
+A	.expo/devices.json
+M	.gitignore
+A	GIGMILES-APP-NATIVE
+A	android/.gitignore
+A	android/app/.gitignore
+A	android/app/build.gradle
+A	android/app/capacitor.build.gradle
+A	android/app/proguard-rules.pro
+A	android/app/src/androidTest/java/com/getcapacitor/myapp/ExampleInstrumentedTest.java
+A	android/app/src/main/AndroidManifest.xml
+A	android/app/src/main/java/com/gigmiles/app/MainActivity.java
+A	android/app/src/main/res/drawable-land-hdpi/splash.png
+A	android/app/src/main/res/drawable-land-mdpi/splash.png
+A	android/app/src/main/res/drawable-land-xhdpi/splash.png
+A	android/app/src/main/res/drawable-land-xxhdpi/splash.png
+A	android/app/src/main/res/drawable-land-xxxhdpi/splash.png
+A	android/app/src/main/res/drawable-port-hdpi/splash.png
+A	android/app/src/main/res/drawable-port-mdpi/splash.png
+A	android/app/src/main/res/drawable-port-xhdpi/splash.png
+A	android/app/src/main/res/drawable-port-xxhdpi/splash.png
+A	android/app/src/main/res/drawable-port-xxxhdpi/splash.png
+A	android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml
+A	android/app/src/main/res/drawable/ic_launcher_background.xml
+A	android/app/src/main/res/drawable/splash.png
+A	android/app/src/main/res/layout/activity_main.xml
+A	android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+A	android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+A	android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+A	android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png
+A	android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+A	android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+A	android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png
+A	android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+A	android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+A	android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png
+A	android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+A	android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+A	android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png
+A	android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+A	android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+A	android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png
+A	android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+A	android/app/src/main/res/values/ic_launcher_background.xml
+A	android/app/src/main/res/values/strings.xml
+A	android/app/src/main/res/values/styles.xml
+A	android/app/src/main/res/xml/file_paths.xml
+A	android/app/src/test/java/com/getcapacitor/myapp/ExampleUnitTest.java
+A	android/build.gradle
+A	android/capacitor.settings.gradle
+A	android/gradle.properties
+A	android/gradle/wrapper/gradle-wrapper.jar
+A	android/gradle/wrapper/gradle-wrapper.properties
+A	android/gradlew
+A	android/gradlew.bat
+A	android/settings.gradle
+A	android/variables.gradle
+A	build_out.txt
+A	build_out_2.txt
+A	build_out_3.txt
+A	build_out_final.txt
+A	build_out_utf8.txt
+A	diff_out.txt
+A	diff_out8.txt
+A	ios/.gitignore
+A	ios/App/App.xcodeproj/project.pbxproj
+A	ios/App/App.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+A	ios/App/App/AppDelegate.swift
+A	ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png
+A	ios/App/App/Assets.xcassets/AppIcon.appiconset/Contents.json
+A	ios/App/App/Assets.xcassets/Contents.json
+A	ios/App/App/Assets.xcassets/Splash.imageset/Contents.json
+A	ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-1.png
+A	ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-2.png
+A	ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732.png
+A	ios/App/App/Base.lproj/LaunchScreen.storyboard
+A	ios/App/App/Base.lproj/Main.storyboard
+A	ios/App/App/Info.plist
+A	ios/App/CapApp-SPM/.gitignore
+A	ios/App/CapApp-SPM/Package.swift
+A	ios/App/CapApp-SPM/README.md
+A	ios/App/CapApp-SPM/Sources/CapApp-SPM/CapApp-SPM.swift
+A	ios/debug.xcconfig
+M	next.config.ts
+A	src/app/api/member-count/route.ts
+A	src/app/api/referral/[code]/route.ts
+A	src/app/api/stripe/create-checkout/route.ts
+A	src/app/api/stripe/webhook/route.ts
+M	src/app/auth/actions.ts
+M	src/app/auth/callback/route.ts
+M	src/app/auth/reset-password/page.tsx
+M	src/app/dashboard/admin/messages/actions.ts
+M	src/app/dashboard/admin/messages/page.tsx
+M	src/app/dashboard/page.tsx
+M	src/app/dashboard/reports/actions.ts
+M	src/app/dashboard/settings/page.tsx
+M	src/app/login/page.tsx
+M	src/app/logo-preview/page.tsx
+M	src/app/welcome/page.tsx
+A	src/components/dashboard/ActiveShiftBanner.tsx
+M	src/components/dashboard/RecentEntries.tsx
+M	src/components/dashboard/summary/SummaryDatePicker.tsx
+M	src/components/landing/VibeLandingClient.tsx
+A	src/components/ui/ReferralCard.tsx
+A	src/components/ui/SubscriptionBadge.tsx
+M	src/emails/WeeklySummary.tsx
+A	src/emails/WelcomeEmail.tsx
+A	src/utils/emails/sendWelcomeEmail.ts
+A	src/utils/subscription.ts
+A	supabase_member_number.sql
+A	supabase_referrals.sql
+A	supabase_stripe.sql
+A	supabase_welcome_email.sql
+A	ts_out.txt
+M	tsconfig.json
+
+commit 4beaeb2c1fa7e0a1f3392452a2ea4d161cb71062
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sun Mar 15 23:13:36 2026 +0300
+
+    fix: remove react-spring-bottom-sheet (React 19 incompatible), replace with framer-motion
+
+M	package-lock.json
+M	package.json
+M	src/components/ui/BottomSheet.tsx
+
+commit 84b4abf611d230863adf4922a6c130f28a984e90
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sun Mar 15 23:10:23 2026 +0300
+
+    fix: remove invalid optimizeFonts option from next.config
+
+M	next.config.ts
+
+commit ceb4b2c57d861429b641751e952b6e3bf8ff602d
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sun Mar 15 23:05:20 2026 +0300
+
+    fix: resolve build errors for Vercel deployment
+    
+    - Remove fs/path imports from debug.ts (Edge Runtime incompatible)
+    - Add display:flex to opengraph-image title (Satori requirement)
+    - Add React import to logo-preview page
+    - Add display:swap to Google Fonts config
+    - Disable optimizeFonts to avoid network fetch during build
+    
+    Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+M	AGENTS.md
+M	CLAUDE.md
+A	capacitor.config.ts
+M	next.config.ts
+M	package-lock.json
+M	package.json
+A	public/logo-gauge.png
+M	src/app/auth/actions.ts
+M	src/app/auth/callback/route.ts
+M	src/app/dashboard/actions.ts
+M	src/app/dashboard/actions/email.ts
+M	src/app/dashboard/entry/[id]/edit/page.tsx
+M	src/app/dashboard/entry/earnings/page.tsx
+M	src/app/dashboard/entry/new/page.tsx
+A	src/app/dashboard/error.tsx
+M	src/app/dashboard/layout.tsx
+M	src/app/dashboard/settings/profile/page.tsx
+M	src/app/dashboard/settings/profile/profile-form.tsx
+M	src/app/dashboard/settings/vehicle/actions.ts
+M	src/app/dashboard/settings/vehicle/form.tsx
+M	src/app/dashboard/tax/actions.ts
+A	src/app/error.tsx
+M	src/app/globals.css
+M	src/app/layout.tsx
+M	src/app/login/page.tsx
+M	src/app/logo-preview/page.tsx
+M	src/app/onboarding/page.tsx
+M	src/app/opengraph-image.tsx
+M	src/app/page.tsx
+A	src/components/MobileAppConfig.tsx
+M	src/components/brand/VibeLogo.tsx
+A	src/components/dashboard/DashboardEarningsChart.tsx
+M	src/components/dashboard/DashboardGrid.tsx
+M	src/components/dashboard/PlatformDistributionChart.tsx
+M	src/components/dashboard/RecentEntries.tsx
+M	src/components/dashboard/summary/SummaryHero.tsx
+M	src/components/entry/EditEntryForm.tsx
+M	src/components/landing/VibeLandingClient.tsx
+A	src/components/ui/BottomSheet.tsx
+A	src/components/ui/EmptyState.tsx
+A	src/components/ui/MobileCard.tsx
+A	src/components/ui/MobileInput.tsx
+A	src/components/ui/MobileSkeletons.tsx
+A	src/components/ui/PullToRefresh.tsx
+A	src/components/ui/SwipeableCard.tsx
+M	src/components/ui/button.tsx
+A	src/lib/haptics.ts
+A	src/lib/keyboard.ts
+A	src/lib/platform.ts
+M	src/utils/api/gemini.ts
+M	src/utils/api/resend.ts
+A	src/utils/debug.ts
+M	src/utils/supabase/middleware.ts
+M	src/utils/supabase/server.ts
+M	tsconfig.json
+
+commit 9f622c1825ecd4583a807cab7dac46052f9da829
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sun Mar 15 23:04:37 2026 +0300
+
+    feat: trend indicators, notifications panel, improved input contrast
+    
+    Trend indicators:
+    - Reports actions now fetches previous period data (same duration, shifted back)
+    - KPI cards show ↑↓ % change badge vs previous period for Net Profit, Gross, Miles
+    
+    Notifications panel:
+    - NotificationsPanel component: slide-in panel with GmIcon styling
+    - Quarterly tax deadline alerts auto-detected from current month
+    - Mark all read, dismiss individual, unread red dot on Bell icon
+    - Replaced toast-only Bell with proper panel in HeaderActions
+    
+    Input contrast:
+    - bg-white/[0.03] → bg-white/[0.06], hover → bg-white/[0.08]
+    - border-white/[0.06] → border-white/[0.12], hover → border-white/[0.18]
+    - focus ring upgraded: ring-1 → ring-2, more visible emerald glow
+    - placeholder: text-slate-600 → text-slate-500
+    
+    Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+M	src/app/dashboard/reports/actions.ts
+M	src/app/dashboard/reports/page.tsx
+M	src/components/dashboard/HeaderActions.tsx
+A	src/components/dashboard/NotificationsPanel.tsx
+M	src/components/ui/input.tsx
+
+commit 4bb0a1452fa39fd719ac2baab5bc1a4f650313fc
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sun Mar 15 20:18:41 2026 +0300
+
+    feat: add skeleton loading states for all dashboard pages
+    
+    - Dashboard: full skeleton with quick actions, hero card, 2-col grid, earnings chart
+    - Reports, Tax, Settings: page-level skeleton loaders
+    - Replaced 'Loading insights...' plain text with null (loading.tsx handles it)
+    - All skeletons use shimmer sweep animation matching the dark theme
+    
+    Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+A	src/app/dashboard/loading.tsx
+M	src/app/dashboard/page.tsx
+A	src/app/dashboard/reports/loading.tsx
+A	src/app/dashboard/settings/loading.tsx
+A	src/app/dashboard/tax/loading.tsx
+
+commit 879205c0b83b099881f00ec4b253b7900797566f
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sun Mar 15 20:13:51 2026 +0300
+
+    feat: apply premium GmIcon design system to web app
+    
+    - New GmIcon component: gradient border + gradient bg + glow effect, matching mobile design language
+    - AppSidebar: all nav icons upgraded (main nav, secondary, vehicle switcher, user dropdown)
+    - MobileNav: premium icon treatment per tab with accent colors, active bg glow, shimmer top border
+    - WeeklyGoalCard, TaxLedgerWidget, VehicleValueCard, EarningsChart, BoltWeeklySummary: header icons upgraded
+    - Settings page: card icons upgraded with GmIcon, refined card styling
+    
+    Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+M	src/app/dashboard/settings/page.tsx
+M	src/components/dashboard/AppSidebar.tsx
+M	src/components/dashboard/BoltWeeklySummary.tsx
+M	src/components/dashboard/EarningsChart.tsx
+M	src/components/dashboard/MobileNav.tsx
+M	src/components/dashboard/TaxLedgerWidget.tsx
+M	src/components/dashboard/VehicleValueCard.tsx
+M	src/components/dashboard/WeeklyGoalCard.tsx
+A	src/components/ui/GmIcon.tsx
+
+commit b74a879e7f3966302946f70ec3ce9d9c24548df6
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Tue Mar 10 23:32:44 2026 +0300
+
+    Phase 10-11: Quick wins (dead link fix, ghost widget cleanup, CSV export) + PWA setup (manifest, service worker, offline page) + Mobile UX fixes (FAB resize, Bell toast, HeaderActions)
+
+M	.gitignore
+A	public/icons/icon-192.png
+A	public/icons/icon-512.png
+A	public/manifest.json
+A	public/offline.html
+A	public/sw.js
+M	src/app/dashboard/actions.ts
+M	src/app/dashboard/layout.tsx
+M	src/app/dashboard/reports/actions.ts
+M	src/app/dashboard/reports/page.tsx
+M	src/app/globals.css
+M	src/app/layout.tsx
+M	src/app/login/page.tsx
+A	src/app/logo-preview/page.tsx
+M	src/app/onboarding/page.tsx
+M	src/app/opengraph-image.tsx
+M	src/app/welcome/page.tsx
+M	src/components/brand/Logo.tsx
+M	src/components/brand/VibeLogo.tsx
+A	src/components/brand/VibeLogo_B.tsx
+A	src/components/brand/VibeLogo_C.tsx
+M	src/components/dashboard/AppSidebar.tsx
+M	src/components/dashboard/BoltTodaySummary.tsx
+M	src/components/dashboard/BoltWeeklySummary.tsx
+M	src/components/dashboard/DashboardGrid.tsx
+A	src/components/dashboard/HeaderActions.tsx
+M	src/components/dashboard/MobileNav.tsx
+M	src/components/dashboard/PlatformDistributionChart.tsx
+M	src/components/dashboard/RecentEntries.tsx
+M	src/components/dashboard/TaxLedgerWidget.tsx
+M	src/components/dashboard/VehicleValueCard.tsx
+M	src/components/dashboard/WeeklyGoalCard.tsx
+M	src/components/dashboard/summary/SummaryHero.tsx
+M	src/components/landing/VibeLandingClient.tsx
+M	src/components/reports/ActivityCalendar.tsx
+M	src/components/reports/ExpenseBreakdown.tsx
+A	src/components/reports/ExportButton.tsx
+A	src/components/ui/GlassTooltip.tsx
+A	src/components/ui/MagneticCTA.tsx
+
+commit e81113cf8bc1c5ee650fbde74431c1b9ffc3d2d7
+Author: Kayihan Ozgenc <kayihanozgenc1@gmail.com>
+Date:   Sun Mar 8 01:07:53 2026 +0300
+
+    chore: safe codebase cleanup, removed unused components and dev pages
+
+M	.gitignore
+D	TAILWIND_V4_HELP.md
+D	buglist.md
+D	build-errors-utf8.txt
+D	build-errors.txt
+D	build_error.log
+D	build_error_utf8.log
+D	build_full.log
+D	build_log.txt
+D	build_success.log
+D	dashboard_grid_debug.png
+D	desktop.ini
+D	replace_neon.js
+D	src/app/logo-preview/page.tsx
+D	src/app/vibe-playground/full-landing-preview/page.tsx
+D	src/app/vibe-playground/landing-preview/page.tsx
+D	src/app/vibe-playground/login-preview/page.tsx
+D	src/app/vibe-playground/page.tsx
+D	src/components/landing/FAQ.tsx
+D	src/components/landing/Features.tsx
+D	src/components/landing/Footer.tsx
+D	src/components/landing/Hero.tsx
+D	src/components/landing/HowItWorks.tsx
+D	src/components/landing/Pricing.tsx
+D	src/components/landing/ProblemSection.tsx
+D	src/components/landing/ProfitCalculator.tsx
+D	src/components/landing/Testimonials.tsx
+D	src/components/landing/TrustSection.tsx
+D	test-calculations.ts
+D	ts-errors-utf8.txt
+D	ts-errors.txt
