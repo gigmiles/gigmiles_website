@@ -5,6 +5,17 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Premium font stack */
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body:    var(--font-dm-sans), system-ui, sans-serif;
+
+  /* GigMiles ink palette */
+  --color-ink:     #050B12;
+  --color-ink2:    #08111F;
+  --color-ink3:    #0B1220;
+  --color-surface: #0D1829;
+  --color-teal:    #14B8A6;
+  --color-green:   #10B981;
   /* Premium Slate Palette */
   --color-slate-50: #f8fafc;
   --color-slate-100: #f1f5f9;

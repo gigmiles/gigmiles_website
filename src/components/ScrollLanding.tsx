@@ -18,23 +18,17 @@ function Nav() {
   }, [])
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4 transition-all duration-500 ${
-        scrolled ? 'bg-[#0d0d0d]/90 backdrop-blur-md border-b border-white/[0.07]' : ''
+      className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-14 py-5 transition-all duration-500 ${
+        scrolled ? 'bg-[#050B12]/95 backdrop-blur-xl border-b border-white/[0.06]' : ''
       }`}
     >
       <div className="flex items-center gap-2.5">
-        <Image
-          src="/logo-icon.png"
-          alt="GigMiles"
-          width={28}
-          height={28}
-          className="rounded-[7px]"
-        />
-        <span className="text-white/80 text-[13px] tracking-[0.15em] font-light">GigMiles</span>
+        <Image src="/logo-icon.png" alt="GigMiles" width={26} height={26} className="rounded-[6px]" />
+        <span className="text-white/75 text-[13px] tracking-[-0.01em] font-medium font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
       </div>
       <a
         href="/waitlist"
-        className="text-white/50 text-[11px] tracking-[0.25em] uppercase border border-white/15 px-5 py-2 transition-all duration-300 hover:border-white/35 hover:text-white/80 active:scale-[0.97]"
+        className="text-white/55 text-[11px] tracking-[0.04em] border border-white/[0.14] px-5 py-2 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)]"
       >
         Join Waitlist
       </a>
@@ -47,12 +41,12 @@ const PLATFORMS = ['Uber', 'Lyft', 'DoorDash', 'Instacart', 'Amazon Flex', 'Grub
 
 function PlatformWall() {
   return (
-    <div className="bg-[#0d0d0d] border-t border-b border-white/[0.07] py-7 px-6 overflow-hidden">
-      <div className="max-w-5xl mx-auto flex flex-col items-center gap-4">
-        <p className="text-white/25 text-[9px] tracking-[0.35em] uppercase">Works with every platform you drive for</p>
+    <div className="bg-[#08111F] border-t border-b border-white/[0.06] py-5 px-14 overflow-hidden">
+      <div className="max-w-5xl mx-auto flex items-center gap-10 flex-wrap justify-center">
+        <p className="text-white/20 text-[10px] tracking-[0.25em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
           {PLATFORMS.map(p => (
-            <span key={p} className="text-white/35 text-[12px] tracking-[0.15em] font-light">{p}</span>
+            <span key={p} className="text-white/30 text-[11px] tracking-[0.08em] font-[family-name:var(--font-space-grotesk)]">{p}</span>
           ))}
         </div>
       </div>
@@ -131,6 +125,121 @@ function useReveal(ref: React.RefObject<HTMLElement | null>, start = 'top 70%') 
     }, el)
     return () => ctx.revert()
   }, [ref, start])
+}
+
+// ─── Waterfall "Real Example" section ────────────────────────────────────────
+function WaterfallSection() {
+  const ref = useRef<HTMLElement>(null)
+  const [active, setActive] = useState(false)
+  const gross = useCountUp(235, 900, active)
+  const vehicle = useCountUp(57, 900, active)
+  const taxes = useCountUp(31, 900, active)
+  const net = useCountUp(147, 1100, active)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const trigger = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 65%',
+      onEnter: () => setActive(true),
+      onLeaveBack: () => setActive(false),
+    })
+    return () => trigger.kill()
+  }, [])
+
+  const rows = [
+    { label: 'Gross earnings', val: `$${gross}`, color: 'text-white/90', pct: 100 },
+    { label: 'Vehicle costs', val: `−$${vehicle}`, color: 'text-[#F87171]', pct: Math.round((vehicle / 235) * 100) },
+    { label: 'Estimated taxes', val: `−$${taxes}`, color: 'text-[#FBBF24]', pct: Math.round((taxes / 235) * 100) },
+  ]
+
+  return (
+    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+      <div className="max-w-5xl mx-auto">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          Real example
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-4 max-w-xl">
+          What a typical shift actually pays
+        </h2>
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-16 max-w-lg font-[family-name:var(--font-dm-sans)]">
+          9 hours · DoorDash, Uber Eats, Amazon Flex · based on IRS mileage rate $0.67/mi
+        </p>
+
+        <div className="border border-white/[0.07] bg-[#050B12]">
+          {/* header */}
+          <div className="px-8 py-5 border-b border-white/[0.06] flex items-baseline justify-between flex-wrap gap-4">
+            <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">Shift breakdown</span>
+            <div className="flex gap-8">
+              {[['Platform', 'DoorDash + Uber Eats'], ['Miles', '112 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
+                <div key={l} className="flex flex-col gap-1">
+                  <span className="text-[10px] text-white/25 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
+                  <span className="text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2">
+            {/* waterfall */}
+            <div className="px-8 py-8 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col gap-0">
+              {rows.map(row => (
+                <div key={row.label} className="py-4 border-b border-white/[0.04] last:border-b-0">
+                  <div className="flex justify-between items-baseline mb-3">
+                    <span className="text-[13px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">{row.label}</span>
+                    <span className={`font-[family-name:var(--font-space-grotesk)] font-semibold text-[16px] ${row.color}`}>{row.val}</span>
+                  </div>
+                  <div className="h-px bg-white/[0.05] overflow-hidden">
+                    <div
+                      className="h-full bg-white/20 transition-all duration-[900ms] ease-out"
+                      style={{ width: active ? `${row.pct}%` : '0%' }}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {/* net result */}
+              <div className={`mt-5 px-5 py-5 border flex justify-between items-baseline transition-all duration-700 delay-700 ${active ? 'border-[#14B8A6]/25 bg-[#14B8A6]/[0.04] opacity-100' : 'border-white/[0.04] opacity-20'}`}>
+                <span className="text-[11px] text-[#14B8A6] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">Real take-home</span>
+                <span className="text-[42px] font-bold tracking-[-0.05em] text-[#10B981] leading-none font-[family-name:var(--font-space-grotesk)]">${net}</span>
+              </div>
+            </div>
+
+            {/* stats */}
+            <div className="px-8 py-8 flex flex-col gap-5">
+              <div className="grid grid-cols-2 gap-px bg-white/[0.06] border border-white/[0.06]">
+                {[
+                  ['Hourly rate', '$16.33', 'after all costs'],
+                  ['Tax reserve', '23¢', 'per dollar earned'],
+                  ['Vehicle cost', '51¢', 'per dollar gross'],
+                  ['Effective rate', '62%', 'of gross kept'],
+                ].map(([l, v, s]) => (
+                  <div key={l} className="bg-[#050B12] px-5 py-5 flex flex-col gap-1">
+                    <span className="text-[10px] text-white/25 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
+                    <span className="text-[22px] font-bold tracking-[-0.03em] text-white font-[family-name:var(--font-space-grotesk)]">{v}</span>
+                    <span className="text-[11px] text-white/30 font-[family-name:var(--font-dm-sans)]">{s}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border border-white/[0.06] px-5 py-4 bg-[#14B8A6]/[0.03]">
+                <p className="text-[11px] text-[#14B8A6] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] mb-2">GigMiles insight</p>
+                <p className="text-[13px] text-[#94A3B8] leading-relaxed font-[family-name:var(--font-dm-sans)]">
+                  You kept 62% of gross earnings. IRS mileage deduction alone saves an estimated $75 in taxes this shift.
+                </p>
+              </div>
+
+              <p className="text-[11px] text-white/20 italic font-[family-name:var(--font-dm-sans)] leading-relaxed">
+                Estimates based on IRS standard mileage rate. Actual taxes vary by state and filing status.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
 // ─── How it Works ─────────────────────────────────────────────────────────────
@@ -827,6 +936,7 @@ export function ScrollLanding() {
         />
         <PlatformWall />
         <AnchorBanner />
+        <WaterfallSection />
         <HowItWorksSection />
         <FeaturesSection />
         <TestimonialsSection />
