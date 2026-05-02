@@ -152,13 +152,16 @@ export function ScrollVideoAnimation({
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[100dvh] overflow-hidden bg-[#0a0a0a]"
+      className="relative w-full min-h-[100dvh] overflow-hidden bg-[#050B12]"
     >
       {/* Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
 
       {/* Bottom vignette for text legibility */}
       <div className="absolute inset-x-0 bottom-0 h-2/3 pointer-events-none bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+      {/* Section seam: fade canvas to page bg color so handoff to PlatformWall is invisible */}
+      <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-gradient-to-t from-[#050B12] via-[#050B12]/60 to-transparent z-[1]" />
 
 
       {/* Overlay stages */}

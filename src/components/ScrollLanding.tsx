@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ScrollVideoAnimation, type OverlayStage } from './ScrollVideoAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -18,7 +19,7 @@ function Nav() {
   }, [])
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-14 py-5 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 md:px-14 py-5 transition-all duration-500 ${
         scrolled ? 'bg-[#050B12]/95 backdrop-blur-xl border-b border-white/[0.06]' : ''
       }`}
     >
@@ -26,11 +27,23 @@ function Nav() {
         <Image src="/logo-icon.png" alt="GigMiles" width={26} height={26} className="rounded-[6px]" />
         <span className="text-white/75 text-[13px] tracking-[-0.01em] font-medium font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
       </div>
+      <div className="hidden md:flex items-center gap-8">
+        {[
+          ['Why It Matters', '#why'],
+          ['How It Works', '#how'],
+          ['Calculator', '#calculator'],
+          ['Pricing', '#pricing'],
+        ].map(([label, href]) => (
+          <a key={label} href={href} className="text-white/35 text-[11px] tracking-[0.04em] hover:text-white/65 transition-colors font-[family-name:var(--font-space-grotesk)]">
+            {label}
+          </a>
+        ))}
+      </div>
       <a
         href="/waitlist"
         className="text-white/55 text-[11px] tracking-[0.04em] border border-white/[0.14] px-5 py-2 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)]"
       >
-        Join Waitlist
+        Join Early Access
       </a>
     </nav>
   )
@@ -41,7 +54,9 @@ const PLATFORMS = ['Uber', 'Lyft', 'DoorDash', 'Instacart', 'Amazon Flex', 'Grub
 
 function PlatformWall() {
   return (
-    <div className="bg-[#08111F] border-t border-b border-white/[0.06] py-5 px-14 overflow-hidden">
+    <div className="relative bg-[#08111F] border-t border-b border-white/[0.06] py-5 px-5 md:px-14 overflow-hidden">
+      {/* Top fade-in: blends from hero #050B12 into platform wall #08111F */}
+      <div className="absolute inset-x-0 -top-16 h-16 pointer-events-none bg-gradient-to-b from-[#050B12] to-transparent" />
       <div className="max-w-5xl mx-auto flex items-center gap-10 flex-wrap justify-center">
         <p className="text-white/20 text-[10px] tracking-[0.25em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
@@ -155,24 +170,24 @@ function WaterfallSection() {
   ]
 
   return (
-    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section id="why" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
         <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Real example
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-4 max-w-xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
           What a typical shift actually pays
         </h2>
-        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-16 max-w-lg font-[family-name:var(--font-dm-sans)]">
-          9 hours · DoorDash, Uber Eats, Amazon Flex · based on IRS mileage rate $0.67/mi
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-10 sm:mb-16 max-w-lg font-[family-name:var(--font-dm-sans)]">
+          9 hours · DoorDash, Uber Eats, Amazon Flex · based on IRS mileage rate $0.725/mi (2026)
         </p>
 
         <div className="border border-white/[0.07] bg-[#050B12]">
           {/* header */}
-          <div className="px-8 py-5 border-b border-white/[0.06] flex items-baseline justify-between flex-wrap gap-4">
+          <div className="px-5 sm:px-8 py-5 border-b border-white/[0.06] flex items-baseline justify-between flex-wrap gap-4">
             <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">Shift breakdown</span>
-            <div className="flex gap-8">
+            <div className="flex gap-5 sm:gap-8 flex-wrap">
               {[['Platform', 'DoorDash + Uber Eats'], ['Miles', '112 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
                 <div key={l} className="flex flex-col gap-1">
                   <span className="text-[10px] text-white/25 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
@@ -184,7 +199,7 @@ function WaterfallSection() {
 
           <div className="grid md:grid-cols-2">
             {/* waterfall */}
-            <div className="px-8 py-8 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col gap-0">
+            <div className="px-5 py-6 sm:px-8 sm:py-8 border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col gap-0">
               {rows.map(row => (
                 <div key={row.label} className="py-4 border-b border-white/[0.04] last:border-b-0">
                   <div className="flex justify-between items-baseline mb-3">
@@ -208,17 +223,17 @@ function WaterfallSection() {
             </div>
 
             {/* stats */}
-            <div className="px-8 py-8 flex flex-col gap-5">
+            <div className="px-5 py-6 sm:px-8 sm:py-8 flex flex-col gap-5">
               <div className="grid grid-cols-2 gap-px bg-white/[0.06] border border-white/[0.06]">
                 {[
                   ['Hourly rate', '$16.33', 'after all costs'],
-                  ['Tax reserve', '23¢', 'per dollar earned'],
-                  ['Vehicle cost', '51¢', 'per dollar gross'],
+                  ['Tax reserve', '$0.13', 'per dollar earned'],
+                  ['Vehicle cost', '$0.24', 'per dollar gross'],
                   ['Effective rate', '62%', 'of gross kept'],
                 ].map(([l, v, s]) => (
-                  <div key={l} className="bg-[#050B12] px-5 py-5 flex flex-col gap-1">
+                  <div key={l} className="bg-[#050B12] px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-1">
                     <span className="text-[10px] text-white/25 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
-                    <span className="text-[22px] font-bold tracking-[-0.03em] text-white font-[family-name:var(--font-space-grotesk)]">{v}</span>
+                    <span className="text-[20px] sm:text-[22px] font-bold tracking-[-0.03em] text-white font-[family-name:var(--font-space-grotesk)]">{v}</span>
                     <span className="text-[11px] text-white/30 font-[family-name:var(--font-dm-sans)]">{s}</span>
                   </div>
                 ))}
@@ -227,7 +242,7 @@ function WaterfallSection() {
               <div className="border border-white/[0.06] px-5 py-4 bg-[#14B8A6]/[0.03]">
                 <p className="text-[11px] text-[#14B8A6] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] mb-2">GigMiles insight</p>
                 <p className="text-[13px] text-[#94A3B8] leading-relaxed font-[family-name:var(--font-dm-sans)]">
-                  You kept 62% of gross earnings. IRS mileage deduction alone saves an estimated $75 in taxes this shift.
+                  You kept 62% of gross earnings. The IRS mileage deduction adds $81 in write-offs this shift — about ~$18 less in taxes.
                 </p>
               </div>
 
@@ -265,18 +280,18 @@ function HowItWorksSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section id="how" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
         <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           How it works
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-xl">
           Three steps to knowing what you actually keep
         </h2>
         <div className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
           {HOW_STEPS.map(step => (
-            <div key={step.n} data-r className="bg-[#050B12] p-8 flex flex-col gap-6">
+            <div key={step.n} data-r className="bg-[#050B12] p-6 sm:p-8 flex flex-col gap-5 sm:gap-6">
               <span className="text-[#14B8A6] text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)] pb-4 border-b border-white/[0.06]">{step.n}</span>
               <h3 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[18px] leading-snug tracking-[-0.02em]">{step.title}</h3>
               <p className="text-[#94A3B8] text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)]">{step.body}</p>
@@ -592,14 +607,14 @@ function FeatureRow({
       ref={ref}
       className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-px bg-white/[0.06]`}
     >
-      <div className="bg-[#08111F] flex-1 flex flex-col justify-center px-10 py-16 gap-5">
+      <div className="bg-[#08111F] flex-1 flex flex-col justify-center px-6 py-10 sm:px-8 sm:py-12 md:px-10 md:py-16 gap-4 sm:gap-5">
         <span data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">{tag}</span>
-        <h3 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[clamp(20px,2.5vw,28px)] leading-snug tracking-[-0.02em] max-w-sm">
+        <h3 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[clamp(18px,2.5vw,28px)] leading-snug tracking-[-0.02em] max-w-sm">
           {title}
         </h3>
-        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed max-w-xs font-[family-name:var(--font-dm-sans)]">{body}</p>
+        <p data-r className="text-[#94A3B8] text-[13px] sm:text-[14px] leading-relaxed max-w-xs font-[family-name:var(--font-dm-sans)]">{body}</p>
       </div>
-      <div data-r className="bg-[#050B12] w-full md:w-[400px] flex items-center justify-center py-12 px-8">
+      <div className="bg-[#050B12] w-full md:w-[400px] flex items-center justify-center py-10 px-5 sm:py-12 sm:px-8">
         {widget(active)}
       </div>
     </div>
@@ -611,13 +626,13 @@ function FeaturesSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref, 'top 85%')
   return (
-    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
         <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Features
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-2xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-2xl">
           Everything a gig worker needs to stop guessing
         </h2>
         <div className="space-y-px">
@@ -653,6 +668,309 @@ function FeaturesSection() {
   )
 }
 
+// ─── Phone Showcase ───────────────────────────────────────────────────────────
+const PHONES = [
+  {
+    img: '/ss-expense-gaps.jpeg',
+    label: 'Expense Gaps',
+    sub: 'Spot missed deductions instantly',
+  },
+  {
+    img: '/ss-tax-breakdown.jpeg',
+    label: 'Tax Breakdown',
+    sub: 'Quarterly taxes broken down by type',
+  },
+  {
+    img: '/ss-quarterly.jpeg',
+    label: 'Quarterly Tracker',
+    sub: 'Past due and current quarter, side by side',
+  },
+]
+
+function PhoneCard({ phone }: { phone: { img: string; label: string; sub: string } }) {
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  // Mouse position normalized to [-0.5, 0.5]
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+
+  // Spring-smoothed for premium feel
+  const sx = useSpring(mx, { stiffness: 150, damping: 20, mass: 0.5 })
+  const sy = useSpring(my, { stiffness: 150, damping: 20, mass: 0.5 })
+
+  // Tilt: max 12 degrees each axis
+  const rotateY = useTransform(sx, [-0.5, 0.5], [-12, 12])
+  const rotateX = useTransform(sy, [-0.5, 0.5], [10, -10])
+
+  // Gloss highlight position
+  const glossX = useTransform(sx, [-0.5, 0.5], ['0%', '100%'])
+  const glossY = useTransform(sy, [-0.5, 0.5], ['0%', '100%'])
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    mx.set((e.clientX - rect.left) / rect.width - 0.5)
+    my.set((e.clientY - rect.top) / rect.height - 0.5)
+  }
+
+  const handleLeave = () => {
+    mx.set(0)
+    my.set(0)
+  }
+
+  return (
+    <div
+      data-r
+      className="flex flex-col items-center gap-6 [perspective:1000px]"
+    >
+      <motion.div
+        ref={cardRef}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        className="relative w-[200px] md:w-[220px] flex-shrink-0"
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: 'preserve-3d',
+        }}
+      >
+        {/* Outer frame */}
+        <div className="relative bg-[#0F1623] border-2 border-white/[0.12] rounded-[38px] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.6)]">
+          {/* Inner bezel */}
+          <div className="bg-[#050B12] rounded-[30px] overflow-hidden aspect-[9/19] relative">
+            {/* Notch */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-5 bg-[#0F1623] rounded-b-2xl z-10 flex items-center justify-center gap-1.5">
+              <div className="w-1 h-1 bg-white/10 rounded-full" />
+              <div className="w-4 h-1.5 bg-white/10 rounded-full" />
+            </div>
+            <Image
+              src={phone.img}
+              alt={phone.label}
+              fill
+              className="object-cover object-top"
+              sizes="220px"
+            />
+            {/* Gloss highlight: tracks mouse, sits ABOVE screenshot */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none mix-blend-overlay"
+              style={{
+                background: useTransform(
+                  [glossX, glossY],
+                  ([x, y]) => `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.25), transparent 45%)`
+                ),
+              }}
+            />
+          </div>
+          {/* Home indicator */}
+          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/20 rounded-full" />
+        </div>
+        {/* Teal glow that intensifies on hover */}
+        <motion.div
+          className="absolute inset-0 rounded-[38px] bg-[#14B8A6] blur-2xl -z-10"
+          style={{
+            opacity: useTransform([sx, sy], ([x, y]) => 0.05 + Math.min(Math.abs(x as number) + Math.abs(y as number), 0.5) * 0.15),
+            scale: 1.1,
+          }}
+        />
+      </motion.div>
+
+      {/* Label */}
+      <div className="text-center">
+        <p className="text-white/70 text-[13px] font-medium font-[family-name:var(--font-space-grotesk)] mb-1">{phone.label}</p>
+        <p className="text-white/30 text-[11px] font-[family-name:var(--font-dm-sans)]">{phone.sub}</p>
+      </div>
+    </div>
+  )
+}
+
+function PhoneShowcaseSection() {
+  const ref = useRef<HTMLElement>(null)
+  useReveal(ref, 'top 75%')
+  return (
+    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+      <div className="max-w-5xl mx-auto">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          The app
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
+          Built for gig workers. Not accountants.
+        </h2>
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-12 sm:mb-20 max-w-lg font-[family-name:var(--font-dm-sans)]">
+          Every screen is designed to give you one clear number — what you actually kept.
+        </p>
+
+        {/* Mobile: horizontal scroll · Desktop: 3-col grid */}
+        <div className="md:hidden -mx-5 px-5 overflow-x-auto pb-4 snap-x snap-mandatory scroll-pl-5">
+          <div className="flex gap-6 w-max">
+            {PHONES.map(phone => (
+              <div key={phone.label} className="snap-start shrink-0 w-[68vw] max-w-[260px]">
+                <PhoneCard phone={phone} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="hidden md:grid md:grid-cols-3 gap-12">
+          {PHONES.map(phone => (
+            <PhoneCard key={phone.label} phone={phone} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Calculator ───────────────────────────────────────────────────────────────
+function CalculatorSection() {
+  const ref = useRef<HTMLElement>(null)
+  const [gross, setGross] = useState(1200)
+  const [hours, setHours] = useState(30)
+  useReveal(ref, 'top 80%')
+
+  const costs = Math.round(gross * 0.35)
+  const taxes = Math.round(gross * 0.153)
+  const net = gross - costs - taxes
+  const hourly = hours > 0 ? (net / hours).toFixed(2) : '0.00'
+
+  return (
+    <section id="calculator" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+      <div className="max-w-4xl mx-auto">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          Calculator
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
+          What do you actually take home?
+        </h2>
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-10 sm:mb-16 max-w-lg font-[family-name:var(--font-dm-sans)]">
+          Adjust the sliders and see your real net income — after vehicle costs and self-employment taxes.
+        </p>
+
+        <div data-r className="border border-white/[0.07] bg-[#050B12] grid md:grid-cols-2 gap-px bg-white/[0.06]">
+          {/* Sliders */}
+          <div className="bg-[#050B12] px-5 py-7 sm:px-8 sm:py-10 flex flex-col gap-8 sm:gap-10">
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-baseline">
+                <label className="text-white/50 text-[11px] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">
+                  Weekly Gross Earnings
+                </label>
+                <span className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[20px] tracking-[-0.03em]">
+                  ${gross.toLocaleString()}
+                </span>
+              </div>
+              <input
+                type="range"
+                min={100}
+                max={3000}
+                step={50}
+                value={gross}
+                onChange={e => setGross(Number(e.target.value))}
+                title="Weekly Gross Earnings"
+                className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#14B8A6] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#14B8A6] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#14B8A6]"
+              />
+              <div className="flex justify-between text-[10px] text-white/20 font-[family-name:var(--font-dm-sans)]">
+                <span>$100</span>
+                <span>$3,000</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-baseline">
+                <label className="text-white/50 text-[11px] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">
+                  Hours Driven / Week
+                </label>
+                <span className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[20px] tracking-[-0.03em]">
+                  {hours} hrs
+                </span>
+              </div>
+              <input
+                type="range"
+                min={5}
+                max={80}
+                step={1}
+                value={hours}
+                onChange={e => setHours(Number(e.target.value))}
+                title="Hours Driven Per Week"
+                className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#14B8A6] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#14B8A6] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#14B8A6]"
+              />
+              <div className="flex justify-between text-[10px] text-white/20 font-[family-name:var(--font-dm-sans)]">
+                <span>5 hrs</span>
+                <span>80 hrs</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Results */}
+          <div className="bg-[#050B12] px-5 py-7 sm:px-8 sm:py-10 flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              {[
+                { label: 'Gross earnings', val: `$${gross.toLocaleString()}`, color: 'text-white/85', barColor: 'bg-white/30', pct: 100 },
+                { label: 'Vehicle & operating costs (est. 35%)', val: `−$${costs}`, color: 'text-[#F87171]/90', barColor: 'bg-[#F87171]/60', pct: 35 },
+                { label: 'Self-employment taxes (est. 15.3%)', val: `−$${taxes}`, color: 'text-[#FBBF24]/90', barColor: 'bg-[#FBBF24]/60', pct: 15.3 },
+              ].map(row => (
+                <div key={row.label} className="py-3 border-b border-white/[0.05] flex flex-col gap-2">
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-[12px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">{row.label}</span>
+                    <span className={`font-[family-name:var(--font-space-grotesk)] font-semibold text-[14px] tabular-nums ${row.color}`}>{row.val}</span>
+                  </div>
+                  <div className="h-px bg-white/[0.05] overflow-hidden">
+                    <div
+                      className={`h-full ${row.barColor} transition-[width] duration-500 ease-out`}
+                      style={{ width: `${row.pct}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-auto border border-[#14B8A6]/20 bg-[#14B8A6]/[0.04] px-5 py-5 flex flex-col gap-3">
+              <span className="text-[10px] text-[#14B8A6] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">Your real take-home</span>
+              <div className="flex items-baseline justify-between">
+                <span className="text-[42px] font-bold tracking-[-0.05em] text-[#10B981] leading-none font-[family-name:var(--font-space-grotesk)] tabular-nums">
+                  ${net.toLocaleString()}
+                </span>
+                <span className="text-white/45 text-[13px] font-[family-name:var(--font-dm-sans)] tabular-nums">
+                  ${hourly}<span className="text-[10px]">/hr</span>
+                </span>
+              </div>
+              {/* Stacked breakdown bar: net (teal) + costs (red) + taxes (amber) */}
+              <div className="h-1.5 flex bg-white/[0.05] overflow-hidden">
+                <div
+                  className="bg-[#10B981]/70 transition-[width] duration-500 ease-out"
+                  style={{ width: `${(net / gross) * 100}%` }}
+                />
+                <div
+                  className="bg-[#F87171]/55 transition-[width] duration-500 ease-out"
+                  style={{ width: `${(costs / gross) * 100}%` }}
+                />
+                <div
+                  className="bg-[#FBBF24]/55 transition-[width] duration-500 ease-out"
+                  style={{ width: `${(taxes / gross) * 100}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[10px] font-[family-name:var(--font-dm-sans)] tabular-nums">
+                <span className="text-[#10B981]/70">{Math.round((net / gross) * 100)}% kept</span>
+                <span className="text-[#F87171]/70">{Math.round((costs / gross) * 100)}% costs</span>
+                <span className="text-[#FBBF24]/70">{Math.round((taxes / gross) * 100)}% taxes</span>
+              </div>
+              <p className="text-white/25 text-[11px] font-[family-name:var(--font-dm-sans)]">after vehicle costs + taxes · per week</p>
+            </div>
+
+            <a href="/waitlist" className="text-center border border-[#14B8A6]/30 text-[#14B8A6]/70 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-[#14B8A6]/60 hover:text-[#14B8A6] active:scale-[0.98]">
+              Track this in GigMiles
+            </a>
+
+            <p className="text-white/15 text-[10px] italic font-[family-name:var(--font-dm-sans)] leading-relaxed">
+              Estimates only. Actual costs and taxes vary. Not tax advice.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ─── Testimonials ─────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
   {
@@ -676,18 +994,18 @@ function TestimonialsSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
         <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Beta testers
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-xl">
           Real numbers change how you drive
         </h2>
         <div className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
           {TESTIMONIALS.map(t => (
-            <div key={t.name} data-r className="bg-[#050B12] p-8 flex flex-col gap-8 hover:bg-[#08111F] transition-colors duration-200">
+            <div key={t.name} data-r className="bg-[#050B12] p-6 sm:p-8 flex flex-col gap-6 sm:gap-8 hover:bg-[#08111F] transition-colors duration-200">
               <p className="text-[#94A3B8] text-[14px] leading-[1.75] flex-1 font-[family-name:var(--font-dm-sans)]">&ldquo;{t.quote}&rdquo;</p>
               <div className="pt-4 border-t border-white/[0.07]">
                 <p className="text-white/75 text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">{t.name}</p>
@@ -701,71 +1019,170 @@ function TestimonialsSection() {
   )
 }
 
+// ─── Pricing card (cursor spotlight) ──────────────────────────────────────────
+type PricingTier = {
+  badge?: string
+  label: string
+  price: string
+  priceSuffix?: string
+  caption: string
+  features: string[]
+  cta: string
+  ctaHref: string
+  bg: string
+  featured?: boolean
+}
+
+function PricingCard({ tier }: { tier: PricingTier }) {
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    el.style.setProperty('--mx', `${e.clientX - rect.left}px`)
+    el.style.setProperty('--my', `${e.clientY - rect.top}px`)
+  }
+
+  const handleEnter = () => {
+    const el = cardRef.current
+    if (!el) return
+    el.style.setProperty('--spot-opacity', '1')
+  }
+
+  const handleLeave = () => {
+    const el = cardRef.current
+    if (!el) return
+    el.style.setProperty('--spot-opacity', '0')
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMove}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      className={`relative ${tier.bg} p-6 sm:p-8 flex flex-col gap-6 group overflow-hidden ${tier.featured ? 'border-t-2 border-t-[#14B8A6]' : ''}`}
+      style={{ '--mx': '50%', '--my': '50%', '--spot-opacity': '0' } as React.CSSProperties}
+    >
+      {/* Spotlight fill: tracks cursor */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+        style={{
+          opacity: 'var(--spot-opacity)',
+          background: 'radial-gradient(420px circle at var(--mx) var(--my), rgba(20,184,166,0.10), transparent 55%)',
+        }}
+      />
+      {/* Border glow: brighter, tighter radial, masked to the edge */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+        style={{
+          opacity: 'var(--spot-opacity)',
+          background: 'radial-gradient(260px circle at var(--mx) var(--my), rgba(20,184,166,0.45), transparent 60%)',
+          mask: 'linear-gradient(black, black) content-box, linear-gradient(black, black)',
+          WebkitMask: 'linear-gradient(black, black) content-box, linear-gradient(black, black)',
+          maskComposite: 'exclude',
+          WebkitMaskComposite: 'xor',
+          padding: '1px',
+        }}
+      />
+
+      {/* Content (sits above overlays) */}
+      <div className="relative flex flex-col gap-6 flex-1">
+        {tier.badge && (
+          <div className="absolute -top-1 right-0 z-10">
+            <span className="text-[9px] tracking-[0.12em] uppercase text-[#14B8A6]/80 bg-[#050B12] border border-[#14B8A6]/30 px-2 py-0.5 font-[family-name:var(--font-space-grotesk)]">
+              {tier.badge}
+            </span>
+          </div>
+        )}
+        <div>
+          <p className="text-white/35 text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)]">{tier.label}</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-white font-[family-name:var(--font-space-grotesk)] font-bold text-5xl tracking-[-0.04em]">{tier.price}</span>
+            {tier.priceSuffix && <span className="text-[#94A3B8] text-[13px]">{tier.priceSuffix}</span>}
+          </div>
+          <p className="text-[#94A3B8] text-[12px] mt-2 font-[family-name:var(--font-dm-sans)]">{tier.caption}</p>
+        </div>
+        <ul className="space-y-3 flex-1">
+          {tier.features.map(f => (
+            <li key={f} className="flex items-center gap-3 text-[13px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">
+              <span className="text-[#14B8A6]/70 flex-shrink-0 text-[12px]">✓</span>
+              {f}
+            </li>
+          ))}
+        </ul>
+        <a
+          href={tier.ctaHref}
+          className={`mt-2 text-center text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 active:scale-[0.98] ${
+            tier.featured
+              ? 'bg-[#14B8A6] text-[#050B12] font-semibold hover:bg-[#14B8A6]/85'
+              : 'border border-white/[0.18] text-white/60 hover:border-white/35 hover:text-white/85'
+          }`}
+        >
+          {tier.cta}
+        </a>
+      </div>
+    </div>
+  )
+}
+
+const PRICING_TIERS: PricingTier[] = [
+  {
+    label: 'Free Trial',
+    price: 'Free',
+    caption: '10 days · no card required',
+    features: ['All platforms tracked', 'Real-time net earnings', 'Quarterly tax estimates', 'Expense gap detection'],
+    cta: 'Start Free',
+    ctaHref: '/waitlist',
+    bg: 'bg-[#08111F]',
+  },
+  {
+    badge: 'Most Popular',
+    label: 'Monthly',
+    price: '$9.99',
+    priceSuffix: '/ month',
+    caption: 'Billed monthly · cancel anytime',
+    features: ['Everything in Free Trial', 'Export for CPA', 'Unlimited shift history', 'Priority support'],
+    cta: 'Join the Waitlist',
+    ctaHref: '/waitlist',
+    bg: 'bg-[#050B12]',
+    featured: true,
+  },
+  {
+    label: 'Annual',
+    price: '$99',
+    priceSuffix: '/ year',
+    caption: '$8.33 / month · save 17%',
+    features: ['Everything in Monthly', 'Early access to new features', 'Locked-in beta pricing', 'Tax season export pack'],
+    cta: 'Join the Waitlist',
+    ctaHref: '/waitlist',
+    bg: 'bg-[#08111F]',
+  },
+]
+
 // ─── Pricing ──────────────────────────────────────────────────────────────────
 function PricingSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
-      <div className="max-w-3xl mx-auto">
+    <section id="pricing" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+      <div className="max-w-4xl mx-auto">
         <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Pricing
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-4 max-w-xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
           Less than one Uber ride per month
         </h2>
         <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-16 max-w-md font-[family-name:var(--font-dm-sans)]">
           10 days free during beta. No card required to start.
         </p>
 
-        <div data-r className="grid md:grid-cols-2 border border-white/[0.07] bg-white/[0.07] gap-px">
-          {/* Monthly */}
-          <div className="bg-[#08111F] p-10 flex flex-col gap-6 relative">
-            <span className="text-[10px] tracking-[0.12em] uppercase text-[#FBBF24]/70 font-[family-name:var(--font-space-grotesk)]">Limited time</span>
-            <div>
-              <p className="text-white/35 text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)]">Monthly</p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-white font-[family-name:var(--font-space-grotesk)] font-bold text-5xl tracking-[-0.04em]">$9.99</span>
-                <span className="text-[#94A3B8] text-[13px]">/ month</span>
-              </div>
-            </div>
-            <ul className="space-y-3 flex-1">
-              {['All platforms tracked', 'Real-time net earnings', 'Quarterly tax estimates', 'Expense gap detection', 'Export for CPA'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-[13px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">
-                  <span className="w-1 h-1 bg-[#14B8A6]/50 flex-shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <a href="/waitlist" className="mt-2 text-center border border-white/[0.18] text-white/60 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-white/35 hover:text-white/85 active:scale-[0.98]">
-              Join the Waitlist
-            </a>
-          </div>
-
-          {/* Annual */}
-          <div className="bg-[#050B12] p-10 flex flex-col gap-6 relative border-t-2 border-t-[#14B8A6]">
-            <span className="text-[10px] tracking-[0.12em] uppercase text-[#FBBF24]/70 font-[family-name:var(--font-space-grotesk)]">Limited time</span>
-            <div>
-              <p className="text-white/35 text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)]">Annual</p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-white font-[family-name:var(--font-space-grotesk)] font-bold text-5xl tracking-[-0.04em]">$99.9</span>
-                <span className="text-[#94A3B8] text-[13px]">/ year</span>
-              </div>
-              <p className="text-[#94A3B8] text-[12px] mt-2 font-[family-name:var(--font-dm-sans)]">$8.33 / month · save 17%</p>
-            </div>
-            <ul className="space-y-3 flex-1">
-              {['Everything in Monthly', 'Priority support', 'Early access to new features', 'Locked-in beta pricing'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-[13px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">
-                  <span className="w-1 h-1 bg-[#14B8A6]/50 flex-shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <a href="/waitlist" className="mt-2 text-center bg-[#14B8A6] text-[#050B12] text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] font-medium px-8 py-3 transition-all duration-200 hover:bg-[#14B8A6]/90 active:scale-[0.98]">
-              Join the Waitlist
-            </a>
-          </div>
+        <div data-r className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
+          {PRICING_TIERS.map(tier => (
+            <PricingCard key={tier.label} tier={tier} />
+          ))}
         </div>
 
         <p data-r className="text-white/20 text-[11px] leading-relaxed mt-8 max-w-lg font-[family-name:var(--font-dm-sans)] italic">
@@ -811,13 +1228,13 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-start justify-between gap-4 py-6 text-left group"
+        className="w-full flex items-start justify-between gap-4 py-5 sm:py-6 text-left group"
       >
-        <span className="text-white/70 text-[14px] leading-snug group-hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]">{q}</span>
+        <span className="text-white/70 text-[13px] sm:text-[14px] leading-snug group-hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]">{q}</span>
         <span className={`text-white/30 text-base leading-none mt-0.5 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
       </button>
       {open && (
-        <p className="text-[#94A3B8] text-[13px] leading-relaxed pb-6 max-w-xl font-[family-name:var(--font-dm-sans)]">{a}</p>
+        <p className="text-[#94A3B8] text-[13px] leading-relaxed pb-5 sm:pb-6 max-w-xl font-[family-name:var(--font-dm-sans)]">{a}</p>
       )}
     </div>
   )
@@ -827,13 +1244,13 @@ function FaqSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
         <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           FAQ
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-xl">
           Common questions
         </h2>
         <div data-r>
@@ -851,13 +1268,13 @@ function FinalCtaSection() {
   return (
     <section
       ref={ref}
-      className="min-h-[80dvh] bg-[#08111F] flex flex-col items-center justify-center px-6 text-center gap-7 border-t border-white/[0.06]"
+      className="min-h-[70dvh] sm:min-h-[80dvh] bg-[#08111F] flex flex-col items-center justify-center px-5 py-16 sm:px-6 text-center gap-5 sm:gap-7 border-t border-white/[0.06]"
     >
       <div data-r className="flex flex-col items-center gap-3 mb-2">
         <Image src="/logo-icon.png" alt="GigMiles" width={56} height={56} className="rounded-[14px] opacity-85" />
         <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
       </div>
-      <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.035em] leading-none text-[clamp(32px,6vw,72px)]">
+      <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.035em] leading-[1.05] sm:leading-none text-[clamp(28px,6vw,72px)]">
         Your real earnings.<br className="hidden md:block" /> After everything.
       </h2>
       <p data-r className="text-[#94A3B8] text-[15px] max-w-sm leading-relaxed font-[family-name:var(--font-dm-sans)]">
@@ -876,7 +1293,7 @@ function FinalCtaSection() {
 // ─── Footer ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="bg-[#050B12] border-t border-white/[0.06] px-6 md:px-14 py-12">
+    <footer className="bg-[#050B12] border-t border-white/[0.06] px-5 md:px-14 py-10 sm:py-12">
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-2.5">
           <Image src="/logo-icon.png" alt="GigMiles" width={22} height={22} className="rounded-[5px] opacity-60" />
@@ -926,6 +1343,8 @@ export function ScrollLanding() {
         <WaterfallSection />
         <HowItWorksSection />
         <FeaturesSection />
+        <PhoneShowcaseSection />
+        <CalculatorSection />
         <TestimonialsSection />
         <PricingSection />
         <FaqSection />

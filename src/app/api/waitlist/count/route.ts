@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const FOUNDING_MEMBER_LIMIT = 500;
+const FOUNDING_MEMBER_LIMIT = 5000;
 
 function getServiceClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

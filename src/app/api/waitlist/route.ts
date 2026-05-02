@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const FOUNDING_MEMBER_LIMIT = 500;
+const FOUNDING_MEMBER_LIMIT = 5000;
 
 async function addToEmailOctopus(email: string): Promise<void> {
   const apiKey = process.env.EMAILOCTOPUS_API_KEY;
