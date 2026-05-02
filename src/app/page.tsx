@@ -1,5 +1,5 @@
-import { VibeLandingClient } from '@/components/landing/VibeLandingClient'
+import { ScrollLanding } from '@/components/ScrollLanding'
 
 export default function LandingPage() {
-  return <VibeLandingClient />
+  return <ScrollLanding />
 }

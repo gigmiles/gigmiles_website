@@ -3,6 +3,18 @@ import { createClient } from "@supabase/supabase-js";
 
 const FOUNDING_MEMBER_LIMIT = 500;
 
+async function addToEmailOctopus(email: string): Promise<void> {
+  const apiKey = process.env.EMAILOCTOPUS_API_KEY;
+  const listId = process.env.EMAILOCTOPUS_LIST_ID;
+  if (!apiKey || !listId) return;
+
+  await fetch(`https://emailoctopus.com/api/1.6/lists/${listId}/contacts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ api_key: apiKey, email_address: email, status: "SUBSCRIBED" }),
+  });
+}
+
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
@@ -65,6 +77,8 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
+
+  await addToEmailOctopus(email.trim().toLowerCase());
 
   return NextResponse.json({ success: true, position });
 }

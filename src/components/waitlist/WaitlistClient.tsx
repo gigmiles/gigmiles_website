@@ -96,6 +96,17 @@ export function WaitlistClient() {
   const [position, setPosition] = useState<number | null>(null);
   const [spotCount, setSpotCount] = useState<number>(0);
   const [isFull, setIsFull] = useState(false);
+  const [ref, setRef] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get("utm_source");
+    const medium = params.get("utm_medium");
+    const campaign = params.get("utm_campaign");
+    if (source || medium || campaign) {
+      setRef([source, medium, campaign].filter(Boolean).join("|"));
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchCount() {
@@ -124,7 +135,7 @@ export function WaitlistClient() {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, ref }),
       });
 
       const data = await res.json();
