@@ -265,18 +265,21 @@ function HowItWorksSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 bg-[#0d0d0d]">
+    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
-        <p data-r className="text-white/40 text-[10px] tracking-[0.35em] uppercase mb-6">How it works</p>
-        <h2 data-r className="text-white font-light tracking-[-0.03em] leading-[1.05] text-[clamp(32px,5vw,60px)] mb-20 max-w-xl">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          How it works
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-xl">
           Three steps to knowing what you actually keep
         </h2>
-        <div className="grid md:grid-cols-3 gap-px bg-white/[0.10]">
+        <div className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
           {HOW_STEPS.map(step => (
-            <div key={step.n} data-r className="bg-[#111] p-8 flex flex-col gap-6">
-              <span className="text-white/30 text-[11px] font-mono tracking-[0.2em]">{step.n}</span>
-              <h3 className="text-white font-light text-xl leading-snug">{step.title}</h3>
-              <p className="text-white/55 text-sm leading-relaxed">{step.body}</p>
+            <div key={step.n} data-r className="bg-[#050B12] p-8 flex flex-col gap-6">
+              <span className="text-[#14B8A6] text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)] pb-4 border-b border-white/[0.06]">{step.n}</span>
+              <h3 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[18px] leading-snug tracking-[-0.02em]">{step.title}</h3>
+              <p className="text-[#94A3B8] text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)]">{step.body}</p>
             </div>
           ))}
         </div>
@@ -587,16 +590,16 @@ function FeatureRow({
   return (
     <div
       ref={ref}
-      className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-px bg-white/[0.10]`}
+      className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-px bg-white/[0.06]`}
     >
-      <div className="bg-[#0e0e0e] flex-1 flex flex-col justify-center px-10 py-16 gap-5">
-        <span data-r className="text-white/40 text-[10px] tracking-[0.28em] uppercase">{tag}</span>
-        <h3 data-r className="text-white font-light text-[clamp(22px,3vw,34px)] leading-snug tracking-[-0.02em] max-w-sm">
+      <div className="bg-[#08111F] flex-1 flex flex-col justify-center px-10 py-16 gap-5">
+        <span data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">{tag}</span>
+        <h3 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[clamp(20px,2.5vw,28px)] leading-snug tracking-[-0.02em] max-w-sm">
           {title}
         </h3>
-        <p data-r className="text-white/55 text-sm leading-relaxed max-w-xs">{body}</p>
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed max-w-xs font-[family-name:var(--font-dm-sans)]">{body}</p>
       </div>
-      <div data-r className="bg-[#141414] w-full md:w-[400px] flex items-center justify-center py-12 px-8">
+      <div data-r className="bg-[#050B12] w-full md:w-[400px] flex items-center justify-center py-12 px-8">
         {widget(active)}
       </div>
     </div>
@@ -608,10 +611,13 @@ function FeaturesSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref, 'top 85%')
   return (
-    <section ref={ref} className="py-32 px-6 bg-[#111]">
+    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-white/40 text-[10px] tracking-[0.35em] uppercase mb-6">Features</p>
-        <h2 data-r className="text-white font-light tracking-[-0.03em] leading-[1.05] text-[clamp(32px,5vw,60px)] mb-20 max-w-2xl">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          Features
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-2xl">
           Everything a gig worker needs to stop guessing
         </h2>
         <div className="space-y-px">
@@ -670,19 +676,22 @@ function TestimonialsSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 bg-[#0d0d0d]">
+    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
-        <p data-r className="text-white/40 text-[10px] tracking-[0.35em] uppercase mb-6">Beta testers</p>
-        <h2 data-r className="text-white font-light tracking-[-0.03em] leading-[1.05] text-[clamp(28px,4vw,48px)] mb-20 max-w-xl">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          Beta testers
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-xl">
           Real numbers change how you drive
         </h2>
-        <div className="grid md:grid-cols-3 gap-px bg-white/[0.10]">
+        <div className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
           {TESTIMONIALS.map(t => (
-            <div key={t.name} data-r className="bg-[#111] p-8 flex flex-col gap-8">
-              <p className="text-white/55 text-sm leading-relaxed flex-1">&ldquo;{t.quote}&rdquo;</p>
-              <div>
-                <p className="text-white/70 text-sm">{t.name}</p>
-                <p className="text-white/40 text-[11px] tracking-wide mt-1">{t.role}</p>
+            <div key={t.name} data-r className="bg-[#050B12] p-8 flex flex-col gap-8 hover:bg-[#08111F] transition-colors duration-200">
+              <p className="text-[#94A3B8] text-[14px] leading-[1.75] flex-1 font-[family-name:var(--font-dm-sans)]">&ldquo;{t.quote}&rdquo;</p>
+              <div className="pt-4 border-t border-white/[0.07]">
+                <p className="text-white/75 text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">{t.name}</p>
+                <p className="text-white/30 text-[11px] mt-1 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
               </div>
             </div>
           ))}
@@ -697,80 +706,69 @@ function PricingSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 bg-[#111]">
+    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
-        <p data-r className="text-white/40 text-[10px] tracking-[0.35em] uppercase mb-6">Pricing</p>
-        <h2 data-r className="text-white font-light tracking-[-0.03em] leading-[1.05] text-[clamp(28px,4vw,48px)] mb-4 max-w-xl">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          Pricing
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-4 max-w-xl">
           Less than one Uber ride per month
         </h2>
-        <p data-r className="text-white/55 text-sm leading-relaxed mb-16 max-w-md">
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-16 max-w-md font-[family-name:var(--font-dm-sans)]">
           10 days free during beta. No card required to start.
         </p>
 
-        <div data-r className="grid md:grid-cols-2 gap-px bg-white/[0.10]">
+        <div data-r className="grid md:grid-cols-2 border border-white/[0.07] bg-white/[0.07] gap-px">
           {/* Monthly */}
-          <div className="bg-[#111] p-10 flex flex-col gap-6 relative overflow-hidden">
-            <div className="absolute top-4 right-4">
-              <span className="text-[10px] tracking-[0.2em] uppercase text-[#FF9500]/80 border border-[#FF9500]/30 px-3 py-1 rounded-full">
-                Limited time
-              </span>
-            </div>
+          <div className="bg-[#08111F] p-10 flex flex-col gap-6 relative">
+            <span className="text-[10px] tracking-[0.12em] uppercase text-[#FBBF24]/70 font-[family-name:var(--font-space-grotesk)]">Limited time</span>
             <div>
-              <p className="text-white/40 text-[10px] tracking-[0.28em] uppercase mb-4">Monthly</p>
+              <p className="text-white/35 text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)]">Monthly</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-white font-light text-5xl tracking-[-0.04em]">$9.99</span>
-                <span className="text-white/40 text-sm">/ month</span>
+                <span className="text-white font-[family-name:var(--font-space-grotesk)] font-bold text-5xl tracking-[-0.04em]">$9.99</span>
+                <span className="text-[#94A3B8] text-[13px]">/ month</span>
               </div>
             </div>
             <ul className="space-y-3 flex-1">
               {['All platforms tracked', 'Real-time net earnings', 'Quarterly tax estimates', 'Expense gap detection', 'Export for CPA'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-sm text-white/60">
-                  <span className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0" />
+                <li key={f} className="flex items-center gap-3 text-[13px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">
+                  <span className="w-1 h-1 bg-[#14B8A6]/50 flex-shrink-0" />
                   {f}
                 </li>
               ))}
             </ul>
-            <a
-              href="/waitlist"
-              className="mt-2 text-center border border-white/25 text-white/70 text-[11px] tracking-[0.28em] uppercase px-8 py-4 transition-all duration-500 hover:border-white/60 hover:text-white active:scale-[0.98]"
-            >
+            <a href="/waitlist" className="mt-2 text-center border border-white/[0.18] text-white/60 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-white/35 hover:text-white/85 active:scale-[0.98]">
               Join the Waitlist
             </a>
           </div>
 
           {/* Annual */}
-          <div className="bg-[#161616] p-10 flex flex-col gap-6 relative overflow-hidden">
-            <div className="absolute top-4 right-4">
-              <span className="text-[10px] tracking-[0.2em] uppercase text-[#FF9500]/80 border border-[#FF9500]/30 px-3 py-1 rounded-full">
-                Limited time
-              </span>
-            </div>
+          <div className="bg-[#050B12] p-10 flex flex-col gap-6 relative border-t-2 border-t-[#14B8A6]">
+            <span className="text-[10px] tracking-[0.12em] uppercase text-[#FBBF24]/70 font-[family-name:var(--font-space-grotesk)]">Limited time</span>
             <div>
-              <p className="text-white/40 text-[10px] tracking-[0.28em] uppercase mb-4">Annual</p>
+              <p className="text-white/35 text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)]">Annual</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-white font-light text-5xl tracking-[-0.04em]">$99.9</span>
-                <span className="text-white/40 text-sm">/ year</span>
+                <span className="text-white font-[family-name:var(--font-space-grotesk)] font-bold text-5xl tracking-[-0.04em]">$99.9</span>
+                <span className="text-[#94A3B8] text-[13px]">/ year</span>
               </div>
-              <p className="text-white/40 text-xs mt-2">$8.33 / month · save 17%</p>
+              <p className="text-[#94A3B8] text-[12px] mt-2 font-[family-name:var(--font-dm-sans)]">$8.33 / month · save 17%</p>
             </div>
             <ul className="space-y-3 flex-1">
               {['Everything in Monthly', 'Priority support', 'Early access to new features', 'Locked-in beta pricing'].map(f => (
-                <li key={f} className="flex items-center gap-3 text-sm text-white/60">
-                  <span className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0" />
+                <li key={f} className="flex items-center gap-3 text-[13px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">
+                  <span className="w-1 h-1 bg-[#14B8A6]/50 flex-shrink-0" />
                   {f}
                 </li>
               ))}
             </ul>
-            <a
-              href="/waitlist"
-              className="mt-2 text-center bg-white text-black text-[11px] tracking-[0.28em] uppercase px-8 py-4 transition-all duration-300 hover:bg-white/90 active:scale-[0.98]"
-            >
+            <a href="/waitlist" className="mt-2 text-center bg-[#14B8A6] text-[#050B12] text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] font-medium px-8 py-3 transition-all duration-200 hover:bg-[#14B8A6]/90 active:scale-[0.98]">
               Join the Waitlist
             </a>
           </div>
         </div>
 
-        <p data-r className="text-white/25 text-[10px] leading-relaxed mt-8 max-w-lg">
+        <p data-r className="text-white/20 text-[11px] leading-relaxed mt-8 max-w-lg font-[family-name:var(--font-dm-sans)] italic">
           Tax estimates assume gig work is your primary income source and are for planning purposes only — not tax advice, not a filed return. Always consult a licensed tax professional before filing.
         </p>
       </div>
@@ -809,17 +807,17 @@ const FAQS = [
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-b border-white/[0.12]">
+    <div className="border-b border-white/[0.07]">
       <button
         type="button"
         onClick={() => setOpen(v => !v)}
         className="w-full flex items-start justify-between gap-4 py-6 text-left group"
       >
-        <span className="text-white/75 text-sm leading-snug group-hover:text-white transition-colors">{q}</span>
-        <span className={`text-white/40 text-lg leading-none mt-0.5 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
+        <span className="text-white/70 text-[14px] leading-snug group-hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]">{q}</span>
+        <span className={`text-white/30 text-base leading-none mt-0.5 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
       </button>
       {open && (
-        <p className="text-white/55 text-sm leading-relaxed pb-6 max-w-xl">{a}</p>
+        <p className="text-[#94A3B8] text-[13px] leading-relaxed pb-6 max-w-xl font-[family-name:var(--font-dm-sans)]">{a}</p>
       )}
     </div>
   )
@@ -829,10 +827,13 @@ function FaqSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-32 px-6 bg-[#0d0d0d]">
+    <section ref={ref} className="py-32 px-6 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
-        <p data-r className="text-white/40 text-[10px] tracking-[0.35em] uppercase mb-6">FAQ</p>
-        <h2 data-r className="text-white font-light tracking-[-0.03em] leading-[1.05] text-[clamp(28px,4vw,48px)] mb-16 max-w-xl">
+        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          FAQ
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,4vw,44px)] mb-16 max-w-xl">
           Common questions
         </h2>
         <div data-r>
@@ -850,36 +851,22 @@ function FinalCtaSection() {
   return (
     <section
       ref={ref}
-      className="min-h-[80dvh] bg-[#111] flex flex-col items-center justify-center px-6 text-center gap-7 border-t border-white/[0.12]"
+      className="min-h-[80dvh] bg-[#08111F] flex flex-col items-center justify-center px-6 text-center gap-7 border-t border-white/[0.06]"
     >
-      {/* Big logo moment */}
       <div data-r className="flex flex-col items-center gap-3 mb-2">
-        <Image
-          src="/logo-icon.png"
-          alt="GigMiles"
-          width={64}
-          height={64}
-          className="rounded-[16px] opacity-90"
-        />
-        <span className="text-white/40 text-[11px] tracking-[0.4em] uppercase">GigMiles</span>
+        <Image src="/logo-icon.png" alt="GigMiles" width={56} height={56} className="rounded-[14px] opacity-85" />
+        <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
       </div>
-      <h2
-        data-r
-        className="text-white font-light tracking-[-0.035em] leading-none text-[clamp(36px,7vw,88px)]"
-      >
+      <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.035em] leading-none text-[clamp(32px,6vw,72px)]">
         Your real earnings.<br className="hidden md:block" /> After everything.
       </h2>
-      <p data-r className="text-white/55 text-base max-w-sm leading-relaxed">
+      <p data-r className="text-[#94A3B8] text-[15px] max-w-sm leading-relaxed font-[family-name:var(--font-dm-sans)]">
         GigMiles calculates your real take-home after gas, miles, and taxes — so nothing surprises you at filing time.
       </p>
-      <a
-        data-r
-        href="/waitlist"
-        className="mt-2 border border-white/30 text-white/70 text-[11px] tracking-[0.28em] uppercase px-12 py-4 transition-all duration-500 hover:border-white/60 hover:text-white active:scale-[0.98]"
-      >
+      <a data-r href="/waitlist" className="mt-2 border border-white/[0.18] text-white/60 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-12 py-3 transition-all duration-200 hover:border-white/35 hover:text-white/85 active:scale-[0.98]">
         Join the Waitlist
       </a>
-      <p data-r className="text-white/30 text-[10px] tracking-[0.2em]">
+      <p data-r className="text-white/25 text-[11px] font-[family-name:var(--font-dm-sans)]">
         10 days free during beta — no card required
       </p>
     </section>
@@ -889,23 +876,23 @@ function FinalCtaSection() {
 // ─── Footer ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="bg-[#0d0d0d] border-t border-white/[0.12] px-6 py-12">
+    <footer className="bg-[#050B12] border-t border-white/[0.06] px-6 md:px-14 py-12">
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-2.5">
-          <Image src="/logo-icon.png" alt="GigMiles" width={24} height={24} className="rounded-[6px] opacity-70" />
+          <Image src="/logo-icon.png" alt="GigMiles" width={22} height={22} className="rounded-[5px] opacity-60" />
           <div>
-            <span className="text-white/50 text-[11px] tracking-[0.3em] uppercase">GigMiles</span>
-            <p className="text-white/30 text-[10px] tracking-wide mt-0.5">Your real earnings. After everything.</p>
+            <span className="text-white/40 text-[12px] tracking-[-0.01em] font-medium font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
+            <p className="text-white/20 text-[11px] mt-0.5 font-[family-name:var(--font-dm-sans)]">Your real earnings. After everything.</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-8">
-          <a href="/waitlist" className="text-white/40 text-[11px] tracking-[0.2em] uppercase hover:text-white/70 transition-colors">Waitlist</a>
-          <a href="mailto:support@gigmiles.app" className="text-white/40 text-[11px] tracking-[0.2em] uppercase hover:text-white/70 transition-colors">Contact</a>
-          <a href="/privacy" className="text-white/40 text-[11px] tracking-[0.2em] uppercase hover:text-white/70 transition-colors">Privacy</a>
+          {[['Waitlist', '/waitlist'], ['Contact', 'mailto:support@gigmiles.app'], ['Privacy', '/privacy']].map(([l, h]) => (
+            <a key={l} href={h} className="text-white/30 text-[12px] tracking-[0.04em] font-[family-name:var(--font-space-grotesk)] hover:text-white/55 transition-colors">{l}</a>
+          ))}
         </div>
         <div className="text-right">
-          <p className="text-white/20 text-[10px]">&copy; {new Date().getFullYear()} GigMiles</p>
-          <p className="text-white/15 text-[9px] mt-1 max-w-[220px] leading-relaxed">Tax estimates are for planning purposes only. Not tax advice.</p>
+          <p className="text-white/20 text-[11px] font-[family-name:var(--font-dm-sans)]">&copy; {new Date().getFullYear()} GigMiles</p>
+          <p className="text-white/15 text-[10px] mt-1 max-w-[220px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic">Tax estimates are for planning purposes only. Not tax advice.</p>
         </div>
       </div>
     </footer>
@@ -927,7 +914,7 @@ export function ScrollLanding() {
       {!isReady && <LoadingScreen progress={loadedCount / totalFrames} />}
       <Nav />
 
-      <main className="bg-[#0d0d0d]">
+      <main className="bg-[#050B12]">
         <ScrollVideoAnimation
           frameDir="/frames/hero"
           frameCount={totalFrames}
