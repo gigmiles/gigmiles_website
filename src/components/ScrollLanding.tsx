@@ -804,50 +804,7 @@ function Footer() {
 }
 
 // ─── Overlay stages definition ────────────────────────────────────────────────
-const STAGES: OverlayStage[] = [
-  {
-    fadeIn: 0.13, peak: 0.20, fadeOut: 0.30, gone: 0.37,
-    content: (
-      <StageContent
-        label="last week"
-        number="$235"
-        sub="9 hours · DoorDash, Uber Eats, Amazon Flex"
-      />
-    ),
-  },
-  {
-    fadeIn: 0.37, peak: 0.44, fadeOut: 0.52, gone: 0.58,
-    content: (
-      <StageContent
-        label="vehicle costs"
-        number="−$57"
-        numberColor="#FF4444"
-        sub="fuel · maintenance · insurance · $178 remaining"
-      />
-    ),
-  },
-  {
-    fadeIn: 0.58, peak: 0.65, fadeOut: 0.73, gone: 0.79,
-    content: (
-      <StageContent
-        label="tax bomb"
-        number="−$31"
-        numberColor="#FF9500"
-        sub="self-employment · federal · state · $147 remaining"
-      />
-    ),
-  },
-  {
-    fadeIn: 0.79, peak: 0.86, fadeOut: 0.97, gone: 1.0,
-    content: (
-      <StageContent
-        label="real earnings"
-        number="$147"
-        sub="$16.33 / hour · GigMiles calculates this in seconds"
-      />
-    ),
-  },
-]
+const STAGES: OverlayStage[] = []
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export function ScrollLanding() {
