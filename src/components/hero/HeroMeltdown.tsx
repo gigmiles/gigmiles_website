@@ -273,12 +273,12 @@ function EarningsBar({ progress }: { progress: number }) {
 
 // ─── Split Reality ──────────────────────────────────────────────────────────
 function SplitReality({ progress }: { progress: number }) {
-  if (progress < 0.65 || progress > 0.92) return null
+  if (progress < 0.65 || progress > 0.95) return null
 
-  // Fade in: 0.65 → 0.71
-  const fadeIn = Math.min(1, (progress - 0.65) / 0.06)
-  // Expand right panel over left: 0.73 → 0.87 (50% → 100%)
-  const expandT = progress < 0.73 ? 0 : progress > 0.87 ? 1 : (progress - 0.73) / 0.14
+  // Fade in: 0.65 → 0.70
+  const fadeIn = Math.min(1, (progress - 0.65) / 0.05)
+  // Static split readable from 0.70 → 0.80, then right panel expands: 0.80 → 0.91
+  const expandT = progress < 0.80 ? 0 : progress > 0.91 ? 1 : (progress - 0.80) / 0.11
   const rightWidthPct = 50 + expandT * 50
 
   // Divider fades out as right panel overtakes center
@@ -348,8 +348,8 @@ function SplitReality({ progress }: { progress: number }) {
 
 // ─── Final CTA overlay ──────────────────────────────────────────────────────
 function HeroCTA({ progress }: { progress: number }) {
-  if (progress < 0.88) return null
-  const t = Math.min(1, (progress - 0.88) / 0.10)
+  if (progress < 0.92) return null
+  const t = Math.min(1, (progress - 0.92) / 0.08)
 
   return (
     <div
@@ -379,7 +379,7 @@ function HeroCTA({ progress }: { progress: number }) {
 
 // ─── Progress dots ──────────────────────────────────────────────────────────
 function ProgressDots({ progress }: { progress: number }) {
-  const stage = progress < 0.15 ? 0 : progress < 0.55 ? 1 : progress < 0.65 ? 2 : progress < 0.88 ? 3 : 4
+  const stage = progress < 0.15 ? 0 : progress < 0.55 ? 1 : progress < 0.65 ? 2 : progress < 0.92 ? 3 : 4
   return (
     <div className="absolute bottom-[8%] left-1/2 -translate-x-1/2 z-30 flex gap-2">
       {[0, 1, 2, 3, 4].map(i => (

@@ -230,8 +230,8 @@ const HOW_SCENES = [
     amount: '$235',
     color: '#10B981',
     sub: '9h · DoorDash + Uber Eats · 112 mi',
-    img: '/ss-quarterly.jpeg',
-    imgAlt: 'Shift earnings',
+    img: '/ss-home.jpeg',          // TODO: replace with Home / Net Earnings hero card screenshot
+    imgAlt: 'Net earnings home screen',
   },
   {
     n: '02',
@@ -239,8 +239,8 @@ const HOW_SCENES = [
     amount: '−$57',
     color: '#EF4444',
     sub: 'Gas · mileage at IRS rate · wear & tear',
-    img: '/ss-expense-gaps.jpeg',
-    imgAlt: 'Expense gaps',
+    img: '/ss-shifts.jpeg',        // TODO: replace with Shifts list page screenshot
+    imgAlt: 'Shifts list',
   },
   {
     n: '03',
@@ -258,7 +258,7 @@ const HOW_SCENES = [
     color: '#14B8A6',
     sub: '$16.33 / hr — after every cost',
     img: '/ss-quarterly.jpeg',
-    imgAlt: 'Real take-home',
+    imgAlt: 'Quarterly earnings summary',
   },
 ]
 
