@@ -55,9 +55,9 @@ function PlatformWall() {
     <div className="relative bg-[#08111F] border-t border-b border-white/[0.06] py-5 px-5 md:px-14 overflow-hidden">
       {/* Top fade-in: blends from hero #050B12 into platform wall #08111F */}
       <div className="absolute inset-x-0 -top-16 h-16 pointer-events-none bg-gradient-to-b from-[#050B12] to-transparent" />
-      <div className="max-w-5xl mx-auto flex items-center gap-10 flex-wrap justify-center">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center gap-3 sm:gap-10 flex-wrap justify-center">
         <p className="text-white/40 text-[12px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
-        <div className="flex flex-wrap justify-center gap-x-10 gap-y-2">
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
           {PLATFORMS.map(p => (
             <span key={p} className="text-white/55 text-[13px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)]">{p}</span>
           ))}
@@ -76,14 +76,11 @@ function AnchorBanner() {
   ]
   return (
     <div className="bg-[#08111F] border-b border-white/[0.06] py-5 px-6">
-      <div className="max-w-3xl mx-auto flex items-center justify-center gap-0 flex-wrap">
-        {stats.map((s, i) => (
-          <div key={s.val} className="flex items-center">
-            <div className="flex items-baseline gap-2 px-6 py-1 text-center">
-              <span className="text-white/80 text-[15px] font-semibold font-[family-name:var(--font-space-grotesk)] tracking-[-0.02em]">{s.val}</span>
-              <span className="text-white/30 text-[11px] font-[family-name:var(--font-dm-sans)]">{s.label}</span>
-            </div>
-            {i < stats.length - 1 && <span className="text-white/[0.12] text-[16px] select-none">|</span>}
+      <div className="max-w-3xl mx-auto grid grid-cols-3 divide-x divide-white/[0.08]">
+        {stats.map((s) => (
+          <div key={s.val} className="flex flex-col items-center gap-1 px-2 sm:px-6 py-1 text-center">
+            <span className="text-white/80 text-[15px] sm:text-[16px] font-semibold font-[family-name:var(--font-space-grotesk)] tracking-[-0.02em]">{s.val}</span>
+            <span className="text-white/35 text-[10px] sm:text-[11px] font-[family-name:var(--font-dm-sans)] leading-tight">{s.label}</span>
           </div>
         ))}
       </div>
@@ -153,13 +150,13 @@ function WaterfallSection() {
 
         <div className="border border-white/[0.07] bg-[#050B12]">
           {/* header */}
-          <div className="px-5 sm:px-8 py-5 border-b border-white/[0.06] flex items-baseline justify-between flex-wrap gap-4">
-            <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">Shift breakdown</span>
-            <div className="flex gap-5 sm:gap-8 flex-wrap">
+          <div className="px-5 sm:px-8 py-5 border-b border-white/[0.06] flex items-start sm:items-baseline justify-between gap-4">
+            <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium flex-shrink-0">Shift breakdown</span>
+            <div className="flex gap-4 sm:gap-8 flex-wrap justify-end">
               {[['Platform', 'DoorDash + Uber Eats'], ['Miles', '112 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
-                <div key={l} className="flex flex-col gap-1">
-                  <span className="text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
-                  <span className="text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
+                <div key={l} className="flex flex-col gap-1 text-right sm:text-left">
+                  <span className="text-[10px] sm:text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
+                  <span className="text-[12px] sm:text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
                 </div>
               ))}
             </div>
@@ -719,7 +716,7 @@ function FeatureRow({
         </h3>
         <p data-r className="text-[#94A3B8] text-[13px] sm:text-[14px] leading-relaxed max-w-xs font-[family-name:var(--font-dm-sans)]">{body}</p>
       </div>
-      <div className="bg-[#050B12] w-full md:w-[400px] flex items-center justify-center py-10 px-5 sm:py-12 sm:px-8">
+      <div className="bg-[#050B12] w-full md:w-[400px] flex items-center justify-center py-8 px-5 sm:py-12 sm:px-8">
         {widget(active)}
       </div>
     </div>
@@ -1171,10 +1168,19 @@ function PricingSection() {
           10 days free during beta. No card required to start.
         </p>
 
-        <div data-r className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
-          {PRICING_TIERS.map(tier => (
-            <PricingCard key={tier.label} tier={tier} />
-          ))}
+        {/* Mobile: featured first, then rest. Desktop: natural order */}
+        <div data-r className="flex flex-col md:grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
+          {/* Mobile-first sort: featured card floats to top on mobile */}
+          <div className="contents md:hidden">
+            {[...PRICING_TIERS].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)).map(tier => (
+              <PricingCard key={tier.label + '-m'} tier={tier} />
+            ))}
+          </div>
+          <div className="hidden md:contents">
+            {PRICING_TIERS.map(tier => (
+              <PricingCard key={tier.label} tier={tier} />
+            ))}
+          </div>
         </div>
 
         <p data-r className="text-white/20 text-[11px] leading-relaxed mt-8 max-w-lg font-[family-name:var(--font-dm-sans)] italic">
@@ -1305,7 +1311,7 @@ function Footer() {
             <a key={l} href={h} className="text-white/30 text-[12px] tracking-[0.04em] font-[family-name:var(--font-space-grotesk)] hover:text-white/55 transition-colors">{l}</a>
           ))}
         </div>
-        <div className="text-right">
+        <div className="text-left md:text-right">
           <p className="text-white/35 text-[11px] font-[family-name:var(--font-dm-sans)]">&copy; {new Date().getFullYear()} GigMiles</p>
           <p className="text-white/15 text-[10px] mt-1 max-w-[220px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic">Tax estimates are for planning purposes only. Not tax advice.</p>
         </div>
