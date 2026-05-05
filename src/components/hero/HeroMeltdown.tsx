@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { useScroll, useSpring, useMotionValueEvent } from 'motion/react'
 import { Particles } from '@/components/ui/particles'
 import { AnimatedShinyText } from '@/components/ui/animated-shiny-text'
+import { DownloadButton } from '@/components/ui/DownloadButton'
 
 // ─── Config — change these numbers anytime ──────────────────────────────────
 export const HERO_CONFIG = {
@@ -358,13 +359,12 @@ function HeroCTA({ progress }: { progress: number }) {
           Your real number. Every shift.
         </AnimatedShinyText>
       </h2>
-      <a
-        href="/waitlist"
-        className="mt-2 border border-[#10B981]/40 text-[#10B981] text-[12px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium px-10 py-3.5 transition-all duration-300 hover:bg-[#10B981]/10 hover:border-[#10B981]/60 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-[0.97]"
+      <DownloadButton
+        className="mt-2 border border-[#10B981]/40 text-[#10B981] text-[12px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium px-10 py-3.5 transition-all duration-300 hover:bg-[#10B981]/10 hover:border-[#10B981]/60 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-[0.97] cursor-pointer"
         style={{ transform: `scale(${0.8 + t * 0.2})` }}
       >
-        Join Early Access
-      </a>
+        Download App
+      </DownloadButton>
       <p className="text-white/20 text-[11px] font-[family-name:var(--font-dm-sans)]">
         10 days free — no card required
       </p>

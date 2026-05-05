@@ -6,6 +6,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react'
 import { HeroMeltdown } from './hero/HeroMeltdown'
+import { DownloadButton } from './ui/DownloadButton'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -39,12 +40,9 @@ function Nav() {
           </a>
         ))}
       </div>
-      <a
-        href="/waitlist"
-        className="text-white/55 text-[11px] tracking-[0.04em] border border-white/[0.14] px-5 py-2 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)]"
-      >
-        Join Early Access
-      </a>
+      <DownloadButton className="text-white/55 text-[11px] tracking-[0.04em] border border-white/[0.14] px-5 py-2 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)] cursor-pointer">
+        Download App
+      </DownloadButton>
     </nav>
   )
 }
@@ -902,9 +900,9 @@ function CalculatorSection() {
               <p className="text-white/40 text-[12px] font-[family-name:var(--font-dm-sans)]">after vehicle costs + taxes · per week</p>
             </div>
 
-            <a href="/waitlist" className="text-center border border-[#14B8A6]/30 text-[#14B8A6]/70 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-[#14B8A6]/60 hover:text-[#14B8A6] active:scale-[0.98]">
-              Track this in GigMiles
-            </a>
+            <DownloadButton className="text-center border border-[#14B8A6]/30 text-[#14B8A6]/70 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-[#14B8A6]/60 hover:text-[#14B8A6] active:scale-[0.98] cursor-pointer w-full">
+              Download GigMiles
+            </DownloadButton>
 
             <p className="text-white/15 text-[10px] italic font-[family-name:var(--font-dm-sans)] leading-relaxed">
               Estimates only. Actual costs and taxes vary. Not tax advice.
@@ -1015,7 +1013,6 @@ type PricingTier = {
   caption: string
   features: string[]
   cta: string
-  ctaHref: string
   bg: string
   featured?: boolean
 }
@@ -1099,16 +1096,15 @@ function PricingCard({ tier }: { tier: PricingTier }) {
             </li>
           ))}
         </ul>
-        <a
-          href={tier.ctaHref}
-          className={`mt-2 text-center text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 active:scale-[0.98] ${
+        <DownloadButton
+          className={`mt-2 text-center text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 active:scale-[0.98] cursor-pointer w-full ${
             tier.featured
               ? 'bg-[#14B8A6] text-[#050B12] font-semibold hover:bg-[#14B8A6]/85'
               : 'border border-white/[0.18] text-white/60 hover:border-white/35 hover:text-white/85'
           }`}
         >
           {tier.cta}
-        </a>
+        </DownloadButton>
       </div>
     </div>
   )
@@ -1120,8 +1116,7 @@ const PRICING_TIERS: PricingTier[] = [
     price: 'Free',
     caption: '10 days · no card required',
     features: ['All platforms tracked', 'Real-time net earnings', 'Quarterly tax estimates', 'Expense gap detection'],
-    cta: 'Start Free',
-    ctaHref: '/waitlist',
+    cta: 'Download App',
     bg: 'bg-[#08111F]',
   },
   {
@@ -1131,8 +1126,7 @@ const PRICING_TIERS: PricingTier[] = [
     priceSuffix: '/ month',
     caption: 'Billed monthly · cancel anytime',
     features: ['Everything in Free Trial', 'Export for CPA', 'Unlimited shift history', 'Priority support'],
-    cta: 'Join the Waitlist',
-    ctaHref: '/waitlist',
+    cta: 'Download App',
     bg: 'bg-[#050B12]',
     featured: true,
   },
@@ -1142,8 +1136,7 @@ const PRICING_TIERS: PricingTier[] = [
     priceSuffix: '/ year',
     caption: '$8.33 / month · save 17%',
     features: ['Everything in Monthly', 'Early access to new features', 'Locked-in beta pricing', 'Tax season export pack'],
-    cta: 'Join the Waitlist',
-    ctaHref: '/waitlist',
+    cta: 'Download App',
     bg: 'bg-[#08111F]',
   },
 ]
@@ -1271,13 +1264,11 @@ function FinalCtaSection() {
       <p data-r className="relative z-10 text-[#94A3B8] text-[15px] max-w-sm leading-relaxed font-[family-name:var(--font-dm-sans)]">
         Know what you actually kept — after gas, mileage, and taxes. Every shift.
       </p>
-      <a
-        data-r
-        href="/waitlist"
-        className="relative z-10 mt-2 bg-[#14B8A6] text-[#050B12] text-[11px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-semibold px-12 py-4 transition-all duration-200 hover:bg-[#14B8A6]/85 hover:shadow-[0_0_40px_rgba(20,184,166,0.25)] active:scale-[0.97]"
+      <DownloadButton
+        className="relative z-10 mt-2 bg-[#14B8A6] text-[#050B12] text-[11px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-semibold px-12 py-4 transition-all duration-200 hover:bg-[#14B8A6]/85 hover:shadow-[0_0_40px_rgba(20,184,166,0.25)] active:scale-[0.97] cursor-pointer"
       >
-        Join Early Access
-      </a>
+        Download App
+      </DownloadButton>
       <p data-r className="relative z-10 text-white/35 text-[11px] font-[family-name:var(--font-dm-sans)]">
         10 days free during beta — no card required
       </p>
@@ -1298,7 +1289,7 @@ function Footer() {
           </div>
         </div>
         <div className="flex flex-wrap gap-8">
-          {[['Waitlist', '/waitlist'], ['Contact', 'mailto:support@gigmiles.app'], ['Privacy', '/privacy']].map(([l, h]) => (
+          {[['Contact', 'mailto:support@gigmiles.app'], ['Privacy', '/privacy']].map(([l, h]) => (
             <a key={l} href={h} className="text-white/30 text-[12px] tracking-[0.04em] font-[family-name:var(--font-space-grotesk)] hover:text-white/55 transition-colors">{l}</a>
           ))}
         </div>
