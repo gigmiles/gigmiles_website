@@ -101,6 +101,16 @@
   }
 
   --animation-gradient-x: gradient-x 3s ease infinite;
+
+  --animate-shiny-text: shiny-text 8s infinite;
+  @keyframes shiny-text {
+  0%, 90%, 100% {
+    background-position: calc(-100% - var(--shiny-width)) 0;
+    }
+  30%, 60% {
+    background-position: calc(100% + var(--shiny-width)) 0;
+    }
+  }
 }
 
 :root {
@@ -195,7 +205,7 @@
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  
+
   /* Apply safe areas to body */
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Input } from "@/components/ui/input";
 import { ProfitCalculator } from "@/components/waitlist/ProfitCalculator";
 

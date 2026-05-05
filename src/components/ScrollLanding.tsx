@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ScrollVideoAnimation, type OverlayStage } from './ScrollVideoAnimation'
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
+import { HeroMeltdown } from './hero/HeroMeltdown'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -76,49 +76,6 @@ function AnchorBanner() {
       <p className="text-center text-white/40 text-[12px] tracking-[0.18em] font-light">
         Most GigMiles drivers are surprised by what they actually kept.
       </p>
-    </div>
-  )
-}
-
-// ─── Loading screen ───────────────────────────────────────────────────────────
-function LoadingScreen({ progress }: { progress: number }) {
-  const pct = Math.round(progress * 100)
-  return (
-    <div className="fixed inset-0 z-50 bg-[#0a0a0a] flex flex-col items-center justify-center gap-5">
-      <span className="text-white/20 text-[10px] tracking-[0.35em] uppercase">GigMiles</span>
-      <div className="w-36 h-px bg-white/10 relative overflow-hidden">
-        <div
-          className="absolute inset-y-0 left-0 bg-white/50 transition-all duration-300 ease-out"
-          ref={el => { if (el) el.style.width = `${pct}%` }}
-        />
-      </div>
-      <span className="text-white/15 text-[10px] tabular-nums tracking-widest">{pct}%</span>
-    </div>
-  )
-}
-
-// ─── Overlay content pieces ───────────────────────────────────────────────────
-function StageContent({
-  label,
-  number,
-  numberColor = '#ffffff',
-  sub,
-}: {
-  label: string
-  number: string
-  numberColor?: string
-  sub: string
-}) {
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <span className="text-[10px] tracking-[0.28em] uppercase text-white/25">{label}</span>
-      <span
-        className="font-light leading-none tracking-[-0.04em] text-[clamp(72px,14vw,148px)]"
-        ref={el => { if (el) el.style.color = numberColor }}
-      >
-        {number}
-      </span>
-      <span className="text-white/35 text-sm tracking-wide max-w-xs leading-relaxed">{sub}</span>
     </div>
   )
 }
@@ -1316,28 +1273,14 @@ function Footer() {
   )
 }
 
-// ─── Overlay stages definition ────────────────────────────────────────────────
-const STAGES: OverlayStage[] = []
-
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export function ScrollLanding() {
-  const [loadedCount, setLoadedCount] = useState(0)
-  const totalFrames = 193
-
-  const isReady = loadedCount >= totalFrames * 0.85
-
   return (
     <>
-      {!isReady && <LoadingScreen progress={loadedCount / totalFrames} />}
       <Nav />
 
       <main className="bg-[#050B12]">
-        <ScrollVideoAnimation
-          frameDir="/frames/hero"
-          frameCount={totalFrames}
-          stages={STAGES}
-          onLoadProgress={(loaded) => setLoadedCount(loaded)}
-        />
+        <HeroMeltdown />
         <PlatformWall />
         <AnchorBanner />
         <WaterfallSection />

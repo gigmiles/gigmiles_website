@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export function MagneticCTA({ children, className, onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) {
   const buttonRef = useRef<HTMLDivElement>(null);

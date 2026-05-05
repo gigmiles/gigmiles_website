@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { VibeLogo as Logo } from "@/components/brand/VibeLogo";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { MagneticCTA } from "@/components/ui/MagneticCTA";
 
 const staggerContainer = {
