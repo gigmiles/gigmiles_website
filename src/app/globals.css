@@ -324,6 +324,11 @@ html {
   }
 }
 
+@keyframes howFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* Kinetic Typography Animations */
 @keyframes number-pop {
   0% { transform: scale(0.9); opacity: 0; filter: blur(4px); }

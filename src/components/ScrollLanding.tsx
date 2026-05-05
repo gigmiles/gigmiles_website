@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
+import { motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react'
 import { HeroMeltdown } from './hero/HeroMeltdown'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -71,11 +71,24 @@ function PlatformWall() {
 
 // ─── Anchor banner ───────────────────────────────────────────────────────────
 function AnchorBanner() {
+  const stats = [
+    { val: '$88', label: 'avg. hidden costs per shift' },
+    { val: '$0.23', label: 'reserve per dollar earned' },
+    { val: '62%', label: 'of gross you actually keep' },
+  ]
   return (
-    <div className="bg-[#111] border-b border-white/[0.06] py-5 px-6">
-      <p className="text-center text-white/40 text-[12px] tracking-[0.18em] font-light">
-        Most GigMiles drivers are surprised by what they actually kept.
-      </p>
+    <div className="bg-[#08111F] border-b border-white/[0.06] py-5 px-6">
+      <div className="max-w-3xl mx-auto flex items-center justify-center gap-0 flex-wrap">
+        {stats.map((s, i) => (
+          <div key={s.val} className="flex items-center">
+            <div className="flex items-baseline gap-2 px-6 py-1 text-center">
+              <span className="text-white/80 text-[15px] font-semibold font-[family-name:var(--font-space-grotesk)] tracking-[-0.02em]">{s.val}</span>
+              <span className="text-white/30 text-[11px] font-[family-name:var(--font-dm-sans)]">{s.label}</span>
+            </div>
+            {i < stats.length - 1 && <span className="text-white/[0.12] text-[16px] select-none">|</span>}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -214,47 +227,172 @@ function WaterfallSection() {
   )
 }
 
-// ─── How it Works ─────────────────────────────────────────────────────────────
-const HOW_STEPS = [
+// ─── How it Works — Sticky Storyboard ────────────────────────────────────────
+const HOW_SCENES = [
   {
     n: '01',
-    title: 'Log your shifts',
-    body: 'Add earnings from Uber, DoorDash, Amazon Flex, Instacart, or Lyft in seconds. One tap per shift.',
+    label: 'What you grossed',
+    amount: '$235',
+    color: '#10B981',
+    sub: '9h · DoorDash + Uber Eats · 112 mi',
+    img: '/ss-quarterly.jpeg',
+    imgAlt: 'Shift earnings',
   },
   {
     n: '02',
-    title: 'Track every cost',
-    body: 'Fuel, mileage at IRS rate ($0.725/mi), maintenance, insurance. GigMiles separates business from personal automatically.',
+    label: 'What it cost to drive',
+    amount: '−$57',
+    color: '#EF4444',
+    sub: 'Gas · mileage at IRS rate · wear & tear',
+    img: '/ss-expense-gaps.jpeg',
+    imgAlt: 'Expense gaps',
   },
   {
     n: '03',
-    title: 'See your real number',
-    body: 'Gross pay minus vehicle costs minus estimated taxes. GigMiles shows your true hourly rate — updated live as you drive.',
+    label: 'What the IRS takes',
+    amount: '−$31',
+    color: '#F59E0B',
+    sub: 'Self-employment tax + state income tax',
+    img: '/ss-tax-breakdown.jpeg',
+    imgAlt: 'Tax breakdown',
+  },
+  {
+    n: '04',
+    label: 'What you actually keep',
+    amount: '$147',
+    color: '#14B8A6',
+    sub: '$16.33 / hr — after every cost',
+    img: '/ss-quarterly.jpeg',
+    imgAlt: 'Real take-home',
   },
 ]
 
 function HowItWorksSection() {
-  const ref = useRef<HTMLElement>(null)
-  useReveal(ref)
+  const sectionRef = useRef<HTMLElement>(null)
+  const [activeScene, setActiveScene] = useState(0)
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end end'],
+  })
+
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    setActiveScene(Math.min(3, Math.floor(v * 4)))
+  })
+
+  const scene = HOW_SCENES[activeScene]
+
   return (
-    <section id="how" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
-      <div className="max-w-4xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+    <section id="how" ref={sectionRef} className="relative bg-[#050B12] border-t border-white/[0.06] min-h-[300vh]">
+      {/* ── Sticky viewport ── */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden hidden md:flex">
+        {/* Left — narrative */}
+        <div className="flex-1 flex flex-col justify-center px-10 lg:px-16 gap-8 relative">
+          {/* Section eyebrow — stays fixed */}
+          <div>
+            <p className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-3 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+              <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+              How it works
+            </p>
+            <h2 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(22px,3vw,38px)] max-w-xs">
+              One shift.<br />Every number.
+            </h2>
+          </div>
+
+          {/* Scene content — animates */}
+          <div className="flex flex-col gap-4" key={activeScene} style={{ animation: 'howFadeUp 0.4s ease both' }}>
+            <span className="text-white/20 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">
+              {scene.n} / 04
+            </span>
+            <div
+              className="font-[family-name:var(--font-space-grotesk)] font-extralight tracking-[-0.05em] leading-none tabular-nums"
+              style={{ fontSize: 'clamp(56px, 8vw, 96px)', color: scene.color }}
+            >
+              {scene.amount}
+            </div>
+            <p className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[18px] lg:text-[20px] tracking-[-0.02em]">
+              {scene.label}
+            </p>
+            <p className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-dm-sans)] leading-relaxed max-w-[260px]">
+              {scene.sub}
+            </p>
+          </div>
+
+          {/* Dot pagination */}
+          <div className="flex gap-2.5 items-center">
+            {HOW_SCENES.map((s, i) => (
+              <div
+                key={s.n}
+                className="rounded-full transition-all duration-500"
+                style={{
+                  width: i === activeScene ? '20px' : '6px',
+                  height: '6px',
+                  backgroundColor: i === activeScene ? '#14B8A6' : 'rgba(255,255,255,0.12)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Right — phone image stack */}
+        <div className="w-[45%] lg:w-[40%] flex items-center justify-center overflow-hidden relative bg-[#08111F] border-l border-white/[0.06]">
+          <div
+            className="absolute inset-0 transition-none"
+            style={{
+              background: `radial-gradient(circle 300px at 50% 50%, ${scene.color}10, transparent 70%)`,
+              transition: 'background 0.6s ease',
+            }}
+          />
+          <div
+            className="relative h-full w-full overflow-hidden"
+          >
+            {HOW_SCENES.map((s, i) => (
+              <div
+                key={s.n}
+                className="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out"
+                style={{
+                  opacity: i === activeScene ? 1 : 0,
+                  transform: `translateY(${(i - activeScene) * 60}px)`,
+                  pointerEvents: i === activeScene ? 'auto' : 'none',
+                }}
+              >
+                <div className="relative w-[160px] lg:w-[190px] flex-shrink-0">
+                  <div className="relative bg-[#0F1623] border-2 border-white/[0.10] rounded-[36px] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
+                    <div className="bg-[#050B12] rounded-[28px] overflow-hidden aspect-[9/19] relative">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-4 bg-[#0F1623] rounded-b-xl z-10" />
+                      <Image src={s.img} alt={s.imgAlt} fill className="object-cover object-top" sizes="190px" />
+                    </div>
+                  </div>
+                  <div
+                    className="absolute inset-0 rounded-[36px] -z-10 blur-2xl scale-110"
+                    style={{ backgroundColor: scene.color, opacity: 0.06 }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Mobile: 4 stacked cards (no sticky) ── */}
+      <div className="md:hidden px-5 py-16 flex flex-col gap-px bg-white/[0.06]">
+        <p className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-8 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           How it works
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-xl">
-          Three steps to knowing what you actually keep
-        </h2>
-        <div className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
-          {HOW_STEPS.map(step => (
-            <div key={step.n} data-r className="bg-[#050B12] p-6 sm:p-8 flex flex-col gap-5 sm:gap-6">
-              <span className="text-[#14B8A6] text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)] pb-4 border-b border-white/[0.06]">{step.n}</span>
-              <h3 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[18px] leading-snug tracking-[-0.02em]">{step.title}</h3>
-              <p className="text-[#94A3B8] text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)]">{step.body}</p>
+        {HOW_SCENES.map(s => (
+          <div key={s.n} className="bg-[#050B12] p-7 flex flex-col gap-3">
+            <span className="text-white/20 text-[10px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">{s.n} / 04</span>
+            <div
+              className="font-[family-name:var(--font-space-grotesk)] font-extralight text-[56px] tracking-[-0.05em] leading-none tabular-nums"
+              style={{ color: s.color }}
+            >
+              {s.amount}
             </div>
-          ))}
-        </div>
+            <p className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[17px] tracking-[-0.02em]">{s.label}</p>
+            <p className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-dm-sans)] leading-relaxed">{s.sub}</p>
+          </div>
+        ))}
       </div>
     </section>
   )
@@ -931,28 +1069,38 @@ function CalculatorSection() {
 // ─── Testimonials ─────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
   {
-    quote: 'I thought I was clearing $18 an hour on Uber. GigMiles showed me $11.40 after mileage and taxes. Rough wake-up call, but now I actually plan my shifts.',
+    quote: 'I thought I was clearing $18 an hour on Uber. GigMiles showed me $11.40 after mileage and taxes. Rough wake-up call — but now I actually plan my shifts around the real number.',
     name: 'Marcus T.',
-    role: 'Uber driver · 3 years',
+    role: 'Uber · 3 years',
+    initials: 'MT',
+    accent: '#14B8A6',
+    featured: true,
   },
   {
-    quote: 'The expense gaps feature flagged $340 in quarterly deductions I was ignoring — phone, parking, tolls. That\'s more than the app costs in a year.',
+    quote: 'The expense gaps feature flagged $340 in deductions I was ignoring. Phone, parking, tolls. That\'s more than the app costs in a year.',
     name: 'Priya N.',
     role: 'DoorDash + Instacart',
+    initials: 'PN',
+    accent: '#10B981',
+    featured: false,
   },
   {
-    quote: 'Tax season used to kill me. Now I set aside 23 cents per dollar every week, exactly what GigMiles tells me. Zero surprises when the bill hits.',
+    quote: 'Tax season used to kill me. Now I set aside exactly 23 cents per dollar, every week. Zero surprises.',
     name: 'Darnell W.',
-    role: 'Amazon Flex driver',
+    role: 'Amazon Flex',
+    initials: 'DW',
+    accent: '#F59E0B',
+    featured: false,
   },
 ]
 
 function TestimonialsSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
+  const [featured, ...rest] = TESTIMONIALS
   return (
     <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Beta testers
@@ -960,16 +1108,48 @@ function TestimonialsSection() {
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-xl">
           Real numbers change how you drive
         </h2>
-        <div className="grid md:grid-cols-3 border border-white/[0.07] bg-white/[0.07] gap-px">
-          {TESTIMONIALS.map(t => (
-            <div key={t.name} data-r className="bg-[#050B12] p-6 sm:p-8 flex flex-col gap-6 sm:gap-8 hover:bg-[#08111F] transition-colors duration-200">
-              <p className="text-[#94A3B8] text-[14px] leading-[1.75] flex-1 font-[family-name:var(--font-dm-sans)]">&ldquo;{t.quote}&rdquo;</p>
-              <div className="pt-4 border-t border-white/[0.07]">
-                <p className="text-white/75 text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">{t.name}</p>
-                <p className="text-white/30 text-[11px] mt-1 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
+
+        {/* Asymmetric layout: featured left, 2 stacked right */}
+        <div className="grid md:grid-cols-[3fr_2fr] gap-px bg-white/[0.07] border border-white/[0.07]">
+          {/* Featured — large pull quote */}
+          <div data-r className="bg-[#050B12] p-8 sm:p-10 flex flex-col gap-8">
+            <p className="text-white/70 font-[family-name:var(--font-dm-sans)] italic leading-[1.65] text-[clamp(16px,2.2vw,22px)] flex-1">
+              &ldquo;{featured.quote}&rdquo;
+            </p>
+            <div className="flex items-center gap-3 pt-5 border-t border-white/[0.07]">
+              <div
+                className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#050B12] flex-shrink-0"
+                style={{ backgroundColor: featured.accent }}
+              >
+                {featured.initials}
+              </div>
+              <div>
+                <p className="text-white/75 text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">{featured.name}</p>
+                <p className="text-white/30 text-[11px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{featured.role}</p>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Two stacked — smaller */}
+          <div className="flex flex-col gap-px bg-white/[0.07]">
+            {rest.map(t => (
+              <div key={t.name} data-r className="bg-[#050B12] p-6 sm:p-8 flex flex-col gap-5 flex-1 hover:bg-[#08111F] transition-colors duration-200">
+                <p className="text-[#94A3B8] text-[13px] leading-[1.75] flex-1 font-[family-name:var(--font-dm-sans)]">&ldquo;{t.quote}&rdquo;</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-white/[0.07]">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#050B12] flex-shrink-0"
+                    style={{ backgroundColor: t.accent }}
+                  >
+                    {t.initials}
+                  </div>
+                  <div>
+                    <p className="text-white/75 text-[12px] font-[family-name:var(--font-space-grotesk)] font-medium">{t.name}</p>
+                    <p className="text-white/30 text-[10px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -1225,22 +1405,30 @@ function FinalCtaSection() {
   return (
     <section
       ref={ref}
-      className="min-h-[70dvh] sm:min-h-[80dvh] bg-[#08111F] flex flex-col items-center justify-center px-5 py-16 sm:px-6 text-center gap-5 sm:gap-7 border-t border-white/[0.06]"
+      className="relative min-h-[70dvh] sm:min-h-[80dvh] bg-[#050B12] flex flex-col items-center justify-center px-5 py-16 sm:px-6 text-center gap-5 sm:gap-7 border-t border-white/[0.06] overflow-hidden"
     >
-      <div data-r className="flex flex-col items-center gap-3 mb-2">
-        <Image src="/logo-icon.png" alt="GigMiles" width={56} height={56} className="rounded-[14px] opacity-85" />
-        <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
+      {/* Ambient glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #14B8A610 0%, transparent 70%)', filter: 'blur(80px)' }} />
+
+      <div data-r className="flex flex-col items-center gap-3 mb-2 relative z-10">
+        <Image src="/logo-icon.png" alt="GigMiles" width={48} height={48} className="rounded-[12px] opacity-80" />
+        <span className="text-[#14B8A6]/50 text-[10px] tracking-[0.35em] uppercase font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
       </div>
-      <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.035em] leading-[1.05] sm:leading-none text-[clamp(28px,6vw,72px)]">
+      <h2 data-r className="relative z-10 text-white font-[family-name:var(--font-space-grotesk)] font-black tracking-[-0.04em] leading-[1.0] text-[clamp(32px,7vw,80px)]">
         Your real earnings.<br className="hidden md:block" /> After everything.
       </h2>
-      <p data-r className="text-[#94A3B8] text-[15px] max-w-sm leading-relaxed font-[family-name:var(--font-dm-sans)]">
-        GigMiles calculates your real take-home after gas, miles, and taxes — so nothing surprises you at filing time.
+      <p data-r className="relative z-10 text-[#94A3B8] text-[15px] max-w-sm leading-relaxed font-[family-name:var(--font-dm-sans)]">
+        Know what you actually kept — after gas, mileage, and taxes. Every shift.
       </p>
-      <a data-r href="/waitlist" className="mt-2 border border-white/[0.18] text-white/60 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-12 py-3 transition-all duration-200 hover:border-white/35 hover:text-white/85 active:scale-[0.98]">
-        Join the Waitlist
+      <a
+        data-r
+        href="/waitlist"
+        className="relative z-10 mt-2 bg-[#14B8A6] text-[#050B12] text-[11px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-semibold px-12 py-4 transition-all duration-200 hover:bg-[#14B8A6]/85 hover:shadow-[0_0_40px_rgba(20,184,166,0.25)] active:scale-[0.97]"
+      >
+        Join Early Access
       </a>
-      <p data-r className="text-white/25 text-[11px] font-[family-name:var(--font-dm-sans)]">
+      <p data-r className="relative z-10 text-white/20 text-[11px] font-[family-name:var(--font-dm-sans)]">
         10 days free during beta — no card required
       </p>
     </section>

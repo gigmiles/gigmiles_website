@@ -62,16 +62,32 @@ function MeltdownNumber({ progress }: { progress: number }) {
 
   const numOpacity = progress > 0.63 ? Math.max(0, 1 - (progress - 0.63) / 0.05) : 1
 
-  const blackoutOpacity = progress >= 0.53 && progress < 0.60
-    ? progress < 0.565 ? (progress - 0.53) / 0.035 : 1 - (progress - 0.565) / 0.035
-    : 0
+  // Phase 1: fade to black (0.53 → 0.565)
+  const blackoutIn = progress >= 0.53 && progress < 0.565
+    ? (progress - 0.53) / 0.035
+    : progress >= 0.565 ? 1 : 0
+
+  // Phase 2: iris opening — hole radius grows from 0 → 700px (0.565 → 0.62)
+  const irisT = progress >= 0.565 && progress < 0.62
+    ? (progress - 0.565) / 0.055
+    : progress >= 0.62 ? 1 : 0
+  const holeRadius = Math.round(irisT * irisT * 700) // eased
+  const blackoutBg = irisT > 0
+    ? `radial-gradient(circle ${holeRadius}px at 50% 50%, transparent 0%, transparent ${holeRadius - 1}px, #050B12 ${holeRadius + 2}px)`
+    : '#050B12'
+
+  // Stage 1 entrance: number drops in from above
+  const entranceY = progress < 0.08 ? (1 - progress / 0.08) * -30 : 0
 
   return (
     <>
-      {/* Blackout overlay */}
+      {/* Blackout overlay with iris reveal */}
       <div
-        className="absolute inset-0 bg-[#050B12] pointer-events-none z-20 transition-none"
-        style={{ opacity: Math.max(0, Math.min(1, blackoutOpacity)) }}
+        className="absolute inset-0 pointer-events-none z-20 transition-none"
+        style={{
+          background: blackoutBg,
+          opacity: Math.max(0, Math.min(1, blackoutIn)),
+        }}
       />
 
       <div className="relative z-10 flex flex-col items-center gap-4" style={{ opacity: numOpacity }}>
@@ -88,7 +104,7 @@ function MeltdownNumber({ progress }: { progress: number }) {
           style={{
             fontSize: 'clamp(100px, 22vw, 260px)',
             color,
-            transform: `scale(${scale})`,
+            transform: `scale(${scale}) translateY(${entranceY}px)`,
             transition: 'transform 80ms linear',
           }}
         >
