@@ -1120,24 +1120,24 @@ const PRICING_TIERS: PricingTier[] = [
     bg: 'bg-[#08111F]',
   },
   {
-    badge: 'Most Popular',
     label: 'Monthly',
     price: '$9.99',
     priceSuffix: '/ month',
     caption: 'Billed monthly · cancel anytime',
     features: ['Everything in Free Trial', 'Export for CPA', 'Unlimited shift history', 'Priority support'],
     cta: 'Download App',
-    bg: 'bg-[#050B12]',
-    featured: true,
+    bg: 'bg-[#08111F]',
   },
   {
+    badge: 'Most Popular',
     label: 'Annual',
     price: '$99',
     priceSuffix: '/ year',
     caption: '$8.33 / month · save 17%',
     features: ['Everything in Monthly', 'Early access to new features', 'Locked-in beta pricing', 'Tax season export pack'],
     cta: 'Download App',
-    bg: 'bg-[#08111F]',
+    bg: 'bg-[#050B12]',
+    featured: true,
   },
 ]
 
