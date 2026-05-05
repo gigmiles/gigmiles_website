@@ -58,10 +58,10 @@ function PlatformWall() {
       {/* Top fade-in: blends from hero #050B12 into platform wall #08111F */}
       <div className="absolute inset-x-0 -top-16 h-16 pointer-events-none bg-gradient-to-b from-[#050B12] to-transparent" />
       <div className="max-w-5xl mx-auto flex items-center gap-10 flex-wrap justify-center">
-        <p className="text-white/20 text-[10px] tracking-[0.25em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
+        <p className="text-white/40 text-[12px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
+        <div className="flex flex-wrap justify-center gap-x-10 gap-y-2">
           {PLATFORMS.map(p => (
-            <span key={p} className="text-white/30 text-[11px] tracking-[0.08em] font-[family-name:var(--font-space-grotesk)]">{p}</span>
+            <span key={p} className="text-white/55 text-[13px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)]">{p}</span>
           ))}
         </div>
       </div>
@@ -140,16 +140,16 @@ function WaterfallSection() {
   ]
 
   return (
-    <section id="why" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section id="why" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Real example
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
           What a typical shift actually pays
         </h2>
-        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-10 sm:mb-16 max-w-lg font-[family-name:var(--font-dm-sans)]">
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
           9 hours · DoorDash, Uber Eats, Amazon Flex · based on IRS mileage rate $0.725/mi (2026)
         </p>
 
@@ -160,7 +160,7 @@ function WaterfallSection() {
             <div className="flex gap-5 sm:gap-8 flex-wrap">
               {[['Platform', 'DoorDash + Uber Eats'], ['Miles', '112 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
                 <div key={l} className="flex flex-col gap-1">
-                  <span className="text-[10px] text-white/25 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
+                  <span className="text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
                   <span className="text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
                 </div>
               ))}
@@ -202,7 +202,7 @@ function WaterfallSection() {
                   ['Effective rate', '62%', 'of gross kept'],
                 ].map(([l, v, s]) => (
                   <div key={l} className="bg-[#050B12] px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-1">
-                    <span className="text-[10px] text-white/25 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
+                    <span className="text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
                     <span className="text-[20px] sm:text-[22px] font-bold tracking-[-0.03em] text-white font-[family-name:var(--font-space-grotesk)]">{v}</span>
                     <span className="text-[11px] text-white/30 font-[family-name:var(--font-dm-sans)]">{s}</span>
                   </div>
@@ -290,7 +290,7 @@ function HowItWorksSection() {
         <div className="flex-1 flex flex-col justify-center px-10 lg:px-16 gap-8 relative">
           {/* Section eyebrow — stays fixed */}
           <div>
-            <p className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-3 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+            <p className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-3 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
               <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
               How it works
             </p>
@@ -301,7 +301,7 @@ function HowItWorksSection() {
 
           {/* Scene content — animates */}
           <div className="flex flex-col gap-4" key={activeScene} style={{ animation: 'howFadeUp 0.4s ease both' }}>
-            <span className="text-white/20 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">
+            <span className="text-white/40 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">
               {scene.n} / 04
             </span>
             <div
@@ -376,13 +376,13 @@ function HowItWorksSection() {
 
       {/* ── Mobile: 4 stacked cards (no sticky) ── */}
       <div className="md:hidden px-5 py-16 flex flex-col gap-px bg-white/[0.06]">
-        <p className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-8 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-8 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           How it works
         </p>
         {HOW_SCENES.map(s => (
           <div key={s.n} className="bg-[#050B12] p-7 flex flex-col gap-3">
-            <span className="text-white/20 text-[10px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">{s.n} / 04</span>
+            <span className="text-white/35 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">{s.n} / 04</span>
             <div
               className="font-[family-name:var(--font-space-grotesk)] font-extralight text-[56px] tracking-[-0.05em] leading-none tabular-nums"
               style={{ color: s.color }}
@@ -442,12 +442,12 @@ function TaxBreakdownWidget({ active }: { active: boolean }) {
   return (
     <div className="w-full max-w-[320px] bg-[#111] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
       <div className="flex items-center justify-between">
-        <span className="text-white/30 text-[10px] tracking-[0.25em] uppercase">Q2 Tax Estimate</span>
-        <span className="text-white/20 text-[10px]">Apr – Jun 2026</span>
+        <span className="text-white/45 text-[11px] tracking-[0.2em] uppercase">Q2 Tax Estimate</span>
+        <span className="text-white/35 text-[11px]">Apr – Jun 2026</span>
       </div>
       <div>
         <span className="text-white font-light text-4xl tracking-[-0.04em]">${total}</span>
-        <p className="text-white/25 text-xs mt-1">17.8% effective rate · due Jun 15</p>
+        <p className="text-white/40 text-xs mt-1">17.8% effective rate · due Jun 15</p>
       </div>
       <div className="space-y-4 pt-2 border-t border-white/[0.07]">
         <div className="flex flex-col gap-1.5">
@@ -498,9 +498,9 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
   return (
     <div className="w-full max-w-[320px] bg-[#111] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
       <div className="flex items-center justify-between">
-        <span className="text-white/30 text-[10px] tracking-[0.25em] uppercase">Expense Gaps</span>
+        <span className="text-white/45 text-[11px] tracking-[0.2em] uppercase">Expense Gaps</span>
         <span
-          className={`text-[10px] tracking-[0.15em] uppercase px-2.5 py-1 rounded-full border transition-all duration-500 ${
+          className={`text-[11px] tracking-[0.12em] uppercase px-2.5 py-1 rounded-full border transition-all duration-500 ${
             pulse
               ? 'border-[#FF9500]/50 text-[#FF9500]/80 bg-[#FF9500]/5'
               : 'border-white/10 text-white/20'
@@ -521,10 +521,10 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-white/60 text-sm">{item.label}</p>
-                <p className="text-white/25 text-[10px] mt-0.5">{item.sub}</p>
+                <p className="text-white/40 text-[11px] mt-0.5">{item.sub}</p>
               </div>
               <span
-                className={`text-[10px] transition-all duration-700 ${
+                className={`text-[11px] transition-all duration-700 ${
                   pulse ? 'text-[#10B981]/70' : 'text-white/20'
                 }`}
                 style={{ transitionDelay: `${i * 200 + 400}ms` }}
@@ -561,35 +561,35 @@ function YtdSummaryWidget({ active }: { active: boolean }) {
   return (
     <div className="w-full max-w-[320px] bg-[#111] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
       <div className="flex items-center justify-between">
-        <span className="text-white/30 text-[10px] tracking-[0.25em] uppercase">Year-to-Date</span>
-        <span className="text-white/20 text-[10px]">2026</span>
+        <span className="text-white/45 text-[11px] tracking-[0.2em] uppercase">Year-to-Date</span>
+        <span className="text-white/35 text-[11px]">2026</span>
       </div>
       <div className="grid grid-cols-3 gap-3 pt-2 border-t border-white/[0.07]">
         <div className="flex flex-col gap-1.5">
-          <span className="text-white/25 text-[9px] tracking-[0.15em] uppercase">Earnings</span>
+          <span className="text-white/40 text-[10px] tracking-[0.12em] uppercase">Earnings</span>
           <span className="text-white font-light text-xl tracking-[-0.03em]">${earnings.toLocaleString()}</span>
         </div>
         <div className="flex flex-col gap-1.5">
-          <span className="text-white/25 text-[9px] tracking-[0.15em] uppercase">Est. Tax</span>
+          <span className="text-white/40 text-[10px] tracking-[0.12em] uppercase">Est. Tax</span>
           <span className="text-[#FF9500]/80 font-light text-xl tracking-[-0.03em]">${owed}</span>
         </div>
         <div className="flex flex-col gap-1.5">
-          <span className="text-white/25 text-[9px] tracking-[0.15em] uppercase">Paid</span>
+          <span className="text-white/40 text-[10px] tracking-[0.12em] uppercase">Paid</span>
           <span className="text-[#10B981]/70 font-light text-xl tracking-[-0.03em]">${paid}</span>
         </div>
       </div>
       <div className="bg-white/[0.04] rounded-xl p-4">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-white/30 text-[10px] tracking-[0.15em] uppercase">Tax reserve</span>
-          <span className="text-white/20 text-[10px]">set aside per $1</span>
+          <span className="text-white/45 text-[11px] tracking-[0.15em] uppercase">Tax reserve</span>
+          <span className="text-white/35 text-[11px]">set aside per $1</span>
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-white font-light text-2xl tracking-[-0.03em]">$0.23</span>
-          <span className="text-white/25 text-xs">/ dollar earned</span>
+          <span className="text-white/40 text-xs">/ dollar earned</span>
         </div>
-        <p className="text-white/20 text-[10px] mt-2 leading-relaxed">18.1% effective rate + 5% buffer</p>
+        <p className="text-white/35 text-[11px] mt-2 leading-relaxed">18.1% effective rate + 5% buffer</p>
       </div>
-      <p className="text-white/20 text-[10px] text-center">Year-end projection: $1,051 total tax</p>
+      <p className="text-white/35 text-[11px] text-center">Year-end projection: $1,051 total tax</p>
     </div>
   )
 }
@@ -625,7 +625,7 @@ function QuarterlyWidget({ active }: { active: boolean }) {
             { l: 'Est. Tax', v: '$184.86', c: 'text-[#FF9500]/70' },
           ].map(item => (
             <div key={item.l} className="bg-white/[0.04] rounded-lg p-2.5">
-              <p className="text-white/20 text-[9px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
+              <p className="text-white/35 text-[10px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
               <p className={`${item.c} text-sm font-light`}>{item.v}</p>
             </div>
           ))}
@@ -656,7 +656,7 @@ function QuarterlyWidget({ active }: { active: boolean }) {
             { l: 'Est. Tax', v: '$152.05', c: 'text-[#FF9500]/70' },
           ].map(item => (
             <div key={item.l} className="bg-white/[0.04] rounded-lg p-2.5">
-              <p className="text-white/20 text-[9px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
+              <p className="text-white/35 text-[10px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
               <p className={`${item.c} text-sm font-light`}>{item.v}</p>
             </div>
           ))}
@@ -703,7 +703,7 @@ function FeatureRow({
       className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-px bg-white/[0.06]`}
     >
       <div className="bg-[#08111F] flex-1 flex flex-col justify-center px-6 py-10 sm:px-8 sm:py-12 md:px-10 md:py-16 gap-4 sm:gap-5">
-        <span data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">{tag}</span>
+        <span data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)]">{tag}</span>
         <h3 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[clamp(18px,2.5vw,28px)] leading-snug tracking-[-0.02em] max-w-sm">
           {title}
         </h3>
@@ -721,15 +721,18 @@ function FeaturesSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref, 'top 85%')
   return (
-    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Features
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-2xl">
-          Everything a gig worker needs to stop guessing
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
+          Built for gig workers. Not accountants.
         </h2>
+        <p data-r className="text-[#94A3B8] text-[15px] leading-relaxed mb-10 sm:mb-14 max-w-lg font-[family-name:var(--font-dm-sans)]">
+          Every screen gives you one clear number — what you actually kept.
+        </p>
         <div className="space-y-px">
           <FeatureRow
             tag="Tax breakdown"
@@ -763,159 +766,6 @@ function FeaturesSection() {
   )
 }
 
-// ─── Phone Showcase ───────────────────────────────────────────────────────────
-const PHONES = [
-  {
-    img: '/ss-expense-gaps.jpeg',
-    label: 'Expense Gaps',
-    sub: 'Spot missed deductions instantly',
-  },
-  {
-    img: '/ss-tax-breakdown.jpeg',
-    label: 'Tax Breakdown',
-    sub: 'Quarterly taxes broken down by type',
-  },
-  {
-    img: '/ss-quarterly.jpeg',
-    label: 'Quarterly Tracker',
-    sub: 'Past due and current quarter, side by side',
-  },
-]
-
-function PhoneCard({ phone }: { phone: { img: string; label: string; sub: string } }) {
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  // Mouse position normalized to [-0.5, 0.5]
-  const mx = useMotionValue(0)
-  const my = useMotionValue(0)
-
-  // Spring-smoothed for premium feel
-  const sx = useSpring(mx, { stiffness: 150, damping: 20, mass: 0.5 })
-  const sy = useSpring(my, { stiffness: 150, damping: 20, mass: 0.5 })
-
-  // Tilt: max 12 degrees each axis
-  const rotateY = useTransform(sx, [-0.5, 0.5], [-12, 12])
-  const rotateX = useTransform(sy, [-0.5, 0.5], [10, -10])
-
-  // Gloss highlight position
-  const glossX = useTransform(sx, [-0.5, 0.5], ['0%', '100%'])
-  const glossY = useTransform(sy, [-0.5, 0.5], ['0%', '100%'])
-
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = cardRef.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    mx.set((e.clientX - rect.left) / rect.width - 0.5)
-    my.set((e.clientY - rect.top) / rect.height - 0.5)
-  }
-
-  const handleLeave = () => {
-    mx.set(0)
-    my.set(0)
-  }
-
-  return (
-    <div
-      data-r
-      className="flex flex-col items-center gap-6 [perspective:1000px]"
-    >
-      <motion.div
-        ref={cardRef}
-        onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
-        className="relative w-[200px] md:w-[220px] flex-shrink-0"
-        style={{
-          rotateX,
-          rotateY,
-          transformStyle: 'preserve-3d',
-        }}
-      >
-        {/* Outer frame */}
-        <div className="relative bg-[#0F1623] border-2 border-white/[0.12] rounded-[38px] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.6)]">
-          {/* Inner bezel */}
-          <div className="bg-[#050B12] rounded-[30px] overflow-hidden aspect-[9/19] relative">
-            {/* Notch */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-5 bg-[#0F1623] rounded-b-2xl z-10 flex items-center justify-center gap-1.5">
-              <div className="w-1 h-1 bg-white/10 rounded-full" />
-              <div className="w-4 h-1.5 bg-white/10 rounded-full" />
-            </div>
-            <Image
-              src={phone.img}
-              alt={phone.label}
-              fill
-              className="object-cover object-top"
-              sizes="220px"
-            />
-            {/* Gloss highlight: tracks mouse, sits ABOVE screenshot */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none mix-blend-overlay"
-              style={{
-                background: useTransform(
-                  [glossX, glossY],
-                  ([x, y]) => `radial-gradient(circle at ${x} ${y}, rgba(255,255,255,0.25), transparent 45%)`
-                ),
-              }}
-            />
-          </div>
-          {/* Home indicator */}
-          <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/20 rounded-full" />
-        </div>
-        {/* Teal glow that intensifies on hover */}
-        <motion.div
-          className="absolute inset-0 rounded-[38px] bg-[#14B8A6] blur-2xl -z-10"
-          style={{
-            opacity: useTransform([sx, sy], ([x, y]) => 0.05 + Math.min(Math.abs(x as number) + Math.abs(y as number), 0.5) * 0.15),
-            scale: 1.1,
-          }}
-        />
-      </motion.div>
-
-      {/* Label */}
-      <div className="text-center">
-        <p className="text-white/70 text-[13px] font-medium font-[family-name:var(--font-space-grotesk)] mb-1">{phone.label}</p>
-        <p className="text-white/30 text-[11px] font-[family-name:var(--font-dm-sans)]">{phone.sub}</p>
-      </div>
-    </div>
-  )
-}
-
-function PhoneShowcaseSection() {
-  const ref = useRef<HTMLElement>(null)
-  useReveal(ref, 'top 75%')
-  return (
-    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
-      <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
-          The app
-        </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
-          Built for gig workers. Not accountants.
-        </h2>
-        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-12 sm:mb-20 max-w-lg font-[family-name:var(--font-dm-sans)]">
-          Every screen is designed to give you one clear number — what you actually kept.
-        </p>
-
-        {/* Mobile: horizontal scroll · Desktop: 3-col grid */}
-        <div className="md:hidden -mx-5 px-5 overflow-x-auto pb-4 snap-x snap-mandatory scroll-pl-5">
-          <div className="flex gap-6 w-max">
-            {PHONES.map(phone => (
-              <div key={phone.label} className="snap-start shrink-0 w-[68vw] max-w-[260px]">
-                <PhoneCard phone={phone} />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="hidden md:grid md:grid-cols-3 gap-12">
-          {PHONES.map(phone => (
-            <PhoneCard key={phone.label} phone={phone} />
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ─── Calculator ───────────────────────────────────────────────────────────────
 function CalculatorSection() {
   const ref = useRef<HTMLElement>(null)
@@ -929,16 +779,16 @@ function CalculatorSection() {
   const hourly = hours > 0 ? (net / hours).toFixed(2) : '0.00'
 
   return (
-    <section id="calculator" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section id="calculator" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Calculator
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
           What do you actually take home?
         </h2>
-        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-10 sm:mb-16 max-w-lg font-[family-name:var(--font-dm-sans)]">
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
           Adjust the sliders and see your real net income — after vehicle costs and self-employment taxes.
         </p>
 
@@ -964,7 +814,7 @@ function CalculatorSection() {
                 title="Weekly Gross Earnings"
                 className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#14B8A6] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#14B8A6] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#14B8A6]"
               />
-              <div className="flex justify-between text-[10px] text-white/20 font-[family-name:var(--font-dm-sans)]">
+              <div className="flex justify-between text-[11px] text-white/35 font-[family-name:var(--font-dm-sans)]">
                 <span>$100</span>
                 <span>$3,000</span>
               </div>
@@ -989,7 +839,7 @@ function CalculatorSection() {
                 title="Hours Driven Per Week"
                 className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#14B8A6] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#14B8A6] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#14B8A6]"
               />
-              <div className="flex justify-between text-[10px] text-white/20 font-[family-name:var(--font-dm-sans)]">
+              <div className="flex justify-between text-[11px] text-white/35 font-[family-name:var(--font-dm-sans)]">
                 <span>5 hrs</span>
                 <span>80 hrs</span>
               </div>
@@ -1020,7 +870,7 @@ function CalculatorSection() {
             </div>
 
             <div className="mt-auto border border-[#14B8A6]/20 bg-[#14B8A6]/[0.04] px-5 py-5 flex flex-col gap-3">
-              <span className="text-[10px] text-[#14B8A6] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">Your real take-home</span>
+              <span className="text-[12px] text-[#14B8A6] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">Your real take-home</span>
               <div className="flex items-baseline justify-between">
                 <span className="text-[42px] font-bold tracking-[-0.05em] text-[#10B981] leading-none font-[family-name:var(--font-space-grotesk)] tabular-nums">
                   ${net.toLocaleString()}
@@ -1044,12 +894,12 @@ function CalculatorSection() {
                   style={{ width: `${(taxes / gross) * 100}%` }}
                 />
               </div>
-              <div className="flex justify-between text-[10px] font-[family-name:var(--font-dm-sans)] tabular-nums">
+              <div className="flex justify-between text-[11px] font-[family-name:var(--font-dm-sans)] tabular-nums">
                 <span className="text-[#10B981]/70">{Math.round((net / gross) * 100)}% kept</span>
                 <span className="text-[#F87171]/70">{Math.round((costs / gross) * 100)}% costs</span>
                 <span className="text-[#FBBF24]/70">{Math.round((taxes / gross) * 100)}% taxes</span>
               </div>
-              <p className="text-white/25 text-[11px] font-[family-name:var(--font-dm-sans)]">after vehicle costs + taxes · per week</p>
+              <p className="text-white/40 text-[12px] font-[family-name:var(--font-dm-sans)]">after vehicle costs + taxes · per week</p>
             </div>
 
             <a href="/waitlist" className="text-center border border-[#14B8A6]/30 text-[#14B8A6]/70 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-[#14B8A6]/60 hover:text-[#14B8A6] active:scale-[0.98]">
@@ -1099,13 +949,13 @@ function TestimonialsSection() {
   useReveal(ref)
   const [featured, ...rest] = TESTIMONIALS
   return (
-    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Beta testers
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-8 sm:mb-12 max-w-xl">
           Real numbers change how you drive
         </h2>
 
@@ -1144,7 +994,7 @@ function TestimonialsSection() {
                   </div>
                   <div>
                     <p className="text-white/75 text-[12px] font-[family-name:var(--font-space-grotesk)] font-medium">{t.name}</p>
-                    <p className="text-white/30 text-[10px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
+                    <p className="text-white/45 text-[12px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -1234,7 +1084,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
           </div>
         )}
         <div>
-          <p className="text-white/35 text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)]">{tier.label}</p>
+          <p className="text-white/50 text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)]">{tier.label}</p>
           <div className="flex items-baseline gap-2">
             <span className="text-white font-[family-name:var(--font-space-grotesk)] font-bold text-5xl tracking-[-0.04em]">{tier.price}</span>
             {tier.priceSuffix && <span className="text-[#94A3B8] text-[13px]">{tier.priceSuffix}</span>}
@@ -1303,9 +1153,9 @@ function PricingSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section id="pricing" ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section id="pricing" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           Pricing
         </p>
@@ -1381,13 +1231,13 @@ function FaqSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-20 md:py-32 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[10px] tracking-[0.2em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           FAQ
         </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-10 sm:mb-16 max-w-xl">
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-8 sm:mb-12 max-w-xl">
           Common questions
         </h2>
         <div data-r>
@@ -1413,7 +1263,7 @@ function FinalCtaSection() {
 
       <div data-r className="flex flex-col items-center gap-3 mb-2 relative z-10">
         <Image src="/logo-icon.png" alt="GigMiles" width={48} height={48} className="rounded-[12px] opacity-80" />
-        <span className="text-[#14B8A6]/50 text-[10px] tracking-[0.35em] uppercase font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
+        <span className="text-[#14B8A6]/60 text-[12px] tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
       </div>
       <h2 data-r className="relative z-10 text-white font-[family-name:var(--font-space-grotesk)] font-black tracking-[-0.04em] leading-[1.0] text-[clamp(32px,7vw,80px)]">
         Your real earnings.<br className="hidden md:block" /> After everything.
@@ -1428,7 +1278,7 @@ function FinalCtaSection() {
       >
         Join Early Access
       </a>
-      <p data-r className="relative z-10 text-white/20 text-[11px] font-[family-name:var(--font-dm-sans)]">
+      <p data-r className="relative z-10 text-white/35 text-[11px] font-[family-name:var(--font-dm-sans)]">
         10 days free during beta — no card required
       </p>
     </section>
@@ -1453,7 +1303,7 @@ function Footer() {
           ))}
         </div>
         <div className="text-right">
-          <p className="text-white/20 text-[11px] font-[family-name:var(--font-dm-sans)]">&copy; {new Date().getFullYear()} GigMiles</p>
+          <p className="text-white/35 text-[11px] font-[family-name:var(--font-dm-sans)]">&copy; {new Date().getFullYear()} GigMiles</p>
           <p className="text-white/15 text-[10px] mt-1 max-w-[220px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic">Tax estimates are for planning purposes only. Not tax advice.</p>
         </div>
       </div>
@@ -1474,7 +1324,6 @@ export function ScrollLanding() {
         <WaterfallSection />
         <HowItWorksSection />
         <FeaturesSection />
-        <PhoneShowcaseSection />
         <CalculatorSection />
         <TestimonialsSection />
         <PricingSection />
