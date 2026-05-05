@@ -61,7 +61,7 @@ function MeltdownNumber({ progress }: { progress: number }) {
     : progress < 0.65 ? 0.55 + 0.45 * ((progress - 0.55) / 0.10)
     : 1.0
 
-  const numOpacity = progress > 0.63 ? Math.max(0, 1 - (progress - 0.63) / 0.05) : 1
+  const numOpacity = progress > 0.74 ? Math.max(0, 1 - (progress - 0.74) / 0.04) : 1
 
   // Phase 1: fade to black (0.53 → 0.565)
   const blackoutIn = progress >= 0.53 && progress < 0.565
@@ -121,14 +121,19 @@ function MeltdownNumber({ progress }: { progress: number }) {
         </p>
 
         {/* Stage 3+ subtitle */}
-        <p
-          className="text-white/40 text-sm sm:text-base tracking-wide font-[family-name:var(--font-dm-sans)] max-w-xs text-center"
+        <div
+          className="flex flex-col items-center gap-2 text-center"
           style={{
-            opacity: progress < 0.63 ? 0 : progress > 0.72 ? 1 : (progress - 0.63) / 0.09,
+            opacity: progress < 0.62 ? 0 : progress > 0.66 ? 1 : (progress - 0.62) / 0.04,
           }}
         >
-          What you actually kept.
-        </p>
+          <p className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[clamp(20px,4vw,32px)] tracking-[-0.02em]">
+            What you actually kept.
+          </p>
+          <p className="text-white/45 text-[13px] sm:text-[15px] font-[family-name:var(--font-dm-sans)] tracking-wide">
+            ${HERO_CONFIG.hourlyRate}/hr &middot; after every cost
+          </p>
+        </div>
       </div>
     </>
   )
