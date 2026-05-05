@@ -372,23 +372,35 @@ function HowItWorksSection() {
         </div>
       </div>
 
-      {/* ── Mobile: 4 stacked cards (no sticky) ── */}
-      <div className="md:hidden px-5 py-16 flex flex-col gap-px bg-white/[0.06]">
-        <p className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-8 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+      {/* ── Mobile: 4 stacked cards with phone images ── */}
+      <div className="md:hidden py-16 flex flex-col gap-8 px-5">
+        <p className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
           How it works
         </p>
         {HOW_SCENES.map(s => (
-          <div key={s.n} className="bg-[#050B12] p-7 flex flex-col gap-3">
-            <span className="text-white/35 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">{s.n} / 04</span>
-            <div
-              className="font-[family-name:var(--font-space-grotesk)] font-extralight text-[56px] tracking-[-0.05em] leading-none tabular-nums"
-              style={{ color: s.color }}
-            >
-              {s.amount}
+          <div key={s.n} className="bg-[#08111F] border border-white/[0.07] rounded-3xl overflow-hidden">
+            {/* Phone image */}
+            <div className="relative bg-[#050B12] flex items-center justify-center py-8" style={{ background: `radial-gradient(circle 200px at 50% 60%, ${s.color}12, transparent 70%)` }}>
+              <div className="relative w-[140px]">
+                <div className="relative bg-[#0F1623] border-2 border-white/[0.10] rounded-[32px] p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
+                  <div className="bg-[#050B12] rounded-[24px] overflow-hidden aspect-[9/19] relative">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3.5 bg-[#0F1623] rounded-b-lg z-10" />
+                    <Image src={s.img} alt={s.imgAlt} fill className="object-cover object-top" sizes="140px" />
+                  </div>
+                </div>
+              </div>
             </div>
-            <p className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[17px] tracking-[-0.02em]">{s.label}</p>
-            <p className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-dm-sans)] leading-relaxed">{s.sub}</p>
+            {/* Text */}
+            <div className="p-6 flex flex-col gap-2 border-t border-white/[0.06]">
+              <span className="text-white/35 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">{s.n} / 04</span>
+              <div
+                className="font-[family-name:var(--font-space-grotesk)] font-extralight text-[48px] tracking-[-0.05em] leading-none tabular-nums"
+                style={{ color: s.color }}
+              >{s.amount}</div>
+              <p className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[16px] tracking-[-0.02em]">{s.label}</p>
+              <p className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-dm-sans)] leading-relaxed">{s.sub}</p>
+            </div>
           </div>
         ))}
       </div>
