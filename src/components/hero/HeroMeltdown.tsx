@@ -9,13 +9,15 @@ import { DownloadButton } from '@/components/ui/DownloadButton'
 // ─── Config — change these numbers anytime ──────────────────────────────────
 export const HERO_CONFIG = {
   gross: 235,
-  vehicleCost: 57,
-  taxes: 31,
+  vehicleCost: 27,
+  taxes: 42,
   get net() { return this.gross - this.vehicleCost - this.taxes },
-  hourlyRate: 16.33,
+  hourlyRate: 18,
   shiftHours: 9,
   platforms: 'DoorDash + Uber Eats',
-  miles: 112,
+  miles: 130,
+  vehicle: '2023 Toyota Prius',
+  trips: 3,
 }
 
 // ─── Color interpolation helper ─────────────────────────────────────────────
@@ -153,12 +155,12 @@ function CostBreakdown({ progress }: { progress: number }) {
   const opacity = Math.max(0, Math.min(1, t))
 
   const leftItems = [
-    { label: 'GAS', amount: 38 },
-    { label: 'CAR WEAR', amount: 15 },
+    { label: 'FUEL', amount: 9 },
+    { label: 'WEAR & TEAR', amount: 18 },
   ]
   const rightItems = [
-    { label: 'INSURANCE', amount: 22 },
-    { label: 'TAXES', amount: HERO_CONFIG.taxes },
+    { label: 'SE TAX', amount: 20 },
+    { label: 'FED + STATE', amount: 22 },
   ]
 
   return (

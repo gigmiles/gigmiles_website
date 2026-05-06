@@ -70,9 +70,9 @@ function PlatformWall() {
 // ─── Anchor banner ───────────────────────────────────────────────────────────
 function AnchorBanner() {
   const stats = [
-    { val: '$88', label: 'avg. hidden costs per shift' },
-    { val: '$0.23', label: 'reserve per dollar earned' },
-    { val: '62%', label: 'of gross you actually keep' },
+    { val: '$70', label: 'hidden costs per shift' },
+    { val: '$0.18', label: 'reserve per dollar earned' },
+    { val: '70%', label: 'of gross you keep' },
   ]
   return (
     <div className="bg-[#08111F] border-b border-white/[0.06] py-5 px-6">
@@ -112,9 +112,9 @@ function WaterfallSection() {
   const ref = useRef<HTMLElement>(null)
   const [active, setActive] = useState(false)
   const gross = useCountUp(235, 900, active)
-  const vehicle = useCountUp(57, 900, active)
-  const taxes = useCountUp(31, 900, active)
-  const net = useCountUp(147, 1100, active)
+  const vehicle = useCountUp(27, 900, active)
+  const taxes = useCountUp(42, 900, active)
+  const net = useCountUp(165, 1100, active)
 
   useEffect(() => {
     const el = ref.current
@@ -145,7 +145,7 @@ function WaterfallSection() {
           What a typical shift actually pays
         </h2>
         <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
-          9 hours · DoorDash, Uber Eats, Amazon Flex · based on IRS mileage rate $0.725/mi (2026)
+          9 hours · 3 trips · 130 mi · 2023 Toyota Prius · IRS mileage rate $0.725/mi (2026)
         </p>
 
         <div className="border border-white/[0.07] bg-[#050B12]">
@@ -153,7 +153,7 @@ function WaterfallSection() {
           <div className="px-5 sm:px-8 py-5 border-b border-white/[0.06] flex items-start sm:items-baseline justify-between gap-4">
             <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium flex-shrink-0">Shift breakdown</span>
             <div className="flex gap-4 sm:gap-8 flex-wrap justify-end">
-              {[['Platform', 'DoorDash + Uber Eats'], ['Miles', '112 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
+              {[['Vehicle', '2023 Toyota Prius'], ['Miles', '130 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
                 <div key={l} className="flex flex-col gap-1 text-right sm:text-left">
                   <span className="text-[10px] sm:text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
                   <span className="text-[12px] sm:text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
@@ -191,10 +191,10 @@ function WaterfallSection() {
             <div className="px-5 py-6 sm:px-8 sm:py-8 flex flex-col gap-5">
               <div className="grid grid-cols-2 gap-px bg-white/[0.06] border border-white/[0.06]">
                 {[
-                  ['Hourly rate', '$16.33', 'after all costs'],
-                  ['Tax reserve', '$0.13', 'per dollar earned'],
-                  ['Vehicle cost', '$0.24', 'per dollar gross'],
-                  ['Effective rate', '62%', 'of gross kept'],
+                  ['Hourly rate', '$18.33', 'after all costs'],
+                  ['Tax reserve', '$0.18', 'per dollar earned'],
+                  ['Vehicle cost', '$0.12', 'per dollar gross'],
+                  ['Effective rate', '70%', 'of gross kept'],
                 ].map(([l, v, s]) => (
                   <div key={l} className="bg-[#050B12] px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-1">
                     <span className="text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
@@ -207,7 +207,7 @@ function WaterfallSection() {
               <div className="border border-white/[0.06] px-5 py-4 bg-[#14B8A6]/[0.03]">
                 <p className="text-[11px] text-[#14B8A6] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] mb-2">GigMiles insight</p>
                 <p className="text-[13px] text-[#94A3B8] leading-relaxed font-[family-name:var(--font-dm-sans)]">
-                  You kept 62% of gross earnings. The IRS mileage deduction adds $81 in write-offs this shift — about ~$18 less in taxes.
+                  You kept 70% of gross earnings. The IRS mileage deduction adds $94 in write-offs this shift — about ~$21 less in taxes.
                 </p>
               </div>
 
@@ -229,34 +229,34 @@ const HOW_SCENES = [
     label: 'What you grossed',
     amount: '$235',
     color: '#10B981',
-    sub: '9h · DoorDash + Uber Eats · 112 mi',
+    sub: '9h · 3 trips · 130 mi · 2023 Toyota Prius',
     img: '/ss-home.jpeg',          // TODO: replace with Home / Net Earnings hero card screenshot
     imgAlt: 'Net earnings home screen',
   },
   {
     n: '02',
     label: 'What it cost to drive',
-    amount: '−$57',
+    amount: '−$27',
     color: '#EF4444',
-    sub: 'Gas · mileage at IRS rate · wear & tear',
+    sub: 'Fuel $9 · Wear & tear $18 · IRS-aware depreciation',
     img: '/ss-shifts.jpeg',        // TODO: replace with Shifts list page screenshot
     imgAlt: 'Shifts list',
   },
   {
     n: '03',
     label: 'What the IRS takes',
-    amount: '−$31',
+    amount: '−$42',
     color: '#F59E0B',
-    sub: 'Self-employment tax + state income tax',
+    sub: 'SE $20 · Federal $10 · State $12',
     img: '/ss-tax-breakdown.jpeg',
     imgAlt: 'Tax breakdown',
   },
   {
     n: '04',
     label: 'What you actually keep',
-    amount: '$147',
+    amount: '$165',
     color: '#14B8A6',
-    sub: '$16.33 / hr — after every cost',
+    sub: '$18 / hr — after every cost',
     img: '/ss-quarterly.jpeg',
     imgAlt: 'Quarterly earnings summary',
   },
@@ -780,8 +780,8 @@ function CalculatorSection() {
   const [hours, setHours] = useState(30)
   useReveal(ref, 'top 80%')
 
-  const costs = Math.round(gross * 0.35)
-  const taxes = Math.round(gross * 0.153)
+  const costs = Math.round(gross * 0.25)
+  const taxes = Math.round(gross * 0.17)
   const net = gross - costs - taxes
   const hourly = hours > 0 ? (net / hours).toFixed(2) : '0.00'
 
@@ -858,8 +858,8 @@ function CalculatorSection() {
             <div className="flex flex-col gap-1">
               {[
                 { label: 'Gross earnings', val: `$${gross.toLocaleString()}`, color: 'text-white/85', barColor: 'bg-white/30', pct: 100 },
-                { label: 'Vehicle & operating costs (est. 35%)', val: `−$${costs}`, color: 'text-[#F87171]/90', barColor: 'bg-[#F87171]/60', pct: 35 },
-                { label: 'Self-employment taxes (est. 15.3%)', val: `−$${taxes}`, color: 'text-[#FBBF24]/90', barColor: 'bg-[#FBBF24]/60', pct: 15.3 },
+                { label: 'Vehicle & operating costs (est. 25%)', val: `−$${costs}`, color: 'text-[#F87171]/90', barColor: 'bg-[#F87171]/60', pct: 25 },
+                { label: 'Estimated taxes — SE + federal + state (est. 17%)', val: `−$${taxes}`, color: 'text-[#FBBF24]/90', barColor: 'bg-[#FBBF24]/60', pct: 17 },
               ].map(row => (
                 <div key={row.label} className="py-3 border-b border-white/[0.05] flex flex-col gap-2">
                   <div className="flex justify-between items-baseline">
