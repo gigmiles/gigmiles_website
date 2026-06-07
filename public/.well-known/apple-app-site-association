@@ -3,17 +3,17 @@
     "apps": [],
     "details": [
       {
-        "appID": "XXXXXXXXXX.com.gigmiles.gigmilesApp",
+        "appID": "VBT2X7QG46.com.gigmiles.gigmilesApp",
         "paths": [
-          "/download",
-          "/join/*"
+          "/auth/callback",
+          "/auth/*"
         ]
       }
     ]
   },
   "webcredentials": {
     "apps": [
-      "XXXXXXXXXX.com.gigmiles.gigmilesApp"
+      "VBT2X7QG46.com.gigmiles.gigmilesApp"
     ]
   }
 }
