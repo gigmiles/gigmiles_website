@@ -1,7 +1,15 @@
 /* eslint-disable */
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import { ImageResponse } from 'next/og'
 
 export const dynamic = 'force-static'
+
+// Real GigMiles brand mark, embedded at build time (force-static) so the OG card
+// renders the actual icon instead of a hand-drawn approximation.
+const logoDataUri =
+    'data:image/png;base64,' +
+    readFileSync(join(process.cwd(), 'public/logo-icon.png')).toString('base64')
 
 export const alt = 'GigMiles | Real Net Profit for Gig Workers'
 export const size = {
@@ -30,7 +38,7 @@ const styles = {
         left: '-10%',
         width: '50%',
         height: '50%',
-        backgroundColor: 'rgba(16, 185, 129, 0.15)',
+        backgroundColor: 'rgba(94, 234, 212, 0.15)',
         borderRadius: '50%',
         filter: 'blur(100px)',
     },
@@ -53,8 +61,8 @@ const styles = {
     logoWrapper: {
         display: 'flex' as const,
         padding: '24px',
-        background: 'rgba(16, 185, 129, 0.1)',
-        border: '1px solid rgba(16, 185, 129, 0.2)',
+        background: 'rgba(94, 234, 212, 0.1)',
+        border: '1px solid rgba(94, 234, 212, 0.2)',
         borderRadius: '24px',
         boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
     },
@@ -73,7 +81,7 @@ const styles = {
         fontStyle: 'italic',
     },
     brandMiles: {
-        color: '#10b981',
+        color: '#5EEAD4',
     },
     subtitle: {
         fontSize: '24px',
@@ -94,35 +102,14 @@ export default async function Image() {
                 <div {...{ style: styles.meshGradientBottom }} />
 
                 <div {...{ style: styles.contentWrapper }}>
-                    {/* Logo Icon — G mark (Satori-safe: no filters) */}
+                    {/* Logo Icon — real GigMiles brand mark (embedded PNG) */}
                     <div {...{ style: styles.logoWrapper }}>
-                        <svg
+                        <img
+                            src={logoDataUri}
                             width="100"
                             height="100"
-                            viewBox="0 0 100 100"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            {/* Dark rounded-square background */}
-                            <rect x="3" y="3" width="94" height="94" rx="22"
-                                fill="#0D2318"
-                            />
-                            <rect x="3" y="3" width="94" height="94" rx="22"
-                                stroke="#10B981" strokeWidth="1.5" opacity="0.25"
-                            />
-                            {/* G letter: large CCW arc from top(50,17) to right(83,50) + crossbar + stub */}
-                            <path
-                                d="M 50 17 A 33 33 0 1 0 83 50 L 57 50 L 57 65"
-                                stroke="#10B981"
-                                strokeWidth="11"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                fill="none"
-                            />
-                            {/* Accent dots */}
-                            <circle cx="50" cy="17" r="3.5" fill="#6EE7B7" opacity="0.6" />
-                            <circle cx="57" cy="65" r="3"   fill="#C1FF72" opacity="0.7" />
-                        </svg>
+                            style={{ borderRadius: '22px' }}
+                        />
                     </div>
 
                     <div {...{ style: styles.textContainer }}>
