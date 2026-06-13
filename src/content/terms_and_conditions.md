@@ -1,6 +1,6 @@
 # Terms and Conditions for GigMiles
 
-**Last updated: 2026-05-27 (pre-launch revision — to be re-dated at launch)**
+**Last updated: 2026-05-27**
 
 Please read these Terms and Conditions ("Terms") carefully before using the GigMiles mobile application and related services (collectively, the "Service") operated by **GigMiles, Inc.**, a Delaware corporation ("we", "us", or "our").
 

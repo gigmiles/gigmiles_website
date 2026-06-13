@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **GigMiles**
-**Last updated: 2026-05-19 (pre-launch revision — to be re-dated at launch)**
+**Last updated: 2026-05-19**
 
 This Privacy Policy describes how **GigMiles, Inc.**, a Delaware corporation ("GigMiles," "we," "our," or "us"), collects, uses, shares, and protects personal information when you use the GigMiles mobile application and related services (collectively, the "Service").
 
