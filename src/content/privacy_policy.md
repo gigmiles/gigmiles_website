@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **GigMiles**
-**Last updated: 2026-05-19**
+**Last updated: 2026-06-14**
 
 This Privacy Policy describes how **GigMiles, Inc.**, a Delaware corporation ("GigMiles," "we," "our," or "us"), collects, uses, shares, and protects personal information when you use the GigMiles mobile application and related services (collectively, the "Service").
 
@@ -71,17 +71,31 @@ You can disable location access at any time through your device settings. Withou
 
 We do not use precise geolocation for cross-context behavioral advertising or any purpose other than providing the shift-mileage tracking feature.
 
-### 2.6 Device and Analytics Data
+### 2.6 Device, Analytics, and Advertising Data
 
-GigMiles uses **Google Firebase Analytics and Google Analytics 4** for product analytics, performance monitoring, and feature usage measurement. This includes:
+GigMiles uses third-party SDKs for product analytics, performance monitoring, usability insights, and advertising measurement. **All advertising-related and session-replay data collection is consent-gated** — on iOS via the App Tracking Transparency (ATT) prompt, and on all platforms via the "Share Analytics Data" toggle in Settings (Profile → Privacy & Security). If you decline, we do not collect or share this data.
+
+**Product analytics — Google Firebase Analytics & Google Analytics 4:**
 
 - Device identifiers (Apple IDFA, Google Advertising ID)
 - App event data (screen views, feature interactions, conversion events)
-- Device model, OS version, and language
-- App version and crash counts
+- Device model, OS version, language, app version, crash counts
 - Approximate (IP-based) geographic region — not precise location
 
-Under CCPA/CPRA, this data transfer to Google may be considered "sharing" for analytics purposes (not for cross-context behavioral advertising). See §7 for opt-out rights.
+**Usability insights — Microsoft Clarity:**
+
+- Session replays and interaction heatmaps (taps, scrolls, screen navigation)
+- Text inputs are masked by default; used to diagnose usability issues
+- Associated with a Clarity-assigned identifier and your account user ID
+
+**Advertising measurement — Meta (Facebook) App Events:**
+
+- If you consent (ATT / Settings), we share your device advertising identifier (IDFA/GAID), app event data, and subscription purchase events with **Meta Platforms, Inc.**
+- Meta uses this to measure our advertising performance, attribute installs, and build advertising audiences — this constitutes **"sharing" for cross-context behavioral advertising** under CCPA/CPRA
+- We do **not** share your precise location, earnings, expense details, or income with Meta
+- You can decline at the ATT prompt, turn off "Share Analytics Data" in Settings, or use the opt-out in §7 — and we stop immediately
+
+Under CCPA/CPRA, the Firebase/GA4 transfer may be considered "sharing" for analytics, and the Meta transfer is "sharing" for cross-context behavioral advertising. See §7 for your opt-out rights.
 
 ### 2.7 Usage and Crash Data
 
@@ -101,11 +115,13 @@ We use your information to:
 - **Send notifications** (shift reminders, tax deadline alerts, daily wrap, premium status updates) — only the categories you enable in app settings
 - **Diagnose and fix technical issues** using crash reports and error logs
 - **Improve the Service** using product analytics (Firebase Analytics + GA4)
+- **Diagnose usability** via Microsoft Clarity session insights (with your consent)
+- **Measure and optimize our advertising** via Meta (Facebook) App Events (with your consent)
 - **Process subscription billing** via Apple App Store and Google Play
 - **Generate Schedule C Worksheets and CSV exports** at your request, for use with your licensed tax professional
 - **Power AI features** (Today's Brief, Burnout Meter) by sending non-identifying aggregated context to Groq AI inference
 
-We do **not** use your financial data, location data, or income information for advertising purposes.
+We do **not** use your financial data, precise location, earnings, or income information for advertising. With your consent (the iOS App Tracking Transparency prompt or the "Share Analytics Data" Settings toggle), we share your device advertising identifier, app-event data, and subscription purchase events with Meta for advertising measurement and audience building. You can decline or withdraw this consent at any time (see §7), and we stop immediately.
 
 ---
 
@@ -124,22 +140,24 @@ While we take reasonable precautions, no system is completely secure. We encoura
 
 ## 5. Data Sharing — Sub-Processor List
 
-We do **not** sell, rent, or share your personal data with third parties for marketing or cross-context behavioral advertising.
+We do **not** sell your personal data for monetary consideration. With your consent (see §2.6), we share advertising identifiers and app-event data with Meta for cross-context behavioral advertising; you can opt out at any time (see §7).
 
-We share limited data with the following service providers solely to operate the Service:
+We share limited data with the following service providers and partners to operate the Service:
 
 | Sub-Processor | Purpose | Data Categories | Privacy Policy |
 |---|---|---|---|
 | **Supabase** | Cloud database hosting, authentication | All app data (encrypted) | [supabase.com/privacy](https://supabase.com/privacy) |
 | **Sentry** | Crash and error reporting | Stack traces, device model, anonymized session info | [sentry.io/privacy](https://sentry.io/privacy) |
 | **Google Firebase + Google Analytics 4** | Product analytics, performance monitoring | Device identifiers (IDFA/AAID), event data, approximate region | [policies.google.com/privacy](https://policies.google.com/privacy) |
+| **Microsoft Clarity** | Usability session replay + heatmaps (consent-gated; text masked) | Interaction events, device info, user ID | [privacy.microsoft.com](https://privacy.microsoft.com) |
+| **Meta Platforms (Facebook) App Events** | Advertising measurement, install attribution, audience building (consent-gated) | Advertising ID (IDFA/GAID), app event data, purchase events | [facebook.com/privacy/policy](https://www.facebook.com/privacy/policy) |
 | **Resend** | Transactional email (Contact Us, password reset, legal acceptance confirmations) | Email address, message content | [resend.com/legal/privacy-policy](https://resend.com/legal/privacy-policy) |
 | **Groq** | AI inference for Today's Brief and Burnout Meter | Aggregated activity context (hours, miles, earnings ranges) — no PII | [groq.com/privacy-policy](https://groq.com/privacy-policy) |
 | **Apple App Store / Google Play** | Subscription billing | Payment processing — handled by platform | Apple / Google |
 | **U.S. Energy Information Administration (EIA)** | Regional fuel price lookup | State code only — no PII transmitted | Public government API |
 | **Law enforcement** | Compliance with valid legal process | As legally required | — |
 
-We do not maintain ongoing relationships with advertising networks, data brokers, or social media tracking SDKs.
+With your consent, we use Meta (Facebook) App Events — a social-media advertising SDK — for advertising measurement and audience building, as described in §2.6. We do not sell your personal information for monetary consideration and do not work with data brokers.
 
 ---
 
@@ -174,7 +192,7 @@ Under the California Consumer Privacy Act (CCPA) and California Privacy Rights A
 - **Right to Know** — Request disclosure of what personal information GigMiles collects, uses, discloses, and shares
 - **Right to Delete** — Request deletion of personal information GigMiles has collected about you, subject to certain exceptions
 - **Right to Correct** — Request correction of inaccurate personal information GigMiles maintains about you
-- **Right to Opt-Out of Sharing for Analytics** — GigMiles does not "sell" personal information for monetary consideration. However, our use of Google Firebase Analytics and Google Analytics 4 (see §2.6 and §5) may be considered "sharing" under CCPA/CPRA for analytics purposes (not for cross-context behavioral advertising). To opt out, email legal@gigmiles.app with the subject line "CCPA Opt-Out — Analytics."
+- **Right to Opt-Out of Sale/Sharing** — GigMiles does not "sell" personal information for monetary consideration. However: (a) our use of Google Firebase Analytics / Google Analytics 4 (see §2.6, §5) may be considered "sharing" for analytics; and (b) with your consent, we share your advertising identifier and app-event data with Meta (Facebook) App Events for **cross-context behavioral advertising** (see §2.6, §5). To opt out: decline the iOS App Tracking Transparency prompt, turn OFF "Share Analytics Data" in Settings (Profile → Privacy & Security) — which stops all analytics and advertising sharing immediately — or email legal@gigmiles.app with the subject line "CCPA — Do Not Sell or Share."
 - **Right to Limit Use of Sensitive Personal Information** — Direct GigMiles to limit use of sensitive personal information (including precise geolocation captured during GPS shift tracking) for purposes beyond what is necessary to provide the Service. Email legal@gigmiles.app with the subject line "CCPA — Limit SPI Use."
 - **Right to Non-Discrimination** — Receive equal service and pricing from GigMiles even when exercising your privacy rights
 

@@ -1,6 +1,6 @@
 # Terms and Conditions for GigMiles
 
-**Last updated: 2026-05-27**
+**Last updated: 2026-06-14**
 
 Please read these Terms and Conditions ("Terms") carefully before using the GigMiles mobile application and related services (collectively, the "Service") operated by **GigMiles, Inc.**, a Delaware corporation ("we", "us", or "our").
 
@@ -391,7 +391,7 @@ Under the California Consumer Privacy Act (CCPA) and California Privacy Rights A
 - **Right to Know** — Request disclosure of what personal information GigMiles collects, uses, discloses, and shares.
 - **Right to Delete** — Request deletion of personal information GigMiles has collected about you, subject to certain exceptions.
 - **Right to Correct** — Request correction of inaccurate personal information GigMiles maintains about you.
-- **Right to Opt-Out of Sale or Sharing** — GigMiles does not "sell" personal information for monetary consideration. However, GigMiles uses Google Firebase Analytics and Google Analytics 4 for product analytics, performance monitoring, and feature usage measurement. This usage involves transferring device identifiers (Apple IDFA, Google Advertising ID) and event data to Google, which under CCPA/CPRA may be considered "sharing" for analytics purposes (not for cross-context behavioral advertising). To opt out of this analytics sharing, contact us at legal@gigmiles.app with the subject line "CCPA Opt-Out — Analytics."
+- **Right to Opt-Out of Sale or Sharing** — GigMiles does not "sell" personal information for monetary consideration. However: (a) GigMiles uses Google Firebase Analytics / Google Analytics 4, which transfers device identifiers (Apple IDFA, Google Advertising ID) and event data to Google and may be considered "sharing" for analytics; and (b) with your consent, GigMiles shares your advertising identifier and app-event data with Meta (Facebook) App Events for **cross-context behavioral advertising**. To opt out: decline the iOS App Tracking Transparency prompt, turn OFF "Share Analytics Data" in Settings (Profile → Privacy & Security), or email legal@gigmiles.app with the subject line "CCPA — Do Not Sell or Share." See the Privacy Policy §2.6 and §7 for full detail.
 - **Right to Limit Use of Sensitive Personal Information** — Direct GigMiles to limit use of sensitive personal information (including precise geolocation captured during GPS shift tracking) for purposes beyond what is necessary to provide the Service.
 - **Right to Non-Discrimination** — Receive equal service and pricing from GigMiles even when exercising your privacy rights.
 
