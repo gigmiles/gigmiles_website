@@ -515,3 +515,100 @@ html {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   background-repeat: repeat;
 }
+
+/* Legal documents (/terms, /privacy) — markdown rendered from the canonical
+   mobile-repo docs. Scoped dark-theme typography so we don't depend on the
+   Tailwind typography plugin. */
+.legal-doc {
+  color: #cbd5e1; /* slate-300 */
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.legal-doc h1 {
+  color: #ffffff;
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  line-height: 1.2;
+}
+.legal-doc h2 {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 2.5rem 0 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #1e293b; /* slate-800 */
+}
+.legal-doc h3 {
+  color: #e2e8f0; /* slate-200 */
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin: 1.75rem 0 0.5rem;
+}
+.legal-doc h4 {
+  color: #e2e8f0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem;
+}
+.legal-doc p {
+  margin: 0 0 1rem;
+}
+.legal-doc ul,
+.legal-doc ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+.legal-doc ul { list-style: disc; }
+.legal-doc ol { list-style: decimal; }
+.legal-doc li {
+  margin: 0.35rem 0;
+}
+.legal-doc strong {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+.legal-doc a {
+  color: #10b981; /* emerald-500 */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.legal-doc a:hover {
+  color: #34d399; /* emerald-400 */
+}
+.legal-doc hr {
+  border: 0;
+  border-top: 1px solid #1e293b;
+  margin: 2rem 0;
+}
+.legal-doc blockquote {
+  border-left: 3px solid #334155; /* slate-700 */
+  padding-left: 1rem;
+  margin: 0 0 1rem;
+  color: #94a3b8; /* slate-400 */
+}
+.legal-doc code {
+  background: #0f172a; /* slate-900 */
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.85em;
+}
+.legal-doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+}
+.legal-doc th,
+.legal-doc td {
+  border: 1px solid #1e293b;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.legal-doc th {
+  background: #0f172a;
+  color: #e2e8f0;
+  font-weight: 600;
+}
