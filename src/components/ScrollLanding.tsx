@@ -34,13 +34,14 @@ function Nav() {
           ['How It Works', '#how'],
           ['Calculator', '#calculator'],
           ['Pricing', '#pricing'],
+          ['Contact', '/contact'],
         ].map(([label, href]) => (
-          <a key={label} href={href} className="text-white/35 text-[11px] tracking-[0.04em] hover:text-white/65 transition-colors font-[family-name:var(--font-space-grotesk)]">
+          <a key={label} href={href} className="text-white/35 text-[13px] tracking-[0.04em] hover:text-white/65 transition-colors font-[family-name:var(--font-space-grotesk)]">
             {label}
           </a>
         ))}
       </div>
-      <DownloadButton className="text-white/55 text-[11px] tracking-[0.04em] border border-white/[0.14] px-5 py-2 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)] cursor-pointer">
+      <DownloadButton className="text-white/55 text-[13px] tracking-[0.04em] border border-white/[0.14] px-5 py-2 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)] cursor-pointer">
         Download App
       </DownloadButton>
     </nav>
@@ -351,11 +352,11 @@ function HowItWorksSection() {
                   pointerEvents: i === activeScene ? 'auto' : 'none',
                 }}
               >
-                <div className="relative w-[160px] lg:w-[190px] flex-shrink-0">
+                <div className="relative w-[200px] lg:w-[260px] xl:w-[320px] flex-shrink-0">
                   <div className="relative bg-[#0F1623] border-2 border-white/[0.10] rounded-[36px] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
                     <div className="bg-[#050B12] rounded-[28px] overflow-hidden aspect-[9/19] relative">
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-4 bg-[#0F1623] rounded-b-xl z-10" />
-                      <Image src={s.img} alt={s.imgAlt} fill className="object-cover object-top" sizes="190px" />
+                      <Image src={s.img} alt={s.imgAlt} fill className="object-cover object-top" sizes="(min-width:1280px) 320px, (min-width:1024px) 260px, 200px" />
                     </div>
                   </div>
                   <div
@@ -1140,7 +1141,7 @@ const PRICING_TIERS: PricingTier[] = [
   {
     badge: 'Most Popular',
     label: 'Annual',
-    price: '$99',
+    price: '$99.99',
     priceSuffix: '/ year',
     caption: '$8.33 / month · save 17%',
     features: ['Everything in Monthly', 'Early access to new features', 'Locked-in beta pricing', 'Tax season export pack'],
@@ -1184,7 +1185,7 @@ function PricingSection() {
         </div>
 
         <p data-r className="text-white/20 text-[11px] leading-relaxed mt-8 max-w-lg font-[family-name:var(--font-dm-sans)] italic">
-          Tax estimates assume gig work is your primary income source and are for planning purposes only — not tax advice, not a filed return. Always consult a licensed tax professional before filing.
+          Tax estimates are for planning purposes only — not tax advice, not a filed return. GigMiles factors in your optional W-2 wages when provided. Always consult a licensed tax professional before filing.
         </p>
       </div>
     </section>
@@ -1199,7 +1200,7 @@ const FAQS = [
   },
   {
     q: 'How are taxes calculated?',
-    a: 'GigMiles estimates self-employment tax, federal income tax, and state income tax using the current IRS mileage rate ($0.725/mi for 2026) and your filing status. Estimates assume gig work is your primary income source — if you also have W-2 wages, your actual tax may differ. Always verify with a licensed tax professional before filing.',
+    a: 'GigMiles estimates self-employment tax, federal income tax, and state income tax using the current IRS mileage rate ($0.725/mi for 2026) and your filing status. Add your W-2 wages and GigMiles stacks your gig earnings on top to estimate your marginal rate more accurately. Estimates are for planning only — always verify with a licensed tax professional before filing.',
   },
   {
     q: 'Is this professional tax advice?',
@@ -1215,7 +1216,7 @@ const FAQS = [
   },
   {
     q: 'Does it track mileage automatically?',
-    a: 'Automatic mileage tracking via GPS is on the roadmap. Currently you log miles per shift manually or let the app estimate based on shift duration.',
+    a: 'Yes. GigMiles includes automatic GPS shift tracking — tap Start Shift and it records every mile you drive, your route, and shift duration into IRS-ready logs. Prefer manual entry? You can log miles per shift by hand too.',
   },
 ]
 
@@ -1254,6 +1255,14 @@ function FaqSection() {
         <div data-r>
           {FAQS.map(f => <FaqItem key={f.q} {...f} />)}
         </div>
+        <a
+          data-r
+          href="/contact"
+          className="inline-flex items-center gap-2 mt-8 text-[#14B8A6] text-[13px] sm:text-[14px] tracking-[0.02em] hover:text-[#2DD4BF] transition-colors font-[family-name:var(--font-space-grotesk)]"
+        >
+          See all questions
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
   )
@@ -1307,7 +1316,7 @@ function Footer() {
           </div>
         </div>
         <div className="flex flex-wrap gap-8">
-          {[['Contact', 'mailto:support@gigmiles.app'], ['Privacy', '/privacy'], ['Terms', '/terms'], ['Legal', 'mailto:legal@gigmiles.app']].map(([l, h]) => (
+          {[['Contact', '/contact'], ['Privacy', '/privacy'], ['Terms', '/terms'], ['Legal', 'mailto:legal@gigmiles.app']].map(([l, h]) => (
             <a key={l} href={h} className="text-white/30 text-[12px] tracking-[0.04em] font-[family-name:var(--font-space-grotesk)] hover:text-white/55 transition-colors">{l}</a>
           ))}
         </div>
@@ -1317,6 +1326,41 @@ function Footer() {
         </div>
       </div>
     </footer>
+  )
+}
+
+// ─── E-bike differentiator ────────────────────────────────────────────────────
+function EBikeSection() {
+  const ref = useRef<HTMLElement>(null)
+  useReveal(ref)
+  const points = [
+    ['Electricity per mile', 'Your real charging cost — not a gas estimate that never applied to you.'],
+    ['Battery & mechanical wear', 'Tires, chain, brakes, and battery depreciation — the costs cars never have.'],
+    ['The right IRS method', 'Actual expenses, applied automatically — the IRS does not allow standard mileage for bikes.'],
+  ]
+  return (
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+      <div className="max-w-5xl mx-auto">
+        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+          Unique to GigMiles
+        </p>
+        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-2xl">
+          Driving an e-bike? We do the math no one else does.
+        </h2>
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
+          Most trackers only understand cars — so e-bike couriers get numbers that don&apos;t fit. GigMiles is the only one that calculates your true net on an e-bike.
+        </p>
+        <div data-r className="grid sm:grid-cols-3 border border-white/[0.07] bg-white/[0.06] gap-px">
+          {points.map(([title, body]) => (
+            <div key={title} className="bg-[#08111F] px-5 py-6 sm:px-6 sm:py-7 flex flex-col gap-2">
+              <span className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[15px] sm:text-[16px] tracking-[-0.01em]">{title}</span>
+              <span className="text-[#94A3B8] text-[13px] leading-relaxed font-[family-name:var(--font-dm-sans)]">{body}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -1333,6 +1377,7 @@ export function ScrollLanding() {
         <WaterfallSection />
         <HowItWorksSection />
         <FeaturesSection />
+        <EBikeSection />
         <CalculatorSection />
         <TestimonialsSection />
         <PricingSection />
