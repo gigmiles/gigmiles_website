@@ -171,12 +171,66 @@ export function GetGigMilesClient({
   const iosLive = iosUrl !== '#'
   const androidLive = androidUrl !== '#'
 
-  // Which primary button to feature based on device.
-  const showIosPrimary = platform === 'ios'
-  const showAndroidPrimary = platform === 'android'
-
   function onStoreClick(store: 'ios' | 'android') {
     beacon('store_click', { store, platform })
+  }
+
+  const iosButton = (
+    <StoreButton
+      kind="primary"
+      href={iosUrl}
+      onClick={() => onStoreClick('ios')}
+      label="Download on the App Store"
+      icon={<AppleIcon />}
+    />
+  )
+  const androidButton = (
+    <StoreButton
+      kind="primary"
+      href={androidUrl}
+      onClick={() => onStoreClick('android')}
+      label="Get it on Google Play"
+      icon={<PlayIcon />}
+    />
+  )
+
+  // Device-specific CTA: show ONLY the visitor's own store. If that store
+  // isn't live yet (iOS pre-publish), show a coming-soon notice rather than
+  // pushing them to the wrong store. Desktop/unknown sees whatever is live.
+  let storeCta: React.ReactNode
+  if (platform === 'detecting') {
+    storeCta = (
+      <div
+        style={{ ...btnBase, background: 'rgba(255,255,255,0.05)', cursor: 'default' }}
+        aria-hidden
+      >
+        &nbsp;
+      </div>
+    )
+  } else if (platform === 'ios') {
+    storeCta = iosLive ? iosButton : <ComingSoon store="the App Store" icon={<AppleIcon />} />
+  } else if (platform === 'android') {
+    storeCta = androidLive ? androidButton : <ComingSoon store="Google Play" icon={<PlayIcon />} />
+  } else {
+    storeCta = (
+      <>
+        {iosLive && iosButton}
+        {androidLive && androidButton}
+        {!iosLive && !androidLive && (
+          <a
+            href="https://gigmiles.app"
+            style={{
+              ...btnBase,
+              background: 'transparent',
+              color: '#FFFFFF',
+              border: '1px solid rgba(255,255,255,0.22)',
+            }}
+          >
+            See how it works
+          </a>
+        )}
+      </>
+    )
   }
 
   return (
@@ -314,39 +368,9 @@ export function GetGigMilesClient({
           </p>
         </section>
 
-        {/* CTAs */}
+        {/* CTA — device-specific (only the visitor's own store) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-          {iosLive && (
-            <StoreButton
-              kind={showIosPrimary ? 'primary' : 'secondary'}
-              href={iosUrl}
-              onClick={() => onStoreClick('ios')}
-              label="Download on the App Store"
-              icon={<AppleIcon />}
-            />
-          )}
-          {androidLive && (
-            <StoreButton
-              kind={showAndroidPrimary ? 'primary' : 'secondary'}
-              href={androidUrl}
-              onClick={() => onStoreClick('android')}
-              label="Get it on Google Play"
-              icon={<PlayIcon />}
-            />
-          )}
-          {!iosLive && !androidLive && (
-            <a
-              href="https://gigmiles.app"
-              style={{
-                ...btnBase,
-                background: 'transparent',
-                color: '#FFFFFF',
-                border: `1px solid rgba(255,255,255,0.22)`,
-              }}
-            >
-              See how it works
-            </a>
-          )}
+          {storeCta}
 
           {/* Trust micro-copy directly under the CTA */}
           <p
@@ -551,6 +575,23 @@ function StoreButton({
   )
 }
 
+function ComingSoon({ store, icon }: { store: string; icon: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        ...btnBase,
+        background: 'rgba(255,255,255,0.06)',
+        color: '#CFE6E2',
+        border: '1px solid rgba(255,255,255,0.14)',
+        cursor: 'default',
+      }}
+    >
+      {icon}
+      Coming soon on {store}
+    </div>
+  )
+}
+
 function Step({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
@@ -587,10 +628,49 @@ function AppleIcon() {
   )
 }
 
+// Official Google Play 4-colour mark (Google brand asset, gradients intact).
 function PlayIcon() {
   return (
-    <svg width={20} height={20} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M3.6 20.5l8.4-8.5-8.4-8.5c-.36.2-.6.58-.6 1.04v14.92c0 .46.24.84.6 1.04zM13.8 13.3l2.3 2.3-9.4 5.4 7.1-7.7zm0-2.6L6.7 3l9.4 5.4-2.3 2.3zM18 12l2.9 1.7c.5.3.5 1.05 0 1.35L18 16.7l-2.5-2.35L18 12z" />
+    <svg
+      width={20}
+      height={20}
+      viewBox="134 307.5 32 32"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <defs>
+        <linearGradient id="gpA" x1="215.196" y1="319.454" x2="100.359" y2="434.291" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#00a0ff" />
+          <stop offset=".007" stopColor="#00a1ff" />
+          <stop offset=".26" stopColor="#00beff" />
+          <stop offset=".512" stopColor="#00d2ff" />
+          <stop offset=".76" stopColor="#00dfff" />
+          <stop offset="1" stopColor="#00e3ff" />
+        </linearGradient>
+        <linearGradient id="gpB" x1="297.578" y1="396.75" x2="132.007" y2="396.75" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#ffe000" />
+          <stop offset=".409" stopColor="#ffbd00" />
+          <stop offset=".775" stopColor="#ffa500" />
+          <stop offset="1" stopColor="#ff9c00" />
+        </linearGradient>
+        <linearGradient id="gpC" x1="235.969" y1="412.481" x2="80.242" y2="568.208" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#ff3a44" />
+          <stop offset="1" stopColor="#c31162" />
+        </linearGradient>
+        <linearGradient id="gpD" x1="116.02" y1="261.07" x2="185.559" y2="330.609" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#32a071" />
+          <stop offset=".069" stopColor="#2da771" />
+          <stop offset=".476" stopColor="#15cf74" />
+          <stop offset=".801" stopColor="#06e775" />
+          <stop offset="1" stopColor="#00f076" />
+        </linearGradient>
+      </defs>
+      <g transform="matrix(.181794 0 0 .181794 111.21426 251.37762)">
+        <path d="M137.5 311.5c-2 2.1-3.2 5.4-3.2 9.6v151.3c0 4.2 1.2 7.5 3.2 9.6l.5.5 84.8-84.8v-2L138 310.9z" fill="url(#gpA)" />
+        <path d="M251 426l-28.2-28.3v-2l28.3-28.3.6.4 33.5 19c9.6 5.4 9.6 14.3 0 19.8l-33.5 19z" fill="url(#gpB)" />
+        <path d="M251.7 425.6l-28.9-28.9-85.3 85.3c3.1 3.3 8.4 3.8 14.2.4l100-56.8" fill="url(#gpC)" />
+        <path d="M251.7 367.9l-100-56.8c-5.9-3.3-11.1-2.9-14.2.4l85.3 85.3z" fill="url(#gpD)" />
+      </g>
     </svg>
   )
 }
