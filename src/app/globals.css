@@ -5,17 +5,19 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Premium font stack */
-  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
-  --font-body:    var(--font-dm-sans), system-ui, sans-serif;
+  /* Brand font stack (Guidelines v1.0: Outfit display, Inter body) */
+  --font-display: var(--font-outfit), system-ui, sans-serif;
+  --font-body:    var(--font-inter), system-ui, sans-serif;
 
-  /* GigMiles ink palette */
-  --color-ink:     #050B12;
-  --color-ink2:    #08111F;
-  --color-ink3:    #0B1220;
-  --color-surface: #0D1829;
-  --color-teal:    #14B8A6;
-  --color-green:   #10B981;
+  /* GigMiles brand teal palette (Guidelines §03) */
+  --color-deep-teal: #0E4F4F;  /* primary background */
+  --color-mint:      #5EEAD4;  /* primary mark + accent */
+  --color-ink:     #0A3C3C;    /* deepest teal surface */
+  --color-ink2:    #0C4646;
+  --color-ink3:    #0E4F4F;
+  --color-surface: #13605F;    /* raised teal panel */
+  --color-teal:    #5EEAD4;    /* "teal" accent usages → mint (bright on dark teal) */
+  --color-green:   #10B981;    /* semantic earnings-positive */
   /* Premium Slate Palette */
   --color-slate-50: #f8fafc;
   --color-slate-100: #f1f5f9;
@@ -29,7 +31,7 @@
   --color-slate-900: #0f172a;
   --color-slate-950: #020617;
 
-  /* Vibrant Accents */
+  /* Semantic accents (functional only) */
   --color-emerald-500: #10b981;
   --color-emerald-600: #059669;
   --color-ruby-500: #e11d48;
@@ -37,26 +39,25 @@
   --color-amber-500: #f59e0b;
   --color-amber-600: #d97706;
 
-  /* Refined Profit Design System Tokens */
-  --color-neon-primary: #10b981 !important; /* Deep Emerald */
-  --color-neon-primary-light: rgba(16, 185, 129, 0.2) !important;
+  /* Brand accent + teal surface levels */
+  --color-neon-primary: #5EEAD4 !important; /* Mint accent */
+  --color-neon-primary-light: rgba(94, 234, 212, 0.2) !important;
   --color-accent-silver: #e2e8f0; /* Platinum/Silver */
-  --color-deep-night: #080c14; /* Background Level 1 */
-  --color-dark-slate: #0D0F14; /* Background Level 2 */
-  --color-card-dark: #0d1220; /* Card Level 3 */
+  --color-deep-night: #0A3C3C; /* Teal Level 1 (deepest) */
+  --color-dark-slate: #0C4646; /* Teal Level 2 */
+  --color-card-dark: #0C4A4A; /* Teal Level 3 (card) */
 
   --color-other: #64748b;
 
   /* Typography */
   --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-outfit), system-ui, sans-serif;
 
   /* Premium Shadows */
   --shadow-premium: 0 4px 24px rgba(0, 0, 0, 0.3);
   --shadow-premium-heavy: 0 8px 40px rgba(0, 0, 0, 0.5);
   --shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.4);
-  --shadow-cta-glow: 0 0 30px rgba(16, 185, 129, 0.2); /* Emerald Glow */
-  --shadow-hover-glow: 0 0 50px rgba(16, 185, 129, 0.3);
+  --shadow-cta-glow: 0 0 30px rgba(94, 234, 212, 0.25); /* Mint Glow */
+  --shadow-hover-glow: 0 0 50px rgba(94, 234, 212, 0.35);
 
   /* Shadcn Mapping */
   --color-background: var(--background);
@@ -114,49 +115,49 @@
 }
 
 :root {
-  /* Enforce dark theme as default for Refined Profit */
-  --background: #0B1120; /* Deep Space Slate (brighter than #0D0F14) */
-  --foreground: #f8fafc;
-  --card: #0d1220;
-  --card-foreground: #f8fafc;
-  --popover: #0d1220;
-  --popover-foreground: #f8fafc;
-  --primary: #10b981 !important; /* Emerald */
-  --primary-foreground: #0D0F14; /* Dark text on primary */
-  --neon-primary: #10b981 !important;
-  --secondary: rgba(255, 255, 255, 0.03);
+  /* GigMiles brand: Deep Teal field, Mint accent (Guidelines v1.0) */
+  --background: #0E4F4F; /* Deep Teal */
+  --foreground: #F1FAF8;
+  --card: #0C4A4A;
+  --card-foreground: #F1FAF8;
+  --popover: #0C4A4A;
+  --popover-foreground: #F1FAF8;
+  --primary: #5EEAD4 !important; /* Mint */
+  --primary-foreground: #0E4F4F; /* Deep teal text on mint */
+  --neon-primary: #5EEAD4 !important;
+  --secondary: rgba(255, 255, 255, 0.04);
   --secondary-foreground: #ffffff;
-  --muted: rgba(255, 255, 255, 0.03);
-  --muted-foreground: #94a3b8;
-  --accent: rgba(255, 255, 255, 0.05);
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: #A7C9C4;
+  --accent: rgba(255, 255, 255, 0.06);
   --accent-foreground: #ffffff;
-  --destructive: #f43f5e;
+  --destructive: #E11D48; /* Brand rose (expense-negative) */
   --destructive-foreground: #ffffff;
 
-  --border: rgba(255, 255, 255, 0.06);
-  --input: rgba(255, 255, 255, 0.03);
-  --ring: rgba(16, 185, 129, 0.5); /* Emerald focus ring */
+  --border: rgba(255, 255, 255, 0.10);
+  --input: rgba(255, 255, 255, 0.04);
+  --ring: rgba(94, 234, 212, 0.5); /* Mint focus ring */
   --radius: 1rem;
 
-  --glass-bg: rgba(15, 23, 42, 0.5); /* Lighter slate glass */
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(10, 60, 60, 0.5); /* Teal glass */
+  --glass-border: rgba(255, 255, 255, 0.10);
 
-  /* Chart Colors */
+  /* Chart Colors (semantic + brand) */
   --chart-1: #10b981;
-  --chart-2: #a1a1aa;
+  --chart-2: #94a3b8;
   --chart-3: #f59e0b;
   --chart-4: #e11d48;
-  --chart-5: #6366f1;
+  --chart-5: #5EEAD4;
 
   /* Sidebar */
-  --sidebar-background: #0B1120; /* Deep Space Slate */
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #10b981;
-  --sidebar-primary-foreground: #0D0F14;
-  --sidebar-accent: rgba(255, 255, 255, 0.03);
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-ring: rgba(16, 185, 129, 0.5);
+  --sidebar-background: #0E4F4F;
+  --sidebar-foreground: #F1FAF8;
+  --sidebar-primary: #5EEAD4;
+  --sidebar-primary-foreground: #0E4F4F;
+  --sidebar-accent: rgba(255, 255, 255, 0.04);
+  --sidebar-accent-foreground: #F1FAF8;
+  --sidebar-border: rgba(255, 255, 255, 0.10);
+  --sidebar-ring: rgba(94, 234, 212, 0.5);
 
   /* Safe area CSS variables */
   --safe-top: env(safe-area-inset-top);
@@ -166,40 +167,40 @@
 }
 
 .dark {
-  /* Redundant in enforced dark mode, but kept for compatibility */
-  --background: #0B1120;
-  --foreground: #f8fafc;
-  --card: #0d1220;
-  --card-foreground: #f8fafc;
-  --popover: #0d1220;
-  --popover-foreground: #f8fafc;
-  --primary: #10b981 !important; /* Emerald */
-  --primary-foreground: #0D0F14;
-  --neon-primary: #10b981 !important;
-  --secondary: rgba(255, 255, 255, 0.03);
+  /* Enforced theme (layout forcedTheme="dark") — brand teal values */
+  --background: #0E4F4F;
+  --foreground: #F1FAF8;
+  --card: #0C4A4A;
+  --card-foreground: #F1FAF8;
+  --popover: #0C4A4A;
+  --popover-foreground: #F1FAF8;
+  --primary: #5EEAD4 !important; /* Mint */
+  --primary-foreground: #0E4F4F;
+  --neon-primary: #5EEAD4 !important;
+  --secondary: rgba(255, 255, 255, 0.04);
   --secondary-foreground: #ffffff;
-  --muted: rgba(255, 255, 255, 0.03);
-  --muted-foreground: #94a3b8;
-  --accent: rgba(255, 255, 255, 0.05);
+  --muted: rgba(255, 255, 255, 0.04);
+  --muted-foreground: #A7C9C4;
+  --accent: rgba(255, 255, 255, 0.06);
   --accent-foreground: #ffffff;
-  --destructive: #f43f5e;
+  --destructive: #E11D48;
   --destructive-foreground: #ffffff;
 
-  --border: rgba(255, 255, 255, 0.06);
-  --input: rgba(255, 255, 255, 0.03);
-  --ring: rgba(16, 185, 129, 0.5);
+  --border: rgba(255, 255, 255, 0.10);
+  --input: rgba(255, 255, 255, 0.04);
+  --ring: rgba(94, 234, 212, 0.5);
 
-  --glass-bg: rgba(15, 23, 42, 0.5);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(10, 60, 60, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.10);
 
-  --sidebar-background: #0B1120;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #10b981;
-  --sidebar-primary-foreground: #080c14;
-  --sidebar-accent: rgba(255, 255, 255, 0.03);
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-ring: rgba(16, 185, 129, 0.5);
+  --sidebar-background: #0E4F4F;
+  --sidebar-foreground: #F1FAF8;
+  --sidebar-primary: #5EEAD4;
+  --sidebar-primary-foreground: #0E4F4F;
+  --sidebar-accent: rgba(255, 255, 255, 0.04);
+  --sidebar-accent-foreground: #F1FAF8;
+  --sidebar-border: rgba(255, 255, 255, 0.10);
+  --sidebar-ring: rgba(94, 234, 212, 0.5);
 }
 
 body {
@@ -244,7 +245,7 @@ html {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-border);
-  box-shadow: 
+  box-shadow:
     var(--shadow-glass),
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.05); /* Glassmorphism 2.0 inner light */
   border-radius: 1.5rem; /* Bento Grid Signature Radius */
@@ -256,28 +257,28 @@ html {
 }
 
 @utility glass-card-hover {
-  @apply hover:bg-slate-50/80 dark:hover:bg-slate-800/60 hover:border-slate-200 dark:hover:border-white/20 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-1;
+  @apply hover:bg-slate-50/80 dark:hover:bg-white/8 hover:border-slate-200 dark:hover:border-white/20 hover:shadow-2xl hover:shadow-[#5EEAD4]/10 hover:-translate-y-1;
 }
 
 @utility premium-gradient {
   background: linear-gradient(
     135deg,
-    var(--color-slate-900) 0%,
-    var(--color-slate-800) 100%
+    var(--color-ink) 0%,
+    var(--color-surface) 100%
   );
 }
 
 @utility mesh-gradient {
   background-color: var(--background);
   background-image:
-    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+    radial-gradient(at 0% 0%, rgba(94, 234, 212, 0.07) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(94, 234, 212, 0.05) 0px, transparent 50%),
     radial-gradient(
       at 100% 100%,
-      rgba(59, 130, 246, 0.05) 0px,
+      rgba(16, 185, 129, 0.05) 0px,
       transparent 50%
     ),
-    radial-gradient(at 0% 100%, rgba(236, 72, 153, 0.05) 0px, transparent 50%);
+    radial-gradient(at 0% 100%, rgba(94, 234, 212, 0.05) 0px, transparent 50%);
 }
 
 @utility animate-fade-in {
@@ -314,8 +315,8 @@ html {
 
 @utility premium-glow {
   box-shadow:
-    0 0 20px 2px rgba(16, 185, 129, 0.15),
-    0 0 40px 4px rgba(16, 185, 129, 0.05);
+    0 0 20px 2px rgba(94, 234, 212, 0.15),
+    0 0 40px 4px rgba(94, 234, 212, 0.05);
 }
 
 @utility uber-halo-text {
@@ -342,7 +343,7 @@ html {
 
 @keyframes metric-pulse {
   0% { font-variation-settings: 'wght' 400; }
-  50% { font-variation-settings: 'wght' 900; color: var(--color-emerald-400); transform: scale(1.02); }
+  50% { font-variation-settings: 'wght' 900; color: var(--color-mint); transform: scale(1.02); }
   100% { font-variation-settings: 'wght' 700; }
 }
 
@@ -437,10 +438,10 @@ html {
 
 @keyframes heroGlow {
   0%, 100% {
-    filter: drop-shadow(0 0 30px rgba(16, 185, 129, 0.3));
+    filter: drop-shadow(0 0 30px rgba(94, 234, 212, 0.3));
   }
   50% {
-    filter: drop-shadow(0 0 80px rgba(16, 185, 129, 0.6));
+    filter: drop-shadow(0 0 80px rgba(94, 234, 212, 0.6));
   }
 }
 
@@ -537,7 +538,7 @@ html {
   font-weight: 600;
   margin: 2.5rem 0 0.75rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #1e293b; /* slate-800 */
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 .legal-doc h3 {
   color: #e2e8f0; /* slate-200 */
@@ -569,27 +570,27 @@ html {
   font-weight: 600;
 }
 .legal-doc a {
-  color: #10b981; /* emerald-500 */
+  color: #5EEAD4; /* mint */
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .legal-doc a:hover {
-  color: #34d399; /* emerald-400 */
+  color: #99F6E4; /* lighter mint */
 }
 .legal-doc hr {
   border: 0;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   margin: 2rem 0;
 }
 .legal-doc blockquote {
-  border-left: 3px solid #334155; /* slate-700 */
+  border-left: 3px solid rgba(255, 255, 255, 0.18);
   padding-left: 1rem;
   margin: 0 0 1rem;
-  color: #94a3b8; /* slate-400 */
+  color: #A7C9C4;
 }
 .legal-doc code {
-  background: #0f172a; /* slate-900 */
-  border: 1px solid #1e293b;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 4px;
   padding: 0.1rem 0.35rem;
   font-size: 0.85em;
@@ -602,13 +603,13 @@ html {
 }
 .legal-doc th,
 .legal-doc td {
-  border: 1px solid #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 0.5rem 0.75rem;
   text-align: left;
   vertical-align: top;
 }
 .legal-doc th {
-  background: #0f172a;
+  background: rgba(255, 255, 255, 0.06);
   color: #e2e8f0;
   font-weight: 600;
 }

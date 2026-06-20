@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" font-family="Outfit, system-ui">
+  <defs>
+    
+  </defs>
+  <rect width="1024" height="1024" fill="#0E4F4F"></rect>
+  <text x="512" y="799" font-size="983" font-weight="900" font-style="italic" fill="#5EEAD4" text-anchor="middle" letter-spacing="-0.04em">g</text>
+</svg>

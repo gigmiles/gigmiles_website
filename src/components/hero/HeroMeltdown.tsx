@@ -35,10 +35,10 @@ function lerpColor(a: string, b: string, t: number): string {
 }
 
 function getStageColor(progress: number): string {
-  if (progress < 0.15) return '#10B981'
-  if (progress < 0.35) return lerpColor('#10B981', '#F59E0B', (progress - 0.15) / 0.2)
-  if (progress < 0.55) return lerpColor('#F59E0B', '#EF4444', (progress - 0.35) / 0.2)
-  return '#10B981'
+  if (progress < 0.15) return '#5EEAD4'
+  if (progress < 0.35) return lerpColor('#5EEAD4', '#F59E0B', (progress - 0.15) / 0.2)
+  if (progress < 0.55) return lerpColor('#F59E0B', '#E11D48', (progress - 0.35) / 0.2)
+  return '#5EEAD4'
 }
 
 // ─── Scroll-driven number display ───────────────────────────────────────────
@@ -76,8 +76,8 @@ function MeltdownNumber({ progress }: { progress: number }) {
     : progress >= 0.62 ? 1 : 0
   const holeRadius = Math.round(irisT * irisT * 700) // eased
   const blackoutBg = irisT > 0
-    ? `radial-gradient(circle ${holeRadius}px at 50% 50%, transparent 0%, transparent ${holeRadius - 1}px, #050B12 ${holeRadius + 2}px)`
-    : '#050B12'
+    ? `radial-gradient(circle ${holeRadius}px at 50% 50%, transparent 0%, transparent ${holeRadius - 1}px, #0A3C3C ${holeRadius + 2}px)`
+    : '#0A3C3C'
 
   // Stage 1 entrance: number drops in from above
   const entranceY = progress < 0.08 ? (1 - progress / 0.08) * -30 : 0
@@ -183,7 +183,7 @@ function CostBreakdown({ progress }: { progress: number }) {
             <span className="text-white/30 text-[9px] sm:text-[11px] tracking-[0.25em] uppercase font-[family-name:var(--font-space-grotesk)]">
               {label}
             </span>
-            <span className="text-[#EF4444] text-[clamp(26px,5vw,44px)] font-light leading-none font-[family-name:var(--font-space-grotesk)] tracking-[-0.03em]">
+            <span className="text-[#E11D48] text-[clamp(26px,5vw,44px)] font-light leading-none font-[family-name:var(--font-space-grotesk)] tracking-[-0.03em]">
               −${amount}
             </span>
           </div>
@@ -205,7 +205,7 @@ function CostBreakdown({ progress }: { progress: number }) {
             <span className="text-white/30 text-[9px] sm:text-[11px] tracking-[0.25em] uppercase font-[family-name:var(--font-space-grotesk)]">
               {label}
             </span>
-            <span className="text-[#EF4444] text-[clamp(26px,5vw,44px)] font-light leading-none font-[family-name:var(--font-space-grotesk)] tracking-[-0.03em]">
+            <span className="text-[#E11D48] text-[clamp(26px,5vw,44px)] font-light leading-none font-[family-name:var(--font-space-grotesk)] tracking-[-0.03em]">
               −${amount}
             </span>
           </div>
@@ -231,7 +231,7 @@ function CostBreakdown({ progress }: { progress: number }) {
           opacity: progress >= 0.36 ? Math.min(1, (progress - 0.36) / 0.04) : 0,
         }}
       >
-        <p className="text-[#EF4444]/60 text-[12px] sm:text-[14px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">
+        <p className="text-[#E11D48]/60 text-[12px] sm:text-[14px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">
           −${38 + 15 + 22 + HERO_CONFIG.taxes} total drained
         </p>
       </div>
@@ -293,12 +293,12 @@ function SplitReality({ progress }: { progress: number }) {
       style={{ opacity: fadeIn }}
     >
       {/* Left panel — static background, content pinned to left half */}
-      <div className="absolute inset-0 bg-[#120808]/95 flex items-center justify-center pr-[50%]">
+      <div className="absolute inset-0 bg-[#2A0E12]/95 flex items-center justify-center pr-[50%]">
         <div className="flex flex-col items-center gap-3 px-3 sm:px-6 text-center">
-          <span className="text-[#EF4444]/50 text-[9px] sm:text-[13px] tracking-[0.15em] sm:tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">
+          <span className="text-[#E11D48]/50 text-[9px] sm:text-[13px] tracking-[0.15em] sm:tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">
             Without GigMiles
           </span>
-          <span className="text-[#EF4444]/30 text-[clamp(40px,9vw,110px)] font-extralight font-[family-name:var(--font-space-grotesk)] tracking-[-0.04em] leading-none blur-[2px] select-none">
+          <span className="text-[#E11D48]/30 text-[clamp(40px,9vw,110px)] font-extralight font-[family-name:var(--font-space-grotesk)] tracking-[-0.04em] leading-none blur-[2px] select-none">
             ${HERO_CONFIG.gross}
           </span>
           <span className="text-white/25 text-[9px] sm:text-[13px] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">
@@ -325,19 +325,19 @@ function SplitReality({ progress }: { progress: number }) {
         className="absolute top-0 bottom-0 right-0 flex items-center justify-center overflow-hidden"
         style={{ width: `${rightWidthPct}%` }}
       >
-        <div className="absolute inset-0 bg-[#040f09]/95" />
+        <div className="absolute inset-0 bg-[#0A3C3C]/95" />
         <div className="relative flex flex-col items-center gap-3 px-3 sm:px-6 text-center">
-          <span className="text-[#14B8A6]/80 text-[9px] sm:text-[13px] tracking-[0.15em] sm:tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">
+          <span className="text-[#5EEAD4]/80 text-[9px] sm:text-[13px] tracking-[0.15em] sm:tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">
             With GigMiles
           </span>
-          <span className="text-[#10B981] text-[clamp(40px,9vw,110px)] font-extralight font-[family-name:var(--font-space-grotesk)] tracking-[-0.04em] leading-none select-none">
+          <span className="text-[#5EEAD4] text-[clamp(40px,9vw,110px)] font-extralight font-[family-name:var(--font-space-grotesk)] tracking-[-0.04em] leading-none select-none">
             ${HERO_CONFIG.net}
           </span>
-          <span className="text-[#10B981]/70 text-[9px] sm:text-[13px] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">
+          <span className="text-[#5EEAD4]/70 text-[9px] sm:text-[13px] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">
             Knowing
           </span>
           <p
-            className="text-[#14B8A6]/60 text-[12px] sm:text-[14px] font-[family-name:var(--font-dm-sans)] max-w-[180px] leading-relaxed mt-1"
+            className="text-[#5EEAD4]/60 text-[12px] sm:text-[14px] font-[family-name:var(--font-dm-sans)] max-w-[180px] leading-relaxed mt-1"
             style={{ opacity: expandT > 0.5 ? Math.min(1, (expandT - 0.5) / 0.3) : 0 }}
           >
             ${HERO_CONFIG.hourlyRate}/hr — after every cost
@@ -355,10 +355,10 @@ function HeroCTA({ progress }: { progress: number }) {
 
   return (
     <div
-      className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-6 pointer-events-auto bg-[#050B12]"
+      className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-6 pointer-events-auto bg-[#0A3C3C]"
       style={{ opacity: t }}
     >
-      <p className="text-[#14B8A6]/60 text-[11px] tracking-[0.4em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">
+      <p className="text-[#5EEAD4]/60 text-[11px] tracking-[0.4em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">
         GigMiles
       </p>
       <h2 className="text-white font-[family-name:var(--font-space-grotesk)] font-black tracking-[-0.04em] leading-[1.0] text-center text-[clamp(32px,6vw,64px)] max-w-xl px-4">
@@ -367,7 +367,7 @@ function HeroCTA({ progress }: { progress: number }) {
         </AnimatedShinyText>
       </h2>
       <DownloadButton
-        className="mt-2 border border-[#10B981]/40 text-[#10B981] text-[12px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium px-10 py-3.5 transition-all duration-300 hover:bg-[#10B981]/10 hover:border-[#10B981]/60 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] active:scale-[0.97] cursor-pointer"
+        className="mt-2 border border-[#5EEAD4]/40 text-[#5EEAD4] text-[12px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium px-10 py-3.5 transition-all duration-300 hover:bg-[#5EEAD4]/10 hover:border-[#5EEAD4]/60 hover:shadow-[0_0_30px_rgba(94,234,212,0.15)] active:scale-[0.97] cursor-pointer"
         style={{ transform: `scale(${0.8 + t * 0.2})` }}
       >
         Download App
@@ -404,7 +404,7 @@ export function HeroMeltdown() {
   const containerRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const [progress, setProgress] = useState(0)
-  const [particleColor, setParticleColor] = useState('#10B981')
+  const [particleColor, setParticleColor] = useState('#5EEAD4')
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -430,7 +430,7 @@ export function HeroMeltdown() {
     <div ref={containerRef} className="relative h-[500vh]">
       <div
         ref={stickyRef}
-        className="sticky top-0 h-screen w-full overflow-hidden bg-[#050B12]"
+        className="sticky top-0 h-screen w-full overflow-hidden bg-[#0E4F4F]"
       >
         {/* Particles background */}
         <Particles
@@ -474,7 +474,7 @@ export function HeroMeltdown() {
 
         {/* Bottom gradient seam for smooth transition to next section */}
         <div
-          className="absolute inset-x-0 bottom-0 h-32 pointer-events-none z-50 bg-gradient-to-t from-[#050B12] to-transparent"
+          className="absolute inset-x-0 bottom-0 h-32 pointer-events-none z-50 bg-gradient-to-t from-[#0E4F4F] to-transparent"
           style={{ opacity: progress > 0.95 ? (progress - 0.95) / 0.05 : 0 }}
         />
       </div>

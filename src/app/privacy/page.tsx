@@ -20,11 +20,11 @@ export default async function PrivacyPage() {
   const html = await marked.parse(md)
 
   return (
-    <div className="min-h-screen bg-[#0B1120] text-slate-300">
+    <div className="min-h-screen bg-[#0E4F4F] text-slate-300">
       <div className="max-w-3xl mx-auto px-6 py-16">
         <a
           href="/"
-          className="text-emerald-500 text-sm font-medium hover:text-emerald-400 transition-colors"
+          className="text-[#5EEAD4] text-sm font-medium hover:text-[#5EEAD4] transition-colors"
         >
           ← GigMiles
         </a>

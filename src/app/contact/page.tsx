@@ -72,11 +72,11 @@ const FAQS: { q: string; a: string }[] = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#0B1120] text-slate-300">
+    <div className="min-h-screen bg-[#0E4F4F] text-slate-300">
       <div className="max-w-3xl mx-auto px-6 py-16">
         <a
           href="/"
-          className="text-emerald-500 text-sm font-medium hover:text-emerald-400 transition-colors"
+          className="text-[#5EEAD4] text-sm font-medium hover:text-[#5EEAD4] transition-colors"
         >
           ← GigMiles
         </a>
@@ -84,13 +84,13 @@ export default function ContactPage() {
         <h1 className="mt-8 text-3xl sm:text-4xl font-bold text-white">
           Contact &amp; FAQ
         </h1>
-        <p className="mt-4 text-slate-400 leading-relaxed">
+        <p className="mt-4 text-slate-300 leading-relaxed">
           Answers to the questions GigMiles drivers ask most. Can&apos;t find
           what you need? Reach our support team below — we usually respond within
           24 hours.
         </p>
 
-        <h2 className="mt-12 text-xs font-bold tracking-[0.15em] text-emerald-500 uppercase">
+        <h2 className="mt-12 text-xs font-bold tracking-[0.15em] text-[#5EEAD4] uppercase">
           Frequently Asked
         </h2>
 
@@ -98,47 +98,47 @@ export default function ContactPage() {
           {FAQS.map((item, i) => (
             <details
               key={i}
-              className="group rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4 transition-colors open:border-emerald-500/30 open:bg-slate-900/70"
+              className="group rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4 transition-colors open:border-[#5EEAD4]/30 open:bg-slate-900/70"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-white marker:hidden">
                 <span>{item.q}</span>
-                <span className="shrink-0 text-emerald-500 transition-transform duration-200 group-open:rotate-45">
+                <span className="shrink-0 text-[#5EEAD4] transition-transform duration-200 group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-3 text-sm leading-relaxed text-slate-400">
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">
                 {item.a}
               </p>
             </details>
           ))}
         </div>
 
-        <div className="mt-12 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-6 py-7">
-          <h2 className="text-xs font-bold tracking-[0.15em] text-emerald-500 uppercase">
+        <div className="mt-12 rounded-xl border border-[#5EEAD4]/20 bg-[#5EEAD4]/5 px-6 py-7">
+          <h2 className="text-xs font-bold tracking-[0.15em] text-[#5EEAD4] uppercase">
             Still need help?
           </h2>
-          <p className="mt-3 text-slate-400">
+          <p className="mt-3 text-slate-300">
             Email our support team and we&apos;ll get back to you, usually within
             24 hours.
           </p>
           <a
             href="mailto:support@gigmiles.app?subject=GigMiles%20Support"
-            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-[#0B1120] transition-colors hover:bg-emerald-400"
+            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#5EEAD4] px-5 py-2.5 text-sm font-semibold text-[#0E4F4F] transition-colors hover:bg-[#5EEAD4]"
           >
             Contact Support
           </a>
-          <p className="mt-4 text-xs text-slate-500">
+          <p className="mt-4 text-xs text-slate-300">
             For legal or privacy requests:{' '}
             <a
               href="mailto:legal@gigmiles.app"
-              className="text-emerald-500 hover:text-emerald-400"
+              className="text-[#5EEAD4] hover:text-[#5EEAD4]"
             >
               legal@gigmiles.app
             </a>
           </p>
         </div>
 
-        <p className="mt-10 text-xs leading-relaxed text-slate-600">
+        <p className="mt-10 text-xs leading-relaxed text-slate-300">
           GigMiles is a record-keeping and tax-preparation aid, not a tax
           preparer. Tax figures shown in the app are estimates — consult a
           licensed tax professional for advice specific to your situation.

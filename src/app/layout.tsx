@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Outfit, Space_Grotesk, DM_Sans } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
@@ -17,13 +17,17 @@ const outfit = Outfit({
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
+// Brand consolidation: the codebase still references --font-space-grotesk and
+// --font-dm-sans in ~220 places. Map those variables to the brand fonts
+// (Outfit display / Inter body) so every usage renders compliant type with no
+// per-call edit. Space Grotesk + DM Sans are no longer loaded.
+const outfitAlias = Outfit({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
+const interAlias = Inter({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   display: "swap",
@@ -44,7 +48,7 @@ export const metadata: Metadata = {
     "delivery driver app",
   ],
   manifest: "/manifest.json",
-  themeColor: "#0B1120",
+  themeColor: "#0E4F4F",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -85,7 +89,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
-      <body className={`${inter.variable} ${outfit.variable} ${spaceGrotesk.variable} ${dmSans.variable} font-sans`}>
+      <body className={`${inter.variable} ${outfit.variable} ${outfitAlias.variable} ${interAlias.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

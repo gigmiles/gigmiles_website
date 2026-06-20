@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 260" width="1180" height="260">
+  <defs>
+    
+    <clipPath id="lockupR">
+      <rect x="20" y="10" width="240" height="240" rx="54" ry="54"></rect>
+    </clipPath>
+  </defs>
+  
+  <g clip-path="url(#lockupR)">
+    <rect x="20" y="10" width="240" height="240" fill="#0E4F4F"></rect>
+    <text x="140" y="197" font-family="Outfit, system-ui" font-size="230" font-weight="900" font-style="italic" fill="#5EEAD4" text-anchor="middle" letter-spacing="-0.04em">g</text>
+  </g>
+  
+  <text x="300" y="197" font-family="Outfit, system-ui" font-size="170" font-weight="900" font-style="italic" fill="#0F172A" text-anchor="start" letter-spacing="-0.04em">gigmiles</text>
+</svg>

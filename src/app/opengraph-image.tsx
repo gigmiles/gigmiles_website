@@ -9,7 +9,7 @@ export const dynamic = 'force-static'
 // renders the actual icon instead of a hand-drawn approximation.
 const logoDataUri =
     'data:image/png;base64,' +
-    readFileSync(join(process.cwd(), 'public/logo-icon.png')).toString('base64')
+    readFileSync(join(process.cwd(), 'public/brand/icons/icon-180.png')).toString('base64')
 
 export const alt = 'GigMiles | Real Net Profit for Gig Workers'
 export const size = {
@@ -23,7 +23,7 @@ export const contentType = 'image/png'
 // Satori (Next.js ImageResponse) requires inline styles as objects.
 const styles = {
     container: {
-        background: 'linear-gradient(to bottom right, #020617, #0f172a)',
+        background: 'linear-gradient(to bottom right, #0E4F4F, #0A3C3C)',
         width: '100%',
         height: '100%',
         display: 'flex' as const,
@@ -48,7 +48,7 @@ const styles = {
         right: '-10%',
         width: '50%',
         height: '50%',
-        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+        backgroundColor: 'rgba(16, 185, 129, 0.12)',
         borderRadius: '50%',
         filter: 'blur(100px)',
     },
@@ -76,7 +76,7 @@ const styles = {
         flexDirection: 'row' as const,
         fontSize: '84px',
         fontWeight: '900',
-        color: 'white',
+        color: '#5EEAD4',
         letterSpacing: '-4px',
         fontStyle: 'italic',
     },
@@ -114,7 +114,7 @@ export default async function Image() {
 
                     <div {...{ style: styles.textContainer }}>
                         <div {...{ style: styles.title }}>
-                            Gig<span {...{ style: styles.brandMiles }}>Miles</span>
+                            gigmiles
                         </div>
                         <div {...{ style: styles.subtitle }}>
                             Real Net Profit

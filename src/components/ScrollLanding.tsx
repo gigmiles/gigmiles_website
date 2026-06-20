@@ -21,12 +21,12 @@ function Nav() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 md:px-14 py-5 transition-all duration-500 ${
-        scrolled ? 'bg-[#050B12]/95 backdrop-blur-xl border-b border-white/[0.06]' : ''
+        scrolled ? 'bg-[#0A3C3C]/95 backdrop-blur-xl border-b border-white/[0.06]' : ''
       }`}
     >
       <div className="flex items-center gap-2.5">
-        <Image src="/logo-icon.png" alt="GigMiles" width={26} height={26} className="rounded-[6px]" />
-        <span className="text-white/75 text-[13px] tracking-[-0.01em] font-medium font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
+        <Image src="/brand/icons/icon-180.png" alt="GigMiles" width={26} height={26} className="rounded-[7px]" />
+        <span className="text-[#5EEAD4] text-[18px] italic font-black tracking-[-0.04em] leading-none font-[family-name:var(--font-outfit)]">gigmiles</span>
       </div>
       <div className="hidden md:flex items-center gap-8">
         {[
@@ -36,12 +36,12 @@ function Nav() {
           ['Pricing', '#pricing'],
           ['Contact', '/contact'],
         ].map(([label, href]) => (
-          <a key={label} href={href} className="text-white/35 text-[13px] tracking-[0.04em] hover:text-white/65 transition-colors font-[family-name:var(--font-space-grotesk)]">
+          <a key={label} href={href} className="text-white/55 text-[15px] tracking-[0.04em] hover:text-white/65 transition-colors font-[family-name:var(--font-space-grotesk)]">
             {label}
           </a>
         ))}
       </div>
-      <DownloadButton className="text-white/55 text-[13px] tracking-[0.04em] border border-white/[0.14] px-5 py-2 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)] cursor-pointer">
+      <DownloadButton className="text-white/55 text-[15px] tracking-[0.04em] border border-white/[0.14] px-5 py-2.5 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)] cursor-pointer">
         Download App
       </DownloadButton>
     </nav>
@@ -53,11 +53,11 @@ const PLATFORMS = ['Uber', 'Lyft', 'DoorDash', 'Instacart', 'Amazon Flex', 'Grub
 
 function PlatformWall() {
   return (
-    <div className="relative bg-[#08111F] border-t border-b border-white/[0.06] py-5 px-5 md:px-14 overflow-hidden">
-      {/* Top fade-in: blends from hero #050B12 into platform wall #08111F */}
-      <div className="absolute inset-x-0 -top-16 h-16 pointer-events-none bg-gradient-to-b from-[#050B12] to-transparent" />
+    <div className="relative bg-[#0C4646] border-t border-b border-white/[0.06] py-5 px-5 md:px-14 overflow-hidden">
+      {/* Top fade-in: blends from hero #0A3C3C into platform wall #0C4646 */}
+      <div className="absolute inset-x-0 -top-16 h-16 pointer-events-none bg-gradient-to-b from-[#0A3C3C] to-transparent" />
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center gap-3 sm:gap-10 flex-wrap justify-center">
-        <p className="text-white/40 text-[12px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
+        <p className="text-white/60 text-[12px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
           {PLATFORMS.map(p => (
             <span key={p} className="text-white/55 text-[13px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)]">{p}</span>
@@ -76,12 +76,12 @@ function AnchorBanner() {
     { val: '70%', label: 'of gross you keep' },
   ]
   return (
-    <div className="bg-[#08111F] border-b border-white/[0.06] py-5 px-6">
+    <div className="bg-[#0C4646] border-b border-white/[0.06] py-5 px-6">
       <div className="max-w-3xl mx-auto grid grid-cols-3 divide-x divide-white/[0.08]">
         {stats.map((s) => (
           <div key={s.val} className="flex flex-col items-center gap-1 px-2 sm:px-6 py-1 text-center">
             <span className="text-white/80 text-[15px] sm:text-[16px] font-semibold font-[family-name:var(--font-space-grotesk)] tracking-[-0.02em]">{s.val}</span>
-            <span className="text-white/35 text-[10px] sm:text-[11px] font-[family-name:var(--font-dm-sans)] leading-tight">{s.label}</span>
+            <span className="text-white/55 text-[10px] sm:text-[11px] font-[family-name:var(--font-dm-sans)] leading-tight">{s.label}</span>
           </div>
         ))}
       </div>
@@ -131,15 +131,15 @@ function WaterfallSection() {
 
   const rows = [
     { label: 'Gross earnings', val: `$${gross}`, color: 'text-white/90', pct: 100 },
-    { label: 'Vehicle costs', val: `−$${vehicle}`, color: 'text-[#F87171]', pct: Math.round((vehicle / 235) * 100) },
-    { label: 'Estimated taxes', val: `−$${taxes}`, color: 'text-[#FBBF24]', pct: Math.round((taxes / 235) * 100) },
+    { label: 'Vehicle costs', val: `−$${vehicle}`, color: 'text-[#E11D48]', pct: Math.round((vehicle / 235) * 100) },
+    { label: 'Estimated taxes', val: `−$${taxes}`, color: 'text-[#F59E0B]', pct: Math.round((taxes / 235) * 100) },
   ]
 
   return (
-    <section id="why" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section id="why" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           Real example
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
@@ -149,14 +149,14 @@ function WaterfallSection() {
           9 hours · 3 trips · 130 mi · 2023 Toyota Prius · IRS mileage rate $0.725/mi (2026)
         </p>
 
-        <div className="border border-white/[0.07] bg-[#050B12]">
+        <div className="border border-white/[0.07] bg-[#0A3C3C]">
           {/* header */}
           <div className="px-5 sm:px-8 py-5 border-b border-white/[0.06] flex items-start sm:items-baseline justify-between gap-4">
             <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium flex-shrink-0">Shift breakdown</span>
             <div className="flex gap-4 sm:gap-8 flex-wrap justify-end">
               {[['Vehicle', '2023 Toyota Prius'], ['Miles', '130 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
                 <div key={l} className="flex flex-col gap-1 text-right sm:text-left">
-                  <span className="text-[10px] sm:text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
+                  <span className="text-[10px] sm:text-[11px] text-white/60 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
                   <span className="text-[12px] sm:text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
                 </div>
               ))}
@@ -182,8 +182,8 @@ function WaterfallSection() {
               ))}
 
               {/* net result */}
-              <div className={`mt-5 px-5 py-5 border flex justify-between items-baseline transition-all duration-700 delay-700 ${active ? 'border-[#14B8A6]/25 bg-[#14B8A6]/[0.04] opacity-100' : 'border-white/[0.04] opacity-20'}`}>
-                <span className="text-[11px] text-[#14B8A6] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">Real take-home</span>
+              <div className={`mt-5 px-5 py-5 border flex justify-between items-baseline transition-all duration-700 delay-700 ${active ? 'border-[#5EEAD4]/25 bg-[#5EEAD4]/[0.04] opacity-100' : 'border-white/[0.04] opacity-20'}`}>
+                <span className="text-[11px] text-[#5EEAD4] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">Real take-home</span>
                 <span className="text-[42px] font-bold tracking-[-0.05em] text-[#10B981] leading-none font-[family-name:var(--font-space-grotesk)]">${net}</span>
               </div>
             </div>
@@ -197,22 +197,22 @@ function WaterfallSection() {
                   ['Vehicle cost', '$0.12', 'per dollar gross'],
                   ['Effective rate', '70%', 'of gross kept'],
                 ].map(([l, v, s]) => (
-                  <div key={l} className="bg-[#050B12] px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-1">
-                    <span className="text-[11px] text-white/40 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
+                  <div key={l} className="bg-[#0A3C3C] px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-1">
+                    <span className="text-[11px] text-white/60 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
                     <span className="text-[20px] sm:text-[22px] font-bold tracking-[-0.03em] text-white font-[family-name:var(--font-space-grotesk)]">{v}</span>
-                    <span className="text-[11px] text-white/30 font-[family-name:var(--font-dm-sans)]">{s}</span>
+                    <span className="text-[11px] text-white/50 font-[family-name:var(--font-dm-sans)]">{s}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="border border-white/[0.06] px-5 py-4 bg-[#14B8A6]/[0.03]">
-                <p className="text-[11px] text-[#14B8A6] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] mb-2">GigMiles insight</p>
+              <div className="border border-white/[0.06] px-5 py-4 bg-[#5EEAD4]/[0.03]">
+                <p className="text-[11px] text-[#5EEAD4] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] mb-2">GigMiles insight</p>
                 <p className="text-[13px] text-[#94A3B8] leading-relaxed font-[family-name:var(--font-dm-sans)]">
                   You kept 70% of gross earnings. The IRS mileage deduction adds $94 in write-offs this shift — about ~$21 less in taxes.
                 </p>
               </div>
 
-              <p className="text-[11px] text-white/20 italic font-[family-name:var(--font-dm-sans)] leading-relaxed">
+              <p className="text-[11px] text-white/40 italic font-[family-name:var(--font-dm-sans)] leading-relaxed">
                 Estimates based on IRS standard mileage rate. Actual taxes vary by state and filing status.
               </p>
             </div>
@@ -238,7 +238,7 @@ const HOW_SCENES = [
     n: '02',
     label: 'What it cost to drive',
     amount: '−$27',
-    color: '#EF4444',
+    color: '#E11D48',
     sub: 'Fuel $9 · Wear & tear $18 · IRS-aware depreciation',
     img: '/ss-shifts.jpeg',        // TODO: replace with Shifts list page screenshot
     imgAlt: 'Shifts list',
@@ -256,7 +256,7 @@ const HOW_SCENES = [
     n: '04',
     label: 'What you actually keep',
     amount: '$165',
-    color: '#14B8A6',
+    color: '#5EEAD4',
     sub: '$18 / hr — after every cost',
     img: '/ss-quarterly.jpeg',
     imgAlt: 'Quarterly earnings summary',
@@ -279,15 +279,15 @@ function HowItWorksSection() {
   const scene = HOW_SCENES[activeScene]
 
   return (
-    <section id="how" ref={sectionRef} className="relative bg-[#050B12] border-t border-white/[0.06] min-h-[300vh]">
+    <section id="how" ref={sectionRef} className="relative bg-[#0A3C3C] border-t border-white/[0.06] min-h-[300vh]">
       {/* ── Sticky viewport ── */}
       <div className="sticky top-0 h-screen w-full overflow-hidden hidden md:flex">
         {/* Left — narrative */}
         <div className="flex-1 flex flex-col justify-center px-10 lg:px-16 gap-8 relative">
           {/* Section eyebrow — stays fixed */}
           <div>
-            <p className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-3 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-              <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+            <p className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-3 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+              <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
               How it works
             </p>
             <h2 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(22px,3vw,38px)] max-w-xs">
@@ -297,7 +297,7 @@ function HowItWorksSection() {
 
           {/* Scene content — animates */}
           <div className="flex flex-col gap-4" key={activeScene} style={{ animation: 'howFadeUp 0.4s ease both' }}>
-            <span className="text-white/40 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">
+            <span className="text-white/60 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">
               {scene.n} / 04
             </span>
             <div
@@ -323,7 +323,7 @@ function HowItWorksSection() {
                 style={{
                   width: i === activeScene ? '20px' : '6px',
                   height: '6px',
-                  backgroundColor: i === activeScene ? '#14B8A6' : 'rgba(255,255,255,0.12)',
+                  backgroundColor: i === activeScene ? '#5EEAD4' : 'rgba(255,255,255,0.12)',
                 }}
               />
             ))}
@@ -331,7 +331,7 @@ function HowItWorksSection() {
         </div>
 
         {/* Right — phone image stack */}
-        <div className="w-[45%] lg:w-[40%] flex items-center justify-center overflow-hidden relative bg-[#08111F] border-l border-white/[0.06]">
+        <div className="w-[45%] lg:w-[40%] flex items-center justify-center overflow-hidden relative bg-[#0C4646] border-l border-white/[0.06]">
           <div
             className="absolute inset-0 transition-none"
             style={{
@@ -345,17 +345,17 @@ function HowItWorksSection() {
             {HOW_SCENES.map((s, i) => (
               <div
                 key={s.n}
-                className="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-in-out"
+                className="absolute inset-0 flex items-start justify-center pt-[88px] pb-6 transition-all duration-500 ease-in-out"
                 style={{
                   opacity: i === activeScene ? 1 : 0,
                   transform: `translateY(${(i - activeScene) * 60}px)`,
                   pointerEvents: i === activeScene ? 'auto' : 'none',
                 }}
               >
-                <div className="relative w-[200px] lg:w-[260px] xl:w-[320px] flex-shrink-0">
-                  <div className="relative bg-[#0F1623] border-2 border-white/[0.10] rounded-[36px] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
-                    <div className="bg-[#050B12] rounded-[28px] overflow-hidden aspect-[9/19] relative">
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-4 bg-[#0F1623] rounded-b-xl z-10" />
+                <div className="relative flex-shrink-0 h-[calc(100vh-120px)] max-h-[760px] aspect-[9/19]">
+                  <div className="relative h-full bg-[#13605F] border-2 border-white/[0.10] rounded-[36px] p-2 shadow-[0_24px_60px_rgba(0,0,0,0.5)]">
+                    <div className="h-full bg-[#0A3C3C] rounded-[28px] overflow-hidden relative">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-4 bg-[#13605F] rounded-b-xl z-10" />
                       <Image src={s.img} alt={s.imgAlt} fill className="object-cover object-top" sizes="(min-width:1280px) 320px, (min-width:1024px) 260px, 200px" />
                     </div>
                   </div>
@@ -372,18 +372,18 @@ function HowItWorksSection() {
 
       {/* ── Mobile: 4 stacked cards with phone images ── */}
       <div className="md:hidden py-16 flex flex-col gap-8 px-5">
-        <p className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           How it works
         </p>
         {HOW_SCENES.map(s => (
-          <div key={s.n} className="bg-[#08111F] border border-white/[0.07] rounded-3xl overflow-hidden">
+          <div key={s.n} className="bg-[#0C4646] border border-white/[0.07] rounded-3xl overflow-hidden">
             {/* Phone image */}
-            <div className="relative bg-[#050B12] flex items-center justify-center py-8" style={{ background: `radial-gradient(circle 200px at 50% 60%, ${s.color}12, transparent 70%)` }}>
+            <div className="relative bg-[#0A3C3C] flex items-center justify-center py-8" style={{ background: `radial-gradient(circle 200px at 50% 60%, ${s.color}12, transparent 70%)` }}>
               <div className="relative w-[140px]">
-                <div className="relative bg-[#0F1623] border-2 border-white/[0.10] rounded-[32px] p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
-                  <div className="bg-[#050B12] rounded-[24px] overflow-hidden aspect-[9/19] relative">
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3.5 bg-[#0F1623] rounded-b-lg z-10" />
+                <div className="relative bg-[#13605F] border-2 border-white/[0.10] rounded-[32px] p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.5)]">
+                  <div className="bg-[#0A3C3C] rounded-[24px] overflow-hidden aspect-[9/19] relative">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-3.5 bg-[#13605F] rounded-b-lg z-10" />
                     <Image src={s.img} alt={s.imgAlt} fill className="object-cover object-top" sizes="140px" />
                   </div>
                 </div>
@@ -391,7 +391,7 @@ function HowItWorksSection() {
             </div>
             {/* Text */}
             <div className="p-6 flex flex-col gap-2 border-t border-white/[0.06]">
-              <span className="text-white/35 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">{s.n} / 04</span>
+              <span className="text-white/55 text-[11px] tracking-[0.2em] font-[family-name:var(--font-space-grotesk)]">{s.n} / 04</span>
               <div
                 className="font-[family-name:var(--font-space-grotesk)] font-extralight text-[48px] tracking-[-0.05em] leading-none tabular-nums"
                 style={{ color: s.color }}
@@ -448,14 +448,14 @@ function TaxBreakdownWidget({ active }: { active: boolean }) {
   const stBar = useBarFill(24, 300, active)
 
   return (
-    <div className="w-full max-w-[320px] bg-[#111] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
+    <div className="w-full max-w-[320px] bg-[#0C4A4A] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
       <div className="flex items-center justify-between">
-        <span className="text-white/45 text-[11px] tracking-[0.2em] uppercase">Q2 Tax Estimate</span>
-        <span className="text-white/35 text-[11px]">Apr – Jun 2026</span>
+        <span className="text-white/65 text-[11px] tracking-[0.2em] uppercase">Q2 Tax Estimate</span>
+        <span className="text-white/55 text-[11px]">Apr – Jun 2026</span>
       </div>
       <div>
         <span className="text-white font-light text-4xl tracking-[-0.04em]">${total}</span>
-        <p className="text-white/40 text-xs mt-1">17.8% effective rate · due Jun 15</p>
+        <p className="text-white/60 text-xs mt-1">17.8% effective rate · due Jun 15</p>
       </div>
       <div className="space-y-4 pt-2 border-t border-white/[0.07]">
         <div className="flex flex-col gap-1.5">
@@ -483,8 +483,8 @@ function TaxBreakdownWidget({ active }: { active: boolean }) {
           </div>
         </div>
         <div className="flex justify-between text-xs pt-1">
-          <span className="text-white/30">Federal Income Tax</span>
-          <span className="text-white/30">$0</span>
+          <span className="text-white/50">Federal Income Tax</span>
+          <span className="text-white/50">$0</span>
         </div>
       </div>
     </div>
@@ -504,20 +504,20 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
   }, [active])
 
   return (
-    <div className="w-full max-w-[320px] bg-[#111] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
+    <div className="w-full max-w-[320px] bg-[#0C4A4A] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
       <div className="flex items-center justify-between">
-        <span className="text-white/45 text-[11px] tracking-[0.2em] uppercase">Expense Gaps</span>
+        <span className="text-white/65 text-[11px] tracking-[0.2em] uppercase">Expense Gaps</span>
         <span
           className={`text-[11px] tracking-[0.12em] uppercase px-2.5 py-1 rounded-full border transition-all duration-500 ${
             pulse
-              ? 'border-[#FF9500]/50 text-[#FF9500]/80 bg-[#FF9500]/5'
-              : 'border-white/10 text-white/20'
+              ? 'border-[#F59E0B]/50 text-[#F59E0B]/80 bg-[#F59E0B]/5'
+              : 'border-white/10 text-white/40'
           }`}
         >
           2 missing
         </span>
       </div>
-      <p className="text-white/35 text-xs leading-relaxed">
+      <p className="text-white/55 text-xs leading-relaxed">
         Unlogged expenses costing you ~$54 in missed deductions this quarter
       </p>
       <div className="space-y-5 pt-2 border-t border-white/[0.07]">
@@ -529,11 +529,11 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-white/60 text-sm">{item.label}</p>
-                <p className="text-white/40 text-[11px] mt-0.5">{item.sub}</p>
+                <p className="text-white/60 text-[11px] mt-0.5">{item.sub}</p>
               </div>
               <span
                 className={`text-[11px] transition-all duration-700 ${
-                  pulse ? 'text-[#10B981]/70' : 'text-white/20'
+                  pulse ? 'text-[#10B981]/70' : 'text-white/40'
                 }`}
                 style={{ transitionDelay: `${i * 200 + 400}ms` }}
               >
@@ -551,7 +551,7 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
         className={`mt-1 text-center text-xs tracking-[0.2em] uppercase py-3 rounded-lg border transition-all duration-500 ${
           pulse
             ? 'border-white/20 text-white/50 hover:border-white/40 hover:text-white/70'
-            : 'border-white/[0.08] text-white/15'
+            : 'border-white/[0.08] text-white/35'
         }`}
       >
         + Log Missing Expenses
@@ -567,37 +567,37 @@ function YtdSummaryWidget({ active }: { active: boolean }) {
   const paid = useCountUp(185, 1000, active)
 
   return (
-    <div className="w-full max-w-[320px] bg-[#111] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
+    <div className="w-full max-w-[320px] bg-[#0C4A4A] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
       <div className="flex items-center justify-between">
-        <span className="text-white/45 text-[11px] tracking-[0.2em] uppercase">Year-to-Date</span>
-        <span className="text-white/35 text-[11px]">2026</span>
+        <span className="text-white/65 text-[11px] tracking-[0.2em] uppercase">Year-to-Date</span>
+        <span className="text-white/55 text-[11px]">2026</span>
       </div>
       <div className="grid grid-cols-3 gap-3 pt-2 border-t border-white/[0.07]">
         <div className="flex flex-col gap-1.5">
-          <span className="text-white/40 text-[10px] tracking-[0.12em] uppercase">Earnings</span>
+          <span className="text-white/60 text-[10px] tracking-[0.12em] uppercase">Earnings</span>
           <span className="text-white font-light text-xl tracking-[-0.03em]">${earnings.toLocaleString()}</span>
         </div>
         <div className="flex flex-col gap-1.5">
-          <span className="text-white/40 text-[10px] tracking-[0.12em] uppercase">Est. Tax</span>
-          <span className="text-[#FF9500]/80 font-light text-xl tracking-[-0.03em]">${owed}</span>
+          <span className="text-white/60 text-[10px] tracking-[0.12em] uppercase">Est. Tax</span>
+          <span className="text-[#F59E0B]/80 font-light text-xl tracking-[-0.03em]">${owed}</span>
         </div>
         <div className="flex flex-col gap-1.5">
-          <span className="text-white/40 text-[10px] tracking-[0.12em] uppercase">Paid</span>
+          <span className="text-white/60 text-[10px] tracking-[0.12em] uppercase">Paid</span>
           <span className="text-[#10B981]/70 font-light text-xl tracking-[-0.03em]">${paid}</span>
         </div>
       </div>
       <div className="bg-white/[0.04] rounded-xl p-4">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-white/45 text-[11px] tracking-[0.15em] uppercase">Tax reserve</span>
-          <span className="text-white/35 text-[11px]">set aside per $1</span>
+          <span className="text-white/65 text-[11px] tracking-[0.15em] uppercase">Tax reserve</span>
+          <span className="text-white/55 text-[11px]">set aside per $1</span>
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-white font-light text-2xl tracking-[-0.03em]">$0.23</span>
-          <span className="text-white/40 text-xs">/ dollar earned</span>
+          <span className="text-white/60 text-xs">/ dollar earned</span>
         </div>
-        <p className="text-white/35 text-[11px] mt-2 leading-relaxed">18.1% effective rate + 5% buffer</p>
+        <p className="text-white/55 text-[11px] mt-2 leading-relaxed">18.1% effective rate + 5% buffer</p>
       </div>
-      <p className="text-white/35 text-[11px] text-center">Year-end projection: $1,051 total tax</p>
+      <p className="text-white/55 text-[11px] text-center">Year-end projection: $1,051 total tax</p>
     </div>
   )
 }
@@ -615,25 +615,25 @@ function QuarterlyWidget({ active }: { active: boolean }) {
     <div className="w-full max-w-[320px] flex flex-col gap-3">
       {/* Q1 */}
       <div
-        className="bg-[#111] rounded-2xl p-5 ring-1 ring-white/[0.07] transition-all duration-700"
+        className="bg-[#0C4A4A] rounded-2xl p-5 ring-1 ring-white/[0.07] transition-all duration-700"
         style={{ opacity: active ? 1 : 0, transform: active ? 'translateY(0)' : 'translateY(16px)' }}
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-white/30 text-xs font-mono">Q1</span>
-            <span className="text-white/40 text-xs">Jan – Mar 2026</span>
+            <span className="text-white/50 text-xs font-mono">Q1</span>
+            <span className="text-white/60 text-xs">Jan – Mar 2026</span>
           </div>
-          <span className="text-[#FF4444]/70 text-[9px] tracking-[0.15em] uppercase border border-[#FF4444]/30 px-2 py-0.5 rounded-full">Past due</span>
+          <span className="text-[#E11D48] text-[9px] tracking-[0.15em] uppercase border border-[#E11D48]/30 px-2 py-0.5 rounded-full">Past due</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {[
             { l: 'Earnings', v: '$1,010', c: 'text-white/60' },
-            { l: 'Expenses', v: '$19', c: 'text-[#FF4444]/60' },
+            { l: 'Expenses', v: '$19', c: 'text-[#E11D48]' },
             { l: 'Taxable Income', v: '$991', c: 'text-white/50' },
-            { l: 'Est. Tax', v: '$184.86', c: 'text-[#FF9500]/70' },
+            { l: 'Est. Tax', v: '$184.86', c: 'text-[#F59E0B]/70' },
           ].map(item => (
             <div key={item.l} className="bg-white/[0.04] rounded-lg p-2.5">
-              <p className="text-white/35 text-[10px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
+              <p className="text-white/55 text-[10px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
               <p className={`${item.c} text-sm font-light`}>{item.v}</p>
             </div>
           ))}
@@ -642,7 +642,7 @@ function QuarterlyWidget({ active }: { active: boolean }) {
 
       {/* Q2 */}
       <div
-        className="bg-[#111] rounded-2xl p-5 ring-1 ring-[#FF9500]/20 transition-all duration-700"
+        className="bg-[#0C4A4A] rounded-2xl p-5 ring-1 ring-[#F59E0B]/20 transition-all duration-700"
         style={{
           opacity: q2visible ? 1 : 0,
           transform: q2visible ? 'translateY(0)' : 'translateY(20px)',
@@ -650,21 +650,21 @@ function QuarterlyWidget({ active }: { active: boolean }) {
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-[#FF9500]/60 text-xs font-mono">Q2</span>
-            <span className="text-white/40 text-xs">Apr – Jun 2026</span>
-            <span className="text-[9px] tracking-[0.1em] uppercase text-[#FF9500]/50 border border-[#FF9500]/20 px-1.5 py-0.5 rounded-full">Current</span>
+            <span className="text-[#F59E0B]/60 text-xs font-mono">Q2</span>
+            <span className="text-white/60 text-xs">Apr – Jun 2026</span>
+            <span className="text-[9px] tracking-[0.1em] uppercase text-[#F59E0B]/50 border border-[#F59E0B]/20 px-1.5 py-0.5 rounded-full">Current</span>
           </div>
-          <span className="text-white/25 text-[9px]">Due Jun 15</span>
+          <span className="text-white/45 text-[9px]">Due Jun 15</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {[
             { l: 'Earnings', v: '$854', c: 'text-white/60' },
-            { l: 'Expenses', v: '$42', c: 'text-[#FF4444]/60' },
+            { l: 'Expenses', v: '$42', c: 'text-[#E11D48]' },
             { l: 'Taxable Income', v: '$812', c: 'text-white/50' },
-            { l: 'Est. Tax', v: '$152.05', c: 'text-[#FF9500]/70' },
+            { l: 'Est. Tax', v: '$152.05', c: 'text-[#F59E0B]/70' },
           ].map(item => (
             <div key={item.l} className="bg-white/[0.04] rounded-lg p-2.5">
-              <p className="text-white/35 text-[10px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
+              <p className="text-white/55 text-[10px] tracking-[0.1em] uppercase mb-1">{item.l}</p>
               <p className={`${item.c} text-sm font-light`}>{item.v}</p>
             </div>
           ))}
@@ -710,14 +710,14 @@ function FeatureRow({
       ref={ref}
       className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-px bg-white/[0.06]`}
     >
-      <div className="bg-[#08111F] flex-1 flex flex-col justify-center px-6 py-10 sm:px-8 sm:py-12 md:px-10 md:py-16 gap-4 sm:gap-5">
-        <span data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)]">{tag}</span>
+      <div className="bg-[#0C4646] flex-1 flex flex-col justify-center px-6 py-10 sm:px-8 sm:py-12 md:px-10 md:py-16 gap-4 sm:gap-5">
+        <span data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)]">{tag}</span>
         <h3 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[clamp(18px,2.5vw,28px)] leading-snug tracking-[-0.02em] max-w-sm">
           {title}
         </h3>
         <p data-r className="text-[#94A3B8] text-[13px] sm:text-[14px] leading-relaxed max-w-xs font-[family-name:var(--font-dm-sans)]">{body}</p>
       </div>
-      <div className="bg-[#050B12] w-full md:w-[400px] flex items-center justify-center py-8 px-5 sm:py-12 sm:px-8">
+      <div className="bg-[#0A3C3C] w-full md:w-[400px] flex items-center justify-center py-8 px-5 sm:py-12 sm:px-8">
         {widget(active)}
       </div>
     </div>
@@ -729,10 +729,10 @@ function FeaturesSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref, 'top 85%')
   return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           Features
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
@@ -787,10 +787,10 @@ function CalculatorSection() {
   const hourly = hours > 0 ? (net / hours).toFixed(2) : '0.00'
 
   return (
-    <section id="calculator" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section id="calculator" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           Calculator
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
@@ -800,9 +800,9 @@ function CalculatorSection() {
           Adjust the sliders and see your real net income — after vehicle costs and self-employment taxes.
         </p>
 
-        <div data-r className="border border-white/[0.07] bg-[#050B12] grid md:grid-cols-2 gap-px bg-white/[0.06]">
+        <div data-r className="border border-white/[0.07] bg-[#0A3C3C] grid md:grid-cols-2 gap-px bg-white/[0.06]">
           {/* Sliders */}
-          <div className="bg-[#050B12] px-5 py-7 sm:px-8 sm:py-10 flex flex-col gap-8 sm:gap-10">
+          <div className="bg-[#0A3C3C] px-5 py-7 sm:px-8 sm:py-10 flex flex-col gap-8 sm:gap-10">
             <div className="flex flex-col gap-4">
               <div className="flex justify-between items-baseline">
                 <label className="text-white/50 text-[11px] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">
@@ -820,9 +820,9 @@ function CalculatorSection() {
                 value={gross}
                 onChange={e => setGross(Number(e.target.value))}
                 title="Weekly Gross Earnings"
-                className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#14B8A6] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#14B8A6] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#14B8A6]"
+                className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#5EEAD4] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#5EEAD4] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#5EEAD4]"
               />
-              <div className="flex justify-between text-[11px] text-white/35 font-[family-name:var(--font-dm-sans)]">
+              <div className="flex justify-between text-[11px] text-white/55 font-[family-name:var(--font-dm-sans)]">
                 <span>$100</span>
                 <span>$3,000</span>
               </div>
@@ -845,9 +845,9 @@ function CalculatorSection() {
                 value={hours}
                 onChange={e => setHours(Number(e.target.value))}
                 title="Hours Driven Per Week"
-                className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#14B8A6] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#14B8A6] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#14B8A6]"
+                className="w-full h-px appearance-none bg-white/10 cursor-pointer accent-[#5EEAD4] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#5EEAD4] [&::-webkit-slider-thumb]:shadow-[0_0_10px_#5EEAD4]"
               />
-              <div className="flex justify-between text-[11px] text-white/35 font-[family-name:var(--font-dm-sans)]">
+              <div className="flex justify-between text-[11px] text-white/55 font-[family-name:var(--font-dm-sans)]">
                 <span>5 hrs</span>
                 <span>80 hrs</span>
               </div>
@@ -855,12 +855,12 @@ function CalculatorSection() {
           </div>
 
           {/* Results */}
-          <div className="bg-[#050B12] px-5 py-7 sm:px-8 sm:py-10 flex flex-col gap-6">
+          <div className="bg-[#0A3C3C] px-5 py-7 sm:px-8 sm:py-10 flex flex-col gap-6">
             <div className="flex flex-col gap-1">
               {[
                 { label: 'Gross earnings', val: `$${gross.toLocaleString()}`, color: 'text-white/85', barColor: 'bg-white/30', pct: 100 },
-                { label: 'Vehicle & operating costs (est. 25%)', val: `−$${costs}`, color: 'text-[#F87171]/90', barColor: 'bg-[#F87171]/60', pct: 25 },
-                { label: 'Estimated taxes — SE + federal + state (est. 17%)', val: `−$${taxes}`, color: 'text-[#FBBF24]/90', barColor: 'bg-[#FBBF24]/60', pct: 17 },
+                { label: 'Vehicle & operating costs (est. 25%)', val: `−$${costs}`, color: 'text-[#E11D48]', barColor: 'bg-[#E11D48]/60', pct: 25 },
+                { label: 'Estimated taxes — SE + federal + state (est. 17%)', val: `−$${taxes}`, color: 'text-[#F59E0B]/90', barColor: 'bg-[#F59E0B]/60', pct: 17 },
               ].map(row => (
                 <div key={row.label} className="py-3 border-b border-white/[0.05] flex flex-col gap-2">
                   <div className="flex justify-between items-baseline">
@@ -877,13 +877,13 @@ function CalculatorSection() {
               ))}
             </div>
 
-            <div className="mt-auto border border-[#14B8A6]/20 bg-[#14B8A6]/[0.04] px-5 py-5 flex flex-col gap-3">
-              <span className="text-[12px] text-[#14B8A6] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">Your real take-home</span>
+            <div className="mt-auto border border-[#5EEAD4]/20 bg-[#5EEAD4]/[0.04] px-5 py-5 flex flex-col gap-3">
+              <span className="text-[12px] text-[#5EEAD4] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]">Your real take-home</span>
               <div className="flex items-baseline justify-between">
                 <span className="text-[42px] font-bold tracking-[-0.05em] text-[#10B981] leading-none font-[family-name:var(--font-space-grotesk)] tabular-nums">
                   ${net.toLocaleString()}
                 </span>
-                <span className="text-white/45 text-[13px] font-[family-name:var(--font-dm-sans)] tabular-nums">
+                <span className="text-white/65 text-[13px] font-[family-name:var(--font-dm-sans)] tabular-nums">
                   ${hourly}<span className="text-[10px]">/hr</span>
                 </span>
               </div>
@@ -894,27 +894,27 @@ function CalculatorSection() {
                   style={{ width: `${(net / gross) * 100}%` }}
                 />
                 <div
-                  className="bg-[#F87171]/55 transition-[width] duration-500 ease-out"
+                  className="bg-[#E11D48]/55 transition-[width] duration-500 ease-out"
                   style={{ width: `${(costs / gross) * 100}%` }}
                 />
                 <div
-                  className="bg-[#FBBF24]/55 transition-[width] duration-500 ease-out"
+                  className="bg-[#F59E0B]/55 transition-[width] duration-500 ease-out"
                   style={{ width: `${(taxes / gross) * 100}%` }}
                 />
               </div>
               <div className="flex justify-between text-[11px] font-[family-name:var(--font-dm-sans)] tabular-nums">
                 <span className="text-[#10B981]/70">{Math.round((net / gross) * 100)}% kept</span>
-                <span className="text-[#F87171]/70">{Math.round((costs / gross) * 100)}% costs</span>
-                <span className="text-[#FBBF24]/70">{Math.round((taxes / gross) * 100)}% taxes</span>
+                <span className="text-[#E11D48]">{Math.round((costs / gross) * 100)}% costs</span>
+                <span className="text-[#F59E0B]/70">{Math.round((taxes / gross) * 100)}% taxes</span>
               </div>
-              <p className="text-white/40 text-[12px] font-[family-name:var(--font-dm-sans)]">after vehicle costs + taxes · per week</p>
+              <p className="text-white/60 text-[12px] font-[family-name:var(--font-dm-sans)]">after vehicle costs + taxes · per week</p>
             </div>
 
-            <DownloadButton className="text-center border border-[#14B8A6]/30 text-[#14B8A6]/70 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-[#14B8A6]/60 hover:text-[#14B8A6] active:scale-[0.98] cursor-pointer w-full">
+            <DownloadButton className="text-center border border-[#5EEAD4]/30 text-[#5EEAD4]/70 text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 hover:border-[#5EEAD4]/60 hover:text-[#5EEAD4] active:scale-[0.98] cursor-pointer w-full">
               Download GigMiles
             </DownloadButton>
 
-            <p className="text-white/15 text-[10px] italic font-[family-name:var(--font-dm-sans)] leading-relaxed">
+            <p className="text-white/35 text-[10px] italic font-[family-name:var(--font-dm-sans)] leading-relaxed">
               Estimates only. Actual costs and taxes vary. Not tax advice.
             </p>
           </div>
@@ -931,7 +931,7 @@ const TESTIMONIALS = [
     name: 'Marcus T.',
     role: 'Uber · 3 years',
     initials: 'MT',
-    accent: '#14B8A6',
+    accent: '#5EEAD4',
     featured: true,
   },
   {
@@ -957,10 +957,10 @@ function TestimonialsSection() {
   useReveal(ref)
   const [featured, ...rest] = TESTIMONIALS
   return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           Beta testers
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-8 sm:mb-12 max-w-xl">
@@ -970,20 +970,20 @@ function TestimonialsSection() {
         {/* Asymmetric layout: featured left, 2 stacked right */}
         <div className="grid md:grid-cols-[3fr_2fr] gap-px bg-white/[0.07] border border-white/[0.07]">
           {/* Featured — large pull quote */}
-          <div data-r className="bg-[#050B12] p-8 sm:p-10 flex flex-col gap-8">
+          <div data-r className="bg-[#0A3C3C] p-8 sm:p-10 flex flex-col gap-8">
             <p className="text-white/70 font-[family-name:var(--font-dm-sans)] italic leading-[1.65] text-[clamp(16px,2.2vw,22px)] flex-1">
               &ldquo;{featured.quote}&rdquo;
             </p>
             <div className="flex items-center gap-3 pt-5 border-t border-white/[0.07]">
               <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#050B12] flex-shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#0A3C3C] flex-shrink-0"
                 style={{ backgroundColor: featured.accent }}
               >
                 {featured.initials}
               </div>
               <div>
                 <p className="text-white/75 text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">{featured.name}</p>
-                <p className="text-white/30 text-[11px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{featured.role}</p>
+                <p className="text-white/50 text-[11px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{featured.role}</p>
               </div>
             </div>
           </div>
@@ -991,18 +991,18 @@ function TestimonialsSection() {
           {/* Two stacked — smaller */}
           <div className="flex flex-col gap-px bg-white/[0.07]">
             {rest.map(t => (
-              <div key={t.name} data-r className="bg-[#050B12] p-6 sm:p-8 flex flex-col gap-5 flex-1 hover:bg-[#08111F] transition-colors duration-200">
+              <div key={t.name} data-r className="bg-[#0A3C3C] p-6 sm:p-8 flex flex-col gap-5 flex-1 hover:bg-[#0C4646] transition-colors duration-200">
                 <p className="text-[#94A3B8] text-[13px] leading-[1.75] flex-1 font-[family-name:var(--font-dm-sans)]">&ldquo;{t.quote}&rdquo;</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/[0.07]">
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#050B12] flex-shrink-0"
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#0A3C3C] flex-shrink-0"
                     style={{ backgroundColor: t.accent }}
                   >
                     {t.initials}
                   </div>
                   <div>
                     <p className="text-white/75 text-[12px] font-[family-name:var(--font-space-grotesk)] font-medium">{t.name}</p>
-                    <p className="text-white/45 text-[12px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
+                    <p className="text-white/65 text-[12px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -1056,7 +1056,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
       onMouseMove={handleMove}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className={`relative ${tier.bg} p-6 sm:p-8 flex flex-col gap-6 group overflow-hidden ${tier.featured ? 'border-t-2 border-t-[#14B8A6]' : ''}`}
+      className={`relative ${tier.bg} p-6 sm:p-8 flex flex-col gap-6 group overflow-hidden ${tier.featured ? 'border-t-2 border-t-[#5EEAD4]' : ''}`}
       style={{ '--mx': '50%', '--my': '50%', '--spot-opacity': '0' } as React.CSSProperties}
     >
       {/* Spotlight fill: tracks cursor */}
@@ -1064,7 +1064,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
         className="absolute inset-0 pointer-events-none transition-opacity duration-300"
         style={{
           opacity: 'var(--spot-opacity)',
-          background: 'radial-gradient(420px circle at var(--mx) var(--my), rgba(20,184,166,0.10), transparent 55%)',
+          background: 'radial-gradient(420px circle at var(--mx) var(--my), rgba(94,234,212,0.10), transparent 55%)',
         }}
       />
       {/* Border glow: brighter, tighter radial, masked to the edge */}
@@ -1072,7 +1072,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
         className="absolute inset-0 pointer-events-none transition-opacity duration-300"
         style={{
           opacity: 'var(--spot-opacity)',
-          background: 'radial-gradient(260px circle at var(--mx) var(--my), rgba(20,184,166,0.45), transparent 60%)',
+          background: 'radial-gradient(260px circle at var(--mx) var(--my), rgba(94,234,212,0.45), transparent 60%)',
           mask: 'linear-gradient(black, black) content-box, linear-gradient(black, black)',
           WebkitMask: 'linear-gradient(black, black) content-box, linear-gradient(black, black)',
           maskComposite: 'exclude',
@@ -1085,7 +1085,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
       <div className="relative flex flex-col gap-6 flex-1">
         {tier.badge && (
           <div className="absolute -top-1 right-0 z-10">
-            <span className="text-[9px] tracking-[0.12em] uppercase text-[#14B8A6]/80 bg-[#050B12] border border-[#14B8A6]/30 px-2 py-0.5 font-[family-name:var(--font-space-grotesk)]">
+            <span className="text-[9px] tracking-[0.12em] uppercase text-[#5EEAD4]/80 bg-[#0A3C3C] border border-[#5EEAD4]/30 px-2 py-0.5 font-[family-name:var(--font-space-grotesk)]">
               {tier.badge}
             </span>
           </div>
@@ -1101,7 +1101,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
         <ul className="space-y-3 flex-1">
           {tier.features.map(f => (
             <li key={f} className="flex items-center gap-3 text-[13px] text-[#94A3B8] font-[family-name:var(--font-dm-sans)]">
-              <span className="text-[#14B8A6]/70 flex-shrink-0 text-[12px]">✓</span>
+              <span className="text-[#5EEAD4]/70 flex-shrink-0 text-[12px]">✓</span>
               {f}
             </li>
           ))}
@@ -1109,7 +1109,7 @@ function PricingCard({ tier }: { tier: PricingTier }) {
         <DownloadButton
           className={`mt-2 text-center text-[11px] tracking-[0.1em] font-[family-name:var(--font-space-grotesk)] px-8 py-3 transition-all duration-200 active:scale-[0.98] cursor-pointer w-full ${
             tier.featured
-              ? 'bg-[#14B8A6] text-[#050B12] font-semibold hover:bg-[#14B8A6]/85'
+              ? 'bg-[#5EEAD4] text-[#0A3C3C] font-semibold hover:bg-[#5EEAD4]/85'
               : 'border border-white/[0.18] text-white/60 hover:border-white/35 hover:text-white/85'
           }`}
         >
@@ -1127,7 +1127,7 @@ const PRICING_TIERS: PricingTier[] = [
     caption: '10 days · no card required',
     features: ['All platforms tracked', 'Real-time net earnings', 'Quarterly tax estimates', 'Expense gap detection'],
     cta: 'Download App',
-    bg: 'bg-[#08111F]',
+    bg: 'bg-[#0C4646]',
   },
   {
     label: 'Monthly',
@@ -1136,7 +1136,7 @@ const PRICING_TIERS: PricingTier[] = [
     caption: 'Billed monthly · cancel anytime',
     features: ['Everything in Free Trial', 'Export for CPA', 'Unlimited shift history', 'Priority support'],
     cta: 'Download App',
-    bg: 'bg-[#08111F]',
+    bg: 'bg-[#0C4646]',
   },
   {
     badge: 'Most Popular',
@@ -1146,7 +1146,7 @@ const PRICING_TIERS: PricingTier[] = [
     caption: '$8.33 / month · save 17%',
     features: ['Everything in Monthly', 'Early access to new features', 'Locked-in beta pricing', 'Tax season export pack'],
     cta: 'Download App',
-    bg: 'bg-[#050B12]',
+    bg: 'bg-[#0A3C3C]',
     featured: true,
   },
 ]
@@ -1156,10 +1156,10 @@ function PricingSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section id="pricing" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#08111F] border-t border-white/[0.06]">
+    <section id="pricing" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           Pricing
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
@@ -1184,7 +1184,7 @@ function PricingSection() {
           </div>
         </div>
 
-        <p data-r className="text-white/20 text-[11px] leading-relaxed mt-8 max-w-lg font-[family-name:var(--font-dm-sans)] italic">
+        <p data-r className="text-white/40 text-[11px] leading-relaxed mt-8 max-w-lg font-[family-name:var(--font-dm-sans)] italic">
           Tax estimates are for planning purposes only — not tax advice, not a filed return. GigMiles factors in your optional W-2 wages when provided. Always consult a licensed tax professional before filing.
         </p>
       </div>
@@ -1230,7 +1230,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         className="w-full flex items-start justify-between gap-4 py-5 sm:py-6 text-left group"
       >
         <span className="text-white/70 text-[13px] sm:text-[14px] leading-snug group-hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]">{q}</span>
-        <span className={`text-white/30 text-base leading-none mt-0.5 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
+        <span className={`text-white/50 text-base leading-none mt-0.5 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
       </button>
       {open && (
         <p className="text-[#94A3B8] text-[13px] leading-relaxed pb-5 sm:pb-6 max-w-xl font-[family-name:var(--font-dm-sans)]">{a}</p>
@@ -1243,10 +1243,10 @@ function FaqSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           FAQ
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-8 sm:mb-12 max-w-xl">
@@ -1258,7 +1258,7 @@ function FaqSection() {
         <a
           data-r
           href="/contact"
-          className="inline-flex items-center gap-2 mt-8 text-[#14B8A6] text-[13px] sm:text-[14px] tracking-[0.02em] hover:text-[#2DD4BF] transition-colors font-[family-name:var(--font-space-grotesk)]"
+          className="inline-flex items-center gap-2 mt-8 text-[#5EEAD4] text-[13px] sm:text-[14px] tracking-[0.02em] hover:text-[#5EEAD4] transition-colors font-[family-name:var(--font-space-grotesk)]"
         >
           See all questions
           <span aria-hidden="true">→</span>
@@ -1275,15 +1275,15 @@ function FinalCtaSection() {
   return (
     <section
       ref={ref}
-      className="relative min-h-[70dvh] sm:min-h-[80dvh] bg-[#050B12] flex flex-col items-center justify-center px-5 py-16 sm:px-6 text-center gap-5 sm:gap-7 border-t border-white/[0.06] overflow-hidden"
+      className="relative min-h-[70dvh] sm:min-h-[80dvh] bg-[#0A3C3C] flex flex-col items-center justify-center px-5 py-16 sm:px-6 text-center gap-5 sm:gap-7 border-t border-white/[0.06] overflow-hidden"
     >
       {/* Ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #14B8A610 0%, transparent 70%)', filter: 'blur(80px)' }} />
+        style={{ background: 'radial-gradient(circle, #5EEAD410 0%, transparent 70%)', filter: 'blur(80px)' }} />
 
       <div data-r className="flex flex-col items-center gap-3 mb-2 relative z-10">
-        <Image src="/logo-icon.png" alt="GigMiles" width={48} height={48} className="rounded-[12px] opacity-80" />
-        <span className="text-[#14B8A6]/60 text-[12px] tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
+        <Image src="/brand/icons/icon-180.png" alt="GigMiles" width={48} height={48} className="rounded-[12px] opacity-90" />
+        <span className="text-[#5EEAD4] text-[22px] italic font-black tracking-[-0.04em] leading-none font-[family-name:var(--font-outfit)]">gigmiles</span>
       </div>
       <h2 data-r className="relative z-10 text-white font-[family-name:var(--font-space-grotesk)] font-black tracking-[-0.04em] leading-[1.0] text-[clamp(32px,7vw,80px)]">
         Your real earnings.<br className="hidden md:block" /> After everything.
@@ -1292,11 +1292,11 @@ function FinalCtaSection() {
         Know what you actually kept — after gas, mileage, and taxes. Every shift.
       </p>
       <DownloadButton
-        className="relative z-10 mt-2 bg-[#14B8A6] text-[#050B12] text-[11px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-semibold px-12 py-4 transition-all duration-200 hover:bg-[#14B8A6]/85 hover:shadow-[0_0_40px_rgba(20,184,166,0.25)] active:scale-[0.97] cursor-pointer"
+        className="relative z-10 mt-2 bg-[#5EEAD4] text-[#0A3C3C] text-[11px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-semibold px-12 py-4 transition-all duration-200 hover:bg-[#5EEAD4]/85 hover:shadow-[0_0_40px_rgba(94,234,212,0.25)] active:scale-[0.97] cursor-pointer"
       >
         Download App
       </DownloadButton>
-      <p data-r className="relative z-10 text-white/35 text-[11px] font-[family-name:var(--font-dm-sans)]">
+      <p data-r className="relative z-10 text-white/55 text-[11px] font-[family-name:var(--font-dm-sans)]">
         10 days free during beta — no card required
       </p>
     </section>
@@ -1306,23 +1306,23 @@ function FinalCtaSection() {
 // ─── Footer ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="bg-[#050B12] border-t border-white/[0.06] px-5 md:px-14 py-10 sm:py-12">
+    <footer className="bg-[#0A3C3C] border-t border-white/[0.06] px-5 md:px-14 py-10 sm:py-12">
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-2.5">
-          <Image src="/logo-icon.png" alt="GigMiles" width={22} height={22} className="rounded-[5px] opacity-60" />
+          <Image src="/brand/icons/icon-180.png" alt="GigMiles" width={22} height={22} className="rounded-[6px] opacity-90" />
           <div>
-            <span className="text-white/40 text-[12px] tracking-[-0.01em] font-medium font-[family-name:var(--font-space-grotesk)]">GigMiles</span>
-            <p className="text-white/20 text-[11px] mt-0.5 font-[family-name:var(--font-dm-sans)]">Your real earnings. After everything.</p>
+            <span className="text-[#5EEAD4]/85 text-[15px] italic font-black tracking-[-0.04em] leading-none font-[family-name:var(--font-outfit)]">gigmiles</span>
+            <p className="text-white/45 text-[11px] mt-1 font-[family-name:var(--font-dm-sans)]">Your real earnings. After everything.</p>
           </div>
         </div>
         <div className="flex flex-wrap gap-8">
           {[['Contact', '/contact'], ['Privacy', '/privacy'], ['Terms', '/terms'], ['Legal', 'mailto:legal@gigmiles.app']].map(([l, h]) => (
-            <a key={l} href={h} className="text-white/30 text-[12px] tracking-[0.04em] font-[family-name:var(--font-space-grotesk)] hover:text-white/55 transition-colors">{l}</a>
+            <a key={l} href={h} className="text-white/50 text-[12px] tracking-[0.04em] font-[family-name:var(--font-space-grotesk)] hover:text-white/55 transition-colors">{l}</a>
           ))}
         </div>
         <div className="text-left md:text-right">
-          <p className="text-white/35 text-[11px] font-[family-name:var(--font-dm-sans)]">&copy; {new Date().getFullYear()} GigMiles</p>
-          <p className="text-white/15 text-[10px] mt-1 max-w-[220px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic">Tax estimates are for planning purposes only. Not tax advice.</p>
+          <p className="text-white/55 text-[11px] font-[family-name:var(--font-dm-sans)]">&copy; {new Date().getFullYear()} GigMiles</p>
+          <p className="text-white/35 text-[10px] mt-1 max-w-[220px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic">Tax estimates are for planning purposes only. Not tax advice.</p>
         </div>
       </div>
     </footer>
@@ -1339,10 +1339,10 @@ function EBikeSection() {
     ['The right IRS method', 'Actual expenses, applied automatically — the IRS does not allow standard mileage for bikes.'],
   ]
   return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#050B12] border-t border-white/[0.06]">
+    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#14B8A6] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#14B8A6] opacity-60 inline-block" />
+        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           Unique to GigMiles
         </p>
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-2xl">
@@ -1353,7 +1353,7 @@ function EBikeSection() {
         </p>
         <div data-r className="grid sm:grid-cols-3 border border-white/[0.07] bg-white/[0.06] gap-px">
           {points.map(([title, body]) => (
-            <div key={title} className="bg-[#08111F] px-5 py-6 sm:px-6 sm:py-7 flex flex-col gap-2">
+            <div key={title} className="bg-[#0C4646] px-5 py-6 sm:px-6 sm:py-7 flex flex-col gap-2">
               <span className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[15px] sm:text-[16px] tracking-[-0.01em]">{title}</span>
               <span className="text-[#94A3B8] text-[13px] leading-relaxed font-[family-name:var(--font-dm-sans)]">{body}</span>
             </div>
@@ -1370,7 +1370,7 @@ export function ScrollLanding() {
     <>
       <Nav />
 
-      <main className="bg-[#050B12]">
+      <main className="bg-[#0A3C3C]">
         <HeroMeltdown />
         <PlatformWall />
         <AnchorBanner />

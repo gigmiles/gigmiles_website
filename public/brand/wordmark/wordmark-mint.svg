@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 220" width="880" height="220">
+  <defs>
+    
+  </defs>
+  <rect width="880" height="220" fill="#0E4F4F"></rect>
+  <text x="440" y="170" font-family="Outfit, system-ui" font-size="200" font-weight="900" font-style="italic" fill="#5EEAD4" text-anchor="middle" letter-spacing="-0.04em">gigmiles</text>
+</svg>
