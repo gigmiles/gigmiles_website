@@ -1296,11 +1296,11 @@ function FinalCtaSection() {
       <div className="relative z-10 mt-2 flex flex-wrap items-center justify-center gap-4">
         <a href={IOS_APP_STORE_URL} aria-label="Download on the App Store" className="inline-flex transition-transform active:scale-[0.97]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/badges/app-store-badge.svg" alt="Download on the App Store" className="h-[54px] w-auto" />
+          <img src="/badges/app-store-badge.svg" alt="Download on the App Store" className="h-[52px] w-auto" />
         </a>
         <a href={ANDROID_PLAY_STORE_URL} aria-label="Get it on Google Play" className="inline-flex transition-transform active:scale-[0.97]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/badges/google-play-badge.svg" alt="Get it on Google Play" className="h-[60px] w-auto" />
+          <img src="/badges/google-play-badge.svg" alt="Get it on Google Play" className="h-[52px] w-auto" />
         </a>
       </div>
       <p data-r className="relative z-10 text-white/55 text-[11px] font-[family-name:var(--font-dm-sans)]">

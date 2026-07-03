@@ -189,7 +189,7 @@ export function GetGigMilesClient({
       <img
         src="/badges/app-store-badge.svg"
         alt="Download on the App Store"
-        style={{ height: 54, width: 'auto', display: 'block' }}
+        style={{ height: 52, width: 'auto', display: 'block' }}
       />
     </a>
   )
@@ -204,7 +204,7 @@ export function GetGigMilesClient({
       <img
         src="/badges/google-play-badge.svg"
         alt="Get it on Google Play"
-        style={{ height: 60, width: 'auto', display: 'block' }}
+        style={{ height: 52, width: 'auto', display: 'block' }}
       />
     </a>
   )

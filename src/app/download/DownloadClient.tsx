@@ -98,7 +98,7 @@ export function DownloadClient({
                 <img
                   src="/badges/app-store-badge.svg"
                   alt="Download on the App Store"
-                  className="h-[54px] w-auto"
+                  className="h-[52px] w-auto"
                 />
               </a>
               <a
@@ -110,7 +110,7 @@ export function DownloadClient({
                 <img
                   src="/badges/google-play-badge.svg"
                   alt="Get it on Google Play"
-                  className="h-[60px] w-auto"
+                  className="h-[52px] w-auto"
                 />
               </a>
             </div>
