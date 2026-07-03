@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react'
 import { HeroMeltdown } from './hero/HeroMeltdown'
 import { DownloadButton } from './ui/DownloadButton'
+import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL } from '@/config/app'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -1291,11 +1292,17 @@ function FinalCtaSection() {
       <p data-r className="relative z-10 text-[#94A3B8] text-[15px] max-w-sm leading-relaxed font-[family-name:var(--font-dm-sans)]">
         Know what you actually kept — after gas, mileage, and taxes. Every shift.
       </p>
-      <DownloadButton
-        className="relative z-10 mt-2 bg-[#5EEAD4] text-[#0A3C3C] text-[11px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-semibold px-12 py-4 transition-all duration-200 hover:bg-[#5EEAD4]/85 hover:shadow-[0_0_40px_rgba(94,234,212,0.25)] active:scale-[0.97] cursor-pointer"
-      >
-        Download App
-      </DownloadButton>
+      {/* Official store badges (Apple / Google marketing guidelines) */}
+      <div className="relative z-10 mt-2 flex flex-wrap items-center justify-center gap-4">
+        <a href={IOS_APP_STORE_URL} aria-label="Download on the App Store" className="inline-flex transition-transform active:scale-[0.97]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/badges/app-store-badge.svg" alt="Download on the App Store" className="h-[54px] w-auto" />
+        </a>
+        <a href={ANDROID_PLAY_STORE_URL} aria-label="Get it on Google Play" className="inline-flex transition-transform active:scale-[0.97]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/badges/google-play-badge.svg" alt="Get it on Google Play" className="h-[60px] w-auto" />
+        </a>
+      </div>
       <p data-r className="relative z-10 text-white/55 text-[11px] font-[family-name:var(--font-dm-sans)]">
         10 days free during beta — no card required
       </p>

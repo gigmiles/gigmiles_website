@@ -175,23 +175,38 @@ export function GetGigMilesClient({
     beacon('store_click', { store, platform })
   }
 
+  // Official store badges (Apple / Google marketing guidelines require the
+  // provided artwork; do not recolor or recreate). Attribution tokens + click
+  // beacon ride on the wrapping link.
   const iosButton = (
-    <StoreButton
-      kind="primary"
+    <a
       href={iosUrl}
       onClick={() => onStoreClick('ios')}
-      label="Download on the App Store"
-      icon={<AppleIcon />}
-    />
+      aria-label="Download on the App Store"
+      style={{ display: 'inline-flex', alignItems: 'center' }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/badges/app-store-badge.svg"
+        alt="Download on the App Store"
+        style={{ height: 54, width: 'auto', display: 'block' }}
+      />
+    </a>
   )
   const androidButton = (
-    <StoreButton
-      kind="primary"
+    <a
       href={androidUrl}
       onClick={() => onStoreClick('android')}
-      label="Get it on Google Play"
-      icon={<PlayIcon />}
-    />
+      aria-label="Get it on Google Play"
+      style={{ display: 'inline-flex', alignItems: 'center' }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/badges/google-play-badge.svg"
+        alt="Get it on Google Play"
+        style={{ height: 60, width: 'auto', display: 'block' }}
+      />
+    </a>
   )
 
   // Device-specific CTA: show ONLY the visitor's own store. If that store
@@ -370,7 +385,9 @@ export function GetGigMilesClient({
 
         {/* CTA — device-specific (only the visitor's own store) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-          {storeCta}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+            {storeCta}
+          </div>
 
           {/* Trust micro-copy directly under the CTA */}
           <p
@@ -542,37 +559,6 @@ const btnBase: React.CSSProperties = {
   textDecoration: 'none',
   letterSpacing: '-0.01em',
   cursor: 'pointer',
-}
-
-function StoreButton({
-  kind,
-  href,
-  label,
-  icon,
-  onClick,
-}: {
-  kind: 'primary' | 'secondary'
-  href: string
-  label: string
-  icon: React.ReactNode
-  onClick: () => void
-}) {
-  const primary = kind === 'primary'
-  return (
-    <a
-      href={href}
-      onClick={onClick}
-      style={{
-        ...btnBase,
-        background: primary ? MINT : 'rgba(255,255,255,0.06)',
-        color: primary ? TEAL : '#FFFFFF',
-        border: primary ? '0' : '1px solid rgba(255,255,255,0.16)',
-      }}
-    >
-      {icon}
-      {label}
-    </a>
-  )
 }
 
 function ComingSoon({ store, icon }: { store: string; icon: React.ReactNode }) {
