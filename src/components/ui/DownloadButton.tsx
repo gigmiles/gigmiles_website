@@ -1,16 +1,19 @@
 'use client'
 
-// Placeholder store URLs — swap these when app is live
-const STORE_URLS = {
-  ios: '#appstore',
-  android: '#playstore',
-}
+import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL, DOWNLOAD_URL } from '@/config/app'
 
+// Device-aware store redirect. iOS → App Store, Android → Google Play,
+// desktop/unknown → the /download smart page (which shows both). Store URLs
+// come from the single source of truth in src/config/app.ts.
 function getStoreUrl(): string {
-  if (typeof navigator === 'undefined') return STORE_URLS.ios
-  const ua = navigator.userAgent
-  if (/android/i.test(ua)) return STORE_URLS.android
-  return STORE_URLS.ios
+  if (typeof navigator === 'undefined') return DOWNLOAD_URL
+  const ua = navigator.userAgent || ''
+  if (/android/i.test(ua)) return ANDROID_PLAY_STORE_URL
+  const iOS =
+    /iphone|ipad|ipod/i.test(ua) ||
+    (/macintosh/i.test(ua) && navigator.maxTouchPoints > 1)
+  if (iOS) return IOS_APP_STORE_URL
+  return DOWNLOAD_URL
 }
 
 interface DownloadButtonProps {

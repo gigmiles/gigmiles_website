@@ -1,10 +1,8 @@
 // ─── App Store URLs ────────────────────────────────────────────────────────────
 // Update these when Apple/Google developer accounts are active.
 
-// iOS: the ONLY value still missing — paste the numeric App Store ID once the
-// app record is published (App Store Connect → App Information → "Apple ID").
-// Format: https://apps.apple.com/app/id<APPLE_ID>
-export const IOS_APP_STORE_URL = '#'          // TODO: https://apps.apple.com/app/id<APPLE_ID>
+// iOS: live — Apple ID 6777805244 (App Store Connect → App Information).
+export const IOS_APP_STORE_URL = 'https://apps.apple.com/app/id6777805244'
 // Android: deterministic from the package id — live the moment Play publishes.
 export const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.gigmiles.gigmiles_app'
 export const BUNDLE_ID = 'com.gigmiles.gigmilesApp'
