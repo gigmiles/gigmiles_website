@@ -50,9 +50,9 @@ export default async function Image() {
             letterSpacing: '-4px',
           }}
         >
-          <span style={{ color: 'rgba(255,255,255,0.85)' }}>$235</span>
+          <span style={{ color: 'rgba(255,255,255,0.85)' }}>$300</span>
           <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 56 }}>→</span>
-          <span style={{ color: '#10B981' }}>$121</span>
+          <span style={{ color: '#10B981' }}>$164</span>
         </div>
         <div
           style={{

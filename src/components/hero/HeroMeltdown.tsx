@@ -7,13 +7,16 @@ import { AnimatedShinyText } from '@/components/ui/animated-shiny-text'
 import { DownloadButton } from '@/components/ui/DownloadButton'
 
 // ─── Config — change these numbers anytime ──────────────────────────────────
+// Canonical example — MUST match the published launch video: $235 gross →
+// $175 real over an 8h shift ($22/hr chip, frame-confirmed). Change only in
+// lockstep with the video assets.
 export const HERO_CONFIG = {
   gross: 235,
   vehicleCost: 27,
-  taxes: 42,
+  taxes: 33,
   get net() { return this.gross - this.vehicleCost - this.taxes },
-  hourlyRate: 18,
-  shiftHours: 9,
+  hourlyRate: 22,
+  shiftHours: 8,
   platforms: 'DoorDash + Uber Eats',
   miles: 130,
   vehicle: '2023 Toyota Prius',
@@ -160,7 +163,7 @@ function CostBreakdown({ progress }: { progress: number }) {
   ]
   const rightItems = [
     { label: 'SE TAX', amount: 20 },
-    { label: 'FED + STATE', amount: 22 },
+    { label: 'FED + STATE', amount: 13 },
   ]
 
   return (
@@ -232,7 +235,7 @@ function CostBreakdown({ progress }: { progress: number }) {
         }}
       >
         <p className="text-[#E11D48]/60 text-[12px] sm:text-[14px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">
-          −${38 + 15 + 22 + HERO_CONFIG.taxes} total drained
+          −${HERO_CONFIG.vehicleCost + HERO_CONFIG.taxes} total drained
         </p>
       </div>
     </div>

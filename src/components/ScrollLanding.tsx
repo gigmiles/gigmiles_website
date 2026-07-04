@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { motion, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from 'motion/react'
+import { useMotionValueEvent, useScroll } from 'motion/react'
 import { HeroMeltdown } from './hero/HeroMeltdown'
 import { DownloadButton } from './ui/DownloadButton'
 import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL } from '@/config/app'
@@ -59,10 +59,14 @@ function PlatformWall() {
       <div className="absolute inset-x-0 -top-16 h-16 pointer-events-none bg-gradient-to-b from-[#0A3C3C] to-transparent" />
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center gap-3 sm:gap-10 flex-wrap justify-center">
         <p className="text-white/60 text-[12px] tracking-[0.2em] uppercase font-[family-name:var(--font-space-grotesk)]">Works with</p>
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+        <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2">
           {PLATFORMS.map(p => (
             <span key={p} className="text-white/55 text-[13px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)]">{p}</span>
           ))}
+          {/* The differentiator, surfaced in the first viewport-and-a-half */}
+          <span className="text-[#5EEAD4]/80 text-[12px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)] border border-[#5EEAD4]/25 px-2.5 py-0.5">
+            Cars &amp; e-bikes
+          </span>
         </div>
       </div>
     </div>
@@ -72,9 +76,9 @@ function PlatformWall() {
 // ─── Anchor banner ───────────────────────────────────────────────────────────
 function AnchorBanner() {
   const stats = [
-    { val: '$70', label: 'hidden costs per shift' },
-    { val: '$0.18', label: 'reserve per dollar earned' },
-    { val: '70%', label: 'of gross you keep' },
+    { val: '$60', label: 'hidden costs per shift' },
+    { val: '$0.14', label: 'reserve per dollar earned' },
+    { val: '74%', label: 'of gross you keep' },
   ]
   return (
     <div className="bg-[#0C4646] border-b border-white/[0.06] py-5 px-6">
@@ -90,33 +94,60 @@ function AnchorBanner() {
   )
 }
 
+// ─── Motion helpers ───────────────────────────────────────────────────────────
+// Rules: every number renders its FINAL value in the server HTML (crawlers,
+// previews, and no-JS visitors see real figures, never $0), entrances play
+// once at 300–400ms ease-out, and everything sits still under
+// prefers-reduced-motion.
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
 // ─── Scroll-reveal hook ───────────────────────────────────────────────────────
 function useReveal(ref: React.RefObject<HTMLElement | null>, start = 'top 70%') {
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    if (prefersReducedMotion()) return
     const ctx = gsap.context(() => {
       gsap.from(el.querySelectorAll('[data-r]'), {
         opacity: 0,
-        y: 40,
-        duration: 1.0,
-        stagger: 0.14,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: el, start, toggleActions: 'play none none reverse' },
+        y: 24,
+        duration: 0.4,
+        stagger: 0.08,
+        ease: 'power2.out',
+        scrollTrigger: { trigger: el, start, toggleActions: 'play none none none' },
       })
     }, el)
     return () => ctx.revert()
   }, [ref, start])
 }
 
+// Once-visible entrance: server HTML is visible; with JS + motion allowed the
+// element hides on mount, then reveals once when its trigger activates.
+function useOnceVisible(active: boolean, delay = 0) {
+  const [phase, setPhase] = useState<'static' | 'hidden' | 'shown'>('static')
+  useEffect(() => {
+    if (prefersReducedMotion()) return
+    setPhase(p => (p === 'static' ? 'hidden' : p))
+  }, [])
+  useEffect(() => {
+    if (!active) return
+    const t = setTimeout(() => setPhase('shown'), delay)
+    return () => clearTimeout(t)
+  }, [active, delay])
+  return phase !== 'hidden'
+}
+
 // ─── Waterfall "Real Example" section ────────────────────────────────────────
 function WaterfallSection() {
   const ref = useRef<HTMLElement>(null)
   const [active, setActive] = useState(false)
-  const gross = useCountUp(235, 900, active)
-  const vehicle = useCountUp(27, 900, active)
-  const taxes = useCountUp(42, 900, active)
-  const net = useCountUp(165, 1100, active)
+  // Canonical example — matches the launch video: $235 gross → $175 real.
+  const gross = useCountUp(235, 400, active)
+  const vehicle = useCountUp(27, 400, active)
+  const taxes = useCountUp(33, 400, active)
+  const net = useCountUp(175, 400, active)
 
   useEffect(() => {
     const el = ref.current
@@ -125,7 +156,6 @@ function WaterfallSection() {
       trigger: el,
       start: 'top 65%',
       onEnter: () => setActive(true),
-      onLeaveBack: () => setActive(false),
     })
     return () => trigger.kill()
   }, [])
@@ -137,7 +167,7 @@ function WaterfallSection() {
   ]
 
   return (
-    <section id="why" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
+    <section id="why" ref={ref} className="py-16 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
         <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
@@ -147,7 +177,7 @@ function WaterfallSection() {
           What a typical shift actually pays
         </h2>
         <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
-          9 hours · 3 trips · 130 mi · 2023 Toyota Prius · IRS mileage rate $0.725/mi (2026)
+          8 hours · 3 trips · 130 mi · 2023 Toyota Prius · IRS mileage rate $0.725/mi (2026)
         </p>
 
         <div className="border border-white/[0.07] bg-[#0A3C3C]">
@@ -155,7 +185,7 @@ function WaterfallSection() {
           <div className="px-5 sm:px-8 py-5 border-b border-white/[0.06] flex items-start sm:items-baseline justify-between gap-4">
             <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium flex-shrink-0">Shift breakdown</span>
             <div className="flex gap-4 sm:gap-8 flex-wrap justify-end">
-              {[['Vehicle', '2023 Toyota Prius'], ['Miles', '130 mi'], ['Hours', '9.0 h']].map(([l, v]) => (
+              {[['Vehicle', '2023 Toyota Prius'], ['Miles', '130 mi'], ['Hours', '8.0 h']].map(([l, v]) => (
                 <div key={l} className="flex flex-col gap-1 text-right sm:text-left">
                   <span className="text-[10px] sm:text-[11px] text-white/60 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
                   <span className="text-[12px] sm:text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
@@ -175,7 +205,7 @@ function WaterfallSection() {
                   </div>
                   <div className="h-px bg-white/[0.05] overflow-hidden">
                     <div
-                      className="h-full bg-white/20 transition-all duration-[900ms] ease-out"
+                      className="h-full bg-white/20 transition-all duration-[400ms] ease-out"
                       style={{ width: active ? `${row.pct}%` : '0%' }}
                     />
                   </div>
@@ -183,7 +213,7 @@ function WaterfallSection() {
               ))}
 
               {/* net result */}
-              <div className={`mt-5 px-5 py-5 border flex justify-between items-baseline transition-all duration-700 delay-700 ${active ? 'border-[#5EEAD4]/25 bg-[#5EEAD4]/[0.04] opacity-100' : 'border-white/[0.04] opacity-20'}`}>
+              <div className={`mt-5 px-5 py-5 border flex justify-between items-baseline transition-all duration-[400ms] delay-200 ${active ? 'border-[#5EEAD4]/25 bg-[#5EEAD4]/[0.04]' : 'border-white/[0.06]'}`}>
                 <span className="text-[11px] text-[#5EEAD4] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium">Real take-home</span>
                 <span className="text-[42px] font-bold tracking-[-0.05em] text-[#10B981] leading-none font-[family-name:var(--font-space-grotesk)]">${net}</span>
               </div>
@@ -193,10 +223,10 @@ function WaterfallSection() {
             <div className="px-5 py-6 sm:px-8 sm:py-8 flex flex-col gap-5">
               <div className="grid grid-cols-2 gap-px bg-white/[0.06] border border-white/[0.06]">
                 {[
-                  ['Hourly rate', '$18.33', 'after all costs'],
-                  ['Tax reserve', '$0.18', 'per dollar earned'],
-                  ['Vehicle cost', '$0.12', 'per dollar gross'],
-                  ['Effective rate', '70%', 'of gross kept'],
+                  ['Hourly rate', '$22', 'after all costs'],
+                  ['Tax reserve', '$0.14', 'per dollar earned'],
+                  ['Vehicle cost', '$0.11', 'per dollar gross'],
+                  ['Effective rate', '74%', 'of gross kept'],
                 ].map(([l, v, s]) => (
                   <div key={l} className="bg-[#0A3C3C] px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-1">
                     <span className="text-[11px] text-white/60 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
@@ -209,7 +239,7 @@ function WaterfallSection() {
               <div className="border border-white/[0.06] px-5 py-4 bg-[#5EEAD4]/[0.03]">
                 <p className="text-[11px] text-[#5EEAD4] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] mb-2">GigMiles insight</p>
                 <p className="text-[13px] text-[#94A3B8] leading-relaxed font-[family-name:var(--font-dm-sans)]">
-                  You kept 70% of gross earnings. The IRS mileage deduction adds $94 in write-offs this shift — about ~$21 less in taxes.
+                  You kept 74% of gross earnings. The IRS mileage deduction adds $94 in write-offs this shift — about ~$21 less in taxes.
                 </p>
               </div>
 
@@ -231,7 +261,7 @@ const HOW_SCENES = [
     label: 'What you grossed',
     amount: '$235',
     color: '#10B981',
-    sub: '9h · 3 trips · 130 mi · 2023 Toyota Prius',
+    sub: '8h · 3 trips · 130 mi · 2023 Toyota Prius',
     img: '/ss-home.jpeg',          // TODO: replace with Home / Net Earnings hero card screenshot
     imgAlt: 'Net earnings home screen',
   },
@@ -247,18 +277,18 @@ const HOW_SCENES = [
   {
     n: '03',
     label: 'What the IRS takes',
-    amount: '−$42',
+    amount: '−$33',
     color: '#F59E0B',
-    sub: 'SE $20 · Federal $10 · State $12',
+    sub: 'SE $20 · Federal $5 · State $8',
     img: '/ss-tax-breakdown.jpeg',
     imgAlt: 'Tax breakdown',
   },
   {
     n: '04',
     label: 'What you actually keep',
-    amount: '$165',
+    amount: '$175',
     color: '#5EEAD4',
-    sub: '$18 / hr — after every cost',
+    sub: '$22 / hr — after every cost',
     img: '/ss-quarterly.jpeg',
     imgAlt: 'Quarterly earnings summary',
   },
@@ -267,6 +297,12 @@ const HOW_SCENES = [
 function HowItWorksSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [activeScene, setActiveScene] = useState(0)
+  // Reduced motion: skip the scroll-scrubbed storyboard entirely and show the
+  // stacked cards (each scene reads as a complete statement) on all viewports.
+  const [staticLayout, setStaticLayout] = useState(false)
+  useEffect(() => {
+    if (prefersReducedMotion()) setStaticLayout(true)
+  }, [])
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -280,9 +316,9 @@ function HowItWorksSection() {
   const scene = HOW_SCENES[activeScene]
 
   return (
-    <section id="how" ref={sectionRef} className="relative bg-[#0A3C3C] border-t border-white/[0.06] min-h-[300vh]">
+    <section id="how" ref={sectionRef} className={`relative bg-[#0A3C3C] border-t border-white/[0.06] ${staticLayout ? '' : 'min-h-[300vh]'}`}>
       {/* ── Sticky viewport ── */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden hidden md:flex">
+      <div className={`sticky top-0 h-screen w-full overflow-hidden ${staticLayout ? 'hidden' : 'hidden md:flex'}`}>
         {/* Left — narrative */}
         <div className="flex-1 flex flex-col justify-center px-10 lg:px-16 gap-8 relative">
           {/* Section eyebrow — stays fixed */}
@@ -320,7 +356,7 @@ function HowItWorksSection() {
             {HOW_SCENES.map((s, i) => (
               <div
                 key={s.n}
-                className="rounded-full transition-all duration-500"
+                className="rounded-full transition-all duration-300"
                 style={{
                   width: i === activeScene ? '20px' : '6px',
                   height: '6px',
@@ -346,7 +382,7 @@ function HowItWorksSection() {
             {HOW_SCENES.map((s, i) => (
               <div
                 key={s.n}
-                className="absolute inset-0 flex items-start justify-center pt-[88px] pb-6 transition-all duration-500 ease-in-out"
+                className="absolute inset-0 flex items-start justify-center pt-[88px] pb-6 transition-all duration-[400ms] ease-out"
                 style={{
                   opacity: i === activeScene ? 1 : 0,
                   transform: `translateY(${(i - activeScene) * 60}px)`,
@@ -371,8 +407,8 @@ function HowItWorksSection() {
         </div>
       </div>
 
-      {/* ── Mobile: 4 stacked cards with phone images ── */}
-      <div className="md:hidden py-16 flex flex-col gap-8 px-5">
+      {/* ── Mobile (and reduced-motion): 4 stacked cards with phone images ── */}
+      <div className={`${staticLayout ? '' : 'md:hidden'} py-16 flex flex-col gap-8 px-5`}>
         <p className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           How it works
@@ -408,10 +444,13 @@ function HowItWorksSection() {
 }
 
 // ─── Animated count-up hook ───────────────────────────────────────────────────
-function useCountUp(target: number, duration = 1200, active = false) {
-  const [value, setValue] = useState(0)
+// Initial value IS the target — static render shows the real number.
+function useCountUp(target: number, duration = 400, active = false) {
+  const [value, setValue] = useState(target)
+  const played = useRef(false)
   useEffect(() => {
-    if (!active) return
+    if (!active || played.current || prefersReducedMotion()) return
+    played.current = true
     let start: number | null = null
     let raf: number
     const step = (ts: number) => {
@@ -428,10 +467,18 @@ function useCountUp(target: number, duration = 1200, active = false) {
 }
 
 // ─── Animated bar fill hook ───────────────────────────────────────────────────
+// Initial width IS the target pct; with JS + motion the bar collapses before
+// its trigger and fills once on activation.
 function useBarFill(pct: number, delay = 0, active = false) {
-  const [width, setWidth] = useState(0)
+  const [width, setWidth] = useState(pct)
+  const played = useRef(false)
   useEffect(() => {
-    if (!active) return
+    if (played.current || prefersReducedMotion()) return
+    if (!active) {
+      setWidth(0)
+      return
+    }
+    played.current = true
     const t = setTimeout(() => {
       setWidth(pct)
     }, delay)
@@ -442,11 +489,11 @@ function useBarFill(pct: number, delay = 0, active = false) {
 
 // ─── Widget: Tax Breakdown ────────────────────────────────────────────────────
 function TaxBreakdownWidget({ active }: { active: boolean }) {
-  const se = useCountUp(115, 1000, active)
-  const state = useCountUp(37, 900, active)
-  const total = useCountUp(152, 1100, active)
+  const se = useCountUp(115, 400, active)
+  const state = useCountUp(37, 400, active)
+  const total = useCountUp(152, 400, active)
   const seBar = useBarFill(76, 100, active)
-  const stBar = useBarFill(24, 300, active)
+  const stBar = useBarFill(24, 200, active)
 
   return (
     <div className="w-full max-w-[320px] bg-[#0C4A4A] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
@@ -466,7 +513,7 @@ function TaxBreakdownWidget({ active }: { active: boolean }) {
           </div>
           <div className="h-px bg-white/[0.08] relative overflow-hidden">
             <div
-              className="absolute inset-y-0 left-0 bg-white/40 transition-all duration-[1100ms] ease-out"
+              className="absolute inset-y-0 left-0 bg-white/40 transition-all duration-[400ms] ease-out"
               style={{ width: `${seBar}%` }}
             />
           </div>
@@ -478,7 +525,7 @@ function TaxBreakdownWidget({ active }: { active: boolean }) {
           </div>
           <div className="h-px bg-white/[0.08] relative overflow-hidden">
             <div
-              className="absolute inset-y-0 left-0 bg-white/25 transition-all duration-[900ms] ease-out delay-300"
+              className="absolute inset-y-0 left-0 bg-white/25 transition-all duration-[400ms] ease-out delay-150"
               style={{ width: `${stBar}%` }}
             />
           </div>
@@ -495,12 +542,10 @@ function TaxBreakdownWidget({ active }: { active: boolean }) {
 // ─── Widget: Expense Gaps ─────────────────────────────────────────────────────
 function ExpenseGapsWidget({ active }: { active: boolean }) {
   const [pulse, setPulse] = useState(false)
-  const phoneBar = useBarFill(0, 0, false)
-  const parkBar = useBarFill(0, 0, false)
 
   useEffect(() => {
     if (!active) return
-    const t = setTimeout(() => setPulse(true), 600)
+    const t = setTimeout(() => setPulse(true), 300)
     return () => clearTimeout(t)
   }, [active])
 
@@ -509,7 +554,7 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
       <div className="flex items-center justify-between">
         <span className="text-white/65 text-[11px] tracking-[0.2em] uppercase">Expense Gaps</span>
         <span
-          className={`text-[11px] tracking-[0.12em] uppercase px-2.5 py-1 rounded-full border transition-all duration-500 ${
+          className={`text-[11px] tracking-[0.12em] uppercase px-2.5 py-1 rounded-full border transition-all duration-[400ms] ${
             pulse
               ? 'border-[#F59E0B]/50 text-[#F59E0B]/80 bg-[#F59E0B]/5'
               : 'border-white/10 text-white/40'
@@ -533,10 +578,10 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
                 <p className="text-white/60 text-[11px] mt-0.5">{item.sub}</p>
               </div>
               <span
-                className={`text-[11px] transition-all duration-700 ${
+                className={`text-[11px] transition-all duration-[400ms] ${
                   pulse ? 'text-[#10B981]/70' : 'text-white/40'
                 }`}
-                style={{ transitionDelay: `${i * 200 + 400}ms` }}
+                style={{ transitionDelay: `${i * 100 + 200}ms` }}
               >
                 {item.savings}
               </span>
@@ -549,7 +594,7 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
       </div>
       <button
         type="button"
-        className={`mt-1 text-center text-xs tracking-[0.2em] uppercase py-3 rounded-lg border transition-all duration-500 ${
+        className={`mt-1 text-center text-xs tracking-[0.2em] uppercase py-3 rounded-lg border transition-all duration-[400ms] ${
           pulse
             ? 'border-white/20 text-white/50 hover:border-white/40 hover:text-white/70'
             : 'border-white/[0.08] text-white/35'
@@ -563,9 +608,9 @@ function ExpenseGapsWidget({ active }: { active: boolean }) {
 
 // ─── Widget: YTD Summary ──────────────────────────────────────────────────────
 function YtdSummaryWidget({ active }: { active: boolean }) {
-  const earnings = useCountUp(1864, 1200, active)
-  const owed = useCountUp(337, 1100, active)
-  const paid = useCountUp(185, 1000, active)
+  const earnings = useCountUp(1864, 400, active)
+  const owed = useCountUp(337, 400, active)
+  const paid = useCountUp(185, 400, active)
 
   return (
     <div className="w-full max-w-[320px] bg-[#0C4A4A] rounded-2xl p-6 flex flex-col gap-5 ring-1 ring-white/[0.07]">
@@ -605,19 +650,16 @@ function YtdSummaryWidget({ active }: { active: boolean }) {
 
 // ─── Widget: Quarterly ────────────────────────────────────────────────────────
 function QuarterlyWidget({ active }: { active: boolean }) {
-  const [q2visible, setQ2Visible] = useState(false)
-  useEffect(() => {
-    if (!active) return
-    const t = setTimeout(() => setQ2Visible(true), 500)
-    return () => clearTimeout(t)
-  }, [active])
+  // Server HTML renders both quarters visible; entrances play once with JS.
+  const q1visible = useOnceVisible(active, 0)
+  const q2visible = useOnceVisible(active, 200)
 
   return (
     <div className="w-full max-w-[320px] flex flex-col gap-3">
       {/* Q1 */}
       <div
-        className="bg-[#0C4A4A] rounded-2xl p-5 ring-1 ring-white/[0.07] transition-all duration-700"
-        style={{ opacity: active ? 1 : 0, transform: active ? 'translateY(0)' : 'translateY(16px)' }}
+        className="bg-[#0C4A4A] rounded-2xl p-5 ring-1 ring-white/[0.07] transition-all duration-[400ms]"
+        style={{ opacity: q1visible ? 1 : 0, transform: q1visible ? 'translateY(0)' : 'translateY(16px)' }}
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -643,7 +685,7 @@ function QuarterlyWidget({ active }: { active: boolean }) {
 
       {/* Q2 */}
       <div
-        className="bg-[#0C4A4A] rounded-2xl p-5 ring-1 ring-[#F59E0B]/20 transition-all duration-700"
+        className="bg-[#0C4A4A] rounded-2xl p-5 ring-1 ring-[#F59E0B]/20 transition-all duration-[400ms]"
         style={{
           opacity: q2visible ? 1 : 0,
           transform: q2visible ? 'translateY(0)' : 'translateY(20px)',
@@ -691,15 +733,18 @@ function FeatureRow({
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    if (prefersReducedMotion()) {
+      setActive(true)
+      return
+    }
     const ctx = gsap.context(() => {
       gsap.from(el.querySelectorAll('[data-r]'), {
-        opacity: 0, y: 32, duration: 0.9, stagger: 0.12, ease: 'power3.out',
+        opacity: 0, y: 24, duration: 0.4, stagger: 0.08, ease: 'power2.out',
         scrollTrigger: {
           trigger: el,
           start: 'top 70%',
-          toggleActions: 'play none none reverse',
+          toggleActions: 'play none none none',
           onEnter: () => setActive(true),
-          onLeaveBack: () => setActive(false),
         },
       })
     }, el)
@@ -730,7 +775,7 @@ function FeaturesSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref, 'top 85%')
   return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
+    <section ref={ref} className="py-16 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
         <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
@@ -788,7 +833,7 @@ function CalculatorSection() {
   const hourly = hours > 0 ? (net / hours).toFixed(2) : '0.00'
 
   return (
-    <section id="calculator" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
+    <section id="calculator" ref={ref} className="py-16 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
         <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
@@ -1046,7 +1091,7 @@ const PRICING_TIERS: PricingTier[] = [
     caption: '10 days · no card required',
     features: ['All platforms tracked', 'Real-time net earnings', 'Quarterly tax estimates', 'Expense gap detection'],
     cta: 'Download App',
-    bg: 'bg-[#0C4646]',
+    bg: 'bg-[#0A3C3C]',
   },
   {
     label: 'Monthly',
@@ -1055,7 +1100,7 @@ const PRICING_TIERS: PricingTier[] = [
     caption: 'Billed monthly · cancel anytime',
     features: ['Everything in Free Trial', 'Export for CPA', 'Unlimited shift history', 'Priority support'],
     cta: 'Download App',
-    bg: 'bg-[#0C4646]',
+    bg: 'bg-[#0A3C3C]',
   },
   {
     badge: 'Most Popular',
@@ -1065,7 +1110,7 @@ const PRICING_TIERS: PricingTier[] = [
     caption: '$8.33 / month · save 17%',
     features: ['Everything in Monthly', 'Early access to new features', 'Locked-in beta pricing', 'Tax season export pack'],
     cta: 'Download App',
-    bg: 'bg-[#0A3C3C]',
+    bg: 'bg-[#0C4646]',
     featured: true,
   },
 ]
@@ -1075,7 +1120,7 @@ function PricingSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section id="pricing" ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
+    <section id="pricing" ref={ref} className="py-16 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
         <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
@@ -1162,7 +1207,7 @@ function FaqSection() {
   const ref = useRef<HTMLElement>(null)
   useReveal(ref)
   return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
+    <section ref={ref} className="py-16 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-3xl mx-auto">
         <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
@@ -1264,7 +1309,7 @@ function EBikeSection() {
     ['The right IRS method', 'Actual expenses, applied automatically — the IRS does not allow standard mileage for bikes.'],
   ]
   return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
+    <section ref={ref} className="py-16 md:py-24 px-5 md:px-14 bg-[#0C4646] border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
         <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
@@ -1278,7 +1323,7 @@ function EBikeSection() {
         </p>
         <div data-r className="grid sm:grid-cols-3 border border-white/[0.07] bg-white/[0.06] gap-px">
           {points.map(([title, body]) => (
-            <div key={title} className="bg-[#0C4646] px-5 py-6 sm:px-6 sm:py-7 flex flex-col gap-2">
+            <div key={title} className="bg-[#0A3C3C] px-5 py-6 sm:px-6 sm:py-7 flex flex-col gap-2">
               <span className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold text-[15px] sm:text-[16px] tracking-[-0.01em]">{title}</span>
               <span className="text-[#94A3B8] text-[13px] leading-relaxed font-[family-name:var(--font-dm-sans)]">{body}</span>
             </div>
@@ -1296,13 +1341,18 @@ export function ScrollLanding() {
       <Nav />
 
       <main className="bg-[#0A3C3C]">
+        {/* The hero renders its headline as scroll-staged spans — keep a real
+            h1 in the document for crawlers, previews, and screen readers. */}
+        <h1 className="sr-only">
+          GigMiles — know what you actually earn after gas, mileage, and taxes
+        </h1>
         <HeroMeltdown />
         <PlatformWall />
         <AnchorBanner />
         <WaterfallSection />
         <HowItWorksSection />
-        <FeaturesSection />
         <EBikeSection />
+        <FeaturesSection />
         <CalculatorSection />
         <PricingSection />
         <FaqSection />

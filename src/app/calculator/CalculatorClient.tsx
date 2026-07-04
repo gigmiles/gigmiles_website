@@ -8,8 +8,11 @@ import {
   type VehicleType,
 } from '@/lib/calculatorMath'
 
-// Defaults chosen to match the homepage "typical shift" example.
-const DEFAULTS = { gross: 235, miles: 130, hours: 9, vehicle: 'car' as VehicleType, ebikeRate: EBIKE_DEFAULT_RATE }
+// Defaults deliberately do NOT use $235 gross: the launch video's canonical
+// example is $235 → $175 (app's actual-cost view), while this page applies
+// the full IRS mileage deduction — same gross with a different net across
+// our own assets would read as a contradiction.
+const DEFAULTS = { gross: 300, miles: 150, hours: 10, vehicle: 'car' as VehicleType, ebikeRate: EBIKE_DEFAULT_RATE }
 
 function fmtMoney(n: number, decimals = 0): string {
   const sign = n < 0 ? '−' : ''
