@@ -72,6 +72,32 @@ function appendAndroidReferrer(url: string, tag: string): string {
   return `${url}${sep}referrer=${referrer}`
 }
 
+// Play referrer carrying the page's own utm_* params verbatim (the physical
+// QR codes encode utm_source/utm_medium/utm_campaign, not ?src=).
+function appendAndroidReferrerFromUtm(url: string, utm: UtmParams): string {
+  if (url === '#') return url
+  const query = (['utm_source', 'utm_medium', 'utm_campaign'] as const)
+    .filter(k => utm[k])
+    .map(k => `${k}=${encodeURIComponent(utm[k] as string)}`)
+    .join('&')
+  const sep = url.includes('?') ? '&' : '?'
+  return `${url}${sep}referrer=${encodeURIComponent(query)}`
+}
+
+type UtmParams = {
+  utm_source: string | null
+  utm_medium: string | null
+  utm_campaign: string | null
+}
+
+function readUtmParams(params: URLSearchParams): UtmParams {
+  return {
+    utm_source: params.get('utm_source'),
+    utm_medium: params.get('utm_medium'),
+    utm_campaign: params.get('utm_campaign'),
+  }
+}
+
 const REGION_LABEL: Record<string, string> = {
   CA: 'Los Angeles',
   NV: 'Las Vegas',
@@ -110,17 +136,29 @@ export function GetGigMilesClient({
     const p = detectPlatform()
     setPlatform(p)
 
-    // Optional manual override: ?src=vegas wins over IP geo (for a specific
-    // booth/event). Otherwise we derive the tag from IP region after fetch.
+    // Campaign identity, in priority order: ?src= (manual booth/event
+    // override, kept for backward compatibility) → utm_campaign (the physical
+    // QR cloths encode utm_source/utm_medium/utm_campaign) → IP geo → generic.
     const params = new URLSearchParams(window.location.search)
     const srcParam = params.get('src')
+    const utm = readUtmParams(params)
+    const explicitTag = srcParam
+      ? sanitizeTag(`src_${srcParam}`)
+      : utm.utm_campaign
+        ? sanitizeTag(utm.utm_campaign)
+        : null
 
-    // The src tag needs no network roundtrip — stamp it synchronously so the
-    // attribution upgrade doesn't wait on /api/geo.
-    if (srcParam) {
-      const srcTag = sanitizeTag(`src_${srcParam}`)
-      setIosUrl(buildIosStoreUrl(srcTag, iosBase))
-      setAndroidUrl(appendAndroidReferrer(androidBase, srcTag))
+    // Explicit tags need no network roundtrip — stamp synchronously so the
+    // attribution upgrade doesn't wait on /api/geo. Play referrer carries the
+    // incoming utm_* verbatim when present.
+    const hasUtm = Boolean(utm.utm_source || utm.utm_medium || utm.utm_campaign)
+    if (explicitTag) {
+      setIosUrl(buildIosStoreUrl(explicitTag, iosBase))
+      setAndroidUrl(
+        hasUtm && !srcParam
+          ? appendAndroidReferrerFromUtm(androidBase, utm)
+          : appendAndroidReferrer(androidBase, explicitTag),
+      )
     }
 
     let cancelled = false
@@ -142,17 +180,17 @@ export function GetGigMilesClient({
       }
       if (cancelled) return
 
-      // Attribution tag: explicit src wins, else country_region, else qr.
-      const tag = sanitizeTag(
-        srcParam
-          ? `src_${srcParam}`
-          : region
-            ? `${country || 'us'}_${region}`
-            : 'qr_unknown',
-      )
+      // Attribution tag: explicit (src / utm_campaign) wins and was already
+      // stamped above — geo must not clobber it. Geo only fills the gap when
+      // the visitor arrived with no campaign identity at all.
+      const tag =
+        explicitTag ??
+        sanitizeTag(region ? `${country || 'us'}_${region}` : 'qr_unknown')
 
-      setIosUrl(buildIosStoreUrl(tag, iosBase))
-      setAndroidUrl(appendAndroidReferrer(androidBase, tag))
+      if (!explicitTag) {
+        setIosUrl(buildIosStoreUrl(tag, iosBase))
+        setAndroidUrl(appendAndroidReferrer(androidBase, tag))
+      }
 
       // Greeting: prefer a known region label, else the raw city, else none.
       const label =
@@ -162,6 +200,9 @@ export function GetGigMilesClient({
       beacon('pageview', {
         platform: p,
         src: srcParam || null,
+        utm_source: utm.utm_source,
+        utm_medium: utm.utm_medium,
+        utm_campaign: utm.utm_campaign,
         region,
         city,
         country,
@@ -179,7 +220,16 @@ export function GetGigMilesClient({
   const androidLive = androidUrl !== '#'
 
   function onStoreClick(store: 'ios' | 'android') {
-    beacon('store_click', { store, platform })
+    const params = new URLSearchParams(window.location.search)
+    const utm = readUtmParams(params)
+    beacon('store_click', {
+      store,
+      platform,
+      src: params.get('src'),
+      utm_source: utm.utm_source,
+      utm_medium: utm.utm_medium,
+      utm_campaign: utm.utm_campaign,
+    })
   }
 
   // Official store badges (Apple / Google marketing guidelines require the

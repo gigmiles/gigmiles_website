@@ -40,6 +40,11 @@ export async function POST(req: NextRequest) {
         region: s(b.region, 16),
         city: s(b.city, 80),
         tag: s(b.tag, 40),
+        // Physical-campaign QR codes encode utm_* params (not ?src=) — store
+        // them as first-class columns so the scan funnel is queryable.
+        utm_source: s(b.utm_source, 64),
+        utm_medium: s(b.utm_medium, 64),
+        utm_campaign: s(b.utm_campaign, 64),
       }
       await fetch(`${SUPABASE_URL}/rest/v1/campaign_events`, {
         method: 'POST',
