@@ -925,96 +925,6 @@ function CalculatorSection() {
   )
 }
 
-// ─── Testimonials ─────────────────────────────────────────────────────────────
-const TESTIMONIALS = [
-  {
-    quote: 'I thought I was clearing $18 an hour on Uber. GigMiles showed me $11.40 after mileage and taxes. Rough wake-up call — but now I actually plan my shifts around the real number.',
-    name: 'Marcus T.',
-    role: 'Uber · 3 years',
-    initials: 'MT',
-    accent: '#5EEAD4',
-    featured: true,
-  },
-  {
-    quote: 'The expense gaps feature flagged $340 in deductions I was ignoring. Phone, parking, tolls. That\'s more than the app costs in a year.',
-    name: 'Priya N.',
-    role: 'DoorDash + Instacart',
-    initials: 'PN',
-    accent: '#10B981',
-    featured: false,
-  },
-  {
-    quote: 'Tax season used to kill me. Now I set aside exactly 23 cents per dollar, every week. Zero surprises.',
-    name: 'Darnell W.',
-    role: 'Amazon Flex',
-    initials: 'DW',
-    accent: '#F59E0B',
-    featured: false,
-  },
-]
-
-function TestimonialsSection() {
-  const ref = useRef<HTMLElement>(null)
-  useReveal(ref)
-  const [featured, ...rest] = TESTIMONIALS
-  return (
-    <section ref={ref} className="py-14 md:py-24 px-5 md:px-14 bg-[#0A3C3C] border-t border-white/[0.06]">
-      <div className="max-w-5xl mx-auto">
-        <p data-r className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
-          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
-          Beta testers
-        </p>
-        <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-8 sm:mb-12 max-w-xl">
-          Real numbers change how you drive
-        </h2>
-
-        {/* Asymmetric layout: featured left, 2 stacked right */}
-        <div className="grid md:grid-cols-[3fr_2fr] gap-px bg-white/[0.07] border border-white/[0.07]">
-          {/* Featured — large pull quote */}
-          <div data-r className="bg-[#0A3C3C] p-8 sm:p-10 flex flex-col gap-8">
-            <p className="text-white/70 font-[family-name:var(--font-dm-sans)] italic leading-[1.65] text-[clamp(16px,2.2vw,22px)] flex-1">
-              &ldquo;{featured.quote}&rdquo;
-            </p>
-            <div className="flex items-center gap-3 pt-5 border-t border-white/[0.07]">
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#0A3C3C] flex-shrink-0"
-                style={{ backgroundColor: featured.accent }}
-              >
-                {featured.initials}
-              </div>
-              <div>
-                <p className="text-white/75 text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium">{featured.name}</p>
-                <p className="text-white/50 text-[11px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{featured.role}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Two stacked — smaller */}
-          <div className="flex flex-col gap-px bg-white/[0.07]">
-            {rest.map(t => (
-              <div key={t.name} data-r className="bg-[#0A3C3C] p-6 sm:p-8 flex flex-col gap-5 flex-1 hover:bg-[#0C4646] transition-colors duration-200">
-                <p className="text-[#94A3B8] text-[13px] leading-[1.75] flex-1 font-[family-name:var(--font-dm-sans)]">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-white/[0.07]">
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-semibold font-[family-name:var(--font-space-grotesk)] text-[#0A3C3C] flex-shrink-0"
-                    style={{ backgroundColor: t.accent }}
-                  >
-                    {t.initials}
-                  </div>
-                  <div>
-                    <p className="text-white/75 text-[12px] font-[family-name:var(--font-space-grotesk)] font-medium">{t.name}</p>
-                    <p className="text-white/65 text-[12px] mt-0.5 font-[family-name:var(--font-dm-sans)]">{t.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 // ─── Pricing card (cursor spotlight) ──────────────────────────────────────────
 type PricingTier = {
   badge?: string
@@ -1386,7 +1296,6 @@ export function ScrollLanding() {
         <FeaturesSection />
         <EBikeSection />
         <CalculatorSection />
-        <TestimonialsSection />
         <PricingSection />
         <FaqSection />
         <FinalCtaSection />
