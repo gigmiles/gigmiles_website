@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { buildIosStoreUrl } from '@/config/app'
 
 /**
  * GetGigMilesClient — the guerrilla-campaign "smart bridge" page.
@@ -38,7 +39,9 @@ const INTER = 'var(--font-inter), system-ui, sans-serif'
 
 const PROMO_CODE = 'GETGIGMILES'
 
-type Platform = 'ios' | 'android' | 'desktop' | 'detecting'
+// 'unknown' = server render + pre-hydration: both store badges are in the
+// HTML so the page works with slow or blocked JS; detection then narrows it.
+type Platform = 'ios' | 'android' | 'desktop' | 'unknown'
 
 function detectPlatform(): Platform {
   const ua = navigator.userAgent || ''
@@ -58,12 +61,6 @@ function sanitizeTag(raw: string): string {
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '')
     .slice(0, 40)
-}
-
-function appendIosToken(url: string, tag: string): string {
-  if (url === '#') return url
-  const sep = url.includes('?') ? '&' : '?'
-  return `${url}${sep}ct=${tag}`
 }
 
 function appendAndroidReferrer(url: string, tag: string): string {
@@ -102,10 +99,12 @@ export function GetGigMilesClient({
   iosUrl: string
   androidUrl: string
 }) {
-  const [platform, setPlatform] = useState<Platform>('detecting')
+  const [platform, setPlatform] = useState<Platform>('unknown')
   const [greeting, setGreeting] = useState<string | null>(null)
-  const [iosUrl, setIosUrl] = useState(iosBase)
-  const [androidUrl, setAndroidUrl] = useState(androidBase)
+  // Pre-stamped fallback tokens ship in the server HTML: a tap that lands
+  // before hydration or the geo roundtrip still attributes as generic "qr".
+  const [iosUrl, setIosUrl] = useState(() => buildIosStoreUrl('qr', iosBase))
+  const [androidUrl, setAndroidUrl] = useState(() => appendAndroidReferrer(androidBase, 'qr'))
 
   useEffect(() => {
     const p = detectPlatform()
@@ -115,6 +114,14 @@ export function GetGigMilesClient({
     // booth/event). Otherwise we derive the tag from IP region after fetch.
     const params = new URLSearchParams(window.location.search)
     const srcParam = params.get('src')
+
+    // The src tag needs no network roundtrip — stamp it synchronously so the
+    // attribution upgrade doesn't wait on /api/geo.
+    if (srcParam) {
+      const srcTag = sanitizeTag(`src_${srcParam}`)
+      setIosUrl(buildIosStoreUrl(srcTag, iosBase))
+      setAndroidUrl(appendAndroidReferrer(androidBase, srcTag))
+    }
 
     let cancelled = false
 
@@ -144,7 +151,7 @@ export function GetGigMilesClient({
             : 'qr_unknown',
       )
 
-      setIosUrl(appendIosToken(iosBase, tag))
+      setIosUrl(buildIosStoreUrl(tag, iosBase))
       setAndroidUrl(appendAndroidReferrer(androidBase, tag))
 
       // Greeting: prefer a known region label, else the raw city, else none.
@@ -211,18 +218,11 @@ export function GetGigMilesClient({
 
   // Device-specific CTA: show ONLY the visitor's own store. If that store
   // isn't live yet (iOS pre-publish), show a coming-soon notice rather than
-  // pushing them to the wrong store. Desktop/unknown sees whatever is live.
+  // pushing them to the wrong store. Desktop/unknown sees whatever is live —
+  // 'unknown' is also the server render, so both badges are in the HTML and
+  // the page stays usable before (or without) JS.
   let storeCta: React.ReactNode
-  if (platform === 'detecting') {
-    storeCta = (
-      <div
-        style={{ ...btnBase, background: 'rgba(255,255,255,0.05)', cursor: 'default' }}
-        aria-hidden
-      >
-        &nbsp;
-      </div>
-    )
-  } else if (platform === 'ios') {
+  if (platform === 'ios') {
     storeCta = iosLive ? iosButton : <ComingSoon store="the App Store" icon={<AppleIcon />} />
   } else if (platform === 'android') {
     storeCta = androidLive ? androidButton : <ComingSoon store="Google Play" icon={<PlayIcon />} />

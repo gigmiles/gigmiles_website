@@ -8,6 +8,23 @@ export const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/detail
 export const BUNDLE_ID = 'com.gigmiles.gigmilesApp'
 export const APPLE_TEAM_ID = 'XXXXXXXXXX'     // TODO: fill from Apple Developer portal
 
+// TODO: APPLE_PROVIDER_TOKEN — App Store Connect provider token (pt=).
+// Without pt=, App Store Connect ignores the ct= campaign token entirely, so
+// iOS campaign attribution records nothing. Get it from App Store Connect →
+// Analytics → campaign link generator. The value arrives separately; once it
+// is set here, buildIosStoreUrl() appends pt= + ct= automatically.
+export const APPLE_PROVIDER_TOKEN = ''
+
+// Builds an App Store link carrying campaign attribution. Apple's rules:
+// ct= is the campaign token (alphanumeric + underscore, <=40 chars) and only
+// registers in App Store Connect when pt= (provider token) is also present.
+export function buildIosStoreUrl(ct: string, base: string = IOS_APP_STORE_URL): string {
+  if (base === '#') return base
+  const sep = base.includes('?') ? '&' : '?'
+  const pt = APPLE_PROVIDER_TOKEN ? `pt=${APPLE_PROVIDER_TOKEN}&` : ''
+  return `${base}${sep}${pt}ct=${ct}`
+}
+
 // Smart download URL — detects platform on the /download page
 export const DOWNLOAD_URL = '/download'
 
