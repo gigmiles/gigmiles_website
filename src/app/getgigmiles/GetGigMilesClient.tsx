@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { buildIosStoreUrl } from '@/config/app'
 
 /**
@@ -131,6 +131,9 @@ export function GetGigMilesClient({
   // before hydration or the geo roundtrip still attributes as generic "qr".
   const [iosUrl, setIosUrl] = useState(() => buildIosStoreUrl('qr', iosBase))
   const [androidUrl, setAndroidUrl] = useState(() => appendAndroidReferrer(androidBase, 'qr'))
+  // Resolved attribution tag, mirrored for the store_click beacon so funnel
+  // queries can filter on tag alone without joining through utm columns.
+  const tagRef = useRef('qr')
 
   useEffect(() => {
     const p = detectPlatform()
@@ -153,6 +156,7 @@ export function GetGigMilesClient({
     // incoming utm_* verbatim when present.
     const hasUtm = Boolean(utm.utm_source || utm.utm_medium || utm.utm_campaign)
     if (explicitTag) {
+      tagRef.current = explicitTag
       setIosUrl(buildIosStoreUrl(explicitTag, iosBase))
       setAndroidUrl(
         hasUtm && !srcParam
@@ -186,6 +190,7 @@ export function GetGigMilesClient({
       const tag =
         explicitTag ??
         sanitizeTag(region ? `${country || 'us'}_${region}` : 'qr_unknown')
+      tagRef.current = tag
 
       if (!explicitTag) {
         setIosUrl(buildIosStoreUrl(tag, iosBase))
@@ -226,6 +231,7 @@ export function GetGigMilesClient({
       store,
       platform,
       src: params.get('src'),
+      tag: tagRef.current,
       utm_source: utm.utm_source,
       utm_medium: utm.utm_medium,
       utm_campaign: utm.utm_campaign,
@@ -394,9 +400,10 @@ export function GetGigMilesClient({
             boxShadow: '0 8px 40px rgba(0,0,0,0.28)',
           }}
         >
+          {/* Canonical example — matches the launch video: $235 → $175 */}
           <Row label="Gross earnings" value="$235" valueColor={INK} />
           <Row label="Vehicle costs" value="−$27" valueColor={ROSE} />
-          <Row label="Estimated taxes" value="−$42" valueColor={ROSE} />
+          <Row label="Estimated taxes" value="−$33" valueColor={ROSE} />
           <div
             style={{
               display: 'flex',
@@ -418,7 +425,7 @@ export function GetGigMilesClient({
                 fontVariantNumeric: 'tabular-nums',
               }}
             >
-              $166
+              $175
             </span>
           </div>
           <p
@@ -429,7 +436,7 @@ export function GetGigMilesClient({
               textAlign: 'center',
             }}
           >
-            $69 went to the road &amp; the IRS. Most drivers never see it.
+            $60 went to the road &amp; the IRS. Most drivers never see it.
           </p>
         </section>
 
