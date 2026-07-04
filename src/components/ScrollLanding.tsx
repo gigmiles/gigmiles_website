@@ -33,7 +33,7 @@ function Nav() {
         {[
           ['Why It Matters', '#why'],
           ['How It Works', '#how'],
-          ['Calculator', '#calculator'],
+          ['Calculator', '/calculator'],
           ['Pricing', '#pricing'],
           ['Contact', '/contact'],
         ].map(([label, href]) => (
@@ -797,9 +797,17 @@ function CalculatorSection() {
         <h2 data-r className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(26px,4vw,44px)] mb-3 sm:mb-4 max-w-xl">
           What do you actually take home?
         </h2>
-        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
+        <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-3 max-w-lg font-[family-name:var(--font-dm-sans)]">
           Adjust the sliders and see your real net income — after vehicle costs and self-employment taxes.
         </p>
+        <a
+          data-r
+          href="/calculator"
+          className="inline-flex items-center gap-2 mb-8 sm:mb-12 text-[#5EEAD4] text-[13px] tracking-[0.02em] hover:opacity-80 transition-opacity font-[family-name:var(--font-space-grotesk)]"
+        >
+          Open the full calculator — exact IRS mileage &amp; e-bike math
+          <span aria-hidden="true">→</span>
+        </a>
 
         <div data-r className="border border-white/[0.07] bg-[#0A3C3C] grid md:grid-cols-2 gap-px bg-white/[0.06]">
           {/* Sliders */}

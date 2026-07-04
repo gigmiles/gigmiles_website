@@ -1,0 +1,149 @@
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
+import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL } from '@/config/app'
+import { CalculatorClient } from './CalculatorClient'
+
+export const metadata: Metadata = {
+  title: 'Gig Driver Net Income Calculator — What You Actually Keep',
+  description:
+    'Enter gross earnings, miles, and hours — see your real net after vehicle costs (IRS 2026 mileage rate) and self-employment tax. Car and e-bike math included.',
+  alternates: { canonical: 'https://gigmiles.app/calculator' },
+  openGraph: {
+    type: 'website',
+    url: 'https://gigmiles.app/calculator',
+    title: 'Gig Driver Net Income Calculator — What You Actually Keep',
+    description:
+      'Gross pay is not your pay. See your real net after vehicle costs and self-employment tax — car or e-bike.',
+    siteName: 'GigMiles',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gig Driver Net Income Calculator — What You Actually Keep',
+    description:
+      'Gross pay is not your pay. See your real net after vehicle costs and self-employment tax — car or e-bike.',
+  },
+}
+
+// FAQ copy is the single source for both the visible block and the JSON-LD —
+// Google requires the markup to match on-page content.
+const FAQS = [
+  {
+    q: 'What is the IRS standard mileage rate for 2026?',
+    a: 'The IRS standard mileage rate for 2026 is $0.725 per business mile for cars, vans, pickups, and panel trucks. Multiply your business miles by 0.725 to estimate your vehicle deduction — the rate covers gas, maintenance, depreciation, and insurance in one number.',
+  },
+  {
+    q: 'How is self-employment tax calculated for gig drivers?',
+    a: 'Self-employment tax is 15.3% (12.4% Social Security + 2.9% Medicare) applied to 92.35% of your net earnings — gross income minus business expenses like vehicle costs. This calculator applies exactly that formula: (gross − vehicle cost) × 0.9235 × 15.3%, never less than $0.',
+  },
+  {
+    q: 'Can I deduct miles on an e-bike?',
+    a: 'Not with the standard mileage rate — the IRS limits it to cars, vans, pickups, and panel trucks. E-bike couriers deduct actual expenses instead: electricity, battery wear, tires, and maintenance. This calculator estimates e-bike costs at $0.08 per mile by default, and you can edit that rate to match your real costs.',
+  },
+  {
+    q: 'Does this calculator include state income tax?',
+    a: 'No. Version 1 covers self-employment tax only, which every gig driver owes regardless of income bracket. State income tax is not included — the GigMiles app calculates your state automatically.',
+  },
+]
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+}
+
+export default function CalculatorPage() {
+  return (
+    <main className="min-h-screen bg-[#0A3C3C]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
+      {/* Minimal header */}
+      <header className="flex items-center justify-between px-5 md:px-14 py-5 border-b border-white/[0.06]">
+        <Link href="/" className="flex items-center gap-2.5">
+          <Image src="/brand/icons/icon-180.png" alt="GigMiles" width={26} height={26} className="rounded-[7px]" />
+          <span className="text-[#5EEAD4] text-[18px] italic font-black tracking-[-0.04em] leading-none font-[family-name:var(--font-outfit)]">gigmiles</span>
+        </Link>
+        <Link
+          href="/download"
+          className="text-white/60 text-[13px] tracking-[0.04em] border border-white/[0.14] px-4 py-2 hover:border-white/30 hover:text-white/85 transition-all font-[family-name:var(--font-space-grotesk)]"
+        >
+          Get the app
+        </Link>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-5 md:px-8 py-10 md:py-16">
+        {/* H1 + intro */}
+        <p className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+          <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
+          Net income calculator
+        </p>
+        <h1 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,5vw,46px)] mb-3 max-w-2xl">
+          What you actually keep
+        </h1>
+        <p className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-10 max-w-lg font-[family-name:var(--font-dm-sans)]">
+          Gross pay isn&apos;t your pay. Enter a shift — or a week — and see your
+          real net after vehicle costs and self-employment tax.
+        </p>
+
+        <CalculatorClient />
+
+        {/* CTA */}
+        <div className="mt-8 flex flex-col items-center gap-4 border border-white/[0.07] bg-[#0C4646] px-6 py-8 text-center">
+          <p className="text-white/85 text-[15px] font-[family-name:var(--font-dm-sans)]">
+            GigMiles does this automatically every shift — 10 days free, no card.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a href={IOS_APP_STORE_URL} aria-label="Download on the App Store" className="inline-flex transition-transform active:scale-[0.97]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/badges/app-store-badge.svg" alt="Download on the App Store" className="h-[52px] w-auto" />
+            </a>
+            <a href={ANDROID_PLAY_STORE_URL} aria-label="Get it on Google Play" className="inline-flex transition-transform active:scale-[0.97]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/badges/google-play-badge.svg" alt="Get it on Google Play" className="h-[52px] w-auto" />
+            </a>
+          </div>
+        </div>
+
+        {/* Fine print */}
+        <p className="mt-6 text-white/40 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic max-w-2xl">
+          Vehicle cost for cars uses the IRS 2026 standard mileage rate of $0.725/mile.
+          The IRS standard mileage rate does not apply to e-bikes; the e-bike figure is
+          an actual-expense estimate (default $0.08/mile, editable). Self-employment tax
+          = (gross − vehicle cost) × 92.35% × 15.3%, floored at $0. Federal self-employment
+          tax only — state income tax not included. Estimates for planning, not tax advice.
+        </p>
+
+        {/* FAQ */}
+        <section className="mt-14" aria-label="Frequently asked questions">
+          <h2 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.02em] text-[clamp(20px,3vw,28px)] mb-6">
+            Common questions
+          </h2>
+          <div className="flex flex-col">
+            {FAQS.map(f => (
+              <details key={f.q} className="group border-b border-white/[0.07]">
+                <summary className="flex items-start justify-between gap-4 py-5 cursor-pointer list-none text-white/75 text-[14px] leading-snug hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]">
+                  {f.q}
+                  <span className="text-white/50 text-base leading-none mt-0.5 flex-shrink-0 transition-transform duration-300 group-open:rotate-45">+</span>
+                </summary>
+                <p className="text-[#94A3B8] text-[13px] leading-relaxed pb-5 max-w-2xl font-[family-name:var(--font-dm-sans)]">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <p className="mt-10 text-center">
+          <Link href="/" className="text-[#5EEAD4] text-[13px] font-[family-name:var(--font-space-grotesk)] hover:opacity-80 transition-opacity">
+            ← gigmiles.app
+          </Link>
+        </p>
+      </div>
+    </main>
+  )
+}
