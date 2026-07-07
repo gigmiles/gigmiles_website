@@ -400,10 +400,10 @@ export function GetGigMilesClient({
             boxShadow: '0 8px 40px rgba(0,0,0,0.28)',
           }}
         >
-          {/* Canonical example — matches the launch video: $235 → $175 */}
+          {/* Canonical example — matches the live app screenshots: $235 → $175 */}
           <Row label="Gross earnings" value="$235" valueColor={INK} />
-          <Row label="Vehicle costs" value="−$27" valueColor={ROSE} />
-          <Row label="Estimated taxes" value="−$33" valueColor={ROSE} />
+          <Row label="Vehicle costs" value="−$43" valueColor={ROSE} />
+          <Row label="Estimated taxes" value="−$17" valueColor={ROSE} />
           <div
             style={{
               display: 'flex',

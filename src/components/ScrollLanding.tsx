@@ -143,10 +143,10 @@ function useOnceVisible(active: boolean, delay = 0) {
 function WaterfallSection() {
   const ref = useRef<HTMLElement>(null)
   const [active, setActive] = useState(false)
-  // Canonical example — matches the launch video: $235 gross → $175 real.
+  // Canonical example — matches the live app screenshots: $235 gross → $175 real.
   const gross = useCountUp(235, 400, active)
-  const vehicle = useCountUp(27, 400, active)
-  const taxes = useCountUp(33, 400, active)
+  const vehicle = useCountUp(43, 400, active)
+  const taxes = useCountUp(17, 400, active)
   const net = useCountUp(175, 400, active)
 
   useEffect(() => {
@@ -177,7 +177,7 @@ function WaterfallSection() {
           What a typical shift actually pays
         </h2>
         <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
-          8 hours · 3 trips · 130 mi · 2023 Toyota Prius · IRS mileage rate $0.725/mi (2026)
+          8 hours · 105 mi · 2023 Toyota Prius · IRS mileage rate $0.725/mi (2026)
         </p>
 
         <div className="border border-white/[0.07] bg-[#0A3C3C]">
@@ -185,7 +185,7 @@ function WaterfallSection() {
           <div className="px-5 sm:px-8 py-5 border-b border-white/[0.06] flex items-start sm:items-baseline justify-between gap-4">
             <span className="text-[#94A3B8] text-[13px] font-[family-name:var(--font-space-grotesk)] font-medium flex-shrink-0">Shift breakdown</span>
             <div className="flex gap-4 sm:gap-8 flex-wrap justify-end">
-              {[['Vehicle', '2023 Toyota Prius'], ['Miles', '130 mi'], ['Hours', '8.0 h']].map(([l, v]) => (
+              {[['Vehicle', '2023 Toyota Prius'], ['Miles', '105 mi'], ['Hours', '8.0 h']].map(([l, v]) => (
                 <div key={l} className="flex flex-col gap-1 text-right sm:text-left">
                   <span className="text-[10px] sm:text-[11px] text-white/60 tracking-[0.1em] uppercase font-[family-name:var(--font-space-grotesk)]">{l}</span>
                   <span className="text-[12px] sm:text-[13px] font-semibold text-[#94A3B8] font-[family-name:var(--font-space-grotesk)]">{v}</span>
@@ -225,7 +225,7 @@ function WaterfallSection() {
                 {[
                   ['Hourly rate', '$22', 'after all costs'],
                   ['Tax reserve', '$0.14', 'per dollar earned'],
-                  ['Vehicle cost', '$0.11', 'per dollar gross'],
+                  ['Vehicle cost', '$0.18', 'per dollar gross'],
                   ['Effective rate', '74%', 'of gross kept'],
                 ].map(([l, v, s]) => (
                   <div key={l} className="bg-[#0A3C3C] px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-1">
@@ -239,7 +239,7 @@ function WaterfallSection() {
               <div className="border border-white/[0.06] px-5 py-4 bg-[#5EEAD4]/[0.03]">
                 <p className="text-[11px] text-[#5EEAD4] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] mb-2">GigMiles insight</p>
                 <p className="text-[13px] text-[#94A3B8] leading-relaxed font-[family-name:var(--font-dm-sans)]">
-                  You kept 74% of gross earnings. The IRS mileage deduction adds $94 in write-offs this shift — about ~$21 less in taxes.
+                  You kept 74% of gross earnings. The IRS mileage deduction adds $76 in write-offs this shift — about ~$17 less in taxes.
                 </p>
               </div>
 
@@ -261,25 +261,25 @@ const HOW_SCENES = [
     label: 'What you grossed',
     amount: '$235',
     color: '#10B981',
-    sub: '8h · 3 trips · 130 mi · 2023 Toyota Prius',
+    sub: '8h · 105 mi · 2023 Toyota Prius',
     img: '/ss-home.jpeg',          // TODO: replace with Home / Net Earnings hero card screenshot
     imgAlt: 'Net earnings home screen',
   },
   {
     n: '02',
     label: 'What it cost to drive',
-    amount: '−$27',
+    amount: '−$43',
     color: '#E11D48',
-    sub: 'Fuel $9 · Wear & tear $18 · IRS-aware depreciation',
+    sub: 'Fuel $17 · Wear & tear $26 · IRS-aware depreciation',
     img: '/ss-shifts.jpeg',        // TODO: replace with Shifts list page screenshot
     imgAlt: 'Shifts list',
   },
   {
     n: '03',
     label: 'What the IRS takes',
-    amount: '−$33',
+    amount: '−$17',
     color: '#F59E0B',
-    sub: 'SE $20 · Federal $5 · State $8',
+    sub: 'SE $16 · Federal $0 · State $1',
     img: '/ss-tax-breakdown.jpeg',
     imgAlt: 'Tax breakdown',
   },
