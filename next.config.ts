@@ -30,6 +30,13 @@ const nextConfig: NextConfig = {
       social('/x', 'x_twitter'),
       social('/twitter', 'x_twitter'),
       social('/youtube', 'youtube'),
+      {
+        // Reddit paid campaign — ad-specific content tag, unlike the generic bio links
+        source: '/reddit',
+        destination:
+          '/?utm_source=reddit&utm_medium=paid_social&utm_campaign=driver_education&utm_content=freeform_launch_v1',
+        permanent: false,
+      },
     ]
   },
   async headers() {
