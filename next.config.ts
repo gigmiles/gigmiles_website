@@ -15,6 +15,23 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  async redirects() {
+    if (isStaticExport) return []
+    // Short branded bio links — clean in social bios, full UTM attribution on landing.
+    const social = (source: string, utmSource: string) => ({
+      source,
+      destination: `/?utm_source=${utmSource}&utm_medium=organic_social&utm_campaign=driver_education&utm_content=bio_link`,
+      permanent: false, // 307 — keeps flexibility to retarget campaigns later
+    })
+    return [
+      social('/tiktok', 'tiktok'),
+      social('/instagram', 'instagram'),
+      social('/ig', 'instagram'),
+      social('/x', 'x_twitter'),
+      social('/twitter', 'x_twitter'),
+      social('/youtube', 'youtube'),
+    ]
+  },
   async headers() {
     if (isStaticExport) return []
     return [
