@@ -1286,7 +1286,7 @@ function Footer() {
           </div>
         </div>
         <div className="flex flex-wrap gap-8">
-          {[['Contact', '/contact'], ['Privacy', '/privacy'], ['Terms', '/terms'], ['Legal', 'mailto:legal@gigmiles.app']].map(([l, h]) => (
+          {[['Blog', '/blog'], ['Contact', '/contact'], ['Privacy', '/privacy'], ['Terms', '/terms'], ['Legal', 'mailto:legal@gigmiles.app']].map(([l, h]) => (
             <a key={l} href={h} className="text-white/50 text-[12px] tracking-[0.04em] font-[family-name:var(--font-space-grotesk)] hover:text-white/55 transition-colors">{l}</a>
           ))}
         </div>

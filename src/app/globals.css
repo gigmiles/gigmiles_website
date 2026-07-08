@@ -613,3 +613,103 @@ html {
   color: #e2e8f0;
   font-weight: 600;
 }
+
+/* Blog article body (marked-rendered markdown) — editorial sibling of
+   .legal-doc: same dark-teal surface rules, larger reading rhythm. */
+.blog-doc {
+  color: #cbd5e1; /* slate-300 */
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  font-family: var(--font-dm-sans), var(--font-inter), system-ui, sans-serif;
+}
+.blog-doc h2 {
+  color: #ffffff;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  margin: 2.75rem 0 0.875rem;
+}
+.blog-doc h3 {
+  color: #e2e8f0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  margin: 2rem 0 0.625rem;
+}
+.blog-doc p {
+  margin: 0 0 1.125rem;
+}
+.blog-doc strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+.blog-doc a {
+  color: #5EEAD4;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.blog-doc a:hover {
+  color: #99F6E4;
+}
+.blog-doc ul,
+.blog-doc ol {
+  margin: 0 0 1.125rem;
+  padding-left: 1.5rem;
+}
+.blog-doc ul { list-style: disc; }
+.blog-doc ol { list-style: decimal; }
+.blog-doc li {
+  margin: 0.45rem 0;
+}
+.blog-doc li::marker {
+  color: #5EEAD4;
+}
+.blog-doc blockquote {
+  border-left: 3px solid #5EEAD4;
+  background: rgba(94, 234, 212, 0.06);
+  border-radius: 0 12px 12px 0;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  color: #ffffff;
+  font-weight: 600;
+}
+.blog-doc blockquote p {
+  margin: 0;
+}
+.blog-doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9375rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.blog-doc th,
+.blog-doc td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+.blog-doc th {
+  background: rgba(94, 234, 212, 0.08);
+  color: #5EEAD4;
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.blog-doc tr:last-child td {
+  border-bottom: 0;
+  color: #ffffff;
+  font-weight: 600;
+  background: rgba(94, 234, 212, 0.05);
+}
+.blog-doc hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2.5rem 0;
+}
