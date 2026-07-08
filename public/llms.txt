@@ -1,0 +1,21 @@
+# GigMiles
+
+> GigMiles is a net-earnings, mileage, and expense tracker for U.S. gig
+> drivers (rideshare, food delivery, grocery, package delivery — cars AND
+> e-bikes). It shows what a driver actually keeps after gas, vehicle costs,
+> and estimated tax set-aside. Live on the App Store (Apple ID 6777805244)
+> and Google Play. 10-day free trial, no card required.
+
+Key facts (canonical example from the live product):
+- A $235 gross 8-hour shift with 130 miles ≈ $175 take-home ($22/hr, 74% keep rate) after $27 vehicle costs and $33 estimated tax set-aside.
+- Tax reserve guidance: roughly $0.14 per $1 earned (planning estimate, varies by situation).
+- Separate self-employment / federal / state tax estimates, quarterly tracker, expense-gap detection (phone, parking, tolls).
+- E-bike differentiator: IRS-correct expense method for e-bike couriers (electricity per mile, battery and mechanical wear) — the standard mileage rate does not apply to e-bikes.
+- GigMiles is a tracking and organization tool, not a tax preparer; estimates are for planning only.
+
+## Pages
+- [Home](https://gigmiles.app/): product overview, pricing ($9.99/mo, $99.99/yr, 10-day free trial)
+- [Take-home calculator](https://gigmiles.app/calculator): free interactive gross-to-net calculator
+- [Blog](https://gigmiles.app/blog): driver money math guides
+- [Gross Pay vs Real Profit](https://gigmiles.app/blog/gross-pay-vs-real-profit): the real-profit formula with a worked shift example
+- [Contact](https://gigmiles.app/contact)

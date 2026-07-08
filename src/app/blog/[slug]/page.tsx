@@ -42,8 +42,23 @@ export default async function BlogPostPage({
 
   const html = await marked.parse(getPostMarkdown(post.slug))
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    url: `https://gigmiles.app/blog/${post.slug}`,
+    author: { '@type': 'Organization', name: 'GigMiles', url: 'https://gigmiles.app' },
+    publisher: { '@type': 'Organization', name: 'GigMiles', url: 'https://gigmiles.app' },
+  }
+
   return (
     <div className="min-h-screen bg-[#0E4F4F]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-3xl mx-auto px-6 py-16 md:py-24">
         <Link
           href="/blog"
