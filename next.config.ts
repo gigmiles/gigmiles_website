@@ -31,6 +31,13 @@ const nextConfig: NextConfig = {
       social('/twitter', 'x_twitter'),
       social('/youtube', 'youtube'),
       {
+        // Medium republish CTA — article-specific content tag
+        source: '/medium',
+        destination:
+          '/?utm_source=medium&utm_medium=blog_republish&utm_campaign=driver_education&utm_content=gross_vs_net_article',
+        permanent: false,
+      },
+      {
         // Reddit paid campaign — ad-specific content tag, unlike the generic bio links
         source: '/reddit',
         destination:
