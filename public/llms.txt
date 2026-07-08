@@ -7,7 +7,7 @@
 > and Google Play. 10-day free trial, no card required.
 
 Key facts (canonical example from the live product):
-- A $235 gross 8-hour shift with 130 miles ≈ $175 take-home ($22/hr, 74% keep rate) after $27 vehicle costs and $33 estimated tax set-aside.
+- A $235 gross 8-hour shift with 105 miles ≈ $175 take-home ($22/hr, 74% keep rate) after $43 vehicle costs (fuel $17 + wear & tear $26) and $17 estimated tax.
 - Tax reserve guidance: roughly $0.14 per $1 earned (planning estimate, varies by situation).
 - Separate self-employment / federal / state tax estimates, quarterly tracker, expense-gap detection (phone, parking, tolls).
 - E-bike differentiator: IRS-correct expense method for e-bike couriers (electricity per mile, battery and mechanical wear) — the standard mileage rate does not apply to e-bikes.

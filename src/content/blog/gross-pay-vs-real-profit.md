@@ -12,13 +12,13 @@ That's it. Three numbers. The hard part isn't the math — it's that two of the 
 
 ## A real 8-hour shift, worked through
 
-Take a $235 shift — 8 hours, 130 miles driven.
+Take a $235 shift — 8 hours, 105 miles driven.
 
 | Line | Amount |
 |---|---|
 | Gross earnings | $235 |
-| Vehicle costs (gas, wear, maintenance share) | −$27 |
-| Estimated tax set-aside | −$33 |
+| Vehicle costs (fuel $17 + wear & tear $26) | −$43 |
+| Estimated tax (planning estimate) | −$17 |
 | **Take-home** | **$175** |
 
 That's a **74% keep rate**, or about **$22/hour after every cost** — a very different picture from the $29/hour the gross number suggests.
@@ -26,7 +26,7 @@ That's a **74% keep rate**, or about **$22/hour after every cost** — a very di
 Two things to notice:
 
 1. **The miles matter twice.** They cost you money in gas and wear now, and they're the record that supports your mileage deduction later. If you don't track them while driving, you're losing both ways.
-2. **Nobody withheld anything.** As an independent contractor you're responsible for self-employment tax plus federal and state income tax. A working rule of thumb from this example: set aside roughly **14 cents of every dollar you earn**. Your actual rate depends on your full tax situation — treat this as a planning estimate, not a final answer.
+2. **Nobody withheld anything.** As an independent contractor you're responsible for self-employment tax plus federal and state income tax — in this example the estimate came to $17, mostly self-employment tax. As a year-round planning habit, a common guideline is to set aside roughly **14 cents of every dollar you earn** so quarterly payments never surprise you. Your actual rate depends on your full tax situation — treat all of this as a planning estimate, not a final answer.
 
 ## The expenses drivers forget
 
