@@ -25,10 +25,35 @@ export function DownloadClient({
     const p = detectPlatform()
     setPlatform(p)
 
+    // Fire a store_click beacon BEFORE the mobile auto-redirect. The redirect
+    // is a window.location assignment, not an anchor click, so SiteBeacon's
+    // click listener can't see it — this is the only place the mobile store
+    // handoff (the highest-intent event) can be recorded. Carries the session's
+    // utm_* from sessionStorage so it attributes to reddit/tiktok/etc.
+    function beaconStoreClick(store: 'ios' | 'android') {
+      try {
+        let utm: Record<string, string> = {}
+        const stored = sessionStorage.getItem('gm_attribution')
+        if (stored) utm = JSON.parse(stored)
+        const body = JSON.stringify({
+          event: 'store_click',
+          ts: Date.now(),
+          store,
+          page: '/download',
+          ...utm,
+        })
+        if (navigator.sendBeacon) navigator.sendBeacon('/api/track', body)
+      } catch {
+        /* best-effort */
+      }
+    }
+
     // Auto-redirect on mobile if URL is real (not "#")
     if (p === 'ios' && iosUrl !== '#') {
+      beaconStoreClick('ios')
       window.location.href = iosUrl
     } else if (p === 'android' && androidUrl !== '#') {
+      beaconStoreClick('android')
       window.location.href = androidUrl
     }
   }, [iosUrl, androidUrl])
