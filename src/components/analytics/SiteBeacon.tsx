@@ -65,40 +65,48 @@ function storeFromHref(href: string): 'ios' | 'android' | null {
   return null
 }
 
+const EMPTY_GEO: Geo = { country: null, region: null, city: null }
+
 export function SiteBeacon() {
   const pathname = usePathname()
   const attributionRef = useRef<Attribution>({})
-  const geoRef = useRef<Geo>({ country: null, region: null, city: null })
+  const geoRef = useRef<Geo>(EMPTY_GEO)
+  // A single in-flight geo lookup shared across pageviews. Pageviews AWAIT it
+  // before beaconing so the very first (landing) event carries geo, instead of
+  // racing the async fetch and sending nulls.
+  const geoReadyRef = useRef<Promise<Geo> | null>(null)
 
-  // Resolve coarse geo once per session (state-level is reliable on mobile
-  // carriers; city less so). Cached in a ref so every beacon can attach it.
-  useEffect(() => {
-    let cancelled = false
-    fetch('/api/geo', { cache: 'no-store' })
-      .then(r => (r.ok ? r.json() : null))
-      .then(g => {
-        if (!cancelled && g) {
-          geoRef.current = {
-            country: g.country ?? null,
-            region: g.region ?? null,
-            city: g.city ?? null,
-          }
-        }
-      })
-      .catch(() => {
-        /* geo is best-effort; nulls are fine */
-      })
-    return () => {
-      cancelled = true
+  function getGeo(): Promise<Geo> {
+    if (!geoReadyRef.current) {
+      geoReadyRef.current = fetch('/api/geo', { cache: 'no-store' })
+        .then(r => (r.ok ? r.json() : null))
+        .then(g => {
+          const geo: Geo = g
+            ? { country: g.country ?? null, region: g.region ?? null, city: g.city ?? null }
+            : EMPTY_GEO
+          geoRef.current = geo
+          return geo
+        })
+        .catch(() => EMPTY_GEO)
     }
-  }, [])
+    return geoReadyRef.current
+  }
 
   // Pageview on every route change. /getgigmiles has its own beacon.
   useEffect(() => {
     if (!pathname || pathname.startsWith('/getgigmiles')) return
     const utm = loadAttribution()
     attributionRef.current = utm
-    beacon('pageview', { page: pathname, ...utm, ...geoRef.current })
+    let cancelled = false
+    // Wait for geo, but never block the beacon longer than 1.2s (a slow/absent
+    // /api/geo must not cost us the pageview — sendBeacon still fires on unload).
+    const timeout = new Promise<Geo>(res => setTimeout(() => res(geoRef.current), 1200))
+    Promise.race([getGeo(), timeout]).then(geo => {
+      if (!cancelled) beacon('pageview', { page: pathname, ...utm, ...geo })
+    })
+    return () => {
+      cancelled = true
+    }
   }, [pathname])
 
   // One capture-phase listener catches download intent site-wide, so no
@@ -118,10 +126,11 @@ export function SiteBeacon() {
       if (store) {
         // Direct store link (e.g. the /download desktop badges).
         beacon('store_click', { store, ...common })
-      } else if (/(^|\/)(download|getgigmiles)(\/|$|\?)/.test(href)) {
-        // Download-intent click on an internal link. On mobile /download then
-        // auto-redirects to the store (not an anchor click), so this is the
-        // last event we can reliably capture for that path.
+      } else if (/(^|\/)(download|getgigmiles|waitlist)(\/|$|\?)/.test(href)) {
+        // Download-intent click on an internal link (the site's "Download App"
+        // CTAs point at /waitlist; the smart bridge is /download). On mobile
+        // these then auto-redirect to the store (not an anchor click), so this
+        // is the last event we can reliably capture for that path.
         beacon('download_click', { ...common })
       }
     }
