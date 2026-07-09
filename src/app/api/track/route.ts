@@ -26,19 +26,29 @@ export async function POST(req: NextRequest) {
     const b = text ? JSON.parse(text) : {}
     const event = s(b.event, 32)
 
+    // Server-authoritative geo from Vercel edge headers on THIS request — the
+    // visitor's own IP. Robust against client caching and the client-fetch
+    // race that left country/region/city null. Falls back to whatever the
+    // client sent (e.g. the /getgigmiles bridge, or local dev with no edge).
+    const h = req.headers
+    const hCity = h.get('x-vercel-ip-city')
+    const geoCountry = h.get('x-vercel-ip-country') ?? s(b.country, 8)
+    const geoRegion = h.get('x-vercel-ip-country-region') ?? s(b.region, 16)
+    const geoCity = (hCity ? decodeURIComponent(hCity) : null) ?? s(b.city, 80)
+
     if (
       SUPABASE_URL &&
       SUPABASE_ANON &&
-      (event === 'pageview' || event === 'store_click')
+      (event === 'pageview' || event === 'store_click' || event === 'download_click')
     ) {
       const row = {
         event,
         src: s(b.src, 64),
         platform: s(b.platform, 16),
         store: s(b.store, 16),
-        country: s(b.country, 8),
-        region: s(b.region, 16),
-        city: s(b.city, 80),
+        country: s(geoCountry, 8),
+        region: s(geoRegion, 16),
+        city: s(geoCity, 80),
         tag: s(b.tag, 40),
         // Physical-campaign QR codes encode utm_* params (not ?src=) — store
         // them as first-class columns so the scan funnel is queryable.

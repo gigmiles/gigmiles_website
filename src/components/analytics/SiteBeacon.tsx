@@ -10,15 +10,15 @@ import { usePathname } from 'next/navigation'
  * browses, and maybe heads for the app. This component:
  *   1. Captures utm_* on first touch and keeps them in sessionStorage so
  *      attribution survives client-side navigation.
- *   2. Resolves coarse geo once (/api/geo, Vercel edge headers) so every
- *      event carries country/region/city — no GPS prompt.
- *   3. Sends a `pageview` beacon (with page path + geo) on every route change.
- *   4. Catches download intent site-wide: clicks on App Store / Play links
- *      (store_click) AND clicks on internal /download or /getgigmiles links
- *      (download_click), so the funnel is captured even though /download
- *      auto-redirects to the store on mobile (which is not an anchor click).
- * Events land in Supabase `campaign_events` next to the guerrilla-campaign
- * rows; funnel queries filter on utm_source.
+ *   2. Sends a `pageview` beacon (with page path) on every route change.
+ *   3. Catches download intent site-wide: clicks on App Store / Play links
+ *      (store_click) AND clicks on internal /download, /waitlist, /getgigmiles
+ *      links (download_click), so the funnel is captured even though those
+ *      auto-redirect to the store on mobile (not an anchor click).
+ *
+ * Geo (country/region/city) is stamped SERVER-SIDE in /api/track from the
+ * request's Vercel edge headers — robust against client caching and any
+ * client-fetch race. The client sends no geo.
  *
  * /getgigmiles keeps its own richer beacon (geo greeting, ct/referrer
  * stamping) — SiteBeacon skips that route to avoid double counting.
@@ -28,7 +28,6 @@ const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'] as 
 const STORAGE_KEY = 'gm_attribution'
 
 type Attribution = Partial<Record<(typeof UTM_KEYS)[number], string>>
-type Geo = { country: string | null; region: string | null; city: string | null }
 
 function loadAttribution(): Attribution {
   try {
@@ -65,48 +64,16 @@ function storeFromHref(href: string): 'ios' | 'android' | null {
   return null
 }
 
-const EMPTY_GEO: Geo = { country: null, region: null, city: null }
-
 export function SiteBeacon() {
   const pathname = usePathname()
   const attributionRef = useRef<Attribution>({})
-  const geoRef = useRef<Geo>(EMPTY_GEO)
-  // A single in-flight geo lookup shared across pageviews. Pageviews AWAIT it
-  // before beaconing so the very first (landing) event carries geo, instead of
-  // racing the async fetch and sending nulls.
-  const geoReadyRef = useRef<Promise<Geo> | null>(null)
-
-  function getGeo(): Promise<Geo> {
-    if (!geoReadyRef.current) {
-      geoReadyRef.current = fetch('/api/geo', { cache: 'no-store' })
-        .then(r => (r.ok ? r.json() : null))
-        .then(g => {
-          const geo: Geo = g
-            ? { country: g.country ?? null, region: g.region ?? null, city: g.city ?? null }
-            : EMPTY_GEO
-          geoRef.current = geo
-          return geo
-        })
-        .catch(() => EMPTY_GEO)
-    }
-    return geoReadyRef.current
-  }
 
   // Pageview on every route change. /getgigmiles has its own beacon.
   useEffect(() => {
     if (!pathname || pathname.startsWith('/getgigmiles')) return
     const utm = loadAttribution()
     attributionRef.current = utm
-    let cancelled = false
-    // Wait for geo, but never block the beacon longer than 1.2s (a slow/absent
-    // /api/geo must not cost us the pageview — sendBeacon still fires on unload).
-    const timeout = new Promise<Geo>(res => setTimeout(() => res(geoRef.current), 1200))
-    Promise.race([getGeo(), timeout]).then(geo => {
-      if (!cancelled) beacon('pageview', { page: pathname, ...utm, ...geo })
-    })
-    return () => {
-      cancelled = true
-    }
+    beacon('pageview', { page: pathname, ...utm })
   }, [pathname])
 
   // One capture-phase listener catches download intent site-wide, so no
@@ -118,11 +85,7 @@ export function SiteBeacon() {
       if (window.location.pathname.startsWith('/getgigmiles')) return
       const href = anchor.getAttribute('href') || ''
       const store = storeFromHref(href)
-      const common = {
-        page: window.location.pathname,
-        ...attributionRef.current,
-        ...geoRef.current,
-      }
+      const common = { page: window.location.pathname, ...attributionRef.current }
       if (store) {
         // Direct store link (e.g. the /download desktop badges).
         beacon('store_click', { store, ...common })
