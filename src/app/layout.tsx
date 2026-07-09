@@ -4,6 +4,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SiteBeacon } from "@/components/analytics/SiteBeacon";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -97,6 +98,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TooltipProvider>
+            <SiteBeacon />
             {children}
             <Toaster />
           </TooltipProvider>

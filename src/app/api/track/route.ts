@@ -45,6 +45,10 @@ export async function POST(req: NextRequest) {
         utm_source: s(b.utm_source, 64),
         utm_medium: s(b.utm_medium, 64),
         utm_campaign: s(b.utm_campaign, 64),
+        utm_content: s(b.utm_content, 64),
+        // Site-wide beacon (SiteBeacon) reports which page the event happened
+        // on — the /getgigmiles bridge predates this column and leaves it null.
+        page: s(b.page, 128),
       }
       await fetch(`${SUPABASE_URL}/rest/v1/campaign_events`, {
         method: 'POST',
