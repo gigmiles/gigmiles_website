@@ -59,6 +59,10 @@ export async function POST(req: NextRequest) {
         // Site-wide beacon (SiteBeacon) reports which page the event happened
         // on — the /getgigmiles bridge predates this column and leaves it null.
         page: s(b.page, 128),
+        // Per-visitor id (SiteBeacon gm_cid). Also carried on the Android install
+        // referrer, so a web session can be joined to an install once the app
+        // reads the referrer and stamps it on the profile.
+        cid: s(b.cid, 64),
       }
       await fetch(`${SUPABASE_URL}/rest/v1/campaign_events`, {
         method: 'POST',

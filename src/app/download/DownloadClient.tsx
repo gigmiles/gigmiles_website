@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { attributedStoreUrl } from '@/lib/storeAttribution'
 
 type Platform = 'ios' | 'android' | 'desktop' | 'detecting'
 
@@ -35,11 +36,14 @@ export function DownloadClient({
         let utm: Record<string, string> = {}
         const stored = sessionStorage.getItem('gm_attribution')
         if (stored) utm = JSON.parse(stored)
+        let cid: string | null = null
+        try { cid = sessionStorage.getItem('gm_cid') } catch { /* ignore */ }
         const body = JSON.stringify({
           event: 'store_click',
           ts: Date.now(),
           store,
-          page: '/download',
+          page: window.location.pathname,
+          ...(cid ? { cid } : {}),
           ...utm,
         })
         if (navigator.sendBeacon) navigator.sendBeacon('/api/track', body)
@@ -48,13 +52,15 @@ export function DownloadClient({
       }
     }
 
-    // Auto-redirect on mobile if URL is real (not "#")
+    // Auto-redirect on mobile if URL is real (not "#"). Attribute the redirect
+    // target with the visitor's campaign context (ct= / install referrer) — this
+    // is a window.location assignment, not an anchor, so SiteBeacon can't do it.
     if (p === 'ios' && iosUrl !== '#') {
       beaconStoreClick('ios')
-      window.location.href = iosUrl
+      window.location.href = attributedStoreUrl('ios', iosUrl)
     } else if (p === 'android' && androidUrl !== '#') {
       beaconStoreClick('android')
-      window.location.href = androidUrl
+      window.location.href = attributedStoreUrl('android', androidUrl)
     }
   }, [iosUrl, androidUrl])
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
+import { attributedStoreUrl } from '@/lib/storeAttribution'
 
 /**
  * SiteBeacon — site-wide campaign analytics, mounted once in the root layout.
@@ -26,6 +27,7 @@ import { usePathname } from 'next/navigation'
 
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'] as const
 const STORAGE_KEY = 'gm_attribution'
+const CID_KEY = 'gm_cid'
 
 type Attribution = Partial<Record<(typeof UTM_KEYS)[number], string>>
 
@@ -38,7 +40,8 @@ function loadAttribution(): Attribution {
       if (v) fromUrl[k] = v.slice(0, 64)
     }
     if (Object.keys(fromUrl).length) {
-      // First touch wins for the session; a new tagged arrival overwrites.
+      // Last tagged touch wins: a new tagged arrival overwrites the session's
+      // stored attribution (this is last-touch, not first-touch).
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(fromUrl))
       return fromUrl
     }
@@ -49,9 +52,26 @@ function loadAttribution(): Attribution {
   }
 }
 
+// Stable per-visitor id, minted once per session. Carried on beacons and on the
+// Android install referrer so a web session can eventually be joined to an
+// install/signup (app-side). Best-effort — never throws.
+function getCid(): string | null {
+  try {
+    let cid = sessionStorage.getItem(CID_KEY)
+    if (!cid && typeof crypto !== 'undefined' && crypto.randomUUID) {
+      cid = crypto.randomUUID()
+      sessionStorage.setItem(CID_KEY, cid)
+    }
+    return cid
+  } catch {
+    return null
+  }
+}
+
 function beacon(event: string, payload: Record<string, unknown>) {
   try {
-    const body = JSON.stringify({ event, ts: Date.now(), ...payload })
+    const cid = getCid()
+    const body = JSON.stringify({ event, ts: Date.now(), ...(cid ? { cid } : {}), ...payload })
     if (navigator.sendBeacon) navigator.sendBeacon('/api/track', body)
   } catch {
     /* best-effort — analytics must never break the page */
@@ -87,7 +107,12 @@ export function SiteBeacon() {
       const store = storeFromHref(href)
       const common = { page: window.location.pathname, ...attributionRef.current }
       if (store) {
-        // Direct store link (e.g. the /download desktop badges).
+        // Direct store link (e.g. the /download desktop badges). Decorate the
+        // href with the visitor's campaign context (ct= for iOS, install
+        // referrer for Android) BEFORE the browser navigates — no-ops for
+        // organic visitors, so canonical links stay canonical.
+        const decorated = attributedStoreUrl(store, href)
+        if (decorated !== href) anchor.setAttribute('href', decorated)
         beacon('store_click', { store, ...common })
       } else if (/(^|\/)(download|getgigmiles|waitlist)(\/|$|\?)/.test(href)) {
         // Download-intent click on an internal link (the site's "Download App"
