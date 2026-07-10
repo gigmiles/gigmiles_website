@@ -15,37 +15,10 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  async redirects() {
-    if (isStaticExport) return []
-    // Short branded bio links — clean in social bios, full UTM attribution on landing.
-    const social = (source: string, utmSource: string) => ({
-      source,
-      destination: `/?utm_source=${utmSource}&utm_medium=organic_social&utm_campaign=driver_education&utm_content=bio_link`,
-      permanent: false, // 307 — keeps flexibility to retarget campaigns later
-    })
-    return [
-      social('/tiktok', 'tiktok'),
-      social('/instagram', 'instagram'),
-      social('/ig', 'instagram'),
-      social('/x', 'x_twitter'),
-      social('/twitter', 'x_twitter'),
-      social('/youtube', 'youtube'),
-      {
-        // Medium republish CTA — article-specific content tag
-        source: '/medium',
-        destination:
-          '/?utm_source=medium&utm_medium=blog_republish&utm_campaign=driver_education&utm_content=gross_vs_net_article',
-        permanent: false,
-      },
-      {
-        // Reddit paid campaign — ad-specific content tag, unlike the generic bio links
-        source: '/reddit',
-        destination:
-          '/?utm_source=reddit&utm_medium=paid_social&utm_campaign=driver_education&utm_content=freeform_launch_v1',
-        permanent: false,
-      },
-    ]
-  },
+  // Campaign short-links (/reddit, /tiktok, /medium, …) are handled in
+  // src/middleware.ts now, so each hit is logged SERVER-SIDE (ad-block-proof)
+  // before the 307 to the UTM'd homepage. Source of truth: src/lib/campaign-links.ts.
+  // next.config redirects run BEFORE middleware, so they must NOT be duplicated here.
   async headers() {
     if (isStaticExport) return []
     return [
