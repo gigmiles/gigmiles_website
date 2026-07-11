@@ -15,6 +15,12 @@ export const APPLE_TEAM_ID = 'XXXXXXXXXX'     // TODO: fill from Apple Developer
 // is set here, buildIosStoreUrl() appends pt= + ct= automatically.
 export const APPLE_PROVIDER_TOKEN = ''
 
+// Reddit Ads Pixel id (Events Manager → Pixel, looks like "a2_xxxxxxxx").
+// Empty = pixel disabled (the RedditPixel component renders nothing). Pixel
+// ids are public by nature (visible in page source), so a committed constant
+// is fine here.
+export const REDDIT_PIXEL_ID = ''
+
 // Campaign attribution carried on a store link, sourced from the visitor's
 // session utm (see src/lib/storeAttribution.ts). cid is an optional per-visitor
 // id that lets the app build a true web→install join (Android only; see below).

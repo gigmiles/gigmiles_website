@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { attributedStoreUrl } from '@/lib/storeAttribution'
+import { redditTrack } from '@/components/analytics/RedditPixel'
 
 /**
  * SiteBeacon — site-wide campaign analytics, mounted once in the root layout.
@@ -94,6 +95,7 @@ export function SiteBeacon() {
     const utm = loadAttribution()
     attributionRef.current = utm
     beacon('pageview', { page: pathname, ...utm })
+    redditTrack('PageVisit')
   }, [pathname])
 
   // One capture-phase listener catches download intent site-wide, so no
@@ -114,12 +116,14 @@ export function SiteBeacon() {
         const decorated = attributedStoreUrl(store, href)
         if (decorated !== href) anchor.setAttribute('href', decorated)
         beacon('store_click', { store, ...common })
+        redditTrack('Lead')
       } else if (/(^|\/)(download|getgigmiles|waitlist)(\/|$|\?)/.test(href)) {
         // Download-intent click on an internal link (the site's "Download App"
         // CTAs point at /waitlist; the smart bridge is /download). On mobile
         // these then auto-redirect to the store (not an anchor click), so this
         // is the last event we can reliably capture for that path.
         beacon('download_click', { ...common })
+        redditTrack('ViewContent')
       }
     }
     document.addEventListener('click', onClick, true)

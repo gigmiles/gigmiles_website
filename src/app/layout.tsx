@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteBeacon } from "@/components/analytics/SiteBeacon";
+import { RedditPixel } from "@/components/analytics/RedditPixel";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -99,6 +100,7 @@ export default function RootLayout({
         >
           <TooltipProvider>
             <SiteBeacon />
+            <RedditPixel />
             {children}
             <Toaster />
           </TooltipProvider>

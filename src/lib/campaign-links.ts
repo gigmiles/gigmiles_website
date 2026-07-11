@@ -30,6 +30,9 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
   medium: { utm_source: 'medium', utm_medium: 'blog_republish', utm_content: 'gross_vs_net_article' },
   // Paid campaigns
   reddit: { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'freeform_launch_v1' },
+  // Round 2 (image ad + CTA, 2026-07): fresh slug so Round-2 paid traffic is
+  // separable from Round 1 AND from any organic reuse of /reddit.
+  'reddit-ad': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'image_cta_r2_v1' },
 }
 
 // Build the homepage destination (path + query) for a campaign link.

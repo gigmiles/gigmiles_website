@@ -47,6 +47,12 @@ export function proxy(request: NextRequest, event: NextFetchEvent) {
     // Log server-side (doesn't delay the user), then 307 to the UTM'd homepage.
     event.waitUntil(logRedirectHit(request, key))
     const dest = new URL(campaignDestination(CAMPAIGN_LINKS[key]), request.url)
+    // Preserve inbound query params through the 307 (e.g. Reddit's rdt_cid
+    // click id, without which the Reddit Pixel can't match sessions to ads).
+    // Our own campaign utm_* values are already on dest and always win.
+    request.nextUrl.searchParams.forEach((value, k) => {
+      if (!dest.searchParams.has(k)) dest.searchParams.append(k, value)
+    })
     return NextResponse.redirect(dest, 307)
   }
   return NextResponse.next()
