@@ -19,7 +19,7 @@ export const APPLE_PROVIDER_TOKEN = ''
 // Empty = pixel disabled (the RedditPixel component renders nothing). Pixel
 // ids are public by nature (visible in page source), so a committed constant
 // is fine here.
-export const REDDIT_PIXEL_ID = ''
+export const REDDIT_PIXEL_ID = 'a2_jakb8lnfdfwn'
 
 // Campaign attribution carried on a store link, sourced from the visitor's
 // session utm (see src/lib/storeAttribution.ts). cid is an optional per-visitor
