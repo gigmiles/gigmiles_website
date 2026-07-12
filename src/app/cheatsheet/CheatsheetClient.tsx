@@ -1,0 +1,284 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
+/**
+ * CheatsheetClient — email-capture landing for the free 2026 cheat-sheet.
+ *
+ * Mobile-first on purpose: 80%+ of Reddit traffic is mobile, so the
+ * headline + form sit above the fold on a 375px viewport. Headline matches
+ * the campaign promise ("Know what you actually keep") per the recorded
+ * plan. The PDF is delivered instantly on submit — storage of the email is
+ * best-effort and never blocks the download.
+ *
+ * BRAND: GigMiles Brand Guidelines v1.0 — Deep Teal field, Mint accent,
+ * Outfit display / Inter body (same language as /getgigmiles).
+ */
+
+const TEAL = '#0E4F4F'
+const MINT = '#5EEAD4'
+const GOLD = '#FFC83D'
+const INK = '#0F172A'
+const BODY = '#475569'
+const BORDER = '#E2E8F0'
+const SURFACE = '#F8FAFC'
+
+const OUTFIT = 'var(--font-outfit), system-ui, sans-serif'
+const INTER = 'var(--font-inter), system-ui, sans-serif'
+
+const PDF_URL = '/downloads/GigMiles_Cheat_Sheet_2026.pdf'
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+type Status = 'idle' | 'submitting' | 'done' | 'invalid'
+
+type Utm = {
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+  utm_content?: string
+  cid?: string
+}
+
+function readUtm(): Utm {
+  const p = new URLSearchParams(window.location.search)
+  const pick = (k: string) => p.get(k) || undefined
+  return {
+    utm_source: pick('utm_source'),
+    utm_medium: pick('utm_medium'),
+    utm_campaign: pick('utm_campaign'),
+    utm_content: pick('utm_content'),
+    cid: pick('cid'),
+  }
+}
+
+export function CheatsheetClient() {
+  const [email, setEmail] = useState('')
+  const [hp, setHp] = useState('') // honeypot — bots fill it, humans never see it
+  const [status, setStatus] = useState<Status>('idle')
+  const [utm, setUtm] = useState<Utm>({})
+
+  useEffect(() => {
+    setUtm(readUtm())
+  }, [])
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault()
+    const trimmed = email.trim()
+    if (!EMAIL_RE.test(trimmed) || trimmed.length > 254) {
+      setStatus('invalid')
+      return
+    }
+    setStatus('submitting')
+    try {
+      await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed, hp, page: '/cheatsheet', ...utm }),
+      })
+    } catch {
+      // Best-effort storage: the driver still gets the sheet.
+    }
+    setStatus('done')
+  }
+
+  return (
+    <main
+      style={{
+        minHeight: '100dvh',
+        background: TEAL,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '32px 20px 40px',
+        fontFamily: INTER,
+      }}
+    >
+      <div style={{ width: '100%', maxWidth: 560 }}>
+        <div
+          style={{
+            fontFamily: OUTFIT,
+            fontWeight: 800,
+            fontSize: 15,
+            letterSpacing: 0.5,
+            color: '#fff',
+            marginBottom: 28,
+          }}
+        >
+          GIG<span style={{ color: MINT }}>MILES</span>
+        </div>
+
+        <h1
+          style={{
+            fontFamily: OUTFIT,
+            fontWeight: 800,
+            fontSize: 'clamp(28px, 7vw, 40px)',
+            lineHeight: 1.1,
+            color: '#fff',
+          }}
+        >
+          Know What You <span style={{ color: GOLD }}>Actually Keep</span>.
+        </h1>
+        <p style={{ marginTop: 12, fontSize: 16, lineHeight: 1.5, color: MINT }}>
+          Your gig app shows gross pay. We show your real net profit after
+          miles, fuel, and taxes.
+        </p>
+
+        <div
+          style={{
+            marginTop: 24,
+            background: '#fff',
+            borderRadius: 14,
+            padding: '22px 20px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
+          }}
+        >
+          {status !== 'done' ? (
+            <>
+              <p style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: 17, color: INK }}>
+                Free one-page cheat-sheet (2026)
+              </p>
+              <ul
+                style={{
+                  margin: '10px 0 0',
+                  padding: 0,
+                  listStyle: 'none',
+                  color: BODY,
+                  fontSize: 14,
+                  lineHeight: 1.45,
+                }}
+              >
+                {[
+                  'See your true take-home pay, not just the payout.',
+                  'Track every business mile and vehicle cost automatically.',
+                  'Organize cleaner records for tax season with ease.',
+                ].map(line => (
+                  <li key={line} style={{ padding: '4px 0 4px 22px', position: 'relative' }}>
+                    <span
+                      aria-hidden
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 7,
+                        width: 10,
+                        height: 10,
+                        borderRadius: 3,
+                        background: MINT,
+                      }}
+                    />
+                    {line}
+                  </li>
+                ))}
+              </ul>
+
+              <form onSubmit={submit} style={{ marginTop: 16 }}>
+                {/* Honeypot: visually hidden, tab-skipped. */}
+                <input
+                  type="text"
+                  value={hp}
+                  onChange={e => setHp(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden
+                  style={{ position: 'absolute', left: -9999, opacity: 0, height: 0 }}
+                />
+                <label
+                  htmlFor="email"
+                  style={{ display: 'block', fontSize: 13, fontWeight: 600, color: INK }}
+                >
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => {
+                    setEmail(e.target.value)
+                    if (status === 'invalid') setStatus('idle')
+                  }}
+                  placeholder="you@example.com"
+                  style={{
+                    marginTop: 6,
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    padding: '12px 14px',
+                    fontSize: 16,
+                    border: `1.5px solid ${status === 'invalid' ? '#E11D48' : BORDER}`,
+                    borderRadius: 10,
+                    outline: 'none',
+                    color: INK,
+                    background: SURFACE,
+                  }}
+                />
+                {status === 'invalid' && (
+                  <p style={{ marginTop: 6, fontSize: 12.5, color: '#E11D48' }}>
+                    That email doesn&apos;t look right — mind checking it?
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  style={{
+                    marginTop: 12,
+                    width: '100%',
+                    padding: '13px 16px',
+                    fontFamily: OUTFIT,
+                    fontWeight: 800,
+                    fontSize: 16,
+                    color: TEAL,
+                    background: MINT,
+                    border: 'none',
+                    borderRadius: 10,
+                    cursor: 'pointer',
+                    opacity: status === 'submitting' ? 0.7 : 1,
+                  }}
+                >
+                  {status === 'submitting' ? 'One second…' : 'Get Your Free Cheat-Sheet'}
+                </button>
+              </form>
+              <p style={{ marginTop: 10, fontSize: 12, color: BODY, textAlign: 'center' }}>
+                No spam. Unsubscribe anytime.
+              </p>
+            </>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '6px 0' }}>
+              <p style={{ fontFamily: OUTFIT, fontWeight: 800, fontSize: 18, color: INK }}>
+                It&apos;s yours — grab the sheet.
+              </p>
+              <a
+                href={PDF_URL}
+                download
+                style={{
+                  display: 'inline-block',
+                  marginTop: 14,
+                  padding: '13px 22px',
+                  fontFamily: OUTFIT,
+                  fontWeight: 800,
+                  fontSize: 16,
+                  color: '#fff',
+                  background: '#22C58B',
+                  borderRadius: 10,
+                  textDecoration: 'none',
+                }}
+              >
+                Download the PDF
+              </a>
+              <p style={{ marginTop: 12, fontSize: 13, color: BODY }}>
+                Want the app to track all of it automatically?{' '}
+                <a href="/" style={{ color: TEAL, fontWeight: 700 }}>
+                  See GigMiles
+                </a>{' '}
+                — 10-day free trial, no card.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <p style={{ marginTop: 16, fontSize: 11.5, lineHeight: 1.5, color: 'rgba(255,255,255,0.55)' }}>
+          Tax estimates are for planning purposes only — not tax advice, not a
+          filed return. Your actual tax situation may differ.
+        </p>
+      </div>
+    </main>
+  )
+}

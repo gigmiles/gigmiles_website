@@ -15,6 +15,12 @@ type CampaignLink = {
   utm_source: string
   utm_medium: string
   utm_content: string
+  // Optional destination path. Default is the homepage. Rule of thumb
+  // (CRO verdict 2026-07-13): value-promise links (free guide/cheat-sheet
+  // contexts) land on /cheatsheet; product-promise links (app/bio/blog
+  // contexts) land on the homepage so nobody hits an email gate they
+  // didn't ask for.
+  dest?: string
 }
 
 // path (no leading slash) → attribution
@@ -28,14 +34,16 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
   youtube: { utm_source: 'youtube', utm_medium: 'organic_social', utm_content: 'bio_link' },
   // Blog republish CTA
   medium: { utm_source: 'medium', utm_medium: 'blog_republish', utm_content: 'gross_vs_net_article' },
-  // Paid campaigns
-  reddit: { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'freeform_launch_v1' },
+  // Paid campaigns. Reddit traffic is cold and value-seeking (Round 2
+  // lesson: 16 homepage landings, 0 download intents) — both slugs now
+  // land on the lead magnet instead of the homepage.
+  reddit: { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'freeform_launch_v1', dest: '/cheatsheet' },
   // Round 2 (image ad + CTA, 2026-07): fresh slug so Round-2 paid traffic is
   // separable from Round 1 AND from any organic reuse of /reddit.
-  'reddit-ad': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'image_cta_r2_v1' },
+  'reddit-ad': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'image_cta_r2_v1', dest: '/cheatsheet' },
 }
 
-// Build the homepage destination (path + query) for a campaign link.
+// Build the destination (path + query) for a campaign link.
 export function campaignDestination(link: CampaignLink): string {
   const p = new URLSearchParams({
     utm_source: link.utm_source,
@@ -43,7 +51,7 @@ export function campaignDestination(link: CampaignLink): string {
     utm_campaign: CAMPAIGN,
     utm_content: link.utm_content,
   })
-  return `/?${p.toString()}`
+  return `${link.dest ?? '/'}?${p.toString()}`
 }
 
 // Normalize an incoming pathname to a campaign key, or null if it isn't one.
