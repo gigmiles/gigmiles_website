@@ -40,8 +40,11 @@ export async function POST(req: NextRequest) {
           apikey: SUPABASE_ANON,
           Authorization: `Bearer ${SUPABASE_ANON}`,
           'Content-Type': 'application/json',
-          // Duplicate email = already subscribed = fine.
-          Prefer: 'resolution=ignore-duplicates',
+          // NOTE: no `Prefer: resolution=ignore-duplicates` here — PostgREST
+          // turns that into an upsert, which needs SELECT under RLS and the
+          // anon role deliberately has none (42501 in prod, 2026-07-13).
+          // Plain insert + treating 409 as "already subscribed" below is the
+          // RLS-compatible path.
         },
         body: JSON.stringify({
           email,
