@@ -10,7 +10,8 @@ import { REDDIT_PIXEL_ID } from '@/config/app'
  *
  * Event strategy (mirrors our own funnel, fired from SiteBeacon so both
  * systems see the same moments):
- *   PageVisit    → every route change (SiteBeacon pageview)
+ *   PageVisit    → initial visit from this base snippet; later route
+ *                  changes from SiteBeacon
  *   ViewContent  → download-intent click (SiteBeacon download_click)
  *   Lead         → store handoff (SiteBeacon store_click)
  * No SignUp event: signup happens in-app and is not web-observable — wiring
@@ -28,7 +29,7 @@ export function RedditPixel() {
   if (!REDDIT_PIXEL_ID) return null
   return (
     <Script id="reddit-pixel" strategy="afterInteractive">
-      {`${BOOTSTRAP}rdt('init','${REDDIT_PIXEL_ID}');`}
+      {`${BOOTSTRAP}rdt('init','${REDDIT_PIXEL_ID}');rdt('track','PageVisit');`}
     </Script>
   )
 }

@@ -88,6 +88,11 @@ function storeFromHref(href: string): 'ios' | 'android' | null {
 export function SiteBeacon() {
   const pathname = usePathname()
   const attributionRef = useRef<Attribution>({})
+  // The Reddit base snippet owns the initial PageVisit so init + track are
+  // queued atomically. This avoids losing the event when this effect runs
+  // before Next's afterInteractive Pixel script. Later client-side route
+  // changes still need an explicit PageVisit.
+  const initialRedditPageVisitHandled = useRef(false)
 
   // Pageview on every route change. /getgigmiles has its own beacon.
   useEffect(() => {
@@ -95,7 +100,11 @@ export function SiteBeacon() {
     const utm = loadAttribution()
     attributionRef.current = utm
     beacon('pageview', { page: pathname, ...utm })
-    redditTrack('PageVisit')
+    if (initialRedditPageVisitHandled.current) {
+      redditTrack('PageVisit')
+    } else {
+      initialRedditPageVisitHandled.current = true
+    }
   }, [pathname])
 
   // One capture-phase listener catches download intent site-wide, so no
