@@ -97,10 +97,12 @@ function MeltdownNumber({ progress }: { progress: number }) {
       />
 
       <div className="relative z-10 flex flex-col items-center gap-4" style={{ opacity: numOpacity }}>
-        {/* Stage 1 eyebrow */}
+        {/* Stage 1 eyebrow — visible from first paint (CRO 2026-07-13: the
+            fold used to show a bare $235 with zero framing; cold visitors
+            had no idea what the page was about) */}
         <p
           className="text-white/30 text-[11px] tracking-[0.3em] uppercase font-[family-name:var(--font-space-grotesk)] text-center"
-          style={{ opacity: progress < 0.14 ? Math.min(1, progress / 0.08) : Math.max(0, 1 - (progress - 0.14) / 0.04) }}
+          style={{ opacity: progress < 0.14 ? 1 : Math.max(0, 1 - (progress - 0.14) / 0.04) }}
         >
           Your shift earnings
         </p>
@@ -117,13 +119,29 @@ function MeltdownNumber({ progress }: { progress: number }) {
           ${displayNum}
         </span>
 
-        {/* Stage 1 context line */}
+        {/* Stage 1 context line — visible from first paint */}
         <p
           className="text-white/20 text-[13px] font-[family-name:var(--font-dm-sans)] tracking-wide text-center"
-          style={{ opacity: progress < 0.12 ? Math.min(1, progress / 0.08) : Math.max(0, 1 - (progress - 0.12) / 0.04) }}
+          style={{ opacity: progress < 0.12 ? 1 : Math.max(0, 1 - (progress - 0.12) / 0.04) }}
         >
           {HERO_CONFIG.platforms} · {HERO_CONFIG.shiftHours}h · {HERO_CONFIG.miles} mi
         </p>
+
+        {/* Stage 1 promise + scroll invitation — the one line that tells a
+            cold visitor what this page is about before any scrolling. Fades
+            out as the meltdown starts so it never competes with stage 2. */}
+        <div
+          className="flex flex-col items-center gap-2 text-center"
+          style={{ opacity: progress < 0.06 ? 1 : Math.max(0, 1 - (progress - 0.06) / 0.05) }}
+        >
+          <p className="text-white/70 text-[13px] sm:text-[17px] px-6 font-[family-name:var(--font-dm-sans)]">
+            That&apos;s your gross — not what you take home.
+          </p>
+          <p className="text-[#5EEAD4] text-[13px] sm:text-[14px] font-[family-name:var(--font-space-grotesk)] tracking-[0.06em]">
+            Scroll to see what you actually keep
+          </p>
+          <span aria-hidden className="text-[#5EEAD4]/70 text-[18px] leading-none animate-bounce">↓</span>
+        </div>
 
         {/* Stage 3+ subtitle */}
         <div

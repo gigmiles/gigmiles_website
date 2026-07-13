@@ -791,20 +791,20 @@ function FeaturesSection() {
           <FeatureRow
             tag="Tax breakdown"
             title="Quarterly taxes — broken down by type"
-            body="GigMiles calculates self-employment, federal, and state tax separately. Know what you owe before the deadline — not after."
+            body="GigMiles calculates self-employment, federal, and state tax separately. Know your estimated quarterly tax before the deadline — not after."
             widget={(a) => <TaxBreakdownWidget active={a} />}
           />
           <FeatureRow
             tag="Expense gaps"
-            title="Find the deductions you're missing"
-            body="GigMiles scans your data and spots unlogged expenses — phone, parking, tolls. Missed deductions are money you gave away for free."
+            title="Spot the expenses you forgot to log"
+            body="GigMiles scans your data and spots unlogged expenses — phone, parking, tolls — so your records stay complete and your tax pro gets cleaner numbers."
             widget={(a) => <ExpenseGapsWidget active={a} />}
             reverse
           />
           <FeatureRow
             tag="Tax reserve"
             title="One number: set this much aside per dollar"
-            body="GigMiles tells you exactly how many cents to save per dollar earned — so tax season is never a surprise again."
+            body="GigMiles gives you one simple estimate — how many cents to set aside per dollar earned — so you can plan ahead for tax season."
             widget={(a) => <YtdSummaryWidget active={a} />}
           />
           <FeatureRow
