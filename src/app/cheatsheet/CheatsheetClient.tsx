@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { CheatsheetView } from './CheatsheetView'
 
 /**
  * CheatsheetClient — email-capture landing for the free 2026 cheat-sheet.
@@ -241,35 +242,68 @@ export function CheatsheetClient() {
               </p>
             </>
           ) : (
-            <div style={{ textAlign: 'center', padding: '6px 0' }}>
+            <div>
               <p style={{ fontFamily: OUTFIT, fontWeight: 800, fontSize: 18, color: INK }}>
-                It&apos;s yours — grab the sheet.
+                Here&apos;s your cheat-sheet — read it right here.
               </p>
-              <a
-                href={PDF_URL}
-                download
+              <p style={{ marginTop: 4, fontSize: 13, color: BODY }}>
+                No download needed. Want to keep a copy?{' '}
+                <a href={PDF_URL} download style={{ color: TEAL, fontWeight: 700 }}>
+                  Save the PDF
+                </a>
+                .
+              </p>
+
+              <div style={{ marginTop: 16 }}>
+                <CheatsheetView />
+              </div>
+
+              {/* App / site router — the whole point is to move readers toward the app. */}
+              <div
                 style={{
-                  display: 'inline-block',
-                  marginTop: 14,
-                  padding: '13px 22px',
-                  fontFamily: OUTFIT,
-                  fontWeight: 800,
-                  fontSize: 16,
-                  color: '#fff',
-                  background: '#22C58B',
-                  borderRadius: 10,
-                  textDecoration: 'none',
+                  marginTop: 20,
+                  padding: '18px 16px',
+                  background: TEAL,
+                  borderRadius: 14,
+                  textAlign: 'center',
                 }}
               >
-                Download the PDF
-              </a>
-              <p style={{ marginTop: 12, fontSize: 13, color: BODY }}>
-                Want the app to track all of it automatically?{' '}
-                <a href="/" style={{ color: TEAL, fontWeight: 700 }}>
-                  See GigMiles
-                </a>{' '}
-                — 10-day free trial, no card.
-              </p>
+                <p style={{ fontFamily: OUTFIT, fontWeight: 800, fontSize: 16, color: '#fff', margin: 0 }}>
+                  Let GigMiles do all of this for you.
+                </p>
+                <p style={{ marginTop: 6, fontSize: 13, color: MINT }}>
+                  Your exact car, your state, your filing situation — tracked automatically.
+                </p>
+                <a
+                  href="/download"
+                  style={{
+                    display: 'block',
+                    marginTop: 14,
+                    padding: '14px 22px',
+                    fontFamily: OUTFIT,
+                    fontWeight: 800,
+                    fontSize: 16,
+                    color: TEAL,
+                    background: MINT,
+                    borderRadius: 10,
+                    textDecoration: 'none',
+                  }}
+                >
+                  Get the GigMiles app — free 10-day trial
+                </a>
+                <a
+                  href="/"
+                  style={{
+                    display: 'inline-block',
+                    marginTop: 12,
+                    fontSize: 13,
+                    color: 'rgba(255,255,255,0.85)',
+                    fontWeight: 600,
+                  }}
+                >
+                  or see how it works →
+                </a>
+              </div>
             </div>
           )}
         </div>
