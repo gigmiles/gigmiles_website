@@ -115,6 +115,17 @@ export const Particles: React.FC<ParticlesProps> = ({
         clearTimeout(resizeTimeout.current)
       }
       resizeTimeout.current = setTimeout(() => {
+        // Mobile browsers fire resize when the address bar hides/shows during
+        // scroll; the container itself doesn't change size then, and a full
+        // re-init would visibly re-scatter every particle mid-scroll.
+        const container = canvasContainerRef.current
+        if (
+          container &&
+          container.offsetWidth === canvasSize.current.w &&
+          container.offsetHeight === canvasSize.current.h
+        ) {
+          return
+        }
         initCanvasRef.current()
       }, 200)
     }
@@ -130,7 +141,10 @@ export const Particles: React.FC<ParticlesProps> = ({
       }
       window.removeEventListener("resize", handleResize)
     }
-  }, [color])
+    // Mount-only: `color` flows into the running rAF loop via animateRef,
+    // which is reassigned every render. Re-running this effect on color
+    // change would wipe and re-scatter all particles each scroll frame.
+  }, [])
 
   useEffect(() => {
     onMouseMoveRef.current()

@@ -10,6 +10,9 @@ import { DownloadButton } from './ui/DownloadButton'
 import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL } from '@/config/app'
 
 gsap.registerPlugin(ScrollTrigger)
+// Mobile address-bar show/hide fires resize events mid-scroll; without this,
+// every ScrollTrigger refreshes (full layout re-measure) and the page hitches.
+ScrollTrigger.config({ ignoreMobileResize: true })
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 function Nav() {
@@ -21,7 +24,7 @@ function Nav() {
   }, [])
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 md:px-14 py-5 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 md:px-14 py-5 transition-colors duration-500 ${
         scrolled ? 'bg-[#0A3C3C]/95 backdrop-blur-xl border-b border-white/[0.06]' : ''
       }`}
     >
@@ -316,7 +319,10 @@ function HowItWorksSection() {
   const scene = HOW_SCENES[activeScene]
 
   return (
-    <section id="how" ref={sectionRef} className={`relative bg-[#0A3C3C] border-t border-white/[0.06] ${staticLayout ? '' : 'min-h-[300vh]'}`}>
+    // The 300vh scroll runway only serves the md+ sticky storyboard; on
+    // mobile that viewport is hidden and the extra height reads as a
+    // screenful of blank teal after the stacked cards.
+    <section id="how" ref={sectionRef} className={`relative bg-[#0A3C3C] border-t border-white/[0.06] ${staticLayout ? '' : 'md:min-h-[300vh]'}`}>
       {/* ── Sticky viewport ── */}
       <div className={`sticky top-0 h-screen w-full overflow-hidden ${staticLayout ? 'hidden' : 'hidden md:flex'}`}>
         {/* Left — narrative */}
@@ -1239,7 +1245,7 @@ function FinalCtaSection() {
   return (
     <section
       ref={ref}
-      className="relative min-h-[70dvh] sm:min-h-[80dvh] bg-[#0A3C3C] flex flex-col items-center justify-center px-5 py-16 sm:px-6 text-center gap-5 sm:gap-7 border-t border-white/[0.06] overflow-hidden"
+      className="relative min-h-[70svh] sm:min-h-[80svh] bg-[#0A3C3C] flex flex-col items-center justify-center px-5 py-16 sm:px-6 text-center gap-5 sm:gap-7 border-t border-white/[0.06] overflow-hidden"
     >
       {/* Ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
