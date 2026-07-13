@@ -38,7 +38,7 @@ const FAQS = [
   },
   {
     q: 'Can I deduct miles on an e-bike?',
-    a: 'Not with the standard mileage rate — the IRS limits it to cars, vans, pickups, and panel trucks. E-bike couriers deduct actual expenses instead: electricity, battery wear, tires, and maintenance. This calculator estimates e-bike costs at $0.08 per mile by default, and you can edit that rate to match your real costs.',
+    a: 'Not with the standard mileage rate — the IRS limits it to cars, vans, pickups, and panel trucks. E-bike couriers deduct actual expenses instead: electricity, battery wear, tires, and maintenance. This calculator estimates e-bike costs at about $0.057 per mile (roughly 6 cents) by default — electricity plus battery and mechanical wear — and you can edit that rate to match your real costs. For a full electricity-and-wear breakdown, use the e-bike cost calculator.',
   },
   {
     q: 'Does this calculator include state income tax?',
@@ -115,7 +115,7 @@ export default function CalculatorPage() {
         <p className="mt-6 text-white/40 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic max-w-2xl">
           Vehicle cost for cars uses the IRS 2026 standard mileage rate of $0.725/mile.
           The IRS standard mileage rate does not apply to e-bikes; the e-bike figure is
-          an actual-expense estimate (default $0.08/mile, editable). Self-employment tax
+          an actual-expense estimate (default $0.057/mile, editable). Self-employment tax
           = (gross − vehicle cost) × 92.35% × 15.3%, floored at $0. Federal self-employment
           tax only — state income tax not included. Estimates for planning, not tax advice.
         </p>
@@ -138,9 +138,12 @@ export default function CalculatorPage() {
           </div>
         </section>
 
-        <p className="mt-10 text-center">
-          <Link href="/" className="text-[#5EEAD4] text-[13px] font-[family-name:var(--font-space-grotesk)] hover:opacity-80 transition-opacity">
-            ← gigmiles.app
+        <p className="mt-10 text-center flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <Link href="/ebike" className="text-[#5EEAD4] text-[13px] font-[family-name:var(--font-space-grotesk)] hover:opacity-80 transition-opacity">
+            Deliver on an e-bike? Use the e-bike cost calculator →
+          </Link>
+          <Link href="/" className="text-white/45 text-[13px] font-[family-name:var(--font-space-grotesk)] hover:opacity-80 transition-opacity">
+            gigmiles.app
           </Link>
         </p>
       </div>
