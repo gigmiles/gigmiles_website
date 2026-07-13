@@ -96,7 +96,9 @@ export const Particles: React.FC<ParticlesProps> = ({
   const mousePosition = MousePosition()
   const mouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const canvasSize = useRef<{ w: number; h: number }>({ w: 0, h: 0 })
-  const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
+  // Cap at 2: DPR-3 phones would otherwise push a ~1170x2530 backing store
+  // for a decorative layer, and the fill cost shows up as scroll jank.
+  const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 2) : 1
   const rafID = useRef<number | null>(null)
   const resizeTimeout = useRef<NodeJS.Timeout | null>(null)
   const initCanvasRef = useRef<() => void>(() => {})

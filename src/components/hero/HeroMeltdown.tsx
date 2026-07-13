@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useSyncExternalStore } from 'react'
 import { useScroll, useSpring, useMotionValueEvent } from 'motion/react'
 import { Particles } from '@/components/ui/particles'
 import { AnimatedShinyText } from '@/components/ui/animated-shiny-text'
@@ -113,7 +113,7 @@ function MeltdownNumber({ progress }: { progress: number }) {
             fontSize: 'clamp(100px, 22vw, 260px)',
             color,
             transform: `scale(${scale}) translateY(${entranceY}px)`,
-            transition: 'transform 80ms linear',
+            transition: 'none',
           }}
         >
           ${displayNum}
@@ -282,7 +282,7 @@ function EarningsBar({ progress }: { progress: number }) {
             width: `${pct}%`,
             backgroundColor: color,
             opacity: 0.6,
-            transition: 'width 80ms linear',
+            transition: 'none',
           }}
         />
       </div>
@@ -421,11 +421,26 @@ function ProgressDots({ progress }: { progress: number }) {
 }
 
 // ─── Main Hero Component ────────────────────────────────────────────────────
+function subscribeCoarsePointer(onChange: () => void) {
+  const mq = window.matchMedia('(pointer: coarse)')
+  mq.addEventListener('change', onChange)
+  return () => mq.removeEventListener('change', onChange)
+}
+
 export function HeroMeltdown() {
   const containerRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const [progress, setProgress] = useState(0)
   const [particleColor, setParticleColor] = useState('#5EEAD4')
+
+  // Touch devices skip the spring: it keeps emitting frames (and re-rendering
+  // this whole tree) for ~a second after the finger lifts, and phone GPUs
+  // can't afford the double smoothing. Desktop keeps the springy feel.
+  const isCoarse = useSyncExternalStore(
+    subscribeCoarsePointer,
+    () => window.matchMedia('(pointer: coarse)').matches,
+    () => false,
+  )
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -438,13 +453,21 @@ export function HeroMeltdown() {
     restDelta: 0.0005,
   })
 
-  useMotionValueEvent(smoothProgress, 'change', (v) => {
-    setProgress(v)
-    setParticleColor(getStageColor(v))
+  const lastQuantized = useRef(0)
+  useMotionValueEvent(isCoarse ? scrollYProgress : smoothProgress, 'change', (v) => {
+    // 1/1000 steps are invisible at these ranges but skip the re-renders the
+    // spring tail / sub-pixel scroll deltas would otherwise cause.
+    const q = Math.round(v * 1000) / 1000
+    if (q === lastQuantized.current) return
+    lastQuantized.current = q
+    setProgress(q)
+    setParticleColor(getStageColor(q))
   })
 
-  // Ambient glow color
-  const glowColor = getStageColor(progress)
+  // Ambient glow color — quantized to 1/20 steps: the glow is a 600px
+  // blur(120px) layer, so a per-frame color change forces a huge repaint
+  // every frame; at 8% opacity the stepped color is indistinguishable.
+  const glowColor = getStageColor(Math.round(progress * 20) / 20)
   const glowOpacity = progress > 0.53 && progress < 0.60 ? 0 : 0.08
 
   return (
@@ -456,7 +479,8 @@ export function HeroMeltdown() {
         {/* Particles background */}
         <Particles
           className="absolute inset-0"
-          quantity={70}
+          quantity={isCoarse ? 24 : 70}
+          refresh={isCoarse}
           color={particleColor}
           size={0.4}
           staticity={40}

@@ -25,7 +25,7 @@ function Nav() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 md:px-14 py-5 transition-colors duration-500 ${
-        scrolled ? 'bg-[#0A3C3C]/95 backdrop-blur-xl border-b border-white/[0.06]' : ''
+        scrolled ? 'bg-[#0A3C3C]/95 md:backdrop-blur-xl border-b border-white/[0.06]' : ''
       }`}
     >
       <div className="flex items-center gap-2.5">
