@@ -19,7 +19,7 @@ function fmtMoney(n: number, decimals = 0): string {
   return `${sign}$${Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`
 }
 
-// Shareable state ↔ URL query params (?g=235&mi=130&h=9&v=ebike&r=0.08)
+// Shareable state ↔ URL query params (?g=235&mi=130&h=9&v=ebike&r=0.057)
 function readUrlState(): typeof DEFAULTS {
   const p = new URLSearchParams(window.location.search)
   const num = (key: string, fallback: number, max: number) => {
