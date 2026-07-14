@@ -50,7 +50,7 @@ export default async function Image() {
             letterSpacing: '-4px',
           }}
         >
-          <span style={{ color: '#10B981' }}>≈6¢</span>
+          <span style={{ color: '#10B981' }}>~6¢</span>
           <span style={{ color: 'rgba(255,255,255,0.55)', fontSize: 40 }}>/ mile, not</span>
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>72.5¢</span>
         </div>
