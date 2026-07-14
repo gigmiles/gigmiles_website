@@ -40,6 +40,7 @@ export default async function BlogPostPage({
   const post = getPost((await params).slug)
   if (!post) notFound()
 
+  const more = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 4)
   const html = await marked.parse(getPostMarkdown(post.slug))
 
   const jsonLd = {
@@ -110,6 +111,34 @@ export default async function BlogPostPage({
             </a>
           </div>
         </aside>
+
+        {more.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-white/70 text-[12px] tracking-[0.22em] uppercase mb-6 font-[family-name:var(--font-space-grotesk)]">
+              More from the blog
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-5">
+              {more.map((p) => (
+                <Link
+                  key={p.slug}
+                  href={`/blog/${p.slug}`}
+                  className="group flex flex-col rounded-2xl border border-white/[0.08] bg-[#0C4A4A] p-6 h-full transition-all duration-200 hover:border-[#5EEAD4]/30 hover:shadow-[0_0_28px_rgba(94,234,212,0.12)]"
+                >
+                  <div className="flex flex-wrap items-center gap-3 text-[10px] tracking-[0.16em] uppercase font-[family-name:var(--font-space-grotesk)]">
+                    <span className="text-[#5EEAD4]/90 border border-[#5EEAD4]/25 rounded-full px-2.5 py-0.5">{p.tag}</span>
+                    <span className="text-white/40">{p.readingMinutes} min read</span>
+                  </div>
+                  <h3 className="mt-3 text-white text-[19px] font-black italic tracking-[-0.03em] leading-tight font-[family-name:var(--font-outfit)] group-hover:text-[#5EEAD4] transition-colors duration-200">
+                    {p.title}
+                  </h3>
+                  <span className="mt-4 inline-block text-[#5EEAD4] text-[12px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)]">
+                    Read →
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <p className="mt-10 text-white/35 text-[12px] leading-relaxed italic font-[family-name:var(--font-dm-sans)]">
           Tax estimates are for planning purposes only — not tax advice, not a
