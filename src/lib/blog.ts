@@ -15,6 +15,15 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'real-hourly-wage-gig-driver',
+    title: 'Your Real Hourly Wage as a Gig Driver (the App Number Isn’t It)',
+    description:
+      'The app shows $29 an hour; your take-home is closer to $22. How to find your real hourly wage and cost per mile — and use them to decide which orders are actually worth taking.',
+    date: '2026-07-14',
+    readingMinutes: 5,
+    tag: 'Driver Math',
+  },
+  {
     slug: 'gross-pay-vs-real-profit',
     title: 'Gross Pay vs Real Profit: What Gig Drivers Actually Keep',
     description:

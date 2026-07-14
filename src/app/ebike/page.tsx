@@ -96,6 +96,22 @@ export default function EbikePage() {
           electricity, battery wear, and mechanical wear.
         </p>
 
+        {/* Quotable, self-contained answer up top — the "pre-digested" format AI
+            answer engines lift. Tax-safe. */}
+        <div className="mb-8 sm:mb-10 border-l-2 border-[#5EEAD4]/70 bg-[#0C4646]/60 px-5 py-4">
+          <p className="text-[#5EEAD4] text-[11px] tracking-[0.18em] uppercase mb-2 font-[family-name:var(--font-space-grotesk)]">
+            The short answer
+          </p>
+          <p className="text-white/85 text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)] max-w-2xl">
+            No — you can&apos;t use the IRS standard mileage rate on an e-bike; that
+            rate is only for cars, vans, and trucks. E-bike couriers deduct actual
+            expenses instead — electricity, battery wear, and mechanical wear — which
+            usually work out to around 6 cents a mile. Keep your receipts and hand
+            clean numbers to a licensed tax professional. Estimates for planning, not
+            tax advice.
+          </p>
+        </div>
+
         <EbikeClient />
 
         {/* The three buckets, explained */}
