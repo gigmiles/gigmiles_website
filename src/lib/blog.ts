@@ -15,6 +15,15 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'how-to-choose-gig-driver-tracker',
+    title: 'How to Choose a Gig-Driver Income & Tax Tracker (and What Most Get Wrong)',
+    description:
+      'Most "gig apps" just log miles and add up your gross. Eight questions that separate a real net-profit tracker from a glorified odometer — including the e-bike trap most of them miss.',
+    date: '2026-07-14',
+    readingMinutes: 6,
+    tag: 'Tools',
+  },
+  {
     slug: 'real-hourly-wage-gig-driver',
     title: 'Your Real Hourly Wage as a Gig Driver (the App Number Isn’t It)',
     description:
