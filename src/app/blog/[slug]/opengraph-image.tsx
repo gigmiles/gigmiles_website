@@ -27,6 +27,15 @@ const logoDataUri =
   'data:image/png;base64,' +
   readFileSync(join(process.cwd(), 'public/brand/icons/icon-180.png')).toString('base64')
 
+// Outfit — the site's display font (var(--font-outfit)). Loaded here so the card
+// title/wordmark render in the brand face, not Satori's default sans. Satori can't
+// parse variable fonts, so these are static instances (Black 900 / Medium 500).
+// Outfit ships no true italic, so the site's italic is a faux slant — mirror with skewX.
+const outfitBlack = readFileSync(join(process.cwd(), 'public/brand/fonts/Outfit-Black.ttf'))
+const outfitMedium = readFileSync(join(process.cwd(), 'public/brand/fonts/Outfit-Medium.ttf'))
+
+const slant = 'skewX(-9deg)'
+
 export default async function Image({
   params,
 }: {
@@ -54,7 +63,7 @@ export default async function Image({
           justifyContent: 'space-between',
           background: `linear-gradient(to bottom right, ${teal}, ${tealDeep})`,
           padding: '54px 64px',
-          fontFamily: 'sans-serif',
+          fontFamily: 'Outfit',
           position: 'relative',
         }}
       >
@@ -102,9 +111,9 @@ export default async function Image({
               display: 'flex',
               fontSize: 36,
               fontWeight: 900,
-              fontStyle: 'italic',
               color: mint,
               letterSpacing: '-2px',
+              transform: slant,
             }}
           >
             gigmiles
@@ -128,10 +137,10 @@ export default async function Image({
               color: '#FFFFFF',
               fontSize: titleSize,
               fontWeight: 900,
-              fontStyle: 'italic',
-              letterSpacing: '-3px',
-              lineHeight: 1.1,
+              letterSpacing: '-1.5px',
+              lineHeight: 1.12,
               maxWidth: 1010,
+              transform: slant,
             }}
           >
             {title}
@@ -140,15 +149,15 @@ export default async function Image({
 
         {/* Footer: domain (balances the tag) + post tag */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', fontSize: 22, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px' }}>
+          <div style={{ display: 'flex', fontSize: 22, fontWeight: 500, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.5px' }}>
             gigmiles.app/blog
           </div>
           <div
             style={{
               display: 'flex',
               fontSize: 22,
+              fontWeight: 500,
               color: mint,
-              fontWeight: 600,
               letterSpacing: '4px',
               textTransform: 'uppercase',
             }}
@@ -158,6 +167,12 @@ export default async function Image({
         </div>
       </div>
     ),
-    { ...size },
+    {
+      ...size,
+      fonts: [
+        { name: 'Outfit', data: outfitBlack, weight: 900, style: 'normal' },
+        { name: 'Outfit', data: outfitMedium, weight: 500, style: 'normal' },
+      ],
+    },
   )
 }
