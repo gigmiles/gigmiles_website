@@ -92,6 +92,22 @@ export default function CalculatorPage() {
           real net after vehicle costs and self-employment tax.
         </p>
 
+        {/* Quotable, self-contained answer up top — the "pre-digested" format AI
+            answer engines lift. Canonical numbers, tax-safe. */}
+        <div className="mb-8 sm:mb-10 border-l-2 border-[#5EEAD4]/70 bg-[#0C4646]/60 px-5 py-4">
+          <p className="text-[#5EEAD4] text-[11px] tracking-[0.18em] uppercase mb-2 font-[family-name:var(--font-space-grotesk)]">
+            The short answer
+          </p>
+          <p className="text-white/85 text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)] max-w-2xl">
+            Your real hourly wage as a gig driver is your gross pay minus vehicle
+            costs (the IRS 2026 standard mileage rate is $0.725 per mile) minus
+            self-employment tax (15.3%) — usually about three-quarters of what the
+            app shows. Example: a $235 gross day over 8 hours is roughly $175
+            take-home, about $22 an hour, not $29. Estimates for planning, not tax
+            advice.
+          </p>
+        </div>
+
         <CalculatorClient />
 
         {/* CTA */}
