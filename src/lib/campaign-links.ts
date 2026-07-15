@@ -41,6 +41,9 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
   // Round 2 (image ad + CTA, 2026-07): fresh slug so Round-2 paid traffic is
   // separable from Round 1 AND from any organic reuse of /reddit.
   'reddit-ad': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'image_cta_r2_v1', dest: '/cheatsheet' },
+  // Round 3 (meme, IRS 76¢ angle → lead magnet). Fresh slug so R3 traffic is
+  // cleanly separable from R1/R2. Lands on the cheat-sheet; KPI = cost/lead.
+  'reddit-r3': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'meme_76c_r3', dest: '/cheatsheet' },
   // Creator/influencer outreach — ONE clean slug per creator so each channel's
   // traffic stays separable (we can see which creator actually converts, which
   // is the whole point of the outreach test). Convention: slug = short creator
