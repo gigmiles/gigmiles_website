@@ -113,7 +113,7 @@ export default function CalculatorPage() {
         {/* CTA */}
         <div className="mt-8 flex flex-col items-center gap-4 border border-white/[0.07] bg-[#0C4646] px-6 py-8 text-center">
           <p className="text-white/85 text-[15px] font-[family-name:var(--font-dm-sans)]">
-            GigMiles does this automatically every shift — 10 days free, no card.
+            GigMiles does this automatically every shift — free forever, no card.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a href={IOS_APP_STORE_URL} aria-label="Download on the App Store" className="inline-flex transition-transform active:scale-[0.97]">

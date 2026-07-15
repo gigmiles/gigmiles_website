@@ -289,7 +289,7 @@ export function CheatsheetClient() {
                     textDecoration: 'none',
                   }}
                 >
-                  Get the GigMiles app — free 10-day trial
+                  Get the GigMiles app — free, no card
                 </a>
                 <a
                   href="/"

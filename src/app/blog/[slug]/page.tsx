@@ -94,7 +94,7 @@ export default async function BlogPostPage({
           <p className="mt-3 text-white/55 text-[15px] leading-relaxed font-[family-name:var(--font-dm-sans)]">
             GigMiles tracks earnings, miles, and expenses, and shows your
             estimated take-home in real time — including proper expense math
-            for e-bike couriers. 10-day free trial, no card required.
+            for e-bike couriers. Free forever — no card required.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <a

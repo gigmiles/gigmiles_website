@@ -58,7 +58,7 @@ const FAQS: { q: string; a: string }[] = [
     a: 'Open the Tax tab and tap Schedule C Worksheet. You can download a Schedule C-ready PDF or CSV covering every shift, entry, mile, and expense for the year. The worksheet is a preparation aid for your CPA — not a filed tax return. Available on Pro.',
   },
   {
-    q: 'What happens when my trial ends?',
+    q: 'What happens when my Pro trial ends?',
     a: "Free features stay free forever — adding earnings and expenses, OCR scan, your Dashboard, and the weekly Shift History tab. Pro features (GPS Shift Tracking, full Insights, Tax Estimate Wizard, exports, AI Today's Brief) lock until you upgrade. Nothing is deleted; your data is always yours.",
   },
   {

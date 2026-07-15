@@ -394,7 +394,7 @@ function HeroCTA({ progress }: { progress: number }) {
         Download App
       </DownloadButton>
       <p className="text-white/20 text-[11px] font-[family-name:var(--font-dm-sans)]">
-        10 days free — no card required
+        Free forever — no card required
       </p>
     </div>
   )

@@ -199,7 +199,7 @@ export function CheatsheetView() {
         }}
       >
         <b>The GigMiles app tracks all of this automatically</b> — your exact car, your state, and your filing
-        situation. 10-day free trial, no card.
+        situation. Free forever — no card.
       </div>
     </div>
   )

@@ -498,7 +498,7 @@ export function GetGigMilesClient({
             7 extra days of Pro — on us
           </h2>
           <p style={{ fontSize: 14, lineHeight: 1.55, color: '#D4ECE8', margin: 0 }}>
-            Everyone gets 10 days free. Because you picked this up in person, we
+            Everyone gets a 10-day Pro trial. Because you picked this up in person, we
             add 7 more — <strong style={{ color: '#FFFFFF' }}>17 days of full
             Pro</strong>, no card.
           </p>

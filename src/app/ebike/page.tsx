@@ -132,7 +132,7 @@ export default function EbikePage() {
         <div className="mt-8 flex flex-col items-center gap-4 border border-white/[0.07] bg-[#0C4646] px-6 py-8 text-center">
           <p className="text-white/85 text-[15px] font-[family-name:var(--font-dm-sans)] max-w-md">
             GigMiles tracks all three buckets automatically — car or e-bike — and keeps
-            tax-season records for you. 10 days free, no card.
+            tax-season records for you. Free forever, no card.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a href={IOS_APP_STORE_URL} aria-label="Download on the App Store" className="inline-flex transition-transform active:scale-[0.97]">

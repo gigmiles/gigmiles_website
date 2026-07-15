@@ -1305,7 +1305,7 @@ function FinalCtaSection() {
         </a>
       </div>
       <p data-r className="relative z-10 text-white/55 text-[11px] font-[family-name:var(--font-dm-sans)]">
-        10 days free during beta — no card required
+        Free forever — no card required
       </p>
     </section>
   )
