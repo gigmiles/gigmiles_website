@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import { Menu, X } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMotionValueEvent, useScroll } from 'motion/react'
@@ -15,8 +16,20 @@ gsap.registerPlugin(ScrollTrigger)
 ScrollTrigger.config({ ignoreMobileResize: true })
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
+// Single source of truth for the nav links — rendered by both the desktop bar
+// and the mobile dropdown so the two can never drift apart.
+const NAV_LINKS = [
+  ['Why It Matters', '#why'],
+  ['How It Works', '#how'],
+  ['Calculator', '/calculator'],
+  ['Pricing', '#pricing'],
+  ['Blog', '/blog'],
+  ['Contact', '/contact'],
+]
+
 function Nav() {
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -25,7 +38,7 @@ function Nav() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 md:px-14 py-5 transition-colors duration-500 ${
-        scrolled ? 'bg-[#0A3C3C]/95 md:backdrop-blur-xl border-b border-white/[0.06]' : ''
+        scrolled || menuOpen ? 'bg-[#0A3C3C]/95 md:backdrop-blur-xl border-b border-white/[0.06]' : ''
       }`}
     >
       <div className="flex items-center gap-2.5">
@@ -33,21 +46,40 @@ function Nav() {
         <span className="text-[#5EEAD4] text-[18px] italic font-black tracking-[-0.04em] leading-none font-[family-name:var(--font-outfit)]">gigmiles</span>
       </div>
       <div className="hidden md:flex items-center gap-8">
-        {[
-          ['Why It Matters', '#why'],
-          ['How It Works', '#how'],
-          ['Calculator', '/calculator'],
-          ['Pricing', '#pricing'],
-          ['Contact', '/contact'],
-        ].map(([label, href]) => (
+        {NAV_LINKS.map(([label, href]) => (
           <a key={label} href={href} className="text-white/55 text-[15px] tracking-[0.04em] hover:text-white/65 transition-colors font-[family-name:var(--font-space-grotesk)]">
             {label}
           </a>
         ))}
       </div>
-      <DownloadButton className="text-white/55 text-[15px] tracking-[0.04em] border border-white/[0.14] px-5 py-2.5 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)] cursor-pointer">
-        Download App
-      </DownloadButton>
+      <div className="flex items-center gap-3">
+        <DownloadButton className="text-white/55 text-[15px] tracking-[0.04em] border border-white/[0.14] px-5 py-2.5 transition-all duration-200 hover:border-white/30 hover:text-white/80 active:scale-[0.98] font-[family-name:var(--font-space-grotesk)] cursor-pointer">
+          Download App
+        </DownloadButton>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+          className="md:hidden flex items-center justify-center text-white/70 hover:text-white transition-colors p-1 -mr-1 cursor-pointer"
+        >
+          {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+      {menuOpen && (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0A3C3C]/98 backdrop-blur-xl border-b border-white/[0.08] px-8 py-4 flex flex-col">
+          {NAV_LINKS.map(([label, href]) => (
+            <a
+              key={label}
+              href={href}
+              onClick={() => setMenuOpen(false)}
+              className="text-white/70 text-[15px] tracking-[0.04em] py-3 border-b border-white/[0.05] last:border-0 hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]"
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      )}
     </nav>
   )
 }
