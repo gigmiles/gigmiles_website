@@ -1092,10 +1092,10 @@ function PricingCard({ tier }: { tier: PricingTier }) {
 
 const PRICING_TIERS: PricingTier[] = [
   {
-    label: 'Free Trial',
+    label: 'Free',
     price: 'Free',
-    caption: '10 days · no card required',
-    features: ['All platforms tracked', 'Real-time net earnings', 'Quarterly tax estimates', 'Expense gap detection'],
+    caption: 'Forever · no card required',
+    features: ['Real net earnings dashboard', 'Log earnings + expenses', 'OCR receipt scan', 'Tax Center + Schedule C'],
     cta: 'Download App',
     bg: 'bg-[#0A3C3C]',
   },
@@ -1104,7 +1104,7 @@ const PRICING_TIERS: PricingTier[] = [
     price: '$9.99',
     priceSuffix: '/ month',
     caption: 'Billed monthly · cancel anytime',
-    features: ['Everything in Free Trial', 'Export for CPA', 'Unlimited shift history', 'Priority support'],
+    features: ['Everything in Free', 'GPS auto-tracking + AI', 'Export for CPA', 'Unlimited shift history'],
     cta: 'Download App',
     bg: 'bg-[#0A3C3C]',
   },
@@ -1136,7 +1136,7 @@ function PricingSection() {
           Less than one Uber ride per month
         </h2>
         <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-16 max-w-md font-[family-name:var(--font-dm-sans)]">
-          10 days free during beta. No card required to start.
+          Core features are free forever — no card. Try Pro free for 10 days.
         </p>
 
         {/* Mobile: featured first, then rest. Desktop: natural order */}
@@ -1177,8 +1177,8 @@ const FAQS = [
     a: 'No. GigMiles is a record-keeping and tax estimation tool — not a tax preparer and not a substitute for a CPA. The numbers help you plan and set money aside. Your tax professional reviews the full picture at filing time.',
   },
   {
-    q: 'What is the 10-day free trial?',
-    a: 'During beta, every new account gets 10 days fully free with no card required. Cancel anytime.',
+    q: 'Is GigMiles free? Do I need a credit card?',
+    a: 'Yes — there is a free tier and no card is required. Core features are free forever: your real net earnings dashboard, logging earnings and expenses, OCR receipt scan, and the on-screen Tax Center with a Schedule C worksheet. GigMiles Pro (automatic GPS tracking, AI insights, CPA export, and more) is an optional $9.99/month upgrade, and every new account also gets a 10-day Pro trial with no card required.',
   },
   {
     q: 'Can I export my data for a tax professional?',
