@@ -13,9 +13,9 @@ import {
 describe('calcRealNet', () => {
   it('computes the car example: $235 gross, 130 mi, 9 h', () => {
     const r = calcRealNet({ gross: 235, miles: 130, hours: 9, vehicle: 'car', ebikeRate: 0.08 })
-    expect(r.vehicleCost).toBeCloseTo(130 * IRS_MILEAGE_RATE_2026, 5) // 94.25
-    expect(r.seTax).toBeCloseTo((235 - 94.25) * 0.9235 * 0.153, 5) // ≈19.89
-    expect(r.net).toBeCloseTo(235 - 94.25 - r.seTax, 5)
+    expect(r.vehicleCost).toBeCloseTo(130 * IRS_MILEAGE_RATE_2026, 5) // 98.8 at 76¢/mi
+    expect(r.seTax).toBeCloseTo((235 - 130 * IRS_MILEAGE_RATE_2026) * 0.9235 * 0.153, 5) // ≈19.24
+    expect(r.net).toBeCloseTo(235 - 130 * IRS_MILEAGE_RATE_2026 - r.seTax, 5)
     expect(r.hourly).toBeCloseTo(r.net / 9, 5)
     expect(r.pctKept).toBeCloseTo(r.net / 235, 5)
   })
@@ -29,7 +29,7 @@ describe('calcRealNet', () => {
   it('floors SE tax at 0 when vehicle cost exceeds gross', () => {
     const r = calcRealNet({ gross: 50, miles: 200, hours: 5, vehicle: 'car', ebikeRate: 0.08 })
     expect(r.seTax).toBe(0)
-    expect(r.net).toBeCloseTo(50 - 145, 5) // net can go negative; shown honestly
+    expect(r.net).toBeCloseTo(50 - 200 * IRS_MILEAGE_RATE_2026, 5) // net can go negative; shown honestly
   })
 
   it('handles zero hours and zero gross without dividing by zero', () => {

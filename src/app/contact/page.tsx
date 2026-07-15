@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 // FAQ content mirrors the in-app Support screen
 // (gigmiles-mobile/lib/features/support/screens/support_screen.dart). When the
 // in-app FAQ changes, update this list to keep them in sync. Dynamic values are
-// resolved for the current tax year: 2026 IRS standard mileage rate = 72.5¢/mi.
+// resolved for the current tax year: 2026 IRS business standard mileage rate =
+// 76¢/mi effective July 1, 2026 (72.5¢ for Jan 1–Jun 30).
 const FAQS: { q: string; a: string }[] = [
   {
     q: 'How is the tax estimate calculated?',
@@ -18,7 +19,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'Should I track mileage or gas receipts?',
-    a: 'For most gig workers, the IRS standard mileage rate (72.5¢/mile in 2026) gives a larger deduction than actual expenses. Track your mileage with GigMiles — if you drive a lot, this is almost always the better option.',
+    a: 'For most gig workers, the IRS standard mileage rate (76¢/mile as of July 1, 2026) gives a larger deduction than actual expenses. Track your mileage with GigMiles — if you drive a lot, this is almost always the better option.',
   },
   {
     q: 'Can I deduct EV charging costs?',

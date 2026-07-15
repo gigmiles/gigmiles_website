@@ -15,6 +15,25 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: 'irs-mileage-rate-2026-76-cents-july',
+    title:
+      'The IRS Raised the 2026 Mileage Rate to 76¢ (Effective July 1): What Gig Drivers Need to Know',
+    description:
+      'The IRS raised the business standard mileage rate to 76 cents per mile on July 1, 2026 (up from 72.5 cents). Here’s what the rare mid-year change means for gig drivers — and why 2026 has two mileage rates you have to track separately.',
+    date: '2026-07-15',
+    readingMinutes: 5,
+    tag: 'Taxes',
+  },
+  {
+    slug: 'e-bike-delivery-profit-tax',
+    title: 'E-Bike Delivery Profit: What Couriers Actually Keep After Costs & Taxes',
+    description:
+      'Is e-bike delivery profitable? How e-bike couriers calculate true net profit, track unique costs like electricity and battery wear, and correctly handle tax deductions — there’s no IRS standard mileage rate for bikes.',
+    date: '2026-07-15',
+    readingMinutes: 6,
+    tag: 'E-Bike',
+  },
+  {
     slug: 'how-to-choose-gig-driver-tracker',
     title: 'How to Choose a Gig-Driver Income & Tax Tracker (and What Most Get Wrong)',
     description:

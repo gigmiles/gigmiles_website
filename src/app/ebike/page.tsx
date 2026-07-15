@@ -41,7 +41,7 @@ const FAQS = [
   },
   {
     q: 'Why is my e-bike deduction so much smaller than a car driver’s?',
-    a: 'Because an e-bike genuinely costs far less to operate — often around 6 cents a mile versus the IRS car rate of 72.5 cents. That is the whole appeal of the bike. It also means a smaller documented deduction on the same miles, so budget your estimated tax set-aside with that in mind rather than a car-driver rule of thumb.',
+    a: 'Because an e-bike genuinely costs far less to operate — often around 6 cents a mile versus the IRS car rate of 76 cents (as of July 1, 2026). That is the whole appeal of the bike. It also means a smaller documented deduction on the same miles, so budget your estimated tax set-aside with that in mind rather than a car-driver rule of thumb.',
   },
   {
     q: 'Does this replace a tax professional?',

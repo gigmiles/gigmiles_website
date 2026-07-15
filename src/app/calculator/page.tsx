@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: 'What is the IRS standard mileage rate for 2026?',
-    a: 'The IRS standard mileage rate for 2026 is $0.725 per business mile for cars, vans, pickups, and panel trucks. Multiply your business miles by 0.725 to estimate your vehicle deduction — the rate covers gas, maintenance, depreciation, and insurance in one number.',
+    a: 'The 2026 IRS business standard mileage rate is 76 cents per mile as of July 1, 2026 (it was 72.5 cents for the first half of the year), for cars, vans, pickups, and panel trucks. Because the IRS changed it mid-year, 2026 has two rates: multiply your July–December miles by 0.76 and your January–June miles by 0.725. The rate covers gas, maintenance, depreciation, and insurance in one number.',
   },
   {
     q: 'How is self-employment tax calculated for gig drivers?',
@@ -100,7 +100,7 @@ export default function CalculatorPage() {
           </p>
           <p className="text-white/85 text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)] max-w-2xl">
             Your real hourly wage as a gig driver is your gross pay minus vehicle
-            costs (the IRS 2026 standard mileage rate is $0.725 per mile) minus
+            costs (the IRS 2026 standard mileage rate is 76 cents per mile as of July 1) minus
             self-employment tax (15.3%) — usually about three-quarters of what the
             app shows. Example: a $235 gross day over 8 hours is roughly $175
             take-home, about $22 an hour, not $29. Estimates for planning, not tax
@@ -129,7 +129,7 @@ export default function CalculatorPage() {
 
         {/* Fine print */}
         <p className="mt-6 text-white/40 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic max-w-2xl">
-          Vehicle cost for cars uses the IRS 2026 standard mileage rate of $0.725/mile.
+          Vehicle cost for cars uses the IRS 2026 standard mileage rate of 76¢/mile (from July 1, 2026; 72.5¢ Jan–Jun).
           The IRS standard mileage rate does not apply to e-bikes; the e-bike figure is
           an actual-expense estimate (default $0.057/mile, editable). Self-employment tax
           = (gross − vehicle cost) × 92.35% × 15.3%, floored at $0. Federal self-employment

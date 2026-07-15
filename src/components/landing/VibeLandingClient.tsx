@@ -568,7 +568,7 @@ export function VibeLandingClient() {
                   </p>
                   <div className="space-y-3 py-4">
                     {[
-                      { stat: "$0.725/mi", label: "IRS Mileage Rate 2026" },
+                      { stat: "76¢/mi", label: "IRS Mileage Rate 2026" },
                       { stat: "Your Car", label: "Personalized Cost Data" },
                       { stat: "30 sec", label: "To Log a Trip" },
                     ].map((item) => (

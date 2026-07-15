@@ -127,7 +127,7 @@ export function CalculatorClient() {
           </div>
           <p className="text-white/45 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)]">
             {vehicle === 'car'
-              ? `Car costs use the IRS 2026 standard mileage rate — $${IRS_MILEAGE_RATE_2026.toFixed(3)}/mi.`
+              ? `Car costs use the IRS 2026 standard mileage rate — ${Math.round(IRS_MILEAGE_RATE_2026 * 100)}¢/mi (from July 1).`
               : 'IRS standard mileage doesn’t apply to e-bikes — this is an actual-expense estimate. Edit the rate to match your costs.'}
           </p>
         </div>

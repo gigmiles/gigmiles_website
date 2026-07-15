@@ -1,7 +1,7 @@
 // Math for the public /calculator page (v1, federal-only).
 //
-// Car: IRS 2026 standard mileage rate ($0.725/mi) covers gas, wear,
-// depreciation, insurance — the deduction-grade per-mile cost.
+// Car: IRS 2026 business standard mileage rate — 76¢/mi effective July 1, 2026
+// (72.5¢ Jan–Jun) — covers gas, wear, depreciation, insurance in one number.
 // E-bike: the IRS standard mileage rate applies to cars, vans, pickups and
 // panel trucks only — NOT bikes. E-bike couriers deduct actual expenses, so
 // we estimate with an editable per-mile figure. The blended default below
@@ -10,7 +10,7 @@
 // /ebike worksheet breaks the same total into its electricity/battery/
 // mechanical buckets; see EBIKE_* constants and calcEbikeCost below.
 
-export const IRS_MILEAGE_RATE_2026 = 0.725
+export const IRS_MILEAGE_RATE_2026 = 0.76
 export const EBIKE_DEFAULT_RATE = 0.057
 export const SE_EARNINGS_FACTOR = 0.9235
 export const SE_TAX_RATE = 0.153

@@ -22,7 +22,7 @@ On paper that's **$29 an hour**. In your pocket it's about **$22 an hour** — a
 
 ## The reason the hourly number lies: it's really a per-mile number
 
-Hours are how you *feel* the job. Miles are how it actually *costs* you. In that same example, 105 miles carried the whole shift, and the car's share of the cost worked out to roughly **41 cents a mile** (that's the $43 in fuel and wear, spread over 105 miles). The IRS, for what it's worth, assumes an even higher figure — the 2026 standard mileage rate is **$0.725 per mile** to cover fuel, maintenance, tires, depreciation, and insurance in one number.
+Hours are how you *feel* the job. Miles are how it actually *costs* you. In that same example, 105 miles carried the whole shift, and the car's share of the cost worked out to roughly **41 cents a mile** (that's the $43 in fuel and wear, spread over 105 miles). The IRS, for what it's worth, assumes an even higher figure — the 2026 standard mileage rate is **76 cents per mile** (as of July 1, 2026) to cover fuel, maintenance, tires, depreciation, and insurance in one number.
 
 So the miles hit you twice:
 

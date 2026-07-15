@@ -180,7 +180,7 @@ function WaterfallSection() {
           What a typical shift actually pays
         </h2>
         <p data-r className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-12 max-w-lg font-[family-name:var(--font-dm-sans)]">
-          8 hours · 105 mi · 2023 Toyota Prius · IRS mileage rate $0.725/mi (2026)
+          8 hours · 105 mi · 2023 Toyota Prius · IRS mileage rate 76¢/mi (2026)
         </p>
 
         <div className="border border-white/[0.07] bg-[#0A3C3C]">
@@ -1170,7 +1170,7 @@ const FAQS = [
   },
   {
     q: 'How are taxes calculated?',
-    a: 'GigMiles estimates self-employment tax, federal income tax, and state income tax using the current IRS mileage rate ($0.725/mi for 2026) and your filing status. Add your W-2 wages and GigMiles stacks your gig earnings on top to estimate your marginal rate more accurately. Estimates are for planning only — always verify with a licensed tax professional before filing.',
+    a: 'GigMiles estimates self-employment tax, federal income tax, and state income tax using the current IRS mileage rate (76¢/mi, effective July 1, 2026) and your filing status. Add your W-2 wages and GigMiles stacks your gig earnings on top to estimate your marginal rate more accurately. Estimates are for planning only — always verify with a licensed tax professional before filing.',
   },
   {
     q: 'Is this professional tax advice?',

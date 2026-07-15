@@ -1,6 +1,6 @@
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const IRS_MILEAGE_RATE = 0.725; // 2026
+const IRS_MILEAGE_RATE = 0.76; // 2026 (76¢ from July 1; unused legacy constant)
 const SE_TAX_RATE = 0.153;
 const SE_ADJUSTMENT = 0.9235;
 const DEFAULT_GAS_PRICE = 4.10; // AAA April 2026
