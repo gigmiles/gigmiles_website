@@ -47,6 +47,9 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
   // handle; utm_source = full handle; medium 'creator'; content 'outreach'.
   // Add one line per new YouTuber pitched.
   pursuit: { utm_source: 'packagepursuit', utm_medium: 'creator', utm_content: 'outreach' },
+  grind: { utm_source: 'grind4thedollar', utm_medium: 'creator', utm_content: 'outreach' },
+  dashing: { utm_source: 'mississippidashing', utm_medium: 'creator', utm_content: 'outreach' },
+  betonyou: { utm_source: 'mrbetonyou', utm_medium: 'creator', utm_content: 'outreach' },
 }
 
 // Build the destination (path + query) for a campaign link.
