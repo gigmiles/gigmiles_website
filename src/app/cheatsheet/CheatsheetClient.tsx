@@ -66,7 +66,18 @@ export function CheatsheetClient({
   const isRate76 = variant === 'rate76'
   const [email, setEmail] = useState('')
   const [hp, setHp] = useState('') // honeypot — bots fill it, humans never see it
-  const [status, setStatus] = useState<Status>('idle')
+  // Paid arrivals start UNGATED — 'done' is the post-submit state, i.e. the
+  // sheet itself plus the app CTA, which is exactly what an ungated visitor
+  // should land on. Why (2026-07-16): the email gate was built when the paid
+  // KPI was "leads", and we retired that KPI — an address is a proxy, an
+  // install is the thing we want. The gate also guards nothing: the PDF is a
+  // public URL and CheatsheetView renders the whole sheet inline. Removing it
+  // costs no measurement, because SiteBeacon's site-wide listener already
+  // fires download_click on the /download CTA (and does NOT match the
+  // /downloads/*.pdf save link, so app intent stays uncontaminated).
+  // Organic/untagged traffic keeps the gate: it feeds the list, and nobody
+  // clicked an ad promising a free sheet.
+  const [status, setStatus] = useState<Status>(isRate76 ? 'done' : 'idle')
   const [utm, setUtm] = useState<Utm>({})
 
   useEffect(() => {
