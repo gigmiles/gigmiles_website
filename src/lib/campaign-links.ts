@@ -43,7 +43,15 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
   'reddit-ad': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'image_cta_r2_v1', dest: '/cheatsheet' },
   // Round 3 (meme, IRS 76¢ angle → lead magnet). Fresh slug so R3 traffic is
   // cleanly separable from R1/R2. Lands on the cheat-sheet; KPI = cost/lead.
-  'reddit-r3': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'meme_76c_r3', dest: '/cheatsheet' },
+  // 'r3b' = the relaunch AFTER the message-match fix. The first run
+  // ('meme_76c_r3') sent 54 landings to a hero that never mentioned 76¢ and got
+  // 0 leads; that data stays under the old tag as the failed-phase record.
+  // Re-using the tag would start the relaunch with the lead-rate kill gate
+  // already tripped (54 landings / 0 leads) and pollute the clean read — round
+  // separation lives in utm_content (the R2 rule).
+  // NOTE: the /cheatsheet hero variant matches on the `meme_76c` PREFIX, so r3b
+  // still gets the 76¢ hero. Keep that prefix on any future 76¢ round.
+  'reddit-r3': { utm_source: 'reddit', utm_medium: 'paid_social', utm_content: 'meme_76c_r3b', dest: '/cheatsheet' },
   // Creator/influencer outreach — ONE clean slug per creator so each channel's
   // traffic stays separable (we can see which creator actually converts, which
   // is the whole point of the outreach test). Convention: slug = short creator
