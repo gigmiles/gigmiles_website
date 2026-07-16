@@ -7,9 +7,11 @@ import { CheatsheetView } from './CheatsheetView'
  * CheatsheetClient — email-capture landing for the free 2026 cheat-sheet.
  *
  * Mobile-first on purpose: 80%+ of Reddit traffic is mobile, so the
- * headline + form sit above the fold on a 375px viewport. Headline matches
- * the campaign promise ("Know what you actually keep") per the recorded
- * plan. The PDF is delivered instantly on submit — storage of the email is
+ * headline + form sit above the fold on a 375px viewport. The hero must pay
+ * off whatever the inbound ad promised: a generic hero against the 76¢-rate
+ * ad converted 0/54 (R3, 2026-07-16), so the hero is variant-driven — see
+ * CheatsheetVariant, picked server-side from utm_content in page.tsx.
+ * The PDF is delivered instantly on submit — storage of the email is
  * best-effort and never blocks the download.
  *
  * BRAND: GigMiles Brand Guidelines v1.0 — Deep Teal field, Mint accent,
@@ -52,7 +54,16 @@ function readUtm(): Utm {
   }
 }
 
-export function CheatsheetClient() {
+export type CheatsheetVariant = 'default' | 'rate76'
+
+export function CheatsheetClient({
+  variant = 'default',
+}: {
+  variant?: CheatsheetVariant
+}) {
+  // 'rate76' = arrived from an ad whose hook IS the 76¢ rate change. The hero
+  // must pay that promise off immediately or the click bounces (R3: 0/54).
+  const isRate76 = variant === 'rate76'
   const [email, setEmail] = useState('')
   const [hp, setHp] = useState('') // honeypot — bots fill it, humans never see it
   const [status, setStatus] = useState<Status>('idle')
@@ -117,11 +128,21 @@ export function CheatsheetClient() {
             color: '#fff',
           }}
         >
-          Know What You <span style={{ color: GOLD }}>Actually Keep</span>.
+          {isRate76 ? (
+            <>
+              The Mileage Rate Just Went Up to{' '}
+              <span style={{ color: GOLD }}>76¢</span>.
+            </>
+          ) : (
+            <>
+              Know What You <span style={{ color: GOLD }}>Actually Keep</span>.
+            </>
+          )}
         </h1>
         <p style={{ marginTop: 12, fontSize: 16, lineHeight: 1.5, color: MINT }}>
-          Your gig app shows gross pay. We show your real net profit after
-          miles, fuel, and taxes.
+          {isRate76
+            ? 'The IRS raised it on July 1 — it was 72.5¢, and most drivers haven’t noticed. Here’s the free 2026 cheat-sheet, with the new number.'
+            : 'Your gig app shows gross pay. We show your real net profit after miles, fuel, and taxes.'}
         </p>
 
         <div
@@ -148,11 +169,18 @@ export function CheatsheetClient() {
                   lineHeight: 1.45,
                 }}
               >
-                {[
-                  'See your true take-home pay, not just the payout.',
-                  'Track every business mile and vehicle cost automatically.',
-                  'Organize cleaner records for tax season with ease.',
-                ].map(line => (
+                {(isRate76
+                  ? [
+                      'Updated for the new 76¢ rate — and the 72.5¢ Jan–Jun split.',
+                      'See your true take-home pay, not just the payout.',
+                      'Track every business mile and vehicle cost automatically.',
+                    ]
+                  : [
+                      'See your true take-home pay, not just the payout.',
+                      'Track every business mile and vehicle cost automatically.',
+                      'Organize cleaner records for tax season with ease.',
+                    ]
+                ).map(line => (
                   <li key={line} style={{ padding: '4px 0 4px 22px', position: 'relative' }}>
                     <span
                       aria-hidden
