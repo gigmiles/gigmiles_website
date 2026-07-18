@@ -197,6 +197,21 @@ export function CalculatorClient() {
           {copied ? 'Link copied — paste it anywhere' : 'Share this result'}
         </button>
 
+        {/* The payoff to the share card's promise ("yours isn't average"), placed
+            at the result rather than below the fold — a visitor arriving from a
+            shared link sees their number and the way to make it exact in the
+            same glance. Secondary to Share on purpose: sharing is what makes
+            this page compound. Routed through /download (the smart store
+            bridge), so SiteBeacon records the intent as download_click. */}
+        <a
+          href="/download"
+          className="text-center border border-[#5EEAD4]/35 text-[#5EEAD4] text-[13.5px] font-[family-name:var(--font-space-grotesk)] px-5 py-3 hover:border-[#5EEAD4]/70 hover:bg-[#5EEAD4]/[0.06] transition-all"
+        >
+          {vehicle === 'car'
+            ? 'This used an average car — get the number for yours →'
+            : 'These are default bike costs — get the number for yours →'}
+        </a>
+
         <p className="text-white/55 text-[12px] leading-relaxed font-[family-name:var(--font-dm-sans)]">
           Tax set-aside is figured on your {fmtMoney(r.mileageDeduction)} mileage
           deduction, not on what driving cost you — two different numbers.
