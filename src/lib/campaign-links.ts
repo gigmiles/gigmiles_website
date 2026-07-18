@@ -66,6 +66,12 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
   // two creators into one attribution bucket. He brands himself "FDA / Fastest
   // Dasher Alive" (and mails from dashingtraderfda@), so `fda` is both his own
   // identity and collision-free.
+  fda: { utm_source: 'dashingtrader', utm_medium: 'creator', utm_content: 'outreach' },
+  dollarman: { utm_source: 'gigdollarman', utm_medium: 'creator', utm_content: 'outreach' },
+  aaron: { utm_source: 'drivingwithaaron', utm_medium: 'creator', utm_content: 'outreach' },
+  phil: { utm_source: 'dasherphil', utm_medium: 'creator', utm_content: 'outreach' },
+
+  // ─── Media / guest posts ───────────────────────────────────────────────────
   // The Rideshare Guy guest post (publishes 2026-07-29). The article is about
   // e-bike ACTUAL-EXPENSE math, so it lands on /ebike, not the homepage — the
   // draft was written 07-09, before /ebike existed on 07-14, which is the only
@@ -79,9 +85,6 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
     utm_content: 'ebike_expense_article',
     dest: '/ebike',
   },
-  fda: { utm_source: 'dashingtrader', utm_medium: 'creator', utm_content: 'outreach' },
-  dollarman: { utm_source: 'gigdollarman', utm_medium: 'creator', utm_content: 'outreach' },
-  aaron: { utm_source: 'drivingwithaaron', utm_medium: 'creator', utm_content: 'outreach' },
 }
 
 // Build the destination (path + query) for a campaign link.
