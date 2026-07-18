@@ -35,6 +35,18 @@ function readUrlState(): typeof DEFAULTS {
   }
 }
 
+// State → query string. Used by BOTH the URL sync and the share button on
+// purpose: the sync is debounced, so a driver who taps Share right after typing
+// would otherwise hand out the PREVIOUS result's link — and the OG card would
+// render those stale numbers.
+function buildParams(s: typeof DEFAULTS): string {
+  const p = new URLSearchParams()
+  p.set('g', String(s.gross)); p.set('mi', String(s.miles)); p.set('h', String(s.hours))
+  p.set('v', s.vehicle)
+  if (s.vehicle === 'ebike') p.set('r', String(s.ebikeRate))
+  return p.toString()
+}
+
 const inputCls =
   'w-full bg-[#0A3C3C] border border-white/[0.12] text-white text-[20px] font-semibold tracking-[-0.02em] font-[family-name:var(--font-space-grotesk)] px-4 py-3 outline-none focus:border-[#5EEAD4]/60 transition-colors tabular-nums'
 const labelCls =
@@ -60,11 +72,8 @@ export function CalculatorClient() {
   useEffect(() => {
     if (!hydrated.current) return
     const t = setTimeout(() => {
-      const p = new URLSearchParams()
-      p.set('g', String(gross)); p.set('mi', String(miles)); p.set('h', String(hours))
-      p.set('v', vehicle)
-      if (vehicle === 'ebike') p.set('r', String(ebikeRate))
-      window.history.replaceState(null, '', `${window.location.pathname}?${p.toString()}`)
+      const q = buildParams({ gross, miles, hours, vehicle, ebikeRate })
+      window.history.replaceState(null, '', `${window.location.pathname}?${q}`)
     }, 300)
     return () => clearTimeout(t)
   }, [gross, miles, hours, vehicle, ebikeRate])
@@ -73,6 +82,34 @@ export function CalculatorClient() {
     () => calcRealNet({ gross, miles, hours, vehicle, ebikeRate }),
     [gross, miles, hours, vehicle, ebikeRate],
   )
+
+  // Sharing is the whole growth mechanic: the link carries the inputs, and
+  // /api/og/result renders them as a card, so a shared result recruits the next
+  // driver. Nothing prompted it before — the URL updated silently and nobody
+  // copies an address bar. Native sheet on mobile (where the traffic is),
+  // clipboard on desktop.
+  const [copied, setCopied] = useState(false)
+  async function shareResult() {
+    const url = `${window.location.origin}/calculator?${buildParams({ gross, miles, hours, vehicle, ebikeRate })}`
+    const text = `${fmtMoney(gross)} on the app. ${fmtMoney(r.net)} in my pocket.`
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'What I actually keep', text, url })
+        return
+      } catch {
+        // Dismissing the share sheet throws — that's a choice, not a failure.
+        return
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2200)
+    } catch {
+      // Clipboard blocked (insecure context / permissions): the URL bar already
+      // holds the same link, so there is nothing to recover from.
+    }
+  }
 
   const numField = (
     label: string, value: number, set: (n: number) => void,
@@ -172,6 +209,14 @@ export function CalculatorClient() {
             </div>
           ))}
         </div>
+
+        <button
+          type="button"
+          onClick={shareResult}
+          className="w-full bg-[#5EEAD4] text-[#0A3C3C] text-[15px] font-bold tracking-[-0.01em] font-[family-name:var(--font-space-grotesk)] px-5 py-3.5 hover:bg-[#4fd9c4] active:scale-[0.99] transition-all"
+        >
+          {copied ? 'Link copied — paste it anywhere' : 'Share this result'}
+        </button>
 
         <p className="text-white/55 text-[12px] leading-relaxed font-[family-name:var(--font-dm-sans)]">
           State income tax not included — the app calculates your state.

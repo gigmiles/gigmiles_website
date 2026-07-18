@@ -4,25 +4,55 @@ import Link from 'next/link'
 import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL } from '@/config/app'
 import { CalculatorClient } from './CalculatorClient'
 
-export const metadata: Metadata = {
-  title: 'Gig Driver Net Income Calculator — What You Actually Keep',
-  description:
-    'Enter gross earnings, miles, and hours — see your real net after vehicle costs (IRS 2026 mileage rate) and self-employment tax. Car and e-bike math included.',
-  alternates: { canonical: 'https://gigmiles.app/calculator' },
-  openGraph: {
-    type: 'website',
-    url: 'https://gigmiles.app/calculator',
-    title: 'Gig Driver Net Income Calculator — What You Actually Keep',
+const TITLE = 'Gig Driver Net Income Calculator — What You Actually Keep'
+const DESC =
+  'Gross pay is not your pay. See your real net after vehicle costs and self-employment tax — car or e-bike.'
+
+// Shared results get a card showing THEIR numbers — the loop that makes this
+// page spread. The calculator already mirrors its state into the URL
+// (?g=&mi=&h=&v=&r=), so those params are forwarded to the OG route, which
+// recomputes from the same calcRealNet. Bare/garbage params fall through to a
+// generic card there.
+//
+// searchParams is read here on purpose, which makes /calculator dynamic (ƒ) —
+// the same trade /cheatsheet already makes. Next's file-based
+// opengraph-image.tsx cannot see the query string AND outranks this, so it was
+// deleted; the canonical link stays param-free so shares don't split the page's
+// SEO signal.
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}): Promise<Metadata> {
+  const sp = await searchParams
+  const q = new URLSearchParams()
+  for (const key of ['g', 'mi', 'h', 'v', 'r']) {
+    const v = sp[key]
+    if (typeof v === 'string' && v.length > 0 && v.length < 16) q.set(key, v)
+  }
+  const query = q.toString()
+  const ogImage = `https://gigmiles.app/api/og/result${query ? `?${query}` : ''}`
+
+  return {
+    title: TITLE,
     description:
-      'Gross pay is not your pay. See your real net after vehicle costs and self-employment tax — car or e-bike.',
-    siteName: 'GigMiles',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Gig Driver Net Income Calculator — What You Actually Keep',
-    description:
-      'Gross pay is not your pay. See your real net after vehicle costs and self-employment tax — car or e-bike.',
-  },
+      'Enter gross earnings, miles, and hours — see your real net after vehicle costs (IRS 2026 mileage rate) and self-employment tax. Car and e-bike math included.',
+    alternates: { canonical: 'https://gigmiles.app/calculator' },
+    openGraph: {
+      type: 'website',
+      url: 'https://gigmiles.app/calculator',
+      title: TITLE,
+      description: DESC,
+      siteName: 'GigMiles',
+      images: [{ url: ogImage, width: 1200, height: 630, alt: TITLE }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: TITLE,
+      description: DESC,
+      images: [ogImage],
+    },
+  }
 }
 
 // FAQ copy is the single source for both the visible block and the JSON-LD —
