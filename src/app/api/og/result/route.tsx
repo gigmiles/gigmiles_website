@@ -117,15 +117,32 @@ export async function GET(request: Request) {
         </div>
 
         {/* Never "tax owed" — this is a planning set-aside, not a liability. */}
-        <div style={{ display: 'flex', fontSize: 25, color: MUTED, marginTop: 34 }}>
+        <div style={{ display: 'flex', fontSize: 25, color: MUTED, marginTop: 30 }}>
           {`−${money(r.vehicleCost)} vehicle costs   ·   −${money(r.seTax)} est. tax set-aside   ·   ${pctKept}% kept`}
         </div>
 
-        <div style={{ display: 'flex', width: '100%', height: 1, background: FAINT, marginTop: 34, marginBottom: 26 }} />
+        <div style={{ display: 'flex', width: '100%', height: 1, background: FAINT, marginTop: 30, marginBottom: 24 }} />
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', fontSize: 24, color: INK }}>Run your own numbers</div>
-          <div style={{ display: 'flex', fontSize: 24, color: MINT }}>gigmiles.app/calculator</div>
+        {/* The pull to the app. The honest hook IS the sales pitch: this figure
+            used a default car, so the viewer's own number is genuinely
+            different — and only the app can close that gap. Claims limited to
+            PRODUCT_FACTS-verified personalization (vehicle DB, state tax/fuel,
+            filing status). No privacy/security claim: PRODUCT_FACTS documents
+            none, and this card is public. */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', fontSize: 27, fontWeight: 900, color: INK, letterSpacing: '-0.5px' }}>
+              {vehicle === 'car'
+                ? 'This used an average car. Yours isn’t average.'
+                : 'This used default bike costs. Yours are different.'}
+            </div>
+            <div style={{ display: 'flex', fontSize: 22, color: MUTED, marginTop: 8 }}>
+              {vehicle === 'car'
+                ? 'GigMiles runs it on your exact vehicle, your state and your filing status.'
+                : 'GigMiles runs it on your bike’s real efficiency, your state and your filing status.'}
+            </div>
+          </div>
+          <div style={{ display: 'flex', fontSize: 25, fontWeight: 900, color: MINT }}>gigmiles.app</div>
         </div>
       </div>
     ),
