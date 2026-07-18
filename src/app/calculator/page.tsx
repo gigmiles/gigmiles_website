@@ -60,11 +60,11 @@ export async function generateMetadata({
 const FAQS = [
   {
     q: 'What is the IRS standard mileage rate for 2026?',
-    a: 'The 2026 IRS business standard mileage rate is 76 cents per mile as of July 1, 2026 (it was 72.5 cents for the first half of the year), for cars, vans, pickups, and panel trucks. Because the IRS changed it mid-year, 2026 has two rates: multiply your July–December miles by 0.76 and your January–June miles by 0.725. The rate covers gas, maintenance, depreciation, and insurance in one number.',
+    a: 'The 2026 IRS business standard mileage rate is 76 cents per mile as of July 1, 2026 (it was 72.5 cents for the first half of the year), for cars, vans, pickups, and panel trucks. Because the IRS changed it mid-year, 2026 has two rates: multiply your July–December miles by 0.76 and your January–June miles by 0.725. Note what the rate is for: it is a DEDUCTION that lowers your taxable income, not a bill you paid. Most economical cars cost far less than 76 cents a mile to run, which is why the standard mileage method usually beats deducting actual expenses.',
   },
   {
     q: 'How is self-employment tax calculated for gig drivers?',
-    a: 'Self-employment tax is 15.3% (12.4% Social Security + 2.9% Medicare) applied to 92.35% of your net earnings — gross income minus business expenses like vehicle costs. This calculator applies exactly that formula: (gross − vehicle cost) × 0.9235 × 15.3%, never less than $0.',
+    a: 'Self-employment tax is 15.3% (12.4% Social Security + 2.9% Medicare) applied to 92.35% of your net earnings — gross income minus your business deductions. For a car the deduction is normally the standard mileage rate, so this calculator applies (gross − miles × 76¢) × 0.9235 × 15.3%, never less than $0. Your real cost of driving is a separate, usually smaller number, and it is what reduces your take-home pay.',
   },
   {
     q: 'Can I deduct miles on an e-bike?',
@@ -129,12 +129,14 @@ export default function CalculatorPage() {
             The short answer
           </p>
           <p className="text-white/85 text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)] max-w-2xl">
-            Your real hourly wage as a gig driver is your gross pay minus vehicle
-            costs (the IRS 2026 standard mileage rate is 76 cents per mile as of July 1) minus
-            self-employment tax (15.3%) — usually about three-quarters of what the
-            app shows. Example: a $235 gross day over 8 hours is roughly $175
-            take-home, about $22 an hour, not $29. Estimates for planning, not tax
-            advice.
+            Your real hourly wage as a gig driver is your gross pay minus what
+            driving actually cost you (fuel plus wear — commonly around 30–35
+            cents a mile) minus a self-employment tax set-aside of 15.3%.
+            The IRS 2026 standard mileage rate (76 cents a mile as of July 1) is
+            a separate number: it is what you may <em>deduct</em>, so it lowers
+            the tax you set aside — it is not what the driving cost. Example: a
+            $235 gross day over 8 hours is roughly $175 take-home, about $22 an
+            hour, not $29. Estimates for planning, not tax advice.
           </p>
         </div>
 
@@ -159,10 +161,14 @@ export default function CalculatorPage() {
 
         {/* Fine print */}
         <p className="mt-6 text-white/40 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic max-w-2xl">
-          Vehicle cost for cars uses the IRS 2026 standard mileage rate of 76¢/mile (from July 1, 2026; 72.5¢ Jan–Jun).
-          The IRS standard mileage rate does not apply to e-bikes; the e-bike figure is
-          an actual-expense estimate (default $0.057/mile, editable). Self-employment tax
-          = (gross − vehicle cost) × 92.35% × 15.3%, floored at $0. Federal self-employment
+          Vehicle cost is what driving actually cost you — fuel plus wear — at an
+          editable per-mile rate (car default $0.33/mile: fuel at $4.50/gal ÷ 25 MPG
+          plus $0.15/mile wear, the same no-vehicle-data defaults the GigMiles app uses;
+          your own car will differ). The IRS 2026 standard mileage rate of 76¢/mile
+          (from July 1, 2026; 72.5¢ Jan–Jun) is the DEDUCTION, not the cost: self-employment
+          tax = (gross − mileage deduction) × 92.35% × 15.3%, floored at $0. The IRS standard
+          mileage rate does not apply to e-bikes, so a courier deducts actual expenses and
+          the two figures coincide (default $0.057/mile, editable). Federal self-employment
           tax only — state income tax not included. Estimates for planning, not tax advice.
         </p>
 

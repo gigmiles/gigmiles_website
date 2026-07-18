@@ -2,50 +2,27 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
+  buildCalcParams,
+  CALC_DEFAULTS,
   calcRealNet,
-  EBIKE_DEFAULT_RATE,
+  defaultCostPerMile,
   IRS_MILEAGE_RATE_2026,
+  parseCalcParams,
   type VehicleType,
 } from '@/lib/calculatorMath'
 
 // Defaults deliberately do NOT use $235 gross: the launch video's canonical
 // example is $235 → $175 (app's actual-cost view), while this page applies
 // the full IRS mileage deduction — same gross with a different net across
-// our own assets would read as a contradiction.
-const DEFAULTS = { gross: 300, miles: 150, hours: 10, vehicle: 'car' as VehicleType, ebikeRate: EBIKE_DEFAULT_RATE }
+// our own assets would read as a contradiction. Lives in calculatorMath so
+// the OG share card resolves identical numbers from the same URL.
+const DEFAULTS = CALC_DEFAULTS
 
 function fmtMoney(n: number, decimals = 0): string {
   const sign = n < 0 ? '−' : ''
   return `${sign}$${Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`
 }
 
-// Shareable state ↔ URL query params (?g=235&mi=130&h=9&v=ebike&r=0.057)
-function readUrlState(): typeof DEFAULTS {
-  const p = new URLSearchParams(window.location.search)
-  const num = (key: string, fallback: number, max: number) => {
-    const v = parseFloat(p.get(key) ?? '')
-    return Number.isFinite(v) && v >= 0 && v <= max ? v : fallback
-  }
-  return {
-    gross: num('g', DEFAULTS.gross, 100_000),
-    miles: num('mi', DEFAULTS.miles, 10_000),
-    hours: num('h', DEFAULTS.hours, 200),
-    vehicle: p.get('v') === 'ebike' ? 'ebike' : 'car',
-    ebikeRate: num('r', DEFAULTS.ebikeRate, 10),
-  }
-}
-
-// State → query string. Used by BOTH the URL sync and the share button on
-// purpose: the sync is debounced, so a driver who taps Share right after typing
-// would otherwise hand out the PREVIOUS result's link — and the OG card would
-// render those stale numbers.
-function buildParams(s: typeof DEFAULTS): string {
-  const p = new URLSearchParams()
-  p.set('g', String(s.gross)); p.set('mi', String(s.miles)); p.set('h', String(s.hours))
-  p.set('v', s.vehicle)
-  if (s.vehicle === 'ebike') p.set('r', String(s.ebikeRate))
-  return p.toString()
-}
 
 const inputCls =
   'w-full bg-[#0A3C3C] border border-white/[0.12] text-white text-[20px] font-semibold tracking-[-0.02em] font-[family-name:var(--font-space-grotesk)] px-4 py-3 outline-none focus:border-[#5EEAD4]/60 transition-colors tabular-nums'
@@ -57,14 +34,14 @@ export function CalculatorClient() {
   const [miles, setMiles] = useState<number>(DEFAULTS.miles)
   const [hours, setHours] = useState<number>(DEFAULTS.hours)
   const [vehicle, setVehicle] = useState<VehicleType>(DEFAULTS.vehicle)
-  const [ebikeRate, setEbikeRate] = useState<number>(DEFAULTS.ebikeRate)
+  const [costPerMile, setCostPerMile] = useState<number>(DEFAULTS.costPerMile)
   const hydrated = useRef(false)
 
   // Restore shared state from the URL once on mount.
   useEffect(() => {
-    const s = readUrlState()
+    const s = parseCalcParams(new URLSearchParams(window.location.search))
     setGross(s.gross); setMiles(s.miles); setHours(s.hours)
-    setVehicle(s.vehicle); setEbikeRate(s.ebikeRate)
+    setVehicle(s.vehicle); setCostPerMile(s.costPerMile)
     hydrated.current = true
   }, [])
 
@@ -72,15 +49,15 @@ export function CalculatorClient() {
   useEffect(() => {
     if (!hydrated.current) return
     const t = setTimeout(() => {
-      const q = buildParams({ gross, miles, hours, vehicle, ebikeRate })
+      const q = buildCalcParams({ gross, miles, hours, vehicle, costPerMile })
       window.history.replaceState(null, '', `${window.location.pathname}?${q}`)
     }, 300)
     return () => clearTimeout(t)
-  }, [gross, miles, hours, vehicle, ebikeRate])
+  }, [gross, miles, hours, vehicle, costPerMile])
 
   const r = useMemo(
-    () => calcRealNet({ gross, miles, hours, vehicle, ebikeRate }),
-    [gross, miles, hours, vehicle, ebikeRate],
+    () => calcRealNet({ gross, miles, hours, vehicle, costPerMile }),
+    [gross, miles, hours, vehicle, costPerMile],
   )
 
   // Sharing is the whole growth mechanic: the link carries the inputs, and
@@ -90,7 +67,7 @@ export function CalculatorClient() {
   // clipboard on desktop.
   const [copied, setCopied] = useState(false)
   async function shareResult() {
-    const url = `${window.location.origin}/calculator?${buildParams({ gross, miles, hours, vehicle, ebikeRate })}`
+    const url = `${window.location.origin}/calculator?${buildCalcParams({ gross, miles, hours, vehicle, costPerMile })}`
     const text = `${fmtMoney(gross)} on the app. ${fmtMoney(r.net)} in my pocket.`
     if (navigator.share) {
       try {
@@ -151,7 +128,7 @@ export function CalculatorClient() {
                 key={val}
                 type="button"
                 aria-pressed={vehicle === val}
-                onClick={() => setVehicle(val)}
+                onClick={() => { setVehicle(val); setCostPerMile(defaultCostPerMile(val)) }}
                 className={`py-3 text-[13px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)] font-medium transition-colors cursor-pointer ${
                   vehicle === val
                     ? 'bg-[#5EEAD4] text-[#0A3C3C]'
@@ -164,8 +141,8 @@ export function CalculatorClient() {
           </div>
           <p className="text-white/45 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)]">
             {vehicle === 'car'
-              ? `Car costs use the IRS 2026 standard mileage rate — ${Math.round(IRS_MILEAGE_RATE_2026 * 100)}¢/mi (from July 1).`
-              : 'IRS standard mileage doesn’t apply to e-bikes — this is an actual-expense estimate. Edit the rate to match your costs.'}
+              ? `What driving costs you (fuel + wear) is not the same as what you can deduct. Your cost is editable below; the deduction uses the IRS 2026 rate — ${Math.round(IRS_MILEAGE_RATE_2026 * 100)}¢/mi from July 1.`
+              : 'IRS standard mileage doesn’t apply to e-bikes, so a courier deducts actual expenses — here cost and deduction are the same number. Edit it to match your bike.'}
           </p>
         </div>
 
@@ -173,8 +150,10 @@ export function CalculatorClient() {
         {numField('Miles driven', miles, setMiles, { suffix: 'mi' })}
         {numField('Hours worked', hours, setHours, { step: '0.5', suffix: 'hrs' })}
 
-        {vehicle === 'ebike' &&
-          numField('E-bike cost per mile (editable estimate)', ebikeRate, setEbikeRate, { step: '0.01', prefix: '$', suffix: '/mi' })}
+        {numField(
+          vehicle === 'car' ? 'Your real cost per mile (editable)' : 'E-bike cost per mile (editable)',
+          costPerMile, setCostPerMile, { step: '0.01', prefix: '$', suffix: '/mi' },
+        )}
       </div>
 
       {/* ── Results — the hero ── */}
@@ -199,7 +178,7 @@ export function CalculatorClient() {
         {/* Breakdown row */}
         <div className="grid grid-cols-3 gap-px bg-white/[0.08] border border-white/[0.08]">
           {[
-            { l: vehicle === 'car' ? 'Vehicle (IRS mi.)' : 'E-bike costs', v: `−${fmtMoney(r.vehicleCost)}`, c: 'text-[#E11D48]' },
+            { l: 'Vehicle cost', v: `−${fmtMoney(r.vehicleCost)}`, c: 'text-[#E11D48]' },
             { l: 'SE tax (15.3%)', v: `−${fmtMoney(r.seTax)}`, c: 'text-[#F59E0B]' },
             { l: 'Real net', v: fmtMoney(r.net), c: 'text-[#10B981]' },
           ].map(item => (
@@ -219,7 +198,9 @@ export function CalculatorClient() {
         </button>
 
         <p className="text-white/55 text-[12px] leading-relaxed font-[family-name:var(--font-dm-sans)]">
-          State income tax not included — the app calculates your state.
+          Tax set-aside is figured on your {fmtMoney(r.mileageDeduction)} mileage
+          deduction, not on what driving cost you — two different numbers.
+          State income tax not included; the app calculates your state.
         </p>
       </div>
     </div>

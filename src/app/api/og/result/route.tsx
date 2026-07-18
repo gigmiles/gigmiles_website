@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { ImageResponse } from 'next/og'
-import { calcRealNet, EBIKE_DEFAULT_RATE, type VehicleType } from '@/lib/calculatorMath'
+import { calcRealNet, parseCalcParams } from '@/lib/calculatorMath'
 
 // Dynamic share card for a /calculator result.
 //
@@ -36,28 +36,21 @@ const MUTED = 'rgba(255,255,255,0.55)'
 const FAINT = 'rgba(255,255,255,0.12)'
 const BG = 'linear-gradient(to bottom right, #0E4F4F, #0A3C3C)'
 
-// Same ceilings the client applies (CalculatorClient num()), so a hand-edited
-// URL can't render a card the calculator itself would refuse to produce.
-function clamped(raw: string | null, max: number): number | null {
-  if (raw === null) return null
-  const n = Number(raw)
-  if (!Number.isFinite(n) || n < 0) return null
-  return Math.min(n, max)
-}
-
 const money = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`
 
 export async function GET(request: Request) {
   const sp = new URL(request.url).searchParams
 
-  const gross = clamped(sp.get('g'), 100_000)
-  const miles = clamped(sp.get('mi'), 10_000)
-  const hours = clamped(sp.get('h'), 200)
-  const vehicle: VehicleType = sp.get('v') === 'ebike' ? 'ebike' : 'car'
-  const ebikeRate = clamped(sp.get('r'), 10) ?? EBIKE_DEFAULT_RATE
+  // Parsed by the SAME function the page uses, so a shared link can never
+  // advertise a number the page then contradicts. Out-of-range input resolves
+  // to the default on both sides rather than to a ceiling here and a default
+  // there — the divergence this route shipped with.
+  const { gross, miles, hours, vehicle, costPerMile } = parseCalcParams(sp)
 
-  // A result card needs a result. Bare /calculator shares get the generic card.
-  const hasResult = gross !== null && gross > 0 && miles !== null
+  // A result card needs a result: bare /calculator gets the generic card, but
+  // any calc param present means the page WILL show a result (garbage values
+  // included, which resolve to the defaults on both sides).
+  const hasResult = ['g', 'mi', 'h', 'v', 'r'].some(k => sp.has(k)) && gross > 0
 
   if (!hasResult) {
     // Deliberately carries NO example numbers. The canonical set ($235 → $175)
@@ -88,12 +81,12 @@ export async function GET(request: Request) {
     )
   }
 
-  const r = calcRealNet({ gross, miles, hours: hours ?? 0, vehicle, ebikeRate })
+  const r = calcRealNet({ gross, miles, hours, vehicle, costPerMile })
   const pctKept = Math.round(r.pctKept * 100)
 
   const context = [
     `${Math.round(miles).toLocaleString('en-US')} mi`,
-    hours && hours > 0 ? `${hours} hrs` : null,
+    hours > 0 ? `${hours} hrs` : null,
     vehicle === 'ebike' ? 'e-bike' : null,
   ].filter(Boolean).join(' · ')
 
