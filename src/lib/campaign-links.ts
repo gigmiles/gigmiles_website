@@ -61,6 +61,14 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
   grind: { utm_source: 'grind4thedollar', utm_medium: 'creator', utm_content: 'outreach' },
   dashing: { utm_source: 'mississippidashing', utm_medium: 'creator', utm_content: 'outreach' },
   betonyou: { utm_source: 'mrbetonyou', utm_medium: 'creator', utm_content: 'outreach' },
+  // Batch 2 (2026-07-18). NOTE: DashingTrader is NOT `dashing` — that slug
+  // belongs to Mississippi Dashing above, and reusing it would silently merge
+  // two creators into one attribution bucket. He brands himself "FDA / Fastest
+  // Dasher Alive" (and mails from dashingtraderfda@), so `fda` is both his own
+  // identity and collision-free.
+  fda: { utm_source: 'dashingtrader', utm_medium: 'creator', utm_content: 'outreach' },
+  dollarman: { utm_source: 'gigdollarman', utm_medium: 'creator', utm_content: 'outreach' },
+  aaron: { utm_source: 'drivingwithaaron', utm_medium: 'creator', utm_content: 'outreach' },
 }
 
 // Build the destination (path + query) for a campaign link.
