@@ -1367,6 +1367,20 @@ function EBikeSection() {
             </div>
           ))}
         </div>
+        {/* This section made the argument and then went nowhere — /ebike exists
+            precisely to answer it and was unreachable from here. Matters most on
+            2026-07-29: the Rideshare Guy e-bike article links to the homepage
+            (its draft predates /ebike), so this is the path those readers land
+            on. A link beats a campaign-specific banner — it serves every e-bike
+            visitor and keeps the homepage static. */}
+        <a
+          data-r
+          href="/ebike"
+          className="inline-flex items-center gap-2 mt-8 text-[#5EEAD4] text-[13px] tracking-[0.02em] hover:opacity-80 transition-opacity font-[family-name:var(--font-space-grotesk)]"
+        >
+          Work out your e-bike cost per mile — electricity, battery &amp; wear
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
   )
