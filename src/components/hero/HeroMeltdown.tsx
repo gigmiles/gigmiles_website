@@ -131,16 +131,37 @@ function MeltdownNumber({ progress }: { progress: number }) {
             cold visitor what this page is about before any scrolling. Fades
             out as the meltdown starts so it never competes with stage 2. */}
         <div
-          className="flex flex-col items-center gap-2 text-center"
-          style={{ opacity: progress < 0.06 ? 1 : Math.max(0, 1 - (progress - 0.06) / 0.05) }}
+          className="relative z-30 flex flex-col items-center gap-2 text-center"
+          style={{
+            opacity: progress < 0.06 ? 1 : Math.max(0, 1 - (progress - 0.06) / 0.05),
+            // Once faded out it must stop swallowing clicks meant for the
+            // stage 2/3 content underneath.
+            pointerEvents: progress < 0.06 ? 'auto' : 'none',
+          }}
         >
           <p className="text-white/70 text-[13px] sm:text-[17px] px-6 font-[family-name:var(--font-dm-sans)]">
             That&apos;s your gross — not what you take home.
           </p>
-          <p className="text-[#5EEAD4] text-[13px] sm:text-[14px] font-[family-name:var(--font-space-grotesk)] tracking-[0.06em]">
-            Scroll to see what you actually keep
+
+          {/* Above-the-fold install path (CRO 2026-07-21). Until now the first
+              viewport's only instruction was "scroll", and the sole download
+              affordance was the small header nav link — the prominent CTA
+              (HeroCTA) does not appear until progress >= 0.92, i.e. after ~4.6
+              viewport heights of this 500vh hero. Measured funnel over the 14
+              days to 2026-07-21: 117 landings on / and /cheatsheet, 2 arrivals
+              at the download step. The scroll narrative is kept; it is now the
+              secondary path rather than the only one. */}
+          <DownloadButton className="mt-1 border border-[#5EEAD4]/40 text-[#5EEAD4] text-[12px] tracking-[0.12em] uppercase font-[family-name:var(--font-space-grotesk)] font-medium px-8 py-3 transition-all duration-300 hover:bg-[#5EEAD4]/10 hover:border-[#5EEAD4]/60 active:scale-[0.97] cursor-pointer">
+            Get GigMiles — Free
+          </DownloadButton>
+          <p className="text-white/25 text-[11px] font-[family-name:var(--font-dm-sans)]">
+            Free forever — no card required
           </p>
-          <span aria-hidden className="text-[#5EEAD4]/70 text-[18px] leading-none animate-bounce">↓</span>
+
+          <p className="mt-1 text-[#5EEAD4]/70 text-[12px] sm:text-[13px] font-[family-name:var(--font-space-grotesk)] tracking-[0.06em]">
+            or scroll to see what you actually keep
+          </p>
+          <span aria-hidden className="text-[#5EEAD4]/50 text-[16px] leading-none animate-bounce">↓</span>
         </div>
 
         {/* Stage 3+ subtitle */}
