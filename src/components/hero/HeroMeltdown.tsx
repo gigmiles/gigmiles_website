@@ -18,7 +18,12 @@ export const HERO_CONFIG = {
   hourlyRate: 22,
   shiftHours: 8,
   platforms: 'DoorDash + Uber Eats',
-  miles: 130,
+  // 105, not 130: ScrollLanding shows "105 mi" for this same $235 shift, so the
+  // page was contradicting itself within a couple of screens. The cost split
+  // below is deliberately left alone — it is internally coherent for a Prius
+  // ($9 fuel / 105 mi at ~50 mpg is about $4.30 a gallon) and the operator has
+  // confirmed these figures are illustrative, varying by vehicle and state.
+  miles: 105,
   vehicle: '2023 Toyota Prius',
   trips: 3,
 }
