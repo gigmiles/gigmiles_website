@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { attributedStoreUrl } from '@/lib/storeAttribution'
+import { visitorDevice } from '@/lib/visitorDevice'
 import { redditTrack } from '@/components/analytics/RedditPixel'
 
 /**
@@ -72,7 +73,18 @@ function getCid(): string | null {
 function beacon(event: string, payload: Record<string, unknown>) {
   try {
     const cid = getCid()
-    const body = JSON.stringify({ event, ts: Date.now(), ...(cid ? { cid } : {}), ...payload })
+    // platform is stamped on EVERY event, pageview included. It was previously
+    // sent only on store_click, which left `platform` null on all 123 recorded
+    // pageviews and made the device split of our traffic unknowable
+    // (found 2026-07-21). A payload key still wins, so store_click keeps its
+    // own more specific value.
+    const body = JSON.stringify({
+      event,
+      ts: Date.now(),
+      platform: visitorDevice(),
+      ...(cid ? { cid } : {}),
+      ...payload,
+    })
     if (navigator.sendBeacon) navigator.sendBeacon('/api/track', body)
   } catch {
     /* best-effort — analytics must never break the page */
