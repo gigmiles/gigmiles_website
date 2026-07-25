@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **GigMiles**
-**Last updated: 2026-06-14**
+**Last updated: 2026-07-27**
 
 This Privacy Policy describes how **GigMiles, Inc.**, a Delaware corporation ("GigMiles," "we," "our," or "us"), collects, uses, shares, and protects personal information when you use the GigMiles mobile application and related services (collectively, the "Service").
 
@@ -95,7 +95,14 @@ GigMiles uses third-party SDKs for product analytics, performance monitoring, us
 - We do **not** share your precise location, earnings, expense details, or income with Meta
 - You can decline at the ATT prompt, turn off "Share Analytics Data" in Settings, or use the opt-out in §7 — and we stop immediately
 
-Under CCPA/CPRA, the Firebase/GA4 transfer may be considered "sharing" for analytics, and the Meta transfer is "sharing" for cross-context behavioral advertising. See §7 for your opt-out rights.
+**Install attribution — AppsFlyer + Reddit Ads:**
+
+- We use **AppsFlyer Ltd.**, a mobile measurement partner (MMP), to measure which ad campaigns lead to app installs and key milestones (sign-up, onboarding, first earnings entry, trial start, subscription), and to send that attribution to our advertising partner **Reddit, Inc.** for campaign measurement and optimization
+- On iOS, if you consent (ATT), this includes your device advertising identifier (IDFA); **if you decline ATT, AppsFlyer still measures installs using Apple's privacy-preserving SKAdNetwork (SKAN) — an aggregate, non-identifying method that does not track you individually and requires no IDFA.** All measurement remains gated behind the "Share Analytics Data" Settings toggle — turning it off stops AppsFlyer entirely
+- We do **not** send your earnings amounts, precise location, expense details, or income to AppsFlyer or Reddit; the "first earnings entry" signal carries no dollar value
+- This constitutes **"sharing" for cross-context behavioral advertising** under CCPA/CPRA. You can decline at the ATT prompt, turn off "Share Analytics Data" in Settings, or use the opt-out in §7
+
+Under CCPA/CPRA, the Firebase/GA4 transfer may be considered "sharing" for analytics, and the Meta and AppsFlyer/Reddit transfers are "sharing" for cross-context behavioral advertising. See §7 for your opt-out rights.
 
 ### 2.7 Usage and Crash Data
 
@@ -116,12 +123,12 @@ We use your information to:
 - **Diagnose and fix technical issues** using crash reports and error logs
 - **Improve the Service** using product analytics (Firebase Analytics + GA4)
 - **Diagnose usability** via Microsoft Clarity session insights (with your consent)
-- **Measure and optimize our advertising** via Meta (Facebook) App Events (with your consent)
+- **Measure and optimize our advertising** via Meta (Facebook) App Events and AppsFlyer (install attribution for Reddit Ads) (with your consent)
 - **Process subscription billing** via Apple App Store and Google Play
 - **Generate Schedule C Worksheets and CSV exports** at your request, for use with your licensed tax professional
 - **Power AI features** (Today's Brief, Burnout Meter) by sending non-identifying aggregated context to Groq AI inference
 
-We do **not** use your financial data, precise location, earnings, or income information for advertising. With your consent (the iOS App Tracking Transparency prompt or the "Share Analytics Data" Settings toggle), we share your device advertising identifier, app-event data, and subscription purchase events with Meta for advertising measurement and audience building. You can decline or withdraw this consent at any time (see §7), and we stop immediately.
+We do **not** use your financial data, precise location, earnings, or income information for advertising. With your consent (the iOS App Tracking Transparency prompt or the "Share Analytics Data" Settings toggle), we share your device advertising identifier, app-event data, and subscription purchase events with Meta, and app-install/milestone attribution with AppsFlyer (forwarded to Reddit Ads), for advertising measurement and audience building. On iOS, if you decline ATT, AppsFlyer measures installs only via Apple's aggregate, non-identifying SKAdNetwork. You can decline or withdraw this consent at any time (see §7), and we stop immediately.
 
 ---
 
@@ -140,7 +147,7 @@ While we take reasonable precautions, no system is completely secure. We encoura
 
 ## 5. Data Sharing — Sub-Processor List
 
-We do **not** sell your personal data for monetary consideration. With your consent (see §2.6), we share advertising identifiers and app-event data with Meta for cross-context behavioral advertising; you can opt out at any time (see §7).
+We do **not** sell your personal data for monetary consideration. With your consent (see §2.6), we share advertising identifiers and app-event data with Meta, and app-install/milestone attribution with AppsFlyer (forwarded to Reddit Ads), for cross-context behavioral advertising; you can opt out at any time (see §7).
 
 We share limited data with the following service providers and partners to operate the Service:
 
@@ -151,13 +158,15 @@ We share limited data with the following service providers and partners to opera
 | **Google Firebase + Google Analytics 4** | Product analytics, performance monitoring | Device identifiers (IDFA/AAID), event data, approximate region | [policies.google.com/privacy](https://policies.google.com/privacy) |
 | **Microsoft Clarity** | Usability session replay + heatmaps (consent-gated; text masked) | Interaction events, device info, user ID | [privacy.microsoft.com](https://privacy.microsoft.com) |
 | **Meta Platforms (Facebook) App Events** | Advertising measurement, install attribution, audience building (consent-gated) | Advertising ID (IDFA/GAID), app event data, purchase events | [facebook.com/privacy/policy](https://www.facebook.com/privacy/policy) |
+| **AppsFlyer** | Mobile measurement partner — ad install attribution + funnel-milestone measurement (consent-gated; SKAN-only when ATT declined) | Advertising ID (IDFA/GAID, ATT-gated), install/attribution data, app-event names (no earnings amounts) | [appsflyer.com/legal/services-privacy-policy](https://www.appsflyer.com/legal/services-privacy-policy/) |
+| **Reddit, Inc.** | Ad campaign measurement + optimization (receives install/event attribution from AppsFlyer; consent-gated) | Attributed install + event signals, campaign identifiers | [reddit.com/policies/privacy-policy](https://www.reddit.com/policies/privacy-policy) |
 | **Resend** | Transactional email (Contact Us, password reset, legal acceptance confirmations) | Email address, message content | [resend.com/legal/privacy-policy](https://resend.com/legal/privacy-policy) |
 | **Groq** | AI inference for Today's Brief and Burnout Meter | Aggregated activity context (hours, miles, earnings ranges) — no PII | [groq.com/privacy-policy](https://groq.com/privacy-policy) |
 | **Apple App Store / Google Play** | Subscription billing | Payment processing — handled by platform | Apple / Google |
 | **U.S. Energy Information Administration (EIA)** | Regional fuel price lookup | State code only — no PII transmitted | Public government API |
 | **Law enforcement** | Compliance with valid legal process | As legally required | — |
 
-With your consent, we use Meta (Facebook) App Events — a social-media advertising SDK — for advertising measurement and audience building, as described in §2.6. We do not sell your personal information for monetary consideration and do not work with data brokers.
+With your consent, we use Meta (Facebook) App Events — a social-media advertising SDK — and AppsFlyer, a mobile measurement partner that attributes ad installs and forwards attribution to Reddit Ads, for advertising measurement and audience building, as described in §2.6. We do not sell your personal information for monetary consideration and do not work with data brokers.
 
 ---
 
