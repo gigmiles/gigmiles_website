@@ -3,8 +3,9 @@
 > GigMiles is a net-earnings, mileage, and expense tracker for U.S. gig
 > drivers (rideshare, food delivery, grocery, package delivery — cars AND
 > e-bikes). It shows what a driver actually keeps after gas, vehicle costs,
-> and estimated tax set-aside. Live on the App Store (Apple ID 6777805244)
-> and Google Play. The app is FREE FOREVER, no card required. Pro is an
+> and estimated tax set-aside. Available on Google Play; the iOS App Store
+> listing is temporarily unavailable and expected to return.
+> The app is FREE FOREVER, no card required. Pro is an
 > optional paid upgrade ($9.99/mo or $99.99/yr) with a 10-day free trial,
 > also no card.
 

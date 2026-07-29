@@ -8,7 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMotionValueEvent, useScroll } from 'motion/react'
 import { HeroMeltdown } from './hero/HeroMeltdown'
 import { DownloadButton } from './ui/DownloadButton'
-import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL } from '@/config/app'
+import { StoreBadges } from './ui/StoreBadges'
 
 gsap.registerPlugin(ScrollTrigger)
 // Mobile address-bar show/hide fires resize events mid-scroll; without this,
@@ -1295,14 +1295,7 @@ function FinalCtaSection() {
       </p>
       {/* Official store badges (Apple / Google marketing guidelines) */}
       <div className="relative z-10 mt-2 flex flex-wrap items-center justify-center gap-4">
-        <a href={IOS_APP_STORE_URL} aria-label="Download on the App Store" className="inline-flex transition-transform active:scale-[0.97]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/badges/app-store-badge.svg" alt="Download on the App Store" className="h-[52px] w-auto" />
-        </a>
-        <a href={ANDROID_PLAY_STORE_URL} aria-label="Get it on Google Play" className="inline-flex transition-transform active:scale-[0.97]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/badges/google-play-badge.svg" alt="Get it on Google Play" className="h-[52px] w-auto" />
-        </a>
+        <StoreBadges />
       </div>
       <p data-r className="relative z-10 text-white/55 text-[11px] font-[family-name:var(--font-dm-sans)]">
         Free forever — no card required

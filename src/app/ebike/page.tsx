@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL } from '@/config/app'
+import { StoreBadges } from '@/components/ui/StoreBadges'
 import { EbikeClient } from './EbikeClient'
 
 export const metadata: Metadata = {
@@ -135,14 +135,7 @@ export default function EbikePage() {
             tax-season records for you. Free forever, no card.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <a href={IOS_APP_STORE_URL} aria-label="Download on the App Store" className="inline-flex transition-transform active:scale-[0.97]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/badges/app-store-badge.svg" alt="Download on the App Store" className="h-[52px] w-auto" />
-            </a>
-            <a href={ANDROID_PLAY_STORE_URL} aria-label="Get it on Google Play" className="inline-flex transition-transform active:scale-[0.97]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/badges/google-play-badge.svg" alt="Get it on Google Play" className="h-[52px] w-auto" />
-            </a>
+            <StoreBadges />
           </div>
         </div>
 

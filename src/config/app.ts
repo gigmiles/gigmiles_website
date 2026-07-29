@@ -1,10 +1,32 @@
 // ─── App Store URLs ────────────────────────────────────────────────────────────
 // Update these when Apple/Google developer accounts are active.
 
-// iOS: live — Apple ID 6777805244 (App Store Connect → App Information).
-export const IOS_APP_STORE_URL = 'https://apps.apple.com/app/id6777805244'
+// ─── iOS availability kill switch ──────────────────────────────────────────────
+// 2026-07-29: Apple REMOVED the listing. apps.apple.com/app/id6777805244 now
+// returns 404 (verified by request, not assumed). An appeal is in progress.
+// While this is false the whole site treats iOS as "coming soon": no App Store
+// badge is rendered anywhere, no iPhone visitor is redirected to a dead link,
+// and llms.txt stops telling AI answer engines the app is on the App Store.
+//
+// TO RESTORE after a successful appeal: set this to true. Nothing else needs to
+// change — every surface reads IOS_AVAILABLE or the '#' sentinel below.
+// Annotated `boolean`, not left to infer `false`: without it TypeScript narrows
+// every downstream check to a literal and the switch stops type-checking as a
+// switch (the App Store branch reads as dead code, and `!== '#'` guards on the
+// sibling store become "no overlap" errors).
+export const IOS_AVAILABLE: boolean = false
+
+// The canonical listing URL, kept even while unavailable so restoring is a
+// one-line flip. Do NOT link to this directly — use IOS_APP_STORE_URL.
+export const IOS_APP_STORE_URL_CANONICAL = 'https://apps.apple.com/app/id6777805244'
+
+// iOS: '#' is the repo-wide "store not live" sentinel. Callers already branch on
+// it (buildIosStoreUrl no-ops, DownloadClient/GetGigMilesClient show coming-soon).
+export const IOS_APP_STORE_URL = IOS_AVAILABLE ? IOS_APP_STORE_URL_CANONICAL : '#'
 // Android: deterministic from the package id — live the moment Play publishes.
-export const ANDROID_PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.gigmiles.gigmiles_app'
+// `string`, not the inferred literal, so callers can compare against the '#'
+// not-live sentinel the same way they do for iOS.
+export const ANDROID_PLAY_STORE_URL: string = 'https://play.google.com/store/apps/details?id=com.gigmiles.gigmiles_app'
 export const BUNDLE_ID = 'com.gigmiles.gigmilesApp'
 export const APPLE_TEAM_ID = 'XXXXXXXXXX'     // TODO: fill from Apple Developer portal
 

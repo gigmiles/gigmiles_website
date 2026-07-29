@@ -4,7 +4,9 @@ import {
   iosCtFor,
   buildIosStoreUrl,
   buildAndroidStoreUrl,
+  IOS_AVAILABLE,
   IOS_APP_STORE_URL,
+  IOS_APP_STORE_URL_CANONICAL,
   ANDROID_PLAY_STORE_URL,
 } from './app'
 
@@ -27,24 +29,41 @@ describe('iosCtFor', () => {
   })
 })
 
+// These exercise the URL-building rules, so they run against the CANONICAL
+// listing URL rather than IOS_APP_STORE_URL — the latter is the '#' sentinel
+// whenever IOS_AVAILABLE is false, and every builder short-circuits on it.
 describe('buildIosStoreUrl', () => {
   it('leaves canonical URL unchanged for organic (empty ct) — symmetric with Android', () => {
-    expect(buildIosStoreUrl('', IOS_APP_STORE_URL)).toBe(IOS_APP_STORE_URL)
+    expect(buildIosStoreUrl('', IOS_APP_STORE_URL_CANONICAL)).toBe(IOS_APP_STORE_URL_CANONICAL)
   })
   it('appends ct= for a campaign visitor', () => {
-    expect(buildIosStoreUrl('reddit', IOS_APP_STORE_URL)).toBe(`${IOS_APP_STORE_URL}?ct=reddit`)
+    expect(buildIosStoreUrl('reddit', IOS_APP_STORE_URL_CANONICAL)).toBe(`${IOS_APP_STORE_URL_CANONICAL}?ct=reddit`)
   })
   it('does not double-stamp when ct already present', () => {
-    const already = `${IOS_APP_STORE_URL}?ct=existing`
+    const already = `${IOS_APP_STORE_URL_CANONICAL}?ct=existing`
     expect(buildIosStoreUrl('reddit', already)).toBe(already)
   })
   it('regex guard does not false-trigger on other params ending in ct=', () => {
     // a future param like ?product= must NOT be mistaken for ct=
-    const base = `${IOS_APP_STORE_URL}?product=1`
+    const base = `${IOS_APP_STORE_URL_CANONICAL}?product=1`
     expect(buildIosStoreUrl('reddit', base)).toBe(`${base}&ct=reddit`)
   })
   it('passes through the coming-soon sentinel', () => {
     expect(buildIosStoreUrl('reddit', '#')).toBe('#')
+  })
+})
+
+// The kill switch itself. Apple pulled the listing on 2026-07-29; while the
+// appeal is open, nothing may emit a link to a 404. This pins the two halves
+// together so flipping one without the other fails loudly.
+describe('IOS_AVAILABLE kill switch', () => {
+  it('resolves IOS_APP_STORE_URL to the sentinel while unavailable', () => {
+    expect(IOS_APP_STORE_URL).toBe(IOS_AVAILABLE ? IOS_APP_STORE_URL_CANONICAL : '#')
+  })
+  it('never hands a campaign-stamped Apple link to a visitor while unavailable', () => {
+    if (IOS_AVAILABLE) return
+    expect(buildIosStoreUrl('reddit', IOS_APP_STORE_URL)).toBe('#')
+    expect(buildIosStoreUrl('', IOS_APP_STORE_URL)).toBe('#')
   })
 })
 

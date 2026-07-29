@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { attributedStoreUrl } from '@/lib/storeAttribution'
+import { StoreBadges } from '@/components/ui/StoreBadges'
 
 type Platform = 'ios' | 'android' | 'desktop' | 'detecting'
 
@@ -64,7 +65,12 @@ export function DownloadClient({
     }
   }, [iosUrl, androidUrl])
 
-  const comingSoon = iosUrl === '#' && androidUrl === '#'
+  const iosLive = iosUrl !== '#'
+  const androidLive = androidUrl !== '#'
+  const comingSoon = !iosLive && !androidLive
+  // An iPhone visitor whose store is not live gets a dedicated panel: the
+  // generic badge row would offer them Google Play, which they cannot use.
+  const iosVisitorBlocked = platform === 'ios' && !iosLive
 
   return (
     <div className="min-h-screen bg-[#0E4F4F] flex flex-col items-center justify-center px-6">
@@ -103,6 +109,29 @@ export function DownloadClient({
               Notify Me at Launch
             </a>
           </>
+        ) : iosVisitorBlocked ? (
+          <>
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                <span className="text-amber-400 text-xs font-black uppercase tracking-widest">Coming Soon</span>
+              </div>
+              <h1 className="text-3xl font-black text-white tracking-tight">
+                Coming soon on<br />the App Store.
+              </h1>
+              <p className="text-slate-300 font-medium text-sm leading-relaxed">
+                The GigMiles iPhone listing is temporarily unavailable. Leave us a note
+                and we&apos;ll tell you the moment it&apos;s live.
+              </p>
+            </div>
+
+            <a
+              href="mailto:support@gigmiles.app?subject=Notify me when GigMiles is on the App Store"
+              className="w-full py-4 rounded-2xl bg-[#5EEAD4] text-black font-black text-sm uppercase tracking-tight hover:bg-[#5EEAD4] transition-colors"
+            >
+              Notify Me When It&apos;s Live
+            </a>
+          </>
         ) : (
           <>
             <div className="space-y-3">
@@ -110,9 +139,7 @@ export function DownloadClient({
                 Download GigMiles
               </h1>
               <p className="text-slate-300 font-medium text-sm">
-                {platform === 'ios'
-                  ? 'Redirecting to the App Store…'
-                  : platform === 'android'
+                {platform === 'android' && androidLive
                   ? 'Redirecting to Google Play…'
                   : 'Choose your platform below.'}
               </p>
@@ -120,30 +147,7 @@ export function DownloadClient({
 
             {/* Official store badges (Apple / Google guidelines) */}
             <div className="flex flex-wrap items-center justify-center gap-4 w-full">
-              <a
-                href={iosUrl !== '#' ? iosUrl : undefined}
-                aria-label="Download on the App Store"
-                className="inline-flex"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/badges/app-store-badge.svg"
-                  alt="Download on the App Store"
-                  className="h-[52px] w-auto"
-                />
-              </a>
-              <a
-                href={androidUrl !== '#' ? androidUrl : undefined}
-                aria-label="Get it on Google Play"
-                className="inline-flex"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/badges/google-play-badge.svg"
-                  alt="Get it on Google Play"
-                  className="h-[52px] w-auto"
-                />
-              </a>
+              <StoreBadges />
             </div>
           </>
         )}

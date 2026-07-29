@@ -8,12 +8,16 @@ import { visitorDevice } from '@/lib/visitorDevice'
 // desktop/unknown → the /download smart page (which shows both). Store URLs
 // come from the single source of truth in src/config/app.ts and are decorated
 // with the visitor's campaign context (ct= / install referrer).
+//
+// A store that is not live resolves to the '#' sentinel. Sending the visitor
+// there would navigate to the page's own anchor — a click that visibly does
+// nothing. Those fall through to /download instead, which explains the state.
 function getStoreUrl(): 'desktop' | { store: 'ios' | 'android'; url: string } {
   const device = visitorDevice()
-  if (device === 'android') {
+  if (device === 'android' && ANDROID_PLAY_STORE_URL !== '#') {
     return { store: 'android', url: attributedStoreUrl('android', ANDROID_PLAY_STORE_URL) }
   }
-  if (device === 'ios') {
+  if (device === 'ios' && IOS_APP_STORE_URL !== '#') {
     return { store: 'ios', url: attributedStoreUrl('ios', IOS_APP_STORE_URL) }
   }
   return 'desktop'
