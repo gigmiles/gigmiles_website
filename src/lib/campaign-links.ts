@@ -21,6 +21,9 @@ type CampaignLink = {
   // contexts) land on the homepage so nobody hits an email gate they
   // didn't ask for.
   dest?: string
+  // Extra non-UTM query params forwarded to the destination (e.g. the
+  // calculator's ?v=ebike preset). Attribution stays in the utm_* fields.
+  params?: Record<string, string>
 }
 
 // path (no leading slash) → attribution
@@ -85,6 +88,31 @@ export const CAMPAIGN_LINKS: Record<string, CampaignLink> = {
     utm_content: 'ebike_expense_article',
     dest: '/ebike',
   },
+  // The slug the agency backlog (#4) measures the RSG e-bike placement by:
+  // "why standard mileage doesn't apply to e-bikes" → actual-expense guide,
+  // so it lands on /ebike (message match). Separate slug AND utm_content from
+  // `rsg` above so this placement's landings never merge with traffic already
+  // circulating on /rsg. Use THIS slug in the article draft the operator sends.
+  'rsg-ebike': {
+    utm_source: 'therideshareguy',
+    utm_medium: 'guest_post',
+    utm_content: 'ebike_mileage_article',
+    dest: '/ebike',
+  },
+
+  // ─── Community seeding ─────────────────────────────────────────────────────
+  // Reddit organic Phase B (agency backlog #3, eligible after the warm-up ends
+  // ~2026-08-03 and ONLY where sub rules allow links): the e-bike PRESET of the
+  // net-income calculator, dropped in e-bike cost threads. The experiment's
+  // metric reads distinct pageview cids on /calculator carrying this
+  // utm_content — don't reuse the slug anywhere else or the read is polluted.
+  ebikecalc: {
+    utm_source: 'reddit',
+    utm_medium: 'community',
+    utm_content: 'ebike_calc_seed_v1',
+    dest: '/calculator',
+    params: { v: 'ebike' },
+  },
 }
 
 // Build the destination (path + query) for a campaign link.
@@ -95,6 +123,7 @@ export function campaignDestination(link: CampaignLink): string {
     utm_campaign: CAMPAIGN,
     utm_content: link.utm_content,
   })
+  for (const [k, v] of Object.entries(link.params ?? {})) p.set(k, v)
   return `${link.dest ?? '/'}?${p.toString()}`
 }
 

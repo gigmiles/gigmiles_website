@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   buildCalcParams,
   CALC_DEFAULTS,
+  calcDefaults,
   calcRealNet,
   defaultCostPerMile,
   IRS_MILEAGE_RATE_2026,
@@ -128,7 +129,19 @@ export function CalculatorClient() {
                 key={val}
                 type="button"
                 aria-pressed={vehicle === val}
-                onClick={() => { setVehicle(val); setCostPerMile(defaultCostPerMile(val)) }}
+                onClick={() => {
+                  // If the shift fields are still the current vehicle's
+                  // untouched placeholders, switch them to the other
+                  // vehicle's preset too — a car placeholder shift (150 mi)
+                  // is nonsense on an e-bike. Anything the visitor typed
+                  // stays put.
+                  const from = calcDefaults(vehicle)
+                  const to = calcDefaults(val)
+                  if (gross === from.gross && miles === from.miles && hours === from.hours) {
+                    setGross(to.gross); setMiles(to.miles); setHours(to.hours)
+                  }
+                  setVehicle(val); setCostPerMile(defaultCostPerMile(val))
+                }}
                 className={`py-3 text-[13px] tracking-[0.06em] font-[family-name:var(--font-space-grotesk)] font-medium transition-colors cursor-pointer ${
                   vehicle === val
                     ? 'bg-[#5EEAD4] text-[#0A3C3C]'

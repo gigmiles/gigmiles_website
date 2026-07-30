@@ -12,6 +12,7 @@ import {
   parseCalcParams,
   buildCalcParams,
   CALC_DEFAULTS,
+  EBIKE_CALC_DEFAULTS,
   CALC_LIMITS,
 } from './calculatorMath'
 
@@ -144,6 +145,25 @@ describe('parseCalcParams / buildCalcParams', () => {
     expect(parse('g=abc').gross).toBe(CALC_DEFAULTS.gross)
     expect(parse('').gross).toBe(CALC_DEFAULTS.gross)
     expect(parse('v=motorcycle').vehicle).toBe('car')
+  })
+
+  // The e-bike preset (2026-07-31): ?v=ebike alone must NOT inherit the car
+  // placeholder shift — 150 miles is no e-bike day. The /ebikecalc campaign
+  // link redirects to exactly this bare-preset URL.
+  it('?v=ebike alone resolves to the full e-bike preset, not car defaults', () => {
+    expect(parse('v=ebike')).toEqual(EBIKE_CALC_DEFAULTS)
+  })
+
+  it('explicit values on an e-bike link win over the preset, per-field', () => {
+    const s = parse('v=ebike&g=200')
+    expect(s.gross).toBe(200)
+    expect(s.miles).toBe(EBIKE_CALC_DEFAULTS.miles)
+    expect(s.hours).toBe(EBIKE_CALC_DEFAULTS.hours)
+    expect(s.costPerMile).toBe(EBIKE_DEFAULT_RATE)
+  })
+
+  it('out-of-range values on an e-bike link fall back to e-bike defaults', () => {
+    expect(parse('v=ebike&mi=99999').miles).toBe(EBIKE_CALC_DEFAULTS.miles)
   })
 
   it('round-trips: build → parse returns the same state', () => {

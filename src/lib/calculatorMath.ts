@@ -61,6 +61,26 @@ export const CALC_DEFAULTS = {
   costPerMile: CAR_DEFAULT_COST_PER_MILE,
 }
 
+// E-bike preset (2026-07-31). A ?v=ebike arrival used to inherit the CAR
+// placeholder shift — 150 miles is several times what a courier pedals in a
+// day, so the first number an e-bike visitor saw was one no e-bike shift
+// produces. Like CALC_DEFAULTS these are round, editable PLACEHOLDER inputs
+// (the canonical $235 example set is for creative assets, not calculator
+// fields — see the CalculatorClient DEFAULTS note); the result is computed
+// live, never claimed.
+export const EBIKE_CALC_DEFAULTS = {
+  gross: 150,
+  miles: 40,
+  hours: 8,
+  vehicle: 'ebike' as VehicleType,
+  costPerMile: EBIKE_DEFAULT_RATE,
+}
+
+/** Placeholder shift for a vehicle type — the ?v=ebike preset switches ALL
+ *  defaults, not just the per-mile rate. */
+export const calcDefaults = (v: VehicleType) =>
+  v === 'ebike' ? EBIKE_CALC_DEFAULTS : CALC_DEFAULTS
+
 /** Default real cost per mile for a vehicle type. */
 export const defaultCostPerMile = (v: VehicleType) =>
   v === 'car' ? CAR_DEFAULT_COST_PER_MILE : EBIKE_DEFAULT_RATE
@@ -68,21 +88,22 @@ export const defaultCostPerMile = (v: VehicleType) =>
 export const CALC_LIMITS = { gross: 100_000, miles: 10_000, hours: 200, costPerMile: 10 }
 
 /** Resolve ?g=&mi=&h=&v=&r= to calculator state. Out-of-range or unparseable
- *  values fall back to the default — never to the ceiling. */
+ *  values fall back to the default — never to the ceiling. ALL fallbacks
+ *  follow the vehicle type: ?v=ebike alone is the e-bike preset link, and an
+ *  old car link with no `r` still resolves to the car default. */
 export function parseCalcParams(p: URLSearchParams): typeof CALC_DEFAULTS {
   const num = (key: string, fallback: number, max: number) => {
     const v = parseFloat(p.get(key) ?? '')
     return Number.isFinite(v) && v >= 0 && v <= max ? v : fallback
   }
   const vehicle: VehicleType = p.get('v') === 'ebike' ? 'ebike' : 'car'
+  const d = calcDefaults(vehicle)
   return {
-    gross: num('g', CALC_DEFAULTS.gross, CALC_LIMITS.gross),
-    miles: num('mi', CALC_DEFAULTS.miles, CALC_LIMITS.miles),
-    hours: num('h', CALC_DEFAULTS.hours, CALC_LIMITS.hours),
+    gross: num('g', d.gross, CALC_LIMITS.gross),
+    miles: num('mi', d.miles, CALC_LIMITS.miles),
+    hours: num('h', d.hours, CALC_LIMITS.hours),
     vehicle,
-    // `r` carries the rate for BOTH vehicle types; the fallback follows the
-    // type, so an old car link with no `r` still resolves to the car default.
-    costPerMile: num('r', defaultCostPerMile(vehicle), CALC_LIMITS.costPerMile),
+    costPerMile: num('r', d.costPerMile, CALC_LIMITS.costPerMile),
   }
 }
 
