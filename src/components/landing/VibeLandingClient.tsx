@@ -267,7 +267,7 @@ export function VibeLandingClient() {
           {/* Badge */}
           <div className="hero-badge inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/20 text-[#10B981] text-[8px] font-black uppercase tracking-[0.3em]">
             <div className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-ping" />
-            Early Access · Now Available on Google Play
+            Now Available on the App Store & Google Play
           </div>
 
           {/* Motto */}

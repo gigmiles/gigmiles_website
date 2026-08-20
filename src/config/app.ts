@@ -2,22 +2,17 @@
 // Update these when Apple/Google developer accounts are active.
 
 // ─── iOS availability kill switch ──────────────────────────────────────────────
-// 2026-07-29: Apple REMOVED the listing. apps.apple.com/app/id6777805244 now
-// returns 404 (verified by request, not assumed). An appeal is in progress.
-// While this is false the whole site treats iOS as "coming soon": no App Store
-// badge is rendered anywhere, no iPhone visitor is redirected to a dead link,
-// and llms.txt stops telling AI answer engines the app is on the App Store.
-//
-// TO RESTORE after a successful appeal: set this to true. Nothing else needs to
-// change — every surface reads IOS_AVAILABLE or the '#' sentinel below.
+// 2026-08-20: Apple's official Lookup API confirms listing 6777805244 is live.
+// Keep this switch so a future delisting can suppress every App Store surface
+// atomically; while true, all existing device-aware links use the verified URL.
 // Annotated `boolean`, not left to infer `false`: without it TypeScript narrows
 // every downstream check to a literal and the switch stops type-checking as a
 // switch (the App Store branch reads as dead code, and `!== '#'` guards on the
 // sibling store become "no overlap" errors).
-export const IOS_AVAILABLE: boolean = false
+export const IOS_AVAILABLE: boolean = true
 
-// The canonical listing URL, kept even while unavailable so restoring is a
-// one-line flip. Do NOT link to this directly — use IOS_APP_STORE_URL.
+// The canonical listing URL. Do NOT link to this directly — use
+// IOS_APP_STORE_URL so the availability switch remains authoritative.
 export const IOS_APP_STORE_URL_CANONICAL = 'https://apps.apple.com/app/id6777805244'
 
 // iOS: '#' is the repo-wide "store not live" sentinel. Callers already branch on
