@@ -2,23 +2,22 @@
 
 import {useState} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
-import {useLocalDesignReview} from './LocalDesignReview'
 import './product-showcase.css'
 
 const SCREENS = [
   {
     id: 'earnings', label: 'Log earnings', title: 'The work. On record.',
     description: 'Earnings, time and miles. Bring the details of your shift together.',
-    alt: 'GigMiles Add Earnings screen with empty earnings and mileage fields, plus vehicle and state context.',
-    exampleImage: 'product-earnings-complete.webp',
-    exampleAlt: 'Example unsaved GigMiles entry: $92.50 received, 3 hours 30 minutes worked and 42 miles. The small $86.62 preview is after estimated fuel only, not after wear, tax or other expenses.',
+    image: 'product-earnings-complete.webp',
+    alt: 'Example unsaved GigMiles entry: $92.50 received, 3 hours 30 minutes worked and 42 miles. The small $86.62 preview is after estimated fuel only, not after wear, tax or other expenses.',
+    disclosure: 'Example entry. Preview after fuel only, before other costs and taxes.',
   },
   {
     id: 'expenses', label: 'Log expenses', title: 'The little costs count.',
     description: 'Choose a category and record an expense. Keep the details with the work.',
-    alt: 'GigMiles Add Expense screen with expense categories and an empty amount field.',
-    exampleAlt: 'Example manual fuel expense in GigMiles: $24.80 in both the amount field and the Fuel header.',
-    exampleImage: 'product-expenses-filled.webp',
+    alt: 'Example manual fuel expense in GigMiles: $24.80 in both the amount field and the Fuel header.',
+    image: 'product-expenses-filled.webp',
+    disclosure: 'Example entry. Record a fuel purchase with your expenses.',
   },
 ] as const
 
@@ -28,9 +27,8 @@ export function ProductShowcase() {
   const [selected, setSelected] = useState(0)
   const [failed, setFailed] = useState<string | null>(null)
   const current = SCREENS[selected]
-  // Proposed amounts stay local until explicitly approved as demonstration
-  // inputs. They do not expand the canonical gross/net figure policy.
-  const exampleEntries = useLocalDesignReview()
+  // Prepared website entry captures. Publication needs the explicit numeric
+  // exception recorded in the agency release receipt; never reuse as a campaign.
 
   return <section className="records product-showcase" id="in-the-app" aria-labelledby="product-title">
     <div className="wrap product-layout">
@@ -57,11 +55,11 @@ export function ProductShowcase() {
           {failed === current.id
             ? <p className="product-image-error" role="status">This app preview couldn’t load. Choose another screen or try again later.</p>
             : <img key={current.id} className="product-screen-image"
-                src={exampleEntries?`/editorial/${current.exampleImage}`:`/editorial/product-${current.id}.webp`}
-                alt={exampleEntries?current.exampleAlt:current.alt}
+                src={`/editorial/${current.image}`} alt={current.alt}
                 width={780} height={1560} loading="lazy" decoding="async"
                 onError={() => setFailed(current.id)}/>}
         </div>
+        <figcaption className="product-example-note">{current.disclosure}</figcaption>
       </figure>
 
       <div className="product-next">

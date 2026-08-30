@@ -1,4 +1,4 @@
-// Local comparison only. Native page scroll, not wheel/touch interception.
+// Operator-approved homepage story. Native scroll, no wheel/touch interception.
 export function sceneAtProgress(progress:number) {
   const p=Number.isFinite(progress) ? Math.max(0,Math.min(1,progress)) : 0
   return p<.25 ? 0 : p<.5 ? 1 : p<.8 ? 2 : 3

@@ -1,4 +1,4 @@
-/* A comparison route only: no change to the approved timed hero. */
+/* Approved scroll hero; styles do not affect the retained timed variant. */
 .editorial-site .hero-scroll .story-controls { margin-top: 12px; }
 .editorial-site .hero-scroll .chapters { width: 100%; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 5px; }
 .editorial-site .hero-scroll .chapters button { min-height: 44px; white-space: normal; padding: 8px 4px; line-height: 1.2; }

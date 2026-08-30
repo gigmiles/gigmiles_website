@@ -5,6 +5,7 @@ import {readFileSync} from 'node:fs'
 import {ApprovedHome} from './ApprovedHome'
 import {sceneAtProgress} from './scroll-story-controller'
 import ScrollComparison from '@/app/preview/scroll/page'
+import LandingPage from '@/app/page'
 
 vi.mock('next/navigation',()=>({notFound:()=>{throw new Error('NOT_FOUND')}}))
 
@@ -27,16 +28,19 @@ beforeEach(()=>{
 })
 afterEach(()=>{cleanup();vi.restoreAllMocks();vi.unstubAllGlobals();vi.unstubAllEnvs()})
 
-describe('bounded local scroll comparison',()=>{
+describe('approved bounded scroll story',()=>{
   it('maps finite progress to four readable chapters and clamps endpoints',()=>{
     expect([-.2,0,.249,.25,.499,.5,.799,.8,1,2,NaN].map(sceneAtProgress)).toEqual([0,0,0,1,1,2,2,3,3,3,0])
   })
-  it('keeps the default home timed and the comparison free of play/pause',()=>{
+  it('publishes the scroll story at root while retaining the optional timed component',()=>{
     expect(renderToStaticMarkup(<ApprovedHome/>)).toContain('id="play"')
-    const html=renderToStaticMarkup(<ApprovedHome heroMode="scroll"/>)
+    const html=renderToStaticMarkup(<LandingPage/>)
     expect(html).not.toContain('id="play"')
     expect(html).toContain('data-scene="3"')
     expect(html).toContain('/editorial/day-job.webp')
+    expect(html).toContain('hero-scroll')
+    expect(html).toContain('product-earnings-complete.webp')
+    expect(html).not.toContain('Local preview ·')
   })
   it('advances and reverses with native scroll without scheduling an idle animation loop',()=>{
     const {container}=render(<ApprovedHome heroMode="scroll"/>)
@@ -79,6 +83,7 @@ describe('bounded local scroll comparison',()=>{
   it('cannot render its comparison route outside explicit local review',()=>{
     vi.stubEnv('LOCAL_DESIGN_REVIEW','');expect(()=>ScrollComparison()).toThrow('NOT_FOUND')
     vi.stubEnv('LOCAL_DESIGN_REVIEW','1');expect(ScrollComparison()).toBeTruthy()
+    vi.stubEnv('NODE_ENV','production');expect(()=>ScrollComparison()).toThrow('NOT_FOUND')
     const route=readFileSync('src/app/preview/scroll/page.tsx','utf8')
     expect(route).toContain('index:false,follow:false')
     const controller=readFileSync('src/components/editorial/scroll-story-controller.ts','utf8')

@@ -40,6 +40,7 @@
 .editorial-site .product-caption h3 { color: #173b2a; font-size: 24px; line-height: 1.2; font-weight: 500; letter-spacing: -.035em; margin: 0 0 10px; }
 .editorial-site .product-caption p { color: #47623f; font-size: 15px; line-height: 1.6; margin: 0; }
 .editorial-site .product-visual { grid-column: 2; grid-row: 1 / 4; align-self: center; justify-self: center; width: min(100%, 348px); margin: 0; }
+.editorial-site .product-example-note { margin-top: 12px; color: #526b48; font-size: 11px; line-height: 1.5; text-align: center; }
 .editorial-site .product-device {
   box-sizing: border-box;
   padding: 8px;

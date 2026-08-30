@@ -90,7 +90,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const localReview = process.env.LOCAL_DESIGN_REVIEW === '1';
+  const localReview = process.env.LOCAL_DESIGN_REVIEW === '1' && process.env.NODE_ENV !== 'production';
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
       <body className={`${inter.variable} ${outfit.variable} ${outfitAlias.variable} ${interAlias.variable} font-sans`}>

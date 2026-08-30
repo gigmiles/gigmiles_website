@@ -12,7 +12,7 @@ describe('one-phone product proof', () => {
   it('renders one meaningful screenshot on the server, without changing the hero', () => {
     const html = renderToStaticMarkup(<ProductShowcase/>)
     expect((html.match(/<img /g) || [])).toHaveLength(1)
-    expect(html).toContain('product-earnings.webp')
+    expect(html).toContain('product-earnings-complete.webp')
     expect(html).toContain('loading="lazy"')
     expect(html).not.toMatch(/\$235|\$175|<video|<canvas|autoplay|Home dashboard|Shift history/)
     expect(html).toContain('Manual tracking is part of the free core.')
@@ -26,13 +26,13 @@ describe('one-phone product proof', () => {
     fireEvent.click(screen.getByRole('button', {name:'Log expenses'}))
     expect(screen.getByRole('button', {name:'Log expenses'})).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', {name:'Log earnings'})).toHaveAttribute('aria-pressed', 'false')
-    expect(screen.getByRole('img')).toHaveAttribute('src', '/editorial/product-expenses.webp')
+    expect(screen.getByRole('img')).toHaveAttribute('src', '/editorial/product-expenses-filled.webp')
     expect(screen.getByRole('heading', {name:'The little costs count.'})).toBeInTheDocument()
     expect(container.querySelectorAll('.product-device')).toHaveLength(1)
     expect(container.querySelectorAll('img')).toHaveLength(1)
     expect(vi.getTimerCount()).toBe(0)
     fireEvent.click(screen.getByRole('button', {name:'Log earnings'}))
-    expect(screen.getByRole('img')).toHaveAttribute('src', '/editorial/product-earnings.webp')
+    expect(screen.getByRole('img')).toHaveAttribute('src', '/editorial/product-earnings-complete.webp')
   })
   it('provides native keyboard-focusable controls and live text outside the screenshot', () => {
     const {container} = render(<ProductShowcase/>)
@@ -51,10 +51,10 @@ describe('one-phone product proof', () => {
     fireEvent.error(screen.getByRole('img'))
     expect(screen.getByRole('status')).toHaveTextContent('couldn’t load')
     fireEvent.click(screen.getByRole('button', {name:'Log expenses'}))
-    expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-expenses.webp')
+    expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-expenses-filled.webp')
   })
   it('ships small real capture assets with reserved 1:2 dimensions', () => {
-    for(const name of ['earnings','expenses']) {
+    for(const name of ['earnings-complete','expenses-filled']) {
       const buffer = readFileSync(`public/editorial/product-${name}.webp`)
       expect(buffer.length).toBeLessThan(60000)
       expect(buffer.subarray(8,12).toString()).toBe('WEBP')
@@ -67,17 +67,20 @@ describe('one-phone product proof', () => {
 })
 
 describe('explicit local review safety', () => {
-  it('shows filled, consistent example entries only in local review',()=>{
+  it('shows the approved filled entries in production and local review alike',()=>{
     const {rerender}=render(<LocalDesignReview enabled><ProductShowcase/></LocalDesignReview>)
     expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-earnings-complete.webp')
     expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('$92.50'))
     expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('3 hours 30 minutes worked and 42 miles'))
     expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('after estimated fuel only'))
+    expect(screen.getByText('Example entry. Preview after fuel only, before other costs and taxes.')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button',{name:'Log expenses'}))
     expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-expenses-filled.webp')
     expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('$24.80'))
     rerender(<LocalDesignReview enabled={false}><ProductShowcase/></LocalDesignReview>)
-    expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-expenses.webp')
+    expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-expenses-filled.webp')
+    fireEvent.click(screen.getByRole('button',{name:'Log earnings'}))
+    expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-earnings-complete.webp')
     for(const name of ['earnings','expenses'])expect(readFileSync(`public/editorial/product-${name}-filled.webp`).length).toBeLessThan(60000)
     expect(readFileSync('public/editorial/product-earnings-complete.webp').length).toBeLessThan(60000)
   })
@@ -101,6 +104,7 @@ describe('explicit local review safety', () => {
   it('excludes both analytics mounts for the opt-in local server flag', () => {
     const layout = readFileSync('src/app/layout.tsx','utf8')
     expect(layout).toContain("process.env.LOCAL_DESIGN_REVIEW === '1'")
+    expect(layout).toContain("process.env.NODE_ENV !== 'production'")
     expect(layout).toContain('{!localReview && <SiteBeacon />}')
     expect(layout).toContain('{!localReview && <RedditPixel />}')
   })
