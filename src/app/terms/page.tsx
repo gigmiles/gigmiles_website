@@ -2,10 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import { marked } from 'marked'
 import type { Metadata } from 'next'
+import {WebsiteShell} from '@/components/editorial/WebsiteShell'
 
 export const metadata: Metadata = {
   title: 'Terms of Service | GigMiles',
   description: 'GigMiles Terms of Service — your rights and responsibilities when using our app.',
+  alternates: {canonical:'https://gigmiles.app/terms'},
 }
 
 // Single source of truth: the canonical Terms markdown lives in the mobile repo
@@ -20,8 +22,8 @@ export default async function TermsPage() {
   const html = await marked.parse(md)
 
   return (
-    <div className="min-h-screen bg-[#0E4F4F] text-slate-300">
-      <div className="max-w-3xl mx-auto px-6 py-16">
+    <WebsiteShell paper>
+      <section className="wrap legal-reading">
         <a
           href="/"
           className="text-[#5EEAD4] text-sm font-medium hover:text-[#5EEAD4] transition-colors"
@@ -29,10 +31,10 @@ export default async function TermsPage() {
           ← GigMiles
         </a>
         <article
-          className="legal-doc mt-8"
+          className="prose"
           dangerouslySetInnerHTML={{ __html: html }}
         />
-      </div>
-    </div>
+      </section>
+    </WebsiteShell>
   )
 }

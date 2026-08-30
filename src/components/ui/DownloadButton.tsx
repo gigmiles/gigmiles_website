@@ -57,9 +57,10 @@ interface DownloadButtonProps {
   className?: string
   style?: React.CSSProperties
   children?: React.ReactNode
+  'data-cta-placement'?: string
 }
 
-export function DownloadButton({ className, style, children }: DownloadButtonProps) {
+export function DownloadButton({ className, style, children, 'data-cta-placement': placement }: DownloadButtonProps) {
   const handleClick = () => {
     const target = getStoreUrl()
     if (target === 'desktop') {
@@ -74,7 +75,7 @@ export function DownloadButton({ className, style, children }: DownloadButtonPro
   }
 
   return (
-    <button type="button" onClick={handleClick} className={className} style={style}>
+    <button type="button" onClick={handleClick} className={className} style={style} data-cta-placement={placement}>
       {children ?? 'Download App'}
     </button>
   )

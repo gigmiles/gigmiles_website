@@ -5,6 +5,9 @@ import type { NextConfig } from "next";
 const isStaticExport = process.env.STATIC_EXPORT === '1'
 
 const nextConfig: NextConfig = {
+  // Keep independent/worktree builds rooted in this site, not a parent lockfile.
+  outputFileTracingRoot: process.cwd(),
+  turbopack: { root: process.cwd() },
   ...(isStaticExport && {
     output: 'export',
     trailingSlash: true,

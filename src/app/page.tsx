@@ -1,5 +1,6 @@
-import { ScrollLanding } from '@/components/ScrollLanding'
+import {ApprovedHome} from '@/components/editorial/ApprovedHome'
+import {WebsiteShell} from '@/components/editorial/WebsiteShell'
 
 export default function LandingPage() {
-  return <ScrollLanding />
+  return <WebsiteShell><ApprovedHome /></WebsiteShell>
 }
