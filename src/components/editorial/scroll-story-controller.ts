@@ -10,7 +10,7 @@ export function installScrollStory(root:HTMLElement) {
   const chapters=Array.from(root.querySelectorAll<HTMLButtonElement>('[data-scene]'))
   const status=root.querySelector<HTMLElement>('#story-status')
   if(!hero || !status || scenes.length!==4) return ()=>{}
-  const room=matchMedia('(min-width: 981px) and (min-height: 760px)')
+  const room=matchMedia('(min-width: 981px) and (min-height: 660px)')
   const reduced=matchMedia('(prefers-reduced-motion: reduce)')
   const abort=new AbortController(), options={signal:abort.signal}
   let frame=0, manualAt:number|null=null, selected=-1
