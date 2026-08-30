@@ -1,0 +1,85 @@
+/* Home-only density corrections; other routes and the approved hero stay intact.
+   Extra section specificity avoids depending on stylesheet import order. */
+.editorial-site .home-details.details {
+  padding-top: 58px;
+  padding-bottom: 58px;
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  gap: 7%;
+  align-items: start;
+}
+.editorial-site .home-details .section-heading > .details-intro {
+  max-width: 390px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+.editorial-site .calculator-entry {
+  margin-top: 26px;
+  padding: 23px 25px;
+  max-width: 440px;
+  border: 1px solid #d8e7ce;
+  border-radius: 12px;
+  background: #deebd4;
+  color: #183c2d;
+}
+.editorial-site .calculator-entry h3 {
+  font-size: 25px;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.editorial-site .calculator-entry .calculator-entry-copy {
+  color: #395637;
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+.editorial-site .calculator-entry-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.editorial-site .calculator-entry .calculator-entry-link {
+  color: #eff5e7;
+  background: #17432f;
+  font-size: 13px;
+  padding: 12px 15px;
+  min-height: 44px;
+  gap: 20px;
+}
+.editorial-site .calculator-entry .calculator-entry-link:hover { background: #285b41; }
+.editorial-site .calculator-entry .calculator-entry-link:focus-visible { outline: 2px solid #17432f; outline-offset: 4px; }
+.editorial-site .calculator-entry-actions > span { font-size: 11px; color: #3e5c39; }
+.editorial-site .calculator-entry .calculator-entry-scope { color: #47613f; font-size: 11px; line-height: 1.5; margin: 16px 0 0; }
+
+.editorial-site .home-faq.faq { display: block; padding: 48px 0 40px; }
+.editorial-site .home-faq .faq-heading { margin-bottom: 22px; }
+.editorial-site .home-faq .faq-heading .eyebrow { margin: 0 0 12px; }
+.editorial-site .home-faq .faq-heading h2 { font-size: 34px; margin: 0; }
+.editorial-site .home-faq .faq-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 44px; align-items: start; }
+.editorial-site .home-faq .faq-list summary { min-height: 65px; padding: 19px 0; }
+.editorial-site .home-faq .faq-list details > p { padding-right: 18px; }
+
+.editorial-site .home-journal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px;
+  padding-top: 32px;
+  padding-bottom: 36px;
+  border-top: 1px solid var(--line);
+}
+.editorial-site .home-journal .eyebrow { margin: 0 0 10px; }
+.editorial-site .home-journal h2 { font-size: 28px; line-height: 1.15; letter-spacing: -.035em; font-weight: 500; margin: 0 0 9px; }
+.editorial-site .home-journal .journal-summary { font-size: 14px; line-height: 1.5; color: var(--muted); margin: 0; max-width: 650px; }
+.editorial-site .home-journal > a { display: inline-flex; align-items: center; gap: 20px; flex-shrink: 0; min-height: 44px; font-size: 14px; color: #c9e8bd; text-decoration: underline; text-underline-offset: 5px; }
+@media(max-width: 720px) {
+  .editorial-site .home-details.details { display: block; padding-top: 38px; padding-bottom: 38px; }
+  .editorial-site .calculator-entry { margin-top: 23px; margin-bottom: 26px; padding: 20px; max-width: none; }
+  .editorial-site .calculator-entry h3 { font-size: 24px; }
+  .editorial-site .home-faq.faq { padding-top: 36px; padding-bottom: 28px; }
+  .editorial-site .home-faq .faq-heading h2 { font-size: 31px; }
+  .editorial-site .home-faq .faq-list { grid-template-columns: minmax(0, 1fr); }
+  .editorial-site .home-faq .faq-list summary { min-height: 62px; }
+  .editorial-site .home-journal { display: block; padding-top: 25px; padding-bottom: 27px; }
+  .editorial-site .home-journal h2 { font-size: 25px; }
+  .editorial-site .home-journal > a { margin-top: 14px; }
+}

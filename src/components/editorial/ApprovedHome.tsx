@@ -1,10 +1,12 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import {PersonalizationStory} from './PersonalizationStory'
 import {ProductShowcase} from './ProductShowcase'
+import {CalculatorEntry} from './CalculatorEntry'
+import './home-flow.css'
 // Approved 2026-08-30 preview, transcribed into native React markup.
-export function ApprovedHome(){return <>
+export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){return <>
 
-<section className="hero wrap" aria-labelledby="headline">
+<section className={'hero wrap'+(heroMode==='scroll'?' hero-scroll':'')} aria-labelledby="headline">
 
 <div className="intro">
 <p className="eyebrow">
@@ -55,7 +57,7 @@ export function ApprovedHome(){return <>
 </p>
 </div>
 
-<PersonalizationStory>
+<PersonalizationStory mode={heroMode}>
 
 <div className="stage" id="stage">
 
@@ -262,10 +264,11 @@ export function ApprovedHome(){return <>
 <button type="button" data-scene="2" aria-pressed="false">
 {"Your day job"}
 </button>
+{heroMode==='scroll' && <button type="button" data-scene="3" aria-pressed="false">Together</button>}
 </div>
-<button className="play" type="button" id="play" aria-label="Play story">
+{heroMode==='timed' && <button className="play" type="button" id="play" aria-label="Play story">
 {"Play story"}
-</button>
+</button>}
 </div>
 
 <p className="story-note" id="story-status" aria-live="polite">
@@ -296,7 +299,7 @@ export function ApprovedHome(){return <>
 </div>
 </section>
 
-<section className="details wrap" id="details" aria-labelledby="details-title">
+<section className="details wrap home-details" id="details" aria-labelledby="details-title">
 <div className="section-heading">
 <p className="eyebrow">
 {"LESS GUESSING. MORE CONTEXT."}
@@ -306,9 +309,10 @@ export function ApprovedHome(){return <>
 <br  />
 {"The bigger picture."}
 </h2>
-<p>
-{"No form to fill out here. Just a closer look at what informs the estimates in GigMiles."}
+<p className="details-intro">
+{"Your vehicle, location and optional day-job income give your estimates context."}
 </p>
+<CalculatorEntry />
 </div>
 
 <div className="detail-list">
@@ -480,15 +484,17 @@ export function ApprovedHome(){return <>
 </div>
 </section>
 
-<section className="faq wrap" id="questions">
+<section className="faq wrap home-faq" id="questions" aria-labelledby="questions-title">
+<div className="faq-heading">
 <p className="eyebrow">
 {"GOOD TO KNOW"}
 </p>
-<h2>
+<h2 id="questions-title">
 {"A clearer picture."}
 <br  />
 {"Not a final tax answer."}
 </h2>
+</div>
 <div className="faq-list">
 <details>
 <summary>
@@ -534,57 +540,16 @@ export function ApprovedHome(){return <>
 {"No. Estimates depend on the information you enter and the model's assumptions. Your actual tax situation may differ. GigMiles is a planning and records tool, not a tax-filing service."}
 </p>
 </details>
-<details>
-<summary>
-{"Can I try a calculation here?"}
-<span aria-hidden="true">
-{"+"}
-</span>
-</summary>
-<p>
-{"The hero explains the relationships between inputs. Our separate "}
-<a href="/calculator">
-{"web calculator"}
-</a>
-{" lets you try a simplified estimate, with its limits explained. It does not include state or W-2 personalization."}
-</p>
-</details>
 </div>
 </section>
 
-<section className="wrap home-resources">
-<p className="eyebrow">
-{"EXPLORE A LITTLE FURTHER"}
-</p>
-<h2>
-{"Try the numbers."}
-<br  />
-{"Understand the context."}
-</h2>
-<div className="home-resource-grid">
-<a href="/calculator">
-<h3>
-{"Your quick estimate."}
-</h3>
-<p>
-{"Enter your own figures in the simplified web calculator. Its limits are clearly explained."}
-</p>
-<span>
-{"Open calculator ↗"}
-</span>
-</a>
-<a href="/blog">
-<h3>
-{"Your next good question."}
-</h3>
-<p>
-{"Browse the GigMiles guides on costs, records and choosing the right tool."}
-</p>
-<span>
-{"Explore the journal ↗"}
-</span>
-</a>
+<section className="wrap home-journal" aria-labelledby="journal-entry-title">
+<div>
+<p className="eyebrow">THE GIGMILES JOURNAL</p>
+<h2 id="journal-entry-title">Good questions. Clearer answers.</h2>
+<p className="journal-summary">Practical guides to vehicle costs, keeping records and choosing the right tool.</p>
 </div>
+<a href="/blog">Read the guides <span aria-hidden="true">↗</span></a>
 </section>
 <section className="download conversion-close" id="download">
 <div className="wrap">

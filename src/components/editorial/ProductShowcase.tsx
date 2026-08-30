@@ -2,6 +2,7 @@
 
 import {useState} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
+import {useLocalDesignReview} from './LocalDesignReview'
 import './product-showcase.css'
 
 const SCREENS = [
@@ -9,11 +10,13 @@ const SCREENS = [
     id: 'earnings', label: 'Log earnings', title: 'The work. On record.',
     description: 'Earnings, time and miles. Bring the details of your shift together.',
     alt: 'GigMiles Add Earnings screen with empty earnings and mileage fields, plus vehicle and state context.',
+    exampleAlt: 'Example manual entry in GigMiles: $92.50 in both Gross Earnings and Total Received. Unsaved input, not estimated net profit.',
   },
   {
     id: 'expenses', label: 'Log expenses', title: 'The little costs count.',
     description: 'Choose a category and record an expense. Keep the details with the work.',
     alt: 'GigMiles Add Expense screen with expense categories and an empty amount field.',
+    exampleAlt: 'Example manual fuel expense in GigMiles: $24.80 in both the amount field and the Fuel header.',
   },
 ] as const
 
@@ -23,6 +26,9 @@ export function ProductShowcase() {
   const [selected, setSelected] = useState(0)
   const [failed, setFailed] = useState<string | null>(null)
   const current = SCREENS[selected]
+  // Proposed amounts stay local until explicitly approved as demonstration
+  // inputs. They do not expand the canonical gross/net figure policy.
+  const exampleEntries = useLocalDesignReview()
 
   return <section className="records product-showcase" id="in-the-app" aria-labelledby="product-title">
     <div className="wrap product-layout">
@@ -49,7 +55,8 @@ export function ProductShowcase() {
           {failed === current.id
             ? <p className="product-image-error" role="status">This app preview couldn’t load. Choose another screen or try again later.</p>
             : <img key={current.id} className="product-screen-image"
-                src={`/editorial/product-${current.id}.webp`} alt={current.alt}
+                src={`/editorial/product-${current.id}${exampleEntries?'-filled':''}.webp`}
+                alt={exampleEntries?current.exampleAlt:current.alt}
                 width={780} height={1560} loading="lazy" decoding="async"
                 onError={() => setFailed(current.id)}/>}
         </div>

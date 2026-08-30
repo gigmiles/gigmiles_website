@@ -1,0 +1,26 @@
+/* A comparison route only: no change to the approved timed hero. */
+.editorial-site .hero-scroll .story-controls { margin-top: 12px; }
+.editorial-site .hero-scroll .chapters { width: 100%; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 5px; }
+.editorial-site .hero-scroll .chapters button { min-height: 44px; white-space: normal; padding: 8px 4px; line-height: 1.2; }
+.editorial-site .hero-scroll .scene { animation-duration: .18s; }
+/* Progressive enhancement: no extra scroll runway without working JS. Narrow,
+   short and reduced-motion viewports use the four manual chapters instead. */
+@media(min-width:981px) and (min-height:760px) and (prefers-reduced-motion:no-preference) {
+  .editorial-site .hero-scroll[data-scroll-enabled="true"] {
+    min-height: calc(100svh + 480px);
+    padding-top: 24px;
+    padding-bottom: 24px;
+    align-items: start;
+  }
+  .editorial-site .hero-scroll[data-scroll-enabled="true"] > .intro,
+  .editorial-site .hero-scroll[data-scroll-enabled="true"] > .story { position: sticky; top: 24px; }
+  .editorial-site .hero-scroll[data-scroll-enabled="true"] .stage { height: 560px; }
+}
+@media(max-width:540px) {
+  .editorial-site .hero-scroll .chapters { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .editorial-site .hero-scroll .chapters button { font-size: 12px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .editorial-site .hero-scroll .scene { animation: none; }
+  html:has(.hero-scroll) { scroll-behavior: auto; }
+}
