@@ -3,6 +3,7 @@
 import { IOS_APP_STORE_URL, ANDROID_PLAY_STORE_URL, DOWNLOAD_URL } from '@/config/app'
 import { attributedStoreUrl } from '@/lib/storeAttribution'
 import { visitorDevice } from '@/lib/visitorDevice'
+import { useLocalDesignReview } from '@/components/editorial/LocalDesignReview'
 
 // Device-aware store redirect. iOS → App Store, Android → Google Play,
 // desktop/unknown → the /download smart page (which shows both). Store URLs
@@ -61,7 +62,9 @@ interface DownloadButtonProps {
 }
 
 export function DownloadButton({ className, style, children, 'data-cta-placement': placement }: DownloadButtonProps) {
+  const localReview = useLocalDesignReview()
   const handleClick = () => {
+    if (localReview) { window.location.href = '/download'; return }
     const target = getStoreUrl()
     if (target === 'desktop') {
       // Desktop heads to the /download smart page — that is download intent,

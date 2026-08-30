@@ -2,11 +2,14 @@
 import {useEffect} from 'react'
 import {attributedStoreUrl} from '@/lib/storeAttribution'
 import {visitorDevice} from '@/lib/visitorDevice'
+import {useLocalDesignReview} from './LocalDesignReview'
 
 // Preserve the existing smart-download behavior. Store anchors are rendered
 // separately on the server, so desktop and no-JavaScript visitors can use them.
 export function StoreRedirect({iosUrl,androidUrl}:{iosUrl:string;androidUrl:string}){
+ const localReview=useLocalDesignReview()
  useEffect(()=>{
+  if(localReview)return
   const device=visitorDevice()
   if(device==='desktop')return
   const url=device==='ios'?iosUrl:androidUrl
@@ -19,6 +22,6 @@ export function StoreRedirect({iosUrl,androidUrl}:{iosUrl:string;androidUrl:stri
    navigator.sendBeacon?.('/api/track',body)
   }catch{/* Analytics must never block a store handoff. */}
   window.location.href=attributedStoreUrl(device,url)
- },[iosUrl,androidUrl])
+ },[iosUrl,androidUrl,localReview])
  return null
 }

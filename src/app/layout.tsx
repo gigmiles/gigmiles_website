@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteBeacon } from "@/components/analytics/SiteBeacon";
 import { RedditPixel } from "@/components/analytics/RedditPixel";
+import { LocalDesignReview } from "@/components/editorial/LocalDesignReview";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -89,6 +90,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const localReview = process.env.LOCAL_DESIGN_REVIEW === '1';
   return (
     <html lang="en" className="antialiased" suppressHydrationWarning>
       <body className={`${inter.variable} ${outfit.variable} ${outfitAlias.variable} ${interAlias.variable} font-sans`}>
@@ -99,9 +101,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <TooltipProvider>
-            <SiteBeacon />
-            <RedditPixel />
-            {children}
+            {!localReview && <SiteBeacon />}
+            {!localReview && <RedditPixel />}
+            <LocalDesignReview enabled={localReview}>{children}</LocalDesignReview>
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>

@@ -1,5 +1,6 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import {PersonalizationStory} from './PersonalizationStory'
+import {ProductShowcase} from './ProductShowcase'
 // Approved 2026-08-30 preview, transcribed into native React markup.
 export function ApprovedHome(){return <>
 
@@ -402,64 +403,7 @@ export function ApprovedHome(){return <>
 
 </section>
 
-<section className="records">
-<div className="wrap records-inner">
-<div>
-<p className="eyebrow">
-{"BUILT FOR GIG WORKERS."}
-</p>
-<h2>
-{"Your miles."}
-<br  />
-{"Your earnings."}
-<br  />
-{"Your expenses."}
-</h2>
-<p className="record-promise">
-{"Less scattered. More in view."}
-</p>
-</div>
-<div className="records-copy">
-<p>
-{"Your work, in one place."}
-<br  />
-{"Not another spreadsheet."}
-</p>
-<ol className="first-shift">
-<li>
-<strong>
-{"Add your details."}
-</strong>
-<span>
-{"Vehicle, state and optional day-job income."}
-</span>
-</li>
-<li>
-<strong>
-{"Log your shift."}
-</strong>
-<span>
-{"Record earnings, miles and expenses."}
-</span>
-</li>
-<li>
-<strong>
-{"See the bigger picture."}
-</strong>
-<span>
-{"Review your cost and tax estimates."}
-</span>
-</li>
-</ol>
-<DownloadButton className="button conversion-cta on-paper" data-cta-placement="records">
-{"Get GigMiles — free "}
-<span aria-hidden="true">
-{"↗"}
-</span>
-</DownloadButton>
-</div>
-</div>
-</section>
+<ProductShowcase />
 <section className="free-section wrap" id="free" aria-labelledby="free-title">
 <div className="free-heading">
 <p className="eyebrow">
