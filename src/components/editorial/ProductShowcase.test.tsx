@@ -69,14 +69,17 @@ describe('one-phone product proof', () => {
 describe('explicit local review safety', () => {
   it('shows filled, consistent example entries only in local review',()=>{
     const {rerender}=render(<LocalDesignReview enabled><ProductShowcase/></LocalDesignReview>)
-    expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-earnings-filled.webp')
+    expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-earnings-complete.webp')
     expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('$92.50'))
+    expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('3 hours 30 minutes worked and 42 miles'))
+    expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('after estimated fuel only'))
     fireEvent.click(screen.getByRole('button',{name:'Log expenses'}))
     expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-expenses-filled.webp')
     expect(screen.getByRole('img')).toHaveAttribute('alt',expect.stringContaining('$24.80'))
     rerender(<LocalDesignReview enabled={false}><ProductShowcase/></LocalDesignReview>)
     expect(screen.getByRole('img')).toHaveAttribute('src','/editorial/product-expenses.webp')
     for(const name of ['earnings','expenses'])expect(readFileSync(`public/editorial/product-${name}-filled.webp`).length).toBeLessThan(60000)
+    expect(readFileSync('public/editorial/product-earnings-complete.webp').length).toBeLessThan(60000)
   })
   it('only blocks store-link navigation when local review is enabled', () => {
     const click = vi.fn()
