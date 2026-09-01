@@ -1,11 +1,12 @@
 {
+  "id": "/",
   "name": "GigMiles",
   "short_name": "GigMiles",
-  "description": "Track earnings, expenses, and maximize your gig economy profits.",
+  "description": "Track earnings, miles and expenses. See estimated net profit after vehicle costs and taxes.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1120",
-  "theme_color": "#0B1120",
+  "background_color": "#0b302b",
+  "theme_color": "#0b302b",
   "orientation": "portrait-primary",
   "icons": [
     {

@@ -228,6 +228,9 @@ body {
 
 html {
   scroll-behavior: smooth;
+  /* Dark-only site: native controls and scrollbars follow the page without a
+     runtime theme provider. */
+  color-scheme: dark;
 }
 
 @layer base {

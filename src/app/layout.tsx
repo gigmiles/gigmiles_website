@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme-provider";
 import { SiteBeacon } from "@/components/analytics/SiteBeacon";
 import { RedditPixel } from "@/components/analytics/RedditPixel";
 import { LocalDesignReview } from "@/components/editorial/LocalDesignReview";
@@ -92,21 +89,11 @@ export default function RootLayout({
 }>) {
   const localReview = process.env.LOCAL_DESIGN_REVIEW === '1' && process.env.NODE_ENV !== 'production';
   return (
-    <html lang="en" className="antialiased" suppressHydrationWarning>
+    <html lang="en" className="antialiased dark">
       <body className={`${inter.variable} ${outfit.variable} ${outfitAlias.variable} ${interAlias.variable} font-sans`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          forcedTheme="dark"
-          disableTransitionOnChange
-        >
-          <TooltipProvider>
-            {!localReview && <SiteBeacon />}
-            {!localReview && <RedditPixel />}
-            <LocalDesignReview enabled={localReview}>{children}</LocalDesignReview>
-            <Toaster />
-          </TooltipProvider>
-        </ThemeProvider>
+        {!localReview && <SiteBeacon />}
+        {!localReview && <RedditPixel />}
+        <LocalDesignReview enabled={localReview}>{children}</LocalDesignReview>
       </body>
     </html>
   );
