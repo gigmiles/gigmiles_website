@@ -2,9 +2,26 @@ import {DownloadButton} from '@/components/ui/DownloadButton'
 import {PersonalizationStory} from './PersonalizationStory'
 import {ProductShowcase} from './ProductShowcase'
 import {CalculatorEntry} from './CalculatorEntry'
+import {TrustStrip} from './TrustStrip'
+import {EstimateProof} from './EstimateProof'
+import {PlanTable} from './PlanTable'
+import {FeatureTour,type TourScreen} from './FeatureTour'
+import {StickyCta} from './StickyCta'
 import './home-flow.css'
+import './home-v2.css'
+
+// Tier 2 feature-tour stops for the LOCAL preview (variant="v2"). Titles and
+// bodies are candidates awaiting operator approval (gate B); images stay absent
+// until the canonical fixture captures are approved, so placeholders render.
+export const TOUR_PREVIEW_SCREENS: TourScreen[] = [
+  {id:'home',tag:'FREE',title:'Today’s number, after costs',body:'Net after vehicle costs and an estimated tax set-aside, for today and this week.'},
+  {id:'shifts',tag:'FREE',title:'Each shift, on record',body:'Hours, miles and earnings by day. Edit a shift, add one you forgot, undo a delete.'},
+  {id:'tax',tag:'FREE · EXPORT IS PRO',title:'Tax center, on screen',body:'Self-employment, federal and state estimates with a Schedule C worksheet. PDF and CSV export for your tax professional is Pro.'},
+  {id:'insights',tag:'PRO',title:'Insights by platform',body:'Dollars per hour and per mile by platform, trend charts and a what-if mileage simulator.'},
+  {id:'widget',tag:'FREE [VERIFY]',title:'A shift on your Lock Screen',body:'Home-screen widget on iOS and Android, and a Live Activity while you drive on iPhone.'},
+]
 // Approved 2026-08-30 preview, transcribed into native React markup.
-export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){return <>
+export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed'|'scroll';variant?:'live'|'v2'}){const v2=variant==='v2';return <>
 
 <section className={'hero wrap'+(heroMode==='scroll'?' hero-scroll':'')} aria-labelledby="headline">
 
@@ -298,6 +315,7 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 </a>
 </div>
 </section>
+{v2 && <TrustStrip/>}
 
 <section className="details wrap home-details" id="details" aria-labelledby="details-title">
 <div className="section-heading">
@@ -407,7 +425,9 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 
 </section>
 
+{v2 && <EstimateProof/>}
 <ProductShowcase />
+{v2 && <FeatureTour screens={TOUR_PREVIEW_SCREENS} heading={<>See it on your phone.<br/><span>Before you download.</span></>}/>}
 <section className="free-section wrap" id="free" aria-labelledby="free-title">
 <div className="free-heading">
 <p className="eyebrow">
@@ -435,7 +455,7 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 {"No card. No ads."}
 </p>
 </div>
-<div className="plan-details">
+{v2 ? <PlanTable/> : <div className="plan-details">
 <div className="core-label">
 <span>
 {"GIGMILES FREE"}
@@ -481,7 +501,7 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 {"Automatic GPS tracking and PDF/CSV export for your tax professional are Pro features."}
 </p>
 </div>
-</div>
+</div>}
 </section>
 
 <section className="faq wrap home-faq" id="questions" aria-labelledby="questions-title">
@@ -540,6 +560,30 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 {"No. Estimates depend on the information you enter and the model's assumptions. Your actual tax situation may differ. GigMiles is a planning and records tool, not a tax-filing service."}
 </p>
 </details>
+{v2 && <>
+<details>
+<summary>
+{"What does an e-bike shift cost?"}
+<span aria-hidden="true">
+{"+"}
+</span>
+</summary>
+<p>
+{"GigMiles models e-bike costs as electricity (about 25 miles per kWh at your electricity price) plus battery and mechanical wear of about 5 cents per mile. E-bikes have no IRS standard mileage rate, so the app uses the actual-expense method."}
+</p>
+</details>
+<details>
+<summary>
+{"What happens to my data?"}
+<span aria-hidden="true">
+{"+"}
+</span>
+</summary>
+<p>
+{"Analytics and ad measurement are consent-gated. Receipt scan runs on your phone. You can delete your account in the app, and personal data is permanently deleted within 30 days."}
+</p>
+</details>
+</>}
 </div>
 </section>
 
@@ -581,4 +625,5 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 </div>
 </section>
 
+{v2 && <StickyCta/>}
 </>}
