@@ -26,6 +26,12 @@ const nextConfig: NextConfig = {
     if (isStaticExport) return []
     return [
       {
+        // Scrub videos and posters are versioned by query string (see
+        // cinematic-cues.ts), so they can be cached for a year.
+        source: '/cinematic/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
         source: '/(.*)',
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },

@@ -68,7 +68,7 @@ const METRICS_SCRIPT = () => {
     const r = el.getBoundingClientRect()
     return { top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), height: Math.round(r.height) }
   }
-  const hero = q('.hero-scroll') || q('.hero')
+  const hero = q('.cine-hero') || q('.hero-scroll') || q('.hero')
   const cta = q('.hero .conversion-cta, .intro .conversion-cta, .conversion-cta')
   const header = q('header.nav, header')
   const story = q('#story') || q('.story')

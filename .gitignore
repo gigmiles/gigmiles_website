@@ -78,3 +78,7 @@ tmp_*.js
 tmp_*.ts
 gradle_output*.txt
 *.output
+
+# cinematic hero prototype: scrub videos stay out of git until the go-live decision
+/public/cinematic/*.mp4
+/.video-src/

@@ -1,0 +1,59 @@
+{
+  "generated": "2026-09-02T08:53:14.903Z",
+  "sources": [
+    {
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-08-01\\film\\marcus\\s1.mp4",
+      "width": 1076,
+      "height": 1924,
+      "fps": 24,
+      "duration": 5.042
+    },
+    {
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-08-01\\film\\marcus\\s2.mp4",
+      "width": 1076,
+      "height": 1924,
+      "fps": 24,
+      "duration": 5.042
+    },
+    {
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-08-01\\film\\marcus\\s3.mp4",
+      "width": 1076,
+      "height": 1924,
+      "fps": 24,
+      "duration": 5.042
+    }
+  ],
+  "orientation": "portrait",
+  "duration": 15.1,
+  "fps": 30,
+  "desktop": {
+    "file": "hero-desktop.mp4",
+    "width": 720,
+    "height": 1280,
+    "bytes": 3946508,
+    "crf": 22,
+    "gop": 8,
+    "sha1": "f81ea02171edde26683d3b216716f099c5cea4c6"
+  },
+  "mobile": {
+    "file": "hero-mobile.mp4",
+    "width": 540,
+    "height": 960,
+    "bytes": 2304313,
+    "crf": 27,
+    "gop": 4,
+    "sha1": "631e72789ed17e8e93c7926ea8287879270fcb73"
+  },
+  "posters": {
+    "desktop": {
+      "file": "hero-poster.webp",
+      "bytes": 32156,
+      "quality": 82
+    },
+    "mobile": {
+      "file": "hero-poster-mobile.webp",
+      "bytes": 19710,
+      "quality": 82
+    }
+  }
+}
