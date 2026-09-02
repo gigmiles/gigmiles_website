@@ -25,7 +25,7 @@ afterEach(()=>{cleanup();vi.unstubAllGlobals()})
 describe('approved website transplant',()=>{
  it('preserves the operator headline, neutral eyebrow, brand and honest CTAs',()=>{
   const html=renderToStaticMarkup(<WebsiteShell><ApprovedHome/></WebsiteShell>)
-  expect(html).toContain('FOR GIG DRIVERS')
+  expect(html).toContain('NET PROFIT TRACKER FOR GIG DRIVERS')
   expect(html).not.toMatch(/FOR US GIG|IN THE UNITED STATES|LOCAL SITE|LOCAL REVIEW|127\.0\.0\.1|\$235|\$175/)
   expect((html.match(/class="brand-trademark"/g)||[])).toHaveLength(2)
   expect([...html.matchAll(/data-cta-placement="([^"]+)"/g)].map(m=>m[1]).sort()).toEqual(['closing','free-core','hero','nav','records'])

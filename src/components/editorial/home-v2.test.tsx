@@ -2,6 +2,7 @@ import {afterEach,beforeEach,describe,expect,it,vi} from 'vitest'
 import {act,cleanup,fireEvent,render,screen} from '@testing-library/react'
 import {renderToStaticMarkup} from 'react-dom/server'
 import {readFileSync} from 'node:fs'
+import {createHash} from 'node:crypto'
 import {ApprovedHome} from './ApprovedHome'
 import {TrustStrip,TRUST_FACTS} from './TrustStrip'
 import {EstimateProof} from './EstimateProof'
@@ -19,8 +20,9 @@ const money=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'})
 // Guardrails every Tier 2 string must pass: no canonical creative figures, no
 // tax-outcome language, no invented social proof.
 const BANNED=/\$235|\$175|what you owe|file your taxes|guaranteed|audit-proof|maximize your refund|\d+\s*(drivers|users|downloads)|★|testimonial/i
-// Whole-page variant: the approved hero alt text says "not a customer testimonial".
-const BANNED_PAGE=/\$235|\$175|what you owe|file your taxes|guaranteed|audit-proof|maximize your refund|\d+\s*(drivers|users|downloads)|★/i
+// Whole-page variant: the approved hero alt text says "not a customer testimonial", and
+// WEB-TOUR-1 (2026-09-02) approved "$235 gross" inside the feature-tour alt texts.
+const BANNED_PAGE=/\$175|what you owe|file your taxes|guaranteed|audit-proof|maximize your refund|\d+\s*(drivers|users|downloads)|★/i
 const SECTIONS=/trust-strip|estimate-proof|feature-tour|plan-table|sticky-cta/
 
 type IOCallback=(entries:Partial<IntersectionObserverEntry>[])=>void
@@ -46,9 +48,26 @@ const SCREENS:TourScreen[]=[
 ]
 
 describe('home v2 (local preview only)',()=>{
-  it('keeps every Tier 2 section off the live home page',()=>{
-    expect(renderToStaticMarkup(<LandingPage/>)).not.toMatch(SECTIONS)
+  it('ships the approved Tier 2 sections on the live home page with real captures only',()=>{
+    const html=renderToStaticMarkup(<LandingPage/>)
+    for(const cls of ['trust-strip','estimate-proof','feature-tour','plan-table','sticky-cta'])expect(html).toContain(cls)
+    expect(html).toContain('NET PROFIT TRACKER FOR GIG DRIVERS')
+    expect(html).not.toMatch(/pending approval|\[VERIFY\]|tour-placeholder/)
+    expect(html).not.toMatch(BANNED_PAGE)
     expect(renderToStaticMarkup(<ApprovedHome heroMode="scroll"/>)).not.toMatch(SECTIONS)
+    const tour=[...html.matchAll(/src="\/editorial\/(tour-[a-z]+)\.webp"/g)].map(m=>m[1])
+    expect(new Set(tour)).toEqual(new Set(['tour-home','tour-shifts','tour-tax','tour-insights']))
+    const hashes=new Set<string>()
+    for(const name of ['tour-home','tour-shifts','tour-tax','tour-insights']){
+      for(const variant of [name,name+'-390']){
+        const buffer=readFileSync(`public/editorial/${variant}.webp`)
+        expect(buffer.length).toBeLessThan(60000)
+        expect(buffer.subarray(0,4).toString()).toBe('RIFF');expect(buffer.subarray(8,12).toString()).toBe('WEBP')
+        hashes.add(createHash('md5').update(buffer).digest('hex'))
+      }
+    }
+    expect(hashes.size).toBe(8)
+    expect(html).toMatch(/alt="Example GigMiles home screen: Net Income \$192/)
   })
   it('renders the v2 sections only behind the local review flag and never in production',()=>{
     vi.stubEnv('LOCAL_DESIGN_REVIEW','');expect(()=>HomeV2Preview()).toThrow('NOT_FOUND')

@@ -9,6 +9,7 @@ export const FREE_FEATURES = [
   'Live regional fuel prices',
   'Timer shifts',
   'Day and week history',
+  'Home-screen widget on iOS and Android',
   'Tax center on screen, with a Schedule C worksheet',
   'Take-home calculator',
 ] as const
