@@ -120,6 +120,8 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-after .trust-facts li { color: #2f5a48; }
 .editorial-site .cine-after .trust-facts li::before { background: #4f7a5c; }
 .editorial-site .cine-after .trust-platforms { color: #3f6a55; }
+.editorial-site .cine-after .platform-chips li { border-color: #4f7a5c66; color: #1f4a3a; }
+.editorial-site .cine-after .platform-chips .platform-chip-other { color: #4f7a5c; }
 .editorial-site .cine-page .feature-tour .eyebrow { display: none; }
 
 /* sections after the film keep the live rhythm; only the ground alternates */

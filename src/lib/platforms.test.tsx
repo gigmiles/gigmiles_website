@@ -3,7 +3,7 @@ import {renderToStaticMarkup} from 'react-dom/server'
 import {ApprovedHome} from '@/components/editorial/ApprovedHome'
 import {WebsiteShell} from '@/components/editorial/WebsiteShell'
 import {CinematicHome} from '@/components/cinematic/CinematicHome'
-import {PLATFORMS_FAQ, PLATFORMS_LINE, PLATFORM_NOTICE, PLATFORM_WORDS, QUICK_PICK_PLATFORMS} from './platforms'
+import {OTHER_CHIP, PLATFORMS_FAQ, PLATFORMS_LINE, PLATFORM_NOTICE, PLATFORM_WORDS, PROMO_PLATFORMS, QUICK_PICK_PLATFORMS} from './platforms'
 
 // The naming rules from outputs/2026-09-02/website_platforms/TRADEMARK_NOTES.md,
 // as tests: plain text, adjectives of a generic noun, never a heading, never
@@ -23,12 +23,13 @@ describe('platform naming rules', () => {
       expect(text, text).not.toMatch(BARE_WORKS_WITH)
       expect(text).not.toContain('—')
     }
-    expect(PLATFORMS_LINE).toMatch(/on the .* platforms/)
+    expect(PLATFORMS_LINE).toMatch(/on these platforms/)
+    expect(PROMO_PLATFORMS).not.toContain('Spark Driver™')
     expect(PLATFORMS_FAQ.answer[0]).toMatch(/Spark Driver™ shifts/)
   })
 
   it('carries the first-mention symbols the owners ask for and the Amazon sentence', () => {
-    expect(PLATFORMS_LINE).toContain('Instacart®')
+    expect(PROMO_PLATFORMS).toContain('Instacart®')
     expect(PLATFORMS_LINE).not.toContain('Spark Driver')
     expect(PLATFORMS_FAQ.answer[0]).toContain('Spark Driver™')
     expect(PLATFORM_NOTICE).toContain('not affiliated with, endorsed by or sponsored by')
@@ -46,6 +47,10 @@ describe('platform naming rules', () => {
     for (const html of [renderToStaticMarkup(<WebsiteShell><ApprovedHome heroMode="scroll" variant="v2"/></WebsiteShell>), renderToStaticMarkup(<WebsiteShell><CinematicHome/></WebsiteShell>)]) {
       expect(html.split(PLATFORMS_LINE).length - 1).toBe(1)
       expect(html.split(PLATFORM_NOTICE).length - 1).toBe(1)
+      const chips = html.match(/<ul class="platform-chips"[\s\S]*?<\/ul>/)?.[0] ?? ''
+      for (const name of PROMO_PLATFORMS) expect(chips).toContain(`<li>${name}</li>`)
+      expect(chips).toContain(OTHER_CHIP)
+      expect(chips).not.toMatch(/<img|<svg|style=/)
       const headings = [...html.matchAll(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/g)].map(m => m[1].replace(/<[^>]+>/g, ''))
       for (const heading of headings) for (const word of PLATFORM_WORDS) expect(heading, `heading names ${word}`).not.toMatch(new RegExp(`\\b${word}\\b`))
       expect(html).not.toMatch(/<img[^>]*(uber|lyft|doordash|instacart|grubhub|shipt|spark|amazon)[^>]*>/i)

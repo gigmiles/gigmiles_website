@@ -1,5 +1,5 @@
 import {StoreBadges} from '@/components/ui/StoreBadges'
-import {PLATFORMS_LINE} from '@/lib/platforms'
+import {OTHER_CHIP, PLATFORMS_LINE, PROMO_PLATFORMS} from '@/lib/platforms'
 
 // Verifiable facts only (PRODUCT_FACTS + privacy policy wording). No counts,
 // stars, press logos or testimonials: the site has none it can honestly show.
@@ -20,6 +20,10 @@ export function TrustStrip() {
       {TRUST_FACTS.map((fact, i) => <li key={fact} data-reveal="" style={{'--d': `${i * 70}ms`} as React.CSSProperties}>{fact}</li>)}
     </ul>
     <p className="trust-platforms" data-reveal="" style={{'--d': '330ms'} as React.CSSProperties}>{PLATFORMS_LINE}</p>
+    <ul className="platform-chips" aria-label="Platforms with their own label in the app" data-reveal="" style={{'--d': '360ms'} as React.CSSProperties}>
+      {PROMO_PLATFORMS.map(name => <li key={name}>{name}</li>)}
+      <li className="platform-chip-other">{OTHER_CHIP}</li>
+    </ul>
     <div className="store-choices trust-stores" data-reveal="" style={{'--d': '380ms'} as React.CSSProperties} aria-label="Available on the App Store and Google Play">
       <StoreBadges/>
     </div>

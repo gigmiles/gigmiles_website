@@ -15,11 +15,15 @@ export const QUICK_PICK_PLATFORMS = ['Uber', 'Uber Eats', 'Lyft', 'DoorDash', 'I
 /** Long-tail platforms the app lists under "More", limited to brands active in the US in 2026. */
 export const LONG_TAIL_PLATFORMS = ['Shipt', 'Roadie', 'Veho', 'Gopuff', 'Favor', 'Curri', 'GoShare', 'Dispatch', 'TaskRabbit'] as const
 
-/** One sentence for the trust strip. Marks are adjectives of "platforms"; "for" is the Amazon-approved pattern.
- *  Spark Driver™ is named only in the FAQ answer (informational) and the notice: Walmart's guideline
- *  conditions even compatibility statements on written consent, so the promotional line leaves it out. */
+/** Lead sentence for the trust strip; the chips below it carry the names. "for" is the Amazon-approved pattern. */
 export const PLATFORMS_LINE =
-  'Built for drivers, couriers and shoppers on the Uber, Uber Eats, Lyft, DoorDash, Instacart®, Amazon Flex, Grubhub and Shipt platforms, in a car or on an e-bike. Shifts on the Roadie, Veho, Gopuff, Favor or Curri platforms, or on any other app, are logged by name.'
+  'Built for drivers, couriers and shoppers, in a car or on an e-bike, on these platforms and on any other app you work for, logged by name.'
+
+/** Text chips under the trust strip, in our own style (no logos, no platform colours).
+ *  Spark Driver™ is named only in the FAQ answer (informational) and the notice: Walmart's guideline
+ *  conditions even compatibility statements on written consent, so the promotional strip leaves it out. */
+export const PROMO_PLATFORMS = ['Uber', 'Uber Eats', 'Lyft', 'DoorDash', 'Instacart®', 'Amazon Flex', 'Grubhub', 'Shipt'] as const
+export const OTHER_CHIP = 'any other app, by name'
 
 export const PLATFORMS_FAQ = {
   question: 'Which platforms does GigMiles work with?',

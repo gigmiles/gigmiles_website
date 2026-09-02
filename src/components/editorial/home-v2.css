@@ -77,6 +77,9 @@
 
 /* Platforms line under the trust facts: body size, never a heading */
 .editorial-site .trust-platforms { margin: 18px 0 0; max-width: 72ch; font-size: 14px; line-height: 1.55; color: #b9d2c1; }
+.editorial-site .platform-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
+.editorial-site .platform-chips li { font-size: 12px; font-weight: 500; letter-spacing: .02em; line-height: 1; padding: 8px 12px; border: 1px solid #bff4ce55; border-radius: 100px; color: var(--ink); }
+.editorial-site .platform-chips .platform-chip-other { border-style: dashed; color: #b9d2c1; }
 
 /* Sticky mobile CTA */
 .editorial-site .sticky-cta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: none; align-items: center; justify-content: space-between; gap: 12px; padding: 10px max(6%, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(6%, env(safe-area-inset-left)); background: #0b302bf2; border-top: 1px solid var(--line); backdrop-filter: blur(8px); transform: translateY(110%); transition: transform .25s ease; }
