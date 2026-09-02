@@ -18,6 +18,8 @@ const TOUR_MEDIA = '(min-width: 981px) and (prefers-reduced-motion: no-preferenc
 // Sticky phone + scrolling captions on wide viewports; a plain stacked list
 // (image under each caption) on narrow viewports and under reduced motion.
 // One IntersectionObserver picks the active step; no scroll math, no rAF loop.
+// The phone's images are hidden until their step is active, and a hidden lazy
+// image never fetches, so they load eagerly at low priority (4 × ~15 KB).
 export function FeatureTour({screens, eyebrow = 'IN THE APP', heading}: {screens: TourScreen[]; eyebrow?: string; heading: ReactNode}) {
   const [active, setActive] = useState(0)
   const stepsRef = useRef<HTMLOListElement>(null)
@@ -58,7 +60,7 @@ export function FeatureTour({screens, eyebrow = 'IN THE APP', heading}: {screens
           {screens.map((screen, index) => screen.image
             ? <img key={screen.id} className="product-screen-image" src={`/editorial/${screen.image}`}
                 srcSet={`/editorial/${screen.image.replace(/\.webp$/, '-390.webp')} 390w, /editorial/${screen.image} 780w`}
-                sizes="348px" width={780} height={1560} loading="lazy" decoding="async" alt="" hidden={index !== active}/>
+                sizes="348px" width={780} height={1560} loading="eager" fetchPriority="low" decoding="async" alt="" hidden={index !== active}/>
             : placeholder(screen, '', index !== active))}
         </div>
       </figure>
