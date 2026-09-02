@@ -141,3 +141,12 @@
   .editorial-site .estimate-live::before { animation: none; }
   .editorial-site .estimate-card.is-calculating .estimate-lines dd { animation: none; }
 }
+
+/* Wide screens: the tour phone and its figures scale with the ≥1800 hero */
+@media (min-width: 1800px) {
+  .editorial-site .tour-phone { width: min(100%, 400px); }
+  .editorial-site .tour-heading h2 { font-size: 56px; }
+  .editorial-site .tour-step h3 { font-size: 34px; }
+  .editorial-site .tour-step p { font-size: 18px; max-width: 520px; }
+  .editorial-site .tour-step p.tour-figure { font-size: 80px; }
+}
