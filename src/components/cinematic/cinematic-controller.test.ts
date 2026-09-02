@@ -2,10 +2,10 @@ import {describe, expect, it} from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 import {
-  DEFAULTS, clamp01, cueState, lerpStep, progressAtFraction, resolveMode, sceneAtProgress, shouldSeek, smoothstep, timeAtProgress, validateCues,
+  DEFAULTS, cameraAt, clamp01, cueState, dwellEase, filmFractionAtProgress, groundAt, lerpStep, lightAt, progressAtFraction, resolveMode, sceneAtProgress, shouldSeek, smoothstep, timeAtProgress, validateCues,
   type CueSpec,
 } from './cinematic-controller'
-import {CINEMATIC_CUES, CINEMATIC_SCENES, END_AT} from './cinematic-cues'
+import {BEAT_LIGHTS, BEAT_TINTS, CINEMATIC_BEATS, CINEMATIC_CUES, CINEMATIC_SCENES, END_AT} from './cinematic-cues'
 
 const cue: CueSpec = {id: 'a', from: 0.2, to: 0.5, lines: 3}
 
@@ -22,6 +22,35 @@ describe('cinematic controller math', () => {
     expect(progressAtFraction(0.5)).toBeCloseTo(0.37, 5)
     expect(progressAtFraction(1)).toBe(END_AT)
     expect(clamp01(2)).toBe(1)
+  })
+
+  it('dwell settles mid-beat, keeps the boundaries and stays monotonic', () => {
+    expect(dwellEase(0, 0.35)).toBe(0)
+    expect(dwellEase(1, 0.35)).toBe(1)
+    expect(dwellEase(0.5, 0.35)).toBeCloseTo(0.5, 6)
+    expect(dwellEase(0.25, 0.35)).toBeGreaterThan(0.25)
+    let last = -1
+    for (let p = 0; p <= 1; p += 0.002) { const f = filmFractionAtProgress(p, END_AT, CINEMATIC_BEATS, DEFAULTS.dwell); expect(f).toBeGreaterThanOrEqual(last - 1e-9); last = f }
+    for (const b of CINEMATIC_BEATS) expect(filmFractionAtProgress(b * END_AT, END_AT, CINEMATIC_BEATS, DEFAULTS.dwell)).toBeCloseTo(b, 6)
+    expect(filmFractionAtProgress(0.5, END_AT)).toBeCloseTo(0.5 / END_AT, 6)
+  })
+
+  it('camera, ground and light are continuous across beats and never leave their ranges', () => {
+    let prev = cameraAt(0, CINEMATIC_BEATS)
+    for (let f = 0.001; f <= 1; f += 0.001) {
+      const cam = cameraAt(f, CINEMATIC_BEATS)
+      expect(Math.abs(cam.scale - prev.scale)).toBeLessThan(0.01)
+      expect(Math.abs(cam.x - prev.x)).toBeLessThan(1.5)
+      expect(cam.scale).toBeGreaterThanOrEqual(1)
+      expect(cam.scale).toBeLessThanOrEqual(1 + DEFAULTS.camScale + 1e-9)
+      prev = cam
+    }
+    for (const b of CINEMATIC_BEATS) expect(cameraAt(b, CINEMATIC_BEATS).scale).toBeCloseTo(1, 3)
+    expect(groundAt(0, CINEMATIC_BEATS, BEAT_TINTS)).toEqual(BEAT_TINTS[0])
+    expect(groundAt(1, CINEMATIC_BEATS, BEAT_TINTS)).toEqual(BEAT_TINTS[BEAT_TINTS.length - 1])
+    const mid = groundAt(0.24, CINEMATIC_BEATS, BEAT_TINTS)
+    expect(mid.b).toBeGreaterThan(BEAT_TINTS[0].b)
+    expect(lightAt(0.5, CINEMATIC_BEATS, BEAT_LIGHTS).alpha).toBeGreaterThan(0)
   })
 
   it('smoothstep is clamped and monotonic', () => {
@@ -53,13 +82,16 @@ describe('cinematic controller math', () => {
     expect(cueState(0.35, cue).vis).toBe(1)
     expect(cueState(0.6, cue).vis).toBe(0)
     expect(cueState(0.2, cue).y).toBe(DEFAULTS.enterY)
-    expect(cueState(0.35, cue).y).toBe(0)
-    expect(cueState(0.5, cue).y).toBe(-DEFAULTS.exitY)
+    expect(cueState(0.35, cue).y).toBeCloseTo(-DEFAULTS.driftY * 0.5, 5)
+    expect(cueState(0.5, cue).y).toBeCloseTo(-DEFAULTS.exitY - DEFAULTS.driftY, 5)
     const mid = cueState(0.235, cue)
     expect(mid.lines[0]).toBeGreaterThan(mid.lines[1])
     expect(mid.lines[1]).toBeGreaterThan(mid.lines[2])
     const hold = cueState(0.99, {...cue, hold: true})
     expect(hold.vis).toBe(1)
+    expect(cueState(0.34, cue).underline).toBeCloseTo(1, 3)
+    expect(cueState(0.2, cue).underline).toBe(0)
+    expect(cueState(0.45, cue).y).toBeLessThan(cueState(0.3, cue).y)
   })
 
   it('sceneAtProgress picks the brightest scene and -1 for none', () => {

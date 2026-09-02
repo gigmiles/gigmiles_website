@@ -40,6 +40,8 @@ const SRC_DIR = path.resolve('.video-src')
 const CRF = Number(args.get('crf') || 22)
 const MOBILE_CRF = Number(args.get('mobile-crf') || 24)
 const SHEET_OUT = args.get('sheet-out') ? path.resolve(String(args.get('sheet-out'))) : null
+// --xfade <seconds>: cross-dissolve between consecutive clips (a hard cut reads as a slide under the scrub).
+const XFADE = Number(args.get('xfade') || 0)
 const LIMITS = {desktop: 6_500_000, mobile: 2_500_000, poster: 60_000}
 
 fs.mkdirSync(OUT, {recursive: true})
@@ -86,8 +88,24 @@ const masterW = portrait ? 1080 : 1920
 const masterH = portrait ? 1920 : 1080
 const master = path.join(SRC_DIR, 'master.mp4')
 const chains = sources.map((_, i) => `[${i}:v]fps=30,scale=${masterW}:${masterH}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${masterW}:${masterH}:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p[v${i}]`)
-const concat = sources.length > 1 ? `${sources.map((_, i) => `[v${i}]`).join('')}concat=n=${sources.length}:v=1:a=0[v]` : null
-const filter = concat ? `${chains.join(';')};${concat}` : chains[0].replace('[v0]', '[v]')
+let join = null
+if (sources.length > 1 && XFADE > 0) {
+  // xfade chain: offset_k = (sum of the first k durations) - k * XFADE; every dissolve centre lands at offset + XFADE / 2.
+  const parts = []
+  let acc = sources[0].duration
+  let prev = '[v0]'
+  for (let k = 1; k < sources.length; k += 1) {
+    const offset = Math.max(0, acc - XFADE)
+    const out = k === sources.length - 1 ? '[v]' : `[x${k}]`
+    parts.push(`${prev}[v${k}]xfade=transition=fade:duration=${XFADE}:offset=${offset.toFixed(3)}${out}`)
+    acc = acc - XFADE + sources[k].duration
+    prev = out
+  }
+  join = parts.join(';')
+} else if (sources.length > 1) {
+  join = `${sources.map((_, i) => `[v${i}]`).join('')}concat=n=${sources.length}:v=1:a=0[v]`
+}
+const filter = join ? `${chains.join(';')};${join}` : chains[0].replace('[v0]', '[v]')
 run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', ...sources.flatMap(s => [...(s.trimmed ? ['-ss', String(s.start), '-t', String(s.duration)] : []), '-i', s.local]), '-filter_complex', filter, '-map', '[v]', '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', '-an', master], 'master')
 const masterInfo = probe(master)
 console.log(`encode: master ${masterInfo.width}x${masterInfo.height} ${masterInfo.duration.toFixed(2)}s`)
@@ -131,6 +149,8 @@ const manifest = {
   generated: new Date().toISOString(),
   sources: sources.map(s => ({file: s.src, width: s.width, height: s.height, fps: Number(s.fps.toFixed(3)), duration: Number(s.duration.toFixed(3)), ...(s.trimmed ? {trim: [s.start, s.end]} : {})})),
   orientation: portrait ? 'portrait' : 'landscape',
+  xfade: XFADE,
+  beats: XFADE > 0 && sources.length > 1 ? sources.slice(0, -1).map((_, k) => { let acc = 0; for (let j = 0; j <= k; j += 1) acc += sources[j].duration; return Number(((acc - (k + 1) * XFADE + XFADE / 2) / (totalDuration - (sources.length - 1) * XFADE)).toFixed(4)) }) : [],
   duration: Number(masterInfo.duration.toFixed(3)),
   fps: 30,
   desktop: {file: 'hero-desktop.mp4', width: d.width, height: d.height, bytes: bytes(desktop), crf: CRF, gop: 8, sha1: sha1(desktop)},

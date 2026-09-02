@@ -88,20 +88,32 @@ for (const vp of VIEWPORTS) {
       const root = document.getElementById('cine-hero')
       const video = document.querySelector('video.cine-video')
       const duration = video?.duration || 0
-      const expected = Math.min(1, expectedP / 0.74) * Math.max(0, duration - 0.05)
       let frames = 0
+      let expected = Math.min(1, expectedP / 0.74) * Math.max(0, duration - 0.05)
       await new Promise(resolve => {
         const step = () => {
           frames += 1
+          if (root.dataset.cineTarget) expected = Number(root.dataset.cineTarget)
           const done = root.dataset.cineMode === 'static' || Math.abs((video?.currentTime || 0) - expected) < 0.05 || frames > 240
           if (done) resolve(); else requestAnimationFrame(step)
         }
         requestAnimationFrame(step)
       })
       const scenes = [...document.querySelectorAll('.cine-scene')].map(s => ({id: s.dataset.cue, o: Number(getComputedStyle(s).opacity), active: !s.hasAttribute('inert')}))
-      return {expected, currentTime: video?.currentTime ?? null, readyState: video?.readyState ?? null, frames, p: root.style.getPropertyValue('--p'), scenes, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth}
+      const stage = ['--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--la'].map(n => root.style.getPropertyValue(n)).join('|')
+      return {expected, currentTime: video?.currentTime ?? null, readyState: video?.readyState ?? null, frames, p: root.style.getPropertyValue('--p'), scenes, stage, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth}
     }, p)
     await sleep(120)
+    // Dead-scroll check: one small step further, something visible must have changed.
+    // The hold (p >= endAt) is the hand-off: the paper body scrolls over the frozen frame, so the stage itself is meant to be still.
+    if (!vp.reduced && p < 0.72) {
+      await page.evaluate(y => window.scrollTo({top: y, behavior: 'instant'}), top + runway.travel * 0.01)
+      await page.evaluate(() => new Promise(r => { let n = 0; const s = () => (++n > 12 ? r() : requestAnimationFrame(s)); requestAnimationFrame(s) }))
+      const after = await page.evaluate(() => { const root = document.getElementById('cine-hero'); const video = document.querySelector('video.cine-video'); return {t: video?.currentTime ?? 0, stage: ['--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--la'].map(n => root.style.getPropertyValue(n)).join('|'), scenes: [...document.querySelectorAll('.cine-scene')].map(s => getComputedStyle(s).opacity).join(',')} })
+      settled.dead = after.stage === settled.stage && after.scenes === settled.scenes.map(s => s.o).join(',') && Math.abs(after.t - (settled.currentTime ?? 0)) < 0.02
+      await page.evaluate(y => window.scrollTo({top: y, behavior: 'instant'}), top)
+      await sleep(80)
+    }
     const file = `${vp.name}-${label}-${String(p).replace('.', '_')}.png`
     await page.screenshot({path: path.join(OUT, file)})
     record.shots.push(file)
@@ -148,6 +160,7 @@ for (const vp of VIEWPORTS) {
       if (visible > 2) problem(vp.name, `p=${pos.p}: ${visible} scenes visible at once`)
       if (pos.scenes.filter(s => s.active).length !== 1) problem(vp.name, `p=${pos.p}: ${pos.scenes.filter(s => s.active).length} active scenes`)
       if (pos.overflow) problem(vp.name, `horizontal overflow at p=${pos.p}`)
+      if (pos.dead) problem(vp.name, `dead scroll at p=${pos.p}: nothing changed one step further`)
       pos.bright = bright
     }
   }

@@ -38,6 +38,8 @@ describe('cinematic home markup', () => {
       expect(text).toContain(scene.support)
     }
     expect(html).toContain('class="cine-mark"')
+    expect(html).toContain('class="cine-underline"')
+    expect(html).toContain('class="cine-light"')
     expect(html).toContain('data-cta-placement="cinematic-stage"')
     expect(html).toContain('data-cta-placement="cinematic-closing"')
     expect(html).not.toMatch(BANNED_PAGE)
@@ -145,6 +147,8 @@ describe('cinematic controller in the document', () => {
     expect(active).toHaveLength(1)
     expect(active[0].getAttribute('data-cue')).toBe('gross')
     expect(root.style.getPropertyValue('--p')).toBe('0.0000')
+    expect(root.style.getPropertyValue('--cam-s')).toBe('1.0000')
+    expect(root.style.getPropertyValue('--ground')).toMatch(/^rgb\(/)
     unmount()
     expect(root.dataset.cineMode).toBeUndefined()
     window.dispatchEvent(new Event('scroll'))
