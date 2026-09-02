@@ -26,11 +26,11 @@ export const PRO_FEATURES = [
 
 export function PlanTable() {
   return <div className="plan-table" role="table" aria-label="Free and Pro features">
-    <div className="plan-column" role="rowgroup">
+    <div className="plan-column" role="rowgroup" data-reveal="">
       <div className="plan-head" role="row"><span role="columnheader">Free</span><span>No card. No ads.</span></div>
       <ul>{FREE_FEATURES.map(f => <li key={f} role="row">{f}</li>)}</ul>
     </div>
-    <div className="plan-column plan-pro" role="rowgroup">
+    <div className="plan-column plan-pro" role="rowgroup" data-reveal="" style={{'--d': '120ms'} as React.CSSProperties}>
       <div className="plan-head" role="row"><span role="columnheader">Pro</span><span>Optional. $9.99/mo or $99.99/yr.</span></div>
       <ul>{PRO_FEATURES.map(f => <li key={f} role="row">{f}</li>)}</ul>
       <p className="plan-trial">Pro has a 10-day free trial. No card for that either.</p>

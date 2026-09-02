@@ -1,0 +1,94 @@
+/* Device frame shared by the product showcase and the feature tour. */
+.editorial-site .product-device {
+  position: relative;
+  box-sizing: border-box;
+  padding: 11px;
+  border-radius: 50px;
+  background: linear-gradient(155deg, #2f6f5b 0%, #17453a 45%, #0f2f28 100%);
+  box-shadow: 0 46px 80px -34px #000000b3, inset 0 0 0 1px #ffffff1f, inset 0 0 0 5px #0a1a16;
+  isolation: isolate;
+}
+.editorial-site .product-device::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, #ffffff1a 0%, transparent 34%, transparent 68%, #ffffff0d 100%);
+  pointer-events: none;
+  z-index: 3;
+}
+.editorial-site .device-screen {
+  position: relative;
+  border-radius: 40px;
+  overflow: hidden;
+  background: #0d1117;
+  padding-top: 44px;
+}
+.editorial-site .device-island {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92px;
+  height: 24px;
+  border-radius: 14px;
+  background: #050807;
+  box-shadow: 0 0 0 1px #ffffff12;
+  z-index: 4;
+}
+.editorial-site .device-screen img,
+.editorial-site .device-screen .product-screen-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  aspect-ratio: auto;
+  background: #0d1117;
+}
+.editorial-site .device-screen .product-image-error { min-height: 480px; display: grid; place-content: center; padding: 30px; color: #e5eddf; font-size: 15px; }
+
+/* Feature tour: every capture is stacked in the screen and cross-fades. */
+.editorial-site .tour-phone .device-screen { aspect-ratio: 780 / 1604; }
+.editorial-site .tour-phone .device-screen img {
+  position: absolute;
+  left: 0; right: 0; top: 44px;
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity .5s ease, transform .7s cubic-bezier(.2, .7, .2, 1);
+}
+.editorial-site .tour-phone .device-screen img[data-active="true"] { opacity: 1; transform: none; }
+.editorial-site .tour-phone { animation: device-float 7s ease-in-out infinite; }
+@keyframes device-float { 50% { transform: translateY(-7px); } }
+
+@media (max-width: 720px) {
+  .editorial-site .product-device { padding: 9px; border-radius: 42px; }
+  .editorial-site .device-screen { border-radius: 34px; padding-top: 38px; }
+  .editorial-site .device-island { top: 20px; width: 80px; height: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editorial-site .tour-phone { animation: none; }
+  .editorial-site .tour-phone .device-screen img { transition: none; }
+}
+
+/* Tilt toward the pointer (desktop) and a slow glow behind the phone */
+.editorial-site .tour-phone { perspective: 1200px; }
+.editorial-site .tour-phone .product-device {
+  transform: rotateY(calc(-4deg + var(--ry, 0) * 5deg)) rotateX(calc(var(--rx, 0) * -4deg));
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1);
+  will-change: transform;
+}
+.editorial-site .tour-phone::before {
+  content: '';
+  position: absolute;
+  inset: -12% -28%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(50% 45% at 50% 55%, #5eead42e, transparent 70%);
+  filter: blur(18px);
+  animation: device-glow 6s ease-in-out infinite alternate;
+}
+@keyframes device-glow { from { opacity: .55; transform: scale(.96); } to { opacity: 1; transform: scale(1.04); } }
+@media (prefers-reduced-motion: reduce) {
+  .editorial-site .tour-phone .product-device { transform: none; transition: none; }
+  .editorial-site .tour-phone::before { animation: none; }
+}

@@ -1,3 +1,4 @@
+import {ArrowUpRight} from './Glyph'
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import {CalculatorSurface} from './CalculatorSurface'
 // Approved 2026-08-30 preview, transcribed into native React markup.
@@ -76,9 +77,7 @@ export function ApprovedCalculator(){return <>
 <div className="actions">
 <button className="button" type="submit">
 {"Calculate estimate "}
-<span aria-hidden="true">
-{"↗"}
-</span>
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </button>
 <button type="button" className="quiet-button" id="reset">
 {"Reset"}
@@ -128,7 +127,8 @@ export function ApprovedCalculator(){return <>
 </div>
 </dl>
 <button className="quiet-button" type="button" id="share" disabled={true}>
-{"Show result link ↗"}
+{"Show result link "}
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </button>
 <div id="share-area" hidden={true}>
 <label htmlFor="share-link">
@@ -155,7 +155,8 @@ export function ApprovedCalculator(){return <>
 <p>
 {"Car mileage deduction assumption: July–December 2026. This simplified tool does not support first-half or mixed-period calculations. "}
 <a href="https://www.irs.gov/tax-professionals/standard-mileage-rates?nav=2" target="_blank" rel="noopener noreferrer">
-{"IRS mileage-rate source ↗"}
+{"IRS mileage-rate source "}
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </a>
 </p>
 <p>
@@ -175,9 +176,7 @@ export function ApprovedCalculator(){return <>
 </p>
 <DownloadButton className="button conversion-cta" data-cta-placement="calculator-next">
 {"Get GigMiles — free "}
-<span aria-hidden="true">
-{"↗"}
-</span>
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </DownloadButton>
 <p className="small-note">
 {"Free core. Optional Pro upgrades."}

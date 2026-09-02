@@ -73,7 +73,7 @@
 .editorial-site .tour-step h3 { font-size: 30px; font-weight: 800; letter-spacing: -.035em; line-height: 1.1; margin: 10px 0 12px; transition: color .25s; }
 .editorial-site .tour-step[aria-current="step"] h3 { color: var(--mint); }
 .editorial-site .tour-step p { font-size: 16px; line-height: 1.55; color: var(--muted); max-width: 420px; margin: 0; }
-.editorial-site .tour-step-image { display: none; }
+.editorial-site .tour-step-device { display: none; }
 
 /* Sticky mobile CTA */
 .editorial-site .sticky-cta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: none; align-items: center; justify-content: space-between; gap: 12px; padding: 10px max(6%, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(6%, env(safe-area-inset-left)); background: #0b302bf2; border-top: 1px solid var(--line); backdrop-filter: blur(8px); transform: translateY(110%); transition: transform .25s ease; }
@@ -87,14 +87,13 @@
   .editorial-site .tour-layout { display: block; }
   .editorial-site .tour-phone { display: none; }
   .editorial-site .tour-step { min-height: 0; display: block; }
-  .editorial-site .tour-step-image { display: block; width: min(100%, 300px); margin-top: 18px; border-radius: 24px; }
-  .editorial-site .tour-placeholder.tour-step-image { aspect-ratio: 1 / 1; }
+  .editorial-site .tour-step-device { display: block; width: min(100%, 300px); margin: 22px auto 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .editorial-site .tour-layout { display: block; }
   .editorial-site .tour-phone { display: none; }
   .editorial-site .tour-step { min-height: 0; display: block; }
-  .editorial-site .tour-step-image { display: block; width: min(100%, 300px); margin-top: 18px; border-radius: 24px; }
+  .editorial-site .tour-step-device { display: block; width: min(100%, 300px); margin: 22px auto 0; }
   .editorial-site .tour-step h3 { transition: none; }
   .editorial-site .sticky-cta { transition: none; }
 }
@@ -115,4 +114,30 @@
   .editorial-site .tour-heading h2 { font-size: 38px; }
   .editorial-site .tour-step h3 { font-size: 26px; }
   .editorial-site .estimate-controls label { grid-template-columns: 48px 1fr 80px; }
+}
+
+/* Scroll reveals: only active once RevealObserver marks the document */
+.reveal-ready .editorial-site [data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .8s cubic-bezier(.2, .7, .2, 1); transition-delay: var(--d, 0ms); }
+.reveal-ready .editorial-site [data-reveal].is-visible { opacity: 1; transform: none; }
+
+/* Feature tour headline figures (from the approved captures) */
+.editorial-site .tour-step p.tour-figure { display: flex; max-width: none; flex-direction: column; gap: 6px; margin: 10px 0 14px; font-size: 64px; font-weight: 900; line-height: 1; letter-spacing: -.05em; color: var(--mint); font-variant-numeric: tabular-nums; }
+.editorial-site .tour-step p.tour-figure small { font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #a6d6ba; }
+@media (max-width: 720px) { .editorial-site .tour-step p.tour-figure { font-size: 48px; } }
+@media (prefers-reduced-motion: reduce) { .reveal-ready .editorial-site [data-reveal] { opacity: 1; transform: none; transition: none; } }
+
+/* Live estimate: brief shimmer on the total while inputs change */
+.editorial-site .estimate-live { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; padding: 3px 8px; border-radius: 100px; background: #bff4ce1f; color: var(--mint); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.editorial-site .estimate-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--mint); animation: live-dot 1.6s ease-in-out infinite; }
+@keyframes live-dot { 50% { opacity: .35; } }
+.editorial-site .estimate-card .estimate-total dd { transition: color .25s ease, text-shadow .25s ease; }
+.editorial-site .estimate-card.is-calculating .estimate-total dd { color: #e6fff0; text-shadow: 0 0 22px #bff4ce99; }
+.editorial-site .estimate-card.is-calculating .estimate-lines dd { animation: recalc .38s ease; }
+@keyframes recalc { 0% { opacity: .35; transform: translateY(3px); } 100% { opacity: 1; transform: none; } }
+.editorial-site .estimate-controls input[type="range"] { height: 28px; }
+.editorial-site .tour-meta { display: flex; align-items: center; gap: 14px; font-size: 10px; letter-spacing: .14em; color: #a6d6ba; }
+.editorial-site .tour-index { font-variant-numeric: tabular-nums; color: #8eae9a; }
+@media (prefers-reduced-motion: reduce) {
+  .editorial-site .estimate-live::before { animation: none; }
+  .editorial-site .estimate-card.is-calculating .estimate-lines dd { animation: none; }
 }

@@ -1,3 +1,4 @@
+import {ArrowUpRight} from './Glyph'
 import {DownloadButton} from '@/components/ui/DownloadButton'
 
 // Approved 2026-08-30 preview, transcribed into native React markup.
@@ -22,7 +23,8 @@ export function ApprovedContact(){return <>
 {"Product support"}
 </h2>
 <a href="mailto:support@gigmiles.app">
-{"support@gigmiles.app ↗"}
+{"support@gigmiles.app "}
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </a>
 </div>
 <div>
@@ -30,7 +32,8 @@ export function ApprovedContact(){return <>
 {"Legal & privacy"}
 </h2>
 <a href="mailto:legal@gigmiles.app">
-{"legal@gigmiles.app ↗"}
+{"legal@gigmiles.app "}
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </a>
 </div>
 </div>

@@ -2,6 +2,8 @@
 
 import {useState} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
+import {DeviceFrame} from './DeviceFrame'
+import {ArrowUpRight} from './Glyph'
 import './product-showcase.css'
 
 const SCREENS = [
@@ -51,7 +53,7 @@ export function ProductShowcase() {
       </div>
 
       <figure className="product-visual" id="product-screen" aria-label={current.label}>
-        <div className="product-device">
+        <DeviceFrame>
           {failed === current.id
             ? <p className="product-image-error" role="status">This app preview couldn’t load. Choose another screen or try again later.</p>
             : <img key={current.id} className="product-screen-image"
@@ -60,13 +62,13 @@ export function ProductShowcase() {
                 sizes="(max-width: 720px) 340px, 348px"
                 width={780} height={1560} loading="lazy" decoding="async"
                 onError={() => setFailed(current.id)}/>}
-        </div>
+        </DeviceFrame>
         <figcaption className="product-example-note">{current.disclosure}</figcaption>
       </figure>
 
       <div className="product-next">
         <DownloadButton className="button conversion-cta on-paper" data-cta-placement="records">
-          Get GigMiles — free <span aria-hidden="true">↗</span>
+          Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
         </DownloadButton>
         <p>Manual tracking is part of the free core.</p>
       </div>

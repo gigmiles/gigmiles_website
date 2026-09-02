@@ -1,6 +1,7 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import type {ReactNode} from 'react'
 import {NavMenu} from './NavMenu'
+import {ArrowUpRight} from './Glyph'
 import './editorial.css'
 import './responsive.css'
 export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:boolean}){return <div className={'editorial-site'+(paper?' paper-page':'')}>
@@ -34,9 +35,7 @@ export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:b
 </NavMenu>
 <DownloadButton className="nav-cta" data-cta-placement="nav">
 {"Get the app "}
-<span aria-hidden="true">
-{"↗"}
-</span>
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </DownloadButton>
 </header><main id="main-content">{children}</main><footer className="wrap site-footer">
 <a href="/" aria-label="GigMiles home">

@@ -1,5 +1,6 @@
 'use client'
 
+import {ArrowUpRight} from './Glyph'
 import {useEffect, useState} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
 
@@ -30,7 +31,7 @@ export function StickyCta({heroSelector = '#headline', endSelector = '#download'
   return <div className="sticky-cta" data-visible={visible ? 'true' : 'false'} role="region" aria-label="Get the app" aria-hidden={!visible}>
     <p>Free core · No card · No ads</p>
     <DownloadButton className="button conversion-cta" data-cta-placement="sticky-bar">
-      Get GigMiles — free <span aria-hidden="true">↗</span>
+      Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
     </DownloadButton>
   </div>
 }

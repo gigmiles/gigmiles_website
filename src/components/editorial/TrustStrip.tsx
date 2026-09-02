@@ -16,9 +16,9 @@ export const TRUST_FACTS = [
 export function TrustStrip() {
   return <section className="wrap trust-strip" aria-label="What you can count on">
     <ul className="trust-facts">
-      {TRUST_FACTS.map(fact => <li key={fact}>{fact}</li>)}
+      {TRUST_FACTS.map((fact, i) => <li key={fact} data-reveal="" style={{'--d': `${i * 70}ms`} as React.CSSProperties}>{fact}</li>)}
     </ul>
-    <div className="store-choices trust-stores" aria-label="Available on the App Store and Google Play">
+    <div className="store-choices trust-stores" data-reveal="" style={{'--d': '380ms'} as React.CSSProperties} aria-label="Available on the App Store and Google Play">
       <StoreBadges/>
     </div>
   </section>

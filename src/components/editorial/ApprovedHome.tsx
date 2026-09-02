@@ -7,6 +7,8 @@ import {EstimateProof} from './EstimateProof'
 import {PlanTable} from './PlanTable'
 import {FeatureTour,type TourScreen} from './FeatureTour'
 import {StickyCta} from './StickyCta'
+import {RevealObserver} from './RevealObserver'
+import {ArrowUpRight, ArrowDown} from './Glyph'
 import './home-flow.css'
 import './home-v2.css'
 
@@ -17,10 +19,10 @@ import './home-v2.css'
 // states the visible figures and that they are example inputs, not a
 // customer's earnings.
 export const TOUR_SCREENS: TourScreen[] = [
-  {id:'home',tag:'FREE',title:'Today’s number, after costs',body:'Net after vehicle costs and an estimated tax set-aside, for today and this week.',image:'tour-home.webp',alt:'Example GigMiles home screen: Net Income $192 for the week of Aug 31 to Sep 6, from $235 gross and $43 estimated costs; 105.0 miles, 8 hours, 1 trip, $24 per hour. Example inputs on a 2023 Toyota Prius in California, not a customer’s earnings.'},
-  {id:'shifts',tag:'FREE',title:'Each shift, on record',body:'Hours and miles by day, with what you earned. Edit a shift, add one you forgot, undo a delete.',image:'tour-shifts.webp',alt:'Example shift history: Monday Aug 31, gross $235.00, net $191.90, 105.0 miles, 8 hours, a manual entry in CA. Example inputs, not a customer’s earnings.'},
-  {id:'tax',tag:'FREE · EXPORT IS PRO',title:'Tax center, on screen',body:'Self-employment, federal and state estimates with a Schedule C worksheet. PDF and CSV export for your tax professional is Pro.',image:'tour-tax.webp',alt:'Example tax estimate breakdown for Q3 2026: estimated tax for preparation $23 (self-employment $22, federal $0, state $1) on $235 gross with an $80 mileage deduction, single filer. Estimates only, not tax advice.'},
-  {id:'insights',tag:'PRO',title:'Insights by platform',body:'Dollars per hour and per mile by platform, trend charts and a what-if mileage simulator.',image:'tour-insights.webp',alt:'Example Insights screen (Pro): monthly profit trend with $235 gross and about $192 net in August, and a profit-per-hour and per-mile trend. Example inputs, not a customer’s earnings.'},
+  {id:'home',tag:'FREE',figure:{value:192,prefix:'$',caption:'Net this week, from $235 gross'},title:'Today’s number, after costs',body:'Net after vehicle costs and an estimated tax set-aside, for today and this week.',image:'tour-home.webp',alt:'Example GigMiles home screen: Net Income $192 for the week of Aug 31 to Sep 6, from $235 gross and $43 estimated costs; 105.0 miles, 8 hours, 1 trip, $24 per hour. Example inputs on a 2023 Toyota Prius in California, not a customer’s earnings.'},
+  {id:'shifts',tag:'FREE',figure:{value:105,suffix:' mi',decimals:1,caption:'8 hours logged on Aug 31'},title:'Each shift, on record',body:'Hours and miles by day, with what you earned. Edit a shift, add one you forgot, undo a delete.',image:'tour-shifts.webp',alt:'Example shift history: Monday Aug 31, gross $235.00, net $191.90, 105.0 miles, 8 hours, a manual entry in CA. Example inputs, not a customer’s earnings.'},
+  {id:'tax',tag:'FREE · EXPORT IS PRO',figure:{value:23,prefix:'$',caption:'Estimated tax to set aside, Q3 2026'},title:'Tax center, on screen',body:'Self-employment, federal and state estimates with a Schedule C worksheet. PDF and CSV export for your tax professional is Pro.',image:'tour-tax.webp',alt:'Example tax estimate breakdown for Q3 2026: estimated tax for preparation $23 (self-employment $22, federal $0, state $1) on $235 gross with an $80 mileage deduction, single filer. Estimates only, not tax advice.'},
+  {id:'insights',tag:'PRO',figure:{value:24,prefix:'$',suffix:'/hr',caption:'Profit per hour this week'},title:'Insights by platform',body:'Dollars per hour and per mile by platform, trend charts and a what-if mileage simulator.',image:'tour-insights.webp',alt:'Example Insights screen (Pro): monthly profit trend with $235 gross and about $192 net in August, and a profit-per-hour and per-mile trend. Example inputs, not a customer’s earnings.'},
 ]
 // Approved 2026-08-30 preview, transcribed into native React markup.
 export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed'|'scroll';variant?:'live'|'v2'}){const v2=variant==='v2';return <>
@@ -51,15 +53,11 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 <div className="actions">
 <DownloadButton className="button conversion-cta" data-cta-placement="hero">
 {"Get GigMiles — free "}
-<span aria-hidden="true">
-{"↗"}
-</span>
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </DownloadButton>
 <a className="text-link" href="#details">
 {"See how it works "}
-<span aria-hidden="true">
-{"↓"}
-</span>
+<span aria-hidden="true" className="glyph"><ArrowDown/></span>
 </a>
 </div>
 <p className="confidence">
@@ -312,9 +310,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 <br  />
 {"A clearer picture of your work."}
 </span>
-<a href="#details" aria-label="Explore how your details inform the estimate">
-{"↓"}
-</a>
+<a href="#details" aria-label="Explore how your details inform the estimate"><span aria-hidden="true" className="glyph"><ArrowDown/></span></a>
 </div>
 </section>
 {v2 && <TrustStrip/>}
@@ -427,7 +423,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 
 </section>
 
-{v2 && <EstimateProof/>}
+{v2 && <EstimateProof interactive/>}
 <ProductShowcase />
 {v2 && <FeatureTour screens={TOUR_SCREENS} heading={<>See it on your phone.<br/><span>Before you download.</span></>}/>}
 <section className="free-section wrap" id="free" aria-labelledby="free-title">
@@ -449,9 +445,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 </p>
 <DownloadButton className="button conversion-cta" data-cta-placement="free-core">
 {"Get GigMiles — free "}
-<span aria-hidden="true">
-{"↗"}
-</span>
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </DownloadButton>
 <p className="confidence">
 {"No card. No ads."}
@@ -506,7 +500,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 </div>}
 </section>
 
-<section className="faq wrap home-faq" id="questions" aria-labelledby="questions-title">
+<section className="faq wrap home-faq" id="questions" aria-labelledby="questions-title" data-reveal="">
 <div className="faq-heading">
 <p className="eyebrow">
 {"GOOD TO KNOW"}
@@ -589,16 +583,16 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 </div>
 </section>
 
-<section className="wrap home-journal" aria-labelledby="journal-entry-title">
+<section className="wrap home-journal" aria-labelledby="journal-entry-title" data-reveal="">
 <div>
 <p className="eyebrow">THE GIGMILES JOURNAL</p>
 <h2 id="journal-entry-title">Good questions. Clearer answers.</h2>
 <p className="journal-summary">Practical guides to vehicle costs, keeping records and choosing the right tool.</p>
 </div>
-<a href="/blog">Read the guides <span aria-hidden="true">↗</span></a>
+<a href="/blog">Read the guides <span aria-hidden="true" className="glyph"><ArrowUpRight/></span></a>
 </section>
 <section className="download conversion-close" id="download">
-<div className="wrap">
+<div className="wrap" data-reveal="">
 <p className="eyebrow">
 {"YOUR NEXT SHIFT. A CLEARER PICTURE."}
 </p>
@@ -614,9 +608,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 </p>
 <DownloadButton className="button conversion-cta on-paper" data-cta-placement="closing">
 {"Get GigMiles — free "}
-<span aria-hidden="true">
-{"↗"}
-</span>
+<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </DownloadButton>
 <p className="close-trust">
 {"Free core · No card · No ads"}
@@ -628,4 +620,5 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 </section>
 
 {v2 && <StickyCta/>}
+{v2 && <RevealObserver/>}
 </>}

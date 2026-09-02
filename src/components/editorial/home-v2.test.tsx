@@ -68,6 +68,8 @@ describe('home v2 (local preview only)',()=>{
     }
     expect(hashes.size).toBe(8)
     expect(html).toMatch(/alt="Example GigMiles home screen: Net Income \$192/)
+    expect(html).toContain('type="range"')
+    expect(html).toContain('tour-figure')
   })
   it('renders the v2 sections only behind the local review flag and never in production',()=>{
     vi.stubEnv('LOCAL_DESIGN_REVIEW','');expect(()=>HomeV2Preview()).toThrow('NOT_FOUND')
@@ -135,9 +137,9 @@ describe('home v2 (local preview only)',()=>{
     expect(view.container.querySelector('.tour-step[aria-current="step"]')?.textContent).toContain('Stop one')
     act(()=>observers[0].callback([{isIntersecting:true,target:observers[0].targets[2]} as Partial<IntersectionObserverEntry>]))
     expect(view.container.querySelector('.tour-step[aria-current="step"]')?.textContent).toContain('Stop three')
-    const phone=view.container.querySelectorAll('.tour-phone .product-device > *')
+    const phone=view.container.querySelectorAll('.tour-phone .device-screen > *')
     expect(phone).toHaveLength(3)
-    expect(phone[2]).not.toHaveAttribute('hidden');expect(phone[0]).toHaveAttribute('hidden')
+    expect(phone[2]).toHaveAttribute('data-active','true');expect(phone[0]).toHaveAttribute('data-active','false')
     expect((phone[2] as HTMLImageElement).getAttribute('srcset')).toContain('product-earnings-complete-390.webp 390w')
     expect(view.container.querySelectorAll('.tour-step .tour-placeholder')).toHaveLength(2)
     view.unmount();expect(observers[0].disconnect).toHaveBeenCalled()
