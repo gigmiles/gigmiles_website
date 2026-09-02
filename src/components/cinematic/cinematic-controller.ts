@@ -263,6 +263,23 @@ export function resolveMode(env: ModeEnv): CineMode {
   return env.wide ? 'desktop' : 'mobile'
 }
 
+export interface ProofSpec {
+  from: number
+  to: number
+  fade: number
+  step: number
+  rows: Array<{at: number}>
+  netAt: number
+}
+
+/** Overall strength of the proof layer and how far each of its rows has arrived. */
+export function proofAt(f: number, p: ProofSpec) {
+  const on = smoothstep(p.from, p.from + p.fade, f) * (1 - smoothstep(p.to - p.fade, p.to, f))
+  const rows = p.rows.map(row => smoothstep(row.at, row.at + p.step, f))
+  const net = smoothstep(p.netAt, p.netAt + p.step, f)
+  return {on, rows, net}
+}
+
 export interface InstallOptions {
   cues: CueSpec[]
   /** Film files for the <video> path; not needed when a driver renders the film. */
@@ -275,6 +292,8 @@ export interface InstallOptions {
   tints?: Rgb[]
   /** Light position, size and strength per beat, blended with scroll. */
   lights?: LightSpec[]
+  /** The code-drawn figures written onto the film's blank paper, in film fractions. */
+  proof?: ProofSpec
   onState?: (state: VideoState) => void
   fetchImpl?: typeof fetch
   defaults?: Partial<Defaults>
@@ -342,6 +361,12 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
     root.style.setProperty('--cam-s', cam.scale.toFixed(4))
     root.style.setProperty('--cam-x', `${cam.x.toFixed(2)}px`)
     root.style.setProperty('--cam-y', `${cam.y.toFixed(2)}px`)
+    if (opts.proof) {
+      const proof = proofAt(f, opts.proof)
+      root.style.setProperty('--proof', proof.on.toFixed(3))
+      proof.rows.forEach((row, i) => root.style.setProperty(`--pr${i}`, row.toFixed(3)))
+      root.style.setProperty('--pr-net', proof.net.toFixed(3))
+    }
     if (opts.tints && opts.tints.length) root.style.setProperty('--ground', rgbCss(groundAt(f, opts.beats, opts.tints)))
     if (opts.lights && opts.lights.length) {
       const light = lightAt(f, opts.beats, opts.lights)
@@ -372,7 +397,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
   }
 
   const clearCues = () => {
-    for (const name of ['--p', '--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--ly', '--ls', '--la']) root.style.removeProperty(name)
+    for (const name of ['--p', '--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--ly', '--ls', '--la', '--proof', '--pr-net', '--pr0', '--pr1', '--pr2', '--pr3']) root.style.removeProperty(name)
     scenes.forEach(scene => {
       scene.removeAttribute('style')
       scene.removeAttribute('data-scene-active')

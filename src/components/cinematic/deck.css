@@ -30,7 +30,7 @@
   max-width: 22ch;
 }
 .editorial-site .deck-heading span { color: var(--mint); }
-.editorial-site .deck[data-deck="on"] .deck-heading { position: absolute; top: clamp(1.5rem, 6vh, 3rem); left: 0; margin: 0; font-size: clamp(28px, 2.4vw, 40px); max-width: 16ch; z-index: 1; }
+.editorial-site .deck[data-deck="on"] .deck-heading { position: absolute; top: clamp(1.5rem, 6vh, 3rem); left: 0; margin: 0; font-size: clamp(28px, 2.4vw, 40px); max-width: 16ch; z-index: 10; }
 
 /* ---- the cards -------------------------------------------------------- */
 .editorial-site .deck-cards { display: grid; gap: clamp(1.4rem, 4vh, 2.6rem); }
@@ -82,20 +82,19 @@
 .editorial-site .deck-cta { margin-top: 4px; min-height: 46px; opacity: var(--front, 1); transition: opacity .35s ease; }
 
 /* The capture rises out of the card and is cut by its lower edge. */
-.editorial-site .deck-media { position: relative; align-self: end; height: 100%; min-height: 0; display: flex; align-items: flex-end; justify-content: center; }
-.editorial-site .deck-media img { display: block; width: min(100%, 300px); height: auto; border-radius: 22px 22px 0 0; box-shadow: 0 30px 60px -30px #000000aa; }
-.editorial-site .deck[data-deck="on"] .deck-media { overflow: hidden; }
-.editorial-site .deck[data-deck="on"] .deck-media img { margin-bottom: calc(-1 * clamp(1.2rem, 2.2vw, 1.9rem)); }
+.editorial-site .deck-media { position: relative; align-self: stretch; height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.editorial-site .deck-media img { display: block; width: auto; max-width: 100%; height: 100%; object-fit: contain; border-radius: 20px; box-shadow: 0 30px 60px -30px #000000aa; }
+.editorial-site .deck[data-deck="on"] .deck-media { align-items: center; }
 .editorial-site .deck-placeholder { display: block; width: min(100%, 300px); aspect-ratio: 1 / 2; border-radius: 22px 22px 0 0; background: #ffffff14; }
 
 .editorial-site .deck-note { margin: clamp(1.6rem, 4vh, 2.4rem) 0 0; font-size: 12px; color: var(--muted); }
-.editorial-site .deck[data-deck="on"] .deck-note { position: absolute; bottom: clamp(1rem, 4vh, 2rem); left: 0; margin: 0; z-index: 1; }
+.editorial-site .deck[data-deck="on"] .deck-note { position: absolute; bottom: clamp(1rem, 4vh, 2rem); left: 0; margin: 0; z-index: 10; }
 
 /* ---- narrow: the plain list the markup already is ---------------------- */
 @media (max-width: 980px) {
   .editorial-site .deck-body { grid-template-columns: 1fr; align-items: start; }
   .editorial-site .deck-media { justify-content: flex-start; margin-top: 4px; }
-  .editorial-site .deck-media img { width: min(100%, 260px); }
+  .editorial-site .deck-media img { width: min(100%, 240px); height: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

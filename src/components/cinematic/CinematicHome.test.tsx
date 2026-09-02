@@ -7,7 +7,11 @@ import {CinematicHome} from './CinematicHome'
 import {CinematicHero} from './CinematicHero'
 import {CINEMATIC_SCENES} from './cinematic-cues'
 
-const BANNED_PAGE = /\$175|what you owe|file your taxes|guaranteed|audit-proof|maximize your refund|\d+\s*(drivers|users|downloads)|★/i
+const BANNED_PAGE = /what you owe|file your taxes|guaranteed|audit-proof|maximize your refund|\d+\s*(drivers|users|downloads)|★/i
+// The film's blank paper is filled with the canonical shift, so the hero is no
+// longer figure-free. Every figure it shows has to be from the canonical set
+// and has to be captioned as an example.
+const CANONICAL = new Set(['235', '17', '26', '192', '24'])
 
 class Media extends EventTarget { matches = false; constructor(matches: boolean) { super(); this.matches = matches } }
 
@@ -44,6 +48,16 @@ describe('cinematic home markup', () => {
     expect(html).toContain('data-cta-placement="cinematic-closing"')
     expect(html).not.toMatch(BANNED_PAGE)
     expect(html).not.toContain('[VERIFY]')
+    const hero = html.slice(html.indexOf('id="cine-hero"'), html.indexOf('cine-body'))
+    const heroText = hero.replace(/<[^>]+>/g, ' ')
+    expect(heroText).toContain('Example shift')
+    for (const [, figure] of heroText.matchAll(/\$(\d[\d,.]*)/g)) {
+      expect(CANONICAL.has(figure), `uncanonical figure $${figure} in the hero`).toBe(true)
+    }
+    expect(heroText).toContain('$235')
+    // The hero must agree with the home capture the deck shows below it.
+    expect(heroText).toContain('$192')
+    expect(heroText).not.toContain('$175')
   })
 
   it('keeps one eyebrow on the page and no section counters in the film', () => {

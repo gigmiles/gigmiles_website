@@ -43,6 +43,35 @@ export const BEAT_LIGHTS: LightSpec[] = [
   {x: 50, y: 8, size: 80, alpha: 0.20},
 ]
 
+// The film hands us blank paper on purpose: the receipt that slides out of the
+// pump and the ruled ledger under the lamp both arrive empty. That is where
+// the shift is written, in code, never by the model. The figures mirror the
+// home screen the deck shows further down the page, so the page never
+// contradicts itself: WEB-TOUR-1 (approved 2026-09-02) gives $235 gross,
+// $43 expenses and $192 net income on 8 h and 105.0 miles at $24/hr, and the
+// $17 fuel / $26 wear split is the canonical breakdown of that same $43. The
+// quarterly tax estimate is a different screen and stays on the deck's tax
+// card rather than being folded into a per-shift total. The rows land one at a
+// time, so the words and the picture describe the same thing.
+export interface ProofRow { id: string; label: string; amount: string; at: number }
+export const PROOF = {
+  /** Film fractions: the paper fills the frame at about 0.44 and the city starts rising at 0.60. */
+  from: 0.435,
+  to: 0.60,
+  fade: 0.03,
+  /** How long a row takes to arrive, in film fractions. */
+  step: 0.016,
+  rows: [
+    {id: 'gross', label: 'Gross', amount: '$235', at: 0.452},
+    {id: 'fuel', label: 'Fuel', amount: '−$17', at: 0.482},
+    {id: 'wear', label: 'Wear and tear', amount: '−$26', at: 0.512},
+  ] as ProofRow[],
+  /** The kept figure and the shift line under it. */
+  netAt: 0.545,
+  net: {label: 'Net income', amount: '$192', foot: '8 hours · 105.0 miles · $24/hr'},
+  eyebrow: 'Example shift',
+}
+
 export interface SceneSpec {
   id: string
   /** One entry per masked line; nine words at most across the headline. `*word*` marks the driver's word (set in 800 weight, Mint). */

@@ -19,7 +19,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
   isolation: isolate;
   contain: layout paint;
 }
-.editorial-site .cine-page .cine-frame { position: relative; height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 6%; align-items: center; }
+.editorial-site .cine-page .cine-frame { position: relative; height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); column-gap: 4%; align-items: center; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-frame { padding: 24px 0 40px; }
 
 /* ---- media ---------------------------------------------------------- */
@@ -28,7 +28,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
   z-index: 1;
   justify-self: center;
   width: auto;
-  height: min(calc(100svh - 96px), 820px);
+  height: min(calc(100svh - 72px), 940px);
   aspect-ratio: 9 / 16;
   border-radius: 108px 10px 10px 10px;
   overflow: hidden;
@@ -78,9 +78,54 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-hero[data-cine-painted="true"] .cine-media .cine-canvas { opacity: 1; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-media .cine-canvas { display: none; }
 
+/* ---- the proof layer: the film's blank paper, filled in code ----------
+   The receipt and the ledger arrive empty from the model on purpose. These are
+   the canonical figures, set in the brand face, drifting with the camera so
+   they sit on the paper rather than floating over it. Never AI-drawn. */
+.editorial-site .cine-proof {
+  position: absolute;
+  z-index: 3;
+  left: 8%;
+  right: 8%;
+  top: 22%;
+  opacity: var(--proof, 0);
+  color: #22392e;
+  text-align: left;
+  pointer-events: none;
+  transform: translate3d(0, calc(var(--proof, 0) * -14px), 0);
+}
+.editorial-site .cine-hero[data-cine-mode="static"] .cine-proof { position: static; opacity: 1; transform: none; margin: 28px 0 0; padding: 22px 24px; background: var(--paper); border-radius: 18px; }
+.editorial-site .cine-proof-eyebrow { margin: 0 0 14px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #5c7566; }
+.editorial-site .cine-proof-rows { list-style: none; margin: 0; padding: 0; }
+.editorial-site .cine-proof-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid #22392e26;
+  font-size: clamp(13px, 1.15vw, 17px);
+  opacity: var(--r, 1);
+  transform: translate3d(0, calc((1 - var(--r, 1)) * 10px), 0);
+}
+.editorial-site .cine-proof-row span { font-weight: 300; color: #47614f; }
+.editorial-site .cine-proof-row b { font-weight: 600; font-variant-numeric: tabular-nums; }
+.editorial-site .cine-proof-net {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 16px 0 0;
+  opacity: var(--pr-net, 1);
+  transform: translate3d(0, calc((1 - var(--pr-net, 1)) * 12px), 0);
+}
+.editorial-site .cine-proof-net span { font-size: clamp(13px, 1.1vw, 16px); font-weight: 300; color: #47614f; }
+.editorial-site .cine-proof-net b { font-size: clamp(30px, 3.4vw, 52px); font-weight: 800; letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: #123c32; }
+.editorial-site .cine-proof-foot { margin: 6px 0 0; font-size: 12px; color: #5c7566; opacity: var(--pr-net, 1); }
+
 /* ---- copy ----------------------------------------------------------- */
-.editorial-site .cine-copy { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; }
-.editorial-site .cine-scenes { position: relative; flex: 1 1 auto; min-height: 0; }
+.editorial-site .cine-copy { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: clamp(20px, 4vh, 40px); }
+.editorial-site .cine-scenes { position: relative; flex: 0 0 auto; min-height: clamp(230px, 34vh, 330px); }
 .editorial-site .cine-scene { max-width: 560px; }
 .editorial-site .cine-hero[data-cine-mode="desktop"] .cine-scene,
 .editorial-site .cine-hero[data-cine-mode="mobile"] .cine-scene {
@@ -92,9 +137,9 @@ html:has(.cine-page) { scroll-behavior: auto; }
   transform-origin: 0 50%;
   will-change: transform, opacity;
 }
-.editorial-site .cine-hero[data-cine-mode="desktop"] .cine-scene[data-anchor="lead"] { top: 16%; }
-.editorial-site .cine-hero[data-cine-mode="desktop"] .cine-scene[data-anchor="middle"] { top: 50%; transform: translate3d(0, calc(-50% + var(--y, 0px)), 0) scale(var(--s, 1)); }
-.editorial-site .cine-hero[data-cine-mode="desktop"] .cine-scene[data-anchor="trail"] { bottom: 22%; }
+/* Every statement starts at the same height so the column never jumps and the
+   CTA sits directly under the words instead of at the foot of the viewport. */
+.editorial-site .cine-hero[data-cine-mode="desktop"] .cine-scene { top: 0; }
 .editorial-site .cine-scene[inert] { pointer-events: none; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-scene { margin: 0 0 clamp(40px, 8vh, 72px); }
 
@@ -118,7 +163,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
 /* ---- stage CTA ------------------------------------------------------ */
 /* The stage starts under the shell header on the first screen, so the CTA keeps
    a header's height of clearance and is in the first viewport before any scroll. */
-.editorial-site .cine-cta { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding-bottom: 88px; }
+.editorial-site .cine-cta { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-scenes { display: contents; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-scene { order: 2; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-scene:first-child { order: 0; }
@@ -157,7 +202,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
 /* ---- wide ------------------------------------------------------------ */
 @media (min-width: 1800px) {
   .editorial-site .cine-statement { font-size: 92px; }
-  .editorial-site .cine-media { height: min(calc(100svh - 120px), 900px); }
+  .editorial-site .cine-media { height: min(calc(100svh - 96px), 1040px); }
 }
 
 /* ---- mobile / narrow: full-bleed film, captions in the lower third ---- */
@@ -200,6 +245,9 @@ html:has(.cine-page) { scroll-behavior: auto; }
   .editorial-site .cine-hero[data-cine-mode="desktop"] .cine-scenes { min-height: 34svh; }
   .editorial-site .cine-hero[data-cine-mode="mobile"] .cine-scene,
   .editorial-site .cine-hero[data-cine-mode="desktop"] .cine-scene { top: auto; bottom: 0; transform: translate3d(0, var(--y, 0px), 0) scale(var(--s, 1)); }
+  .editorial-site .cine-proof { left: 7%; right: 7%; top: 12%; }
+  .editorial-site .cine-proof-row { padding: 7px 0; font-size: 13px; }
+  .editorial-site .cine-proof-net b { font-size: 34px; }
   .editorial-site .cine-statement { font-size: clamp(34px, 9.6vw, 44px); }
   .editorial-site .cine-support { margin-top: 14px; font-size: 16px; }
   .editorial-site .cine-cta { gap: 12px; padding: 18px 0 0; }
