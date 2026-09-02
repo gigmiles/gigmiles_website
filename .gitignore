@@ -81,4 +81,7 @@ gradle_output*.txt
 
 # cinematic hero prototype: scrub videos stay out of git until the go-live decision
 /public/cinematic/*.mp4
+# film v3 plates (WebP from the operator paintings or the placeholder cut) stay out of git too
+/public/cinematic/plates/*.webp
+/public/cinematic/plates/*.png
 /.video-src/

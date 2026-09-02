@@ -73,6 +73,11 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-hero[data-cine-painted="true"] .cine-media .cine-video { opacity: 1; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-media .cine-video { display: none; }
 
+/* ---- plates (film v3): the film is one shader canvas; the camera lives in the shader, not in CSS ---- */
+.editorial-site .cine-media .cine-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .5s ease; }
+.editorial-site .cine-hero[data-cine-painted="true"] .cine-media .cine-canvas { opacity: 1; }
+.editorial-site .cine-hero[data-cine-mode="static"] .cine-media .cine-canvas { display: none; }
+
 /* ---- copy ----------------------------------------------------------- */
 .editorial-site .cine-copy { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .editorial-site .cine-scenes { position: relative; flex: 1 1 auto; min-height: 0; }
@@ -214,6 +219,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
 
 /* ---- reduced motion: the static page, no film fetch --------------------- */
 @media (prefers-reduced-motion: reduce) {
-  .editorial-site .cine-media .cine-video { transition: none; }
+  .editorial-site .cine-media .cine-video,
+  .editorial-site .cine-media .cine-canvas { transition: none; }
   .editorial-site .cine-line-inner { transform: none; opacity: 1; }
 }

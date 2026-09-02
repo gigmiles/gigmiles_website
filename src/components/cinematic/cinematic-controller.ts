@@ -18,6 +18,12 @@
 // decoder is still seeking, nudge a seek that never settles, fetch the file as
 // a blob so seeking needs no range requests, and prime iOS with a muted
 // play()/pause() once metadata is in.
+//
+// Film v3 renders from a driver instead of a <video> (plate-engine.ts): the
+// same scroll, cues, dwell, camera, ground and light, but the playhead is a
+// film fraction handed to driver.render() whenever it moves.
+
+import type {FilmDriver} from './plate-engine'
 
 export interface CueSpec {
   id: string
@@ -259,7 +265,10 @@ export function resolveMode(env: ModeEnv): CineMode {
 
 export interface InstallOptions {
   cues: CueSpec[]
-  src: {desktop: string; mobile: string}
+  /** Film files for the <video> path; not needed when a driver renders the film. */
+  src?: {desktop: string; mobile: string}
+  /** Renders the film from scroll instead of a <video>: the plate engine. */
+  driver?: FilmDriver
   /** Film-fraction boundaries between clips (the dissolve centres). */
   beats?: number[]
   /** Ground colour per beat, blended with scroll. */
@@ -273,7 +282,7 @@ export interface InstallOptions {
 
 const PRIME_EVENTS = ['touchstart', 'touchend', 'pointerdown', 'click', 'keydown'] as const
 
-export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opts: InstallOptions) {
+export function installCinematic(root: HTMLElement, video: HTMLVideoElement | null, opts: InstallOptions) {
   const d: Defaults = {...DEFAULTS, ...opts.defaults}
   const cues = opts.cues
   const controller = new AbortController()
@@ -299,6 +308,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
   let primed = false
   let primeTicksLeft = 0
   let gestureArmed = false
+  let rendered = -1
 
   const setState = (state: VideoState) => {
     videoState = state
@@ -306,7 +316,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
     opts.onState?.(state)
   }
 
-  const canPlay = () => typeof video.canPlayType === 'function' && video.canPlayType('video/mp4; codecs="avc1.640028"') !== ''
+  const canPlay = () => (opts.driver ? true : Boolean(video) && typeof video!.canPlayType === 'function' && video!.canPlayType('video/mp4; codecs="avc1.640028"') !== '')
 
   const env = (): ModeEnv => ({
     reduced: reducedMQ.matches,
@@ -323,7 +333,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
     return clamp01(-rect.top / travel)
   }
 
-  const filmTarget = (p: number) => timeAtProgress(p, video.duration || 0, d.endAt, opts.beats, d.dwell)
+  const filmTarget = (p: number) => (opts.driver ? filmFractionAtProgress(p, d.endAt, opts.beats, d.dwell) : timeAtProgress(p, video?.duration || 0, d.endAt, opts.beats, d.dwell))
 
   const writeStage = (p: number) => {
     const f = filmFractionAtProgress(p, d.endAt, opts.beats, d.dwell)
@@ -381,7 +391,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
   }
 
   const finishPrime = () => {
-    if (!priming) return
+    if (!priming || !video) return
     priming = false
     primed = true
     try { video.pause() } catch { /* jsdom */ }
@@ -394,7 +404,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
   }
 
   const startPrime = () => {
-    if (primed || priming || !video.src || videoState === 'failed') return
+    if (primed || priming || !video || !video.src || videoState === 'failed') return
     priming = true
     primeTicksLeft = d.primeTicks
     video.muted = true
@@ -415,7 +425,26 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
     if (loaded || mode === 'static') return
     loaded = true
     setState('loading')
-    const url = mode === 'mobile' ? opts.src.mobile : opts.src.desktop
+    if (opts.driver) {
+      opts.driver.load(mode === 'mobile' ? 'mobile' : 'desktop')
+        .then(() => {
+          if (signal.aborted) return
+          target = filmTarget(progress())
+          playhead = target
+          rendered = -1
+          setState('primed')
+          schedule()
+        })
+        .catch(() => {
+          if (signal.aborted) return
+          setState('failed')
+          configure()
+        })
+      return
+    }
+    const src = opts.src
+    if (!src || !video) { setState('failed'); configure(); return }
+    const url = mode === 'mobile' ? src.mobile : src.desktop
     const fetchImpl = opts.fetchImpl ?? fetch
     fetchImpl(url, {signal})
       .then(response => {
@@ -423,7 +452,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
         return response.blob()
       })
       .then(blob => {
-        if (signal.aborted) return
+        if (signal.aborted || !video) return
         objectUrl = URL.createObjectURL(blob)
         video.muted = true
         video.playsInline = true
@@ -445,8 +474,19 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
     if (Math.abs(p - lastP) > 0.0005) { lastP = p; writeCues(p) }
     if (mode === 'static') return
     target = filmTarget(p)
-    root.dataset.cineTarget = target.toFixed(3)
+    root.dataset.cineTarget = target.toFixed(opts.driver ? 4 : 3)
     playhead = lerpStep(playhead, target, mode === 'mobile' ? d.lerpMobile : d.lerpDesktop, dt, d.snap)
+    if (opts.driver) {
+      if (videoState === 'primed' && Math.abs(playhead - rendered) > 0.0003) {
+        opts.driver.render(playhead)
+        rendered = playhead
+        root.dataset.cineTime = playhead.toFixed(4)
+        root.dataset.cinePainted = 'true'
+      }
+      if (Math.abs(target - playhead) > d.snap) schedule()
+      return
+    }
+    if (!video) return
     if (videoState === 'primed' || videoState === 'ready') {
       if (video.seeking) {
         stuck += 1
@@ -477,9 +517,11 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
     if (frame) { cancelAnimationFrame(frame); frame = 0 }
     if (next === 'static') { clearCues(); return }
     load()
+    if (opts.driver && videoState === 'primed') { opts.driver.resize(); rendered = -1 }
     schedule()
   }
 
+  if (video) {
   video.addEventListener('loadedmetadata', () => {
     setState('ready')
     const p = progress()
@@ -494,6 +536,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
     root.dataset.cineTime = (video.currentTime || 0).toFixed(3)
   }, {signal})
   video.addEventListener('error', () => { setState('failed'); configure() }, {signal})
+  }
 
   window.addEventListener('scroll', schedule, {passive: true, signal})
   window.addEventListener('resize', configure, {signal})
@@ -509,8 +552,9 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement, opt
     controller.abort()
     if (frame) cancelAnimationFrame(frame)
     frame = 0
-    try { video.pause() } catch { /* ignore */ }
-    video.removeAttribute('src')
+    try { video?.pause() } catch { /* ignore */ }
+    video?.removeAttribute('src')
+    opts.driver?.destroy()
     if (objectUrl) URL.revokeObjectURL(objectUrl)
     objectUrl = null
     clearCues()

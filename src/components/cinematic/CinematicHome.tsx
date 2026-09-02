@@ -11,14 +11,15 @@ import '@/components/editorial/home-v2.css'
 import '@/components/editorial/home-flow.css'
 import './cinematic.css'
 import {CinematicHero} from './CinematicHero'
+import {PlatesHero} from './PlatesHero'
 
 // Cinematic home: the film stage, then the paper hand-off, then the live
 // sections in the order a driver meets them (how the estimate is built, the
 // app on a phone, free versus Pro, the close). Copy below the film is the
 // approved live copy, verbatim, minus the eyebrows the taste rules cap.
-export function CinematicHome() {
+export function CinematicHome({variant = 'film'}: {variant?: 'film' | 'plates'}) {
   return <div className="cine-page">
-    <CinematicHero layout="portrait"/>
+    {variant === 'plates' ? <PlatesHero/> : <CinematicHero layout="portrait"/>}
 
     <div className="cine-body">
     <section className="cine-after" aria-labelledby="cine-after-title">

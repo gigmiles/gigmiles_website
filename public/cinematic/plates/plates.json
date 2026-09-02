@@ -1,0 +1,123 @@
+{
+  "generated": "2026-09-02T17:43:15.369Z",
+  "mode": "placeholders",
+  "plates": {
+    "p1": {
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat1-recognition-frames\\frame-05-2.00s.png",
+      "width": 2160,
+      "height": 3836,
+      "desktop": {
+        "file": "p1.webp",
+        "bytes": 86508,
+        "sha1": "1c1a4f887ee613e416731c069d09582ca2f30f95"
+      },
+      "mobile": {
+        "file": "p1-m.webp",
+        "bytes": 33104,
+        "sha1": "208ca4221acb2401cc783a3d2585366dbd9aedc8"
+      }
+    },
+    "p2": {
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat2-tension-frames\\frame-04-1.50s.png",
+      "width": 2160,
+      "height": 3836,
+      "desktop": {
+        "file": "p2.webp",
+        "bytes": 101560,
+        "sha1": "8cf8703d7756a1474167b61e3ab17eef68cc7705"
+      },
+      "mobile": {
+        "file": "p2-m.webp",
+        "bytes": 38410,
+        "sha1": "c2844aaa465060459b7765e671ff1bcb4b73995e"
+      }
+    },
+    "p3": {
+      "source": "synthesised",
+      "width": 1080,
+      "height": 1920,
+      "desktop": {
+        "file": "p3.webp",
+        "bytes": 9714,
+        "sha1": "15b4a04d8a9dbaf1733544b293a5b3682e462eec"
+      },
+      "mobile": {
+        "file": "p3-m.webp",
+        "bytes": 2986,
+        "sha1": "721f08c7a1ffe344382788f1d84655001f72d741"
+      }
+    },
+    "p4": {
+      "source": "synthesised",
+      "width": 1080,
+      "height": 1920,
+      "desktop": {
+        "file": "p4.webp",
+        "bytes": 13684,
+        "sha1": "6ea672f971bc38b575c0f046bd6fdd6cc0bc980f"
+      },
+      "mobile": {
+        "file": "p4-m.webp",
+        "bytes": 4962,
+        "sha1": "8b34a883d248231a87c3b2e4e875160269a9443a"
+      }
+    },
+    "p5": {
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat5b-departure-frames\\frame-05-2.00s.png",
+      "width": 2160,
+      "height": 3836,
+      "desktop": {
+        "file": "p5.webp",
+        "bytes": 115296,
+        "sha1": "a8c5d3543d7eeed80efe916a2bcae68878e04ad4"
+      },
+      "mobile": {
+        "file": "p5-m.webp",
+        "bytes": 35632,
+        "sha1": "c125e27070f95a33ca8f63402b53e28208b9df5c"
+      }
+    }
+  },
+  "layers": {
+    "p4": [
+      {
+        "desktop": {
+          "file": "p4-l1.webp",
+          "bytes": 11506,
+          "sha1": "a189c04d6337edf17206c04d8a9f66d40c12635b"
+        },
+        "mobile": {
+          "file": "p4-l1-m.webp",
+          "bytes": 10546,
+          "sha1": "8b76a88b5f66ff48143e291962c79aa48f0bbe4d"
+        }
+      },
+      {
+        "desktop": {
+          "file": "p4-l2.webp",
+          "bytes": 9768,
+          "sha1": "c4de7d24a57603cbd850cffdccdd830b5a111a29"
+        },
+        "mobile": {
+          "file": "p4-l2-m.webp",
+          "bytes": 5792,
+          "sha1": "935139fe4c295a8f18c8a54cb82fc5d30f7ba665"
+        }
+      }
+    ]
+  },
+  "poster": {
+    "file": "poster.webp",
+    "bytes": 42002,
+    "sha1": "bc7f96d43b4d1a43c10f7b7530fc12aaac03fd9b"
+  },
+  "posterMobile": {
+    "file": "poster-m.webp",
+    "bytes": 16216,
+    "sha1": "18766e9495737c18a832af4bb084756ffcc99ad7"
+  },
+  "total": {
+    "desktop": 348036,
+    "mobile": 131432
+  }
+}

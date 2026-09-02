@@ -52,7 +52,8 @@ for (const vp of VIEWPORTS) {
   const mp4Requests = []
   page.on('console', m => { if (m.type() === 'error' && !/webpack-hmr|favicon/.test(m.text())) errors.push(m.text().slice(0, 160)) })
   page.on('pageerror', e => errors.push('pageerror: ' + String(e).slice(0, 160)))
-  page.on('request', r => { if (/\.mp4/.test(r.url())) mp4Requests.push(r.url()) })
+  const plateRequests = []
+  page.on('request', r => { if (/\.mp4/.test(r.url())) mp4Requests.push(r.url()); if (/\/cinematic\/plates\/p\d/.test(r.url())) plateRequests.push(r.url()) })
   await page.evaluateOnNewDocument(() => {
     navigator.sendBeacon = () => true
     window.__longTasks = []
@@ -66,8 +67,9 @@ for (const vp of VIEWPORTS) {
   await page.goto(URL_, {waitUntil: 'networkidle2', timeout: 90000})
   await page.evaluate(() => document.fonts.ready)
 
+  const hasVideo = await page.evaluate(() => Boolean(document.querySelector('video.cine-video')))
   const canPlay = await page.evaluate(() => document.querySelector('video.cine-video')?.canPlayType('video/mp4; codecs="avc1.640028"') ?? '')
-  if (!vp.reduced && !canPlay) { problem(vp.name, `this browser cannot decode H.264 (canPlayType="${canPlay}"): use Google Chrome, not Chromium`) }
+  if (!vp.reduced && hasVideo && !canPlay) { problem(vp.name, `this browser cannot decode H.264 (canPlayType="${canPlay}"): use Google Chrome, not Chromium`) }
 
   // Wait for the film to prime (or for static mode to settle).
   let state = null
@@ -76,7 +78,7 @@ for (const vp of VIEWPORTS) {
     if (state.mode === 'static' || state.video === 'primed' || state.video === 'failed') break
     await sleep(250)
   }
-  const record = {viewport: vp.name, mode: state?.mode, video: state?.video, canPlay, positions: [], shots: []}
+  const record = {viewport: vp.name, mode: state?.mode, video: state?.video, canPlay, hasVideo, positions: [], shots: []}
 
   const runway = await page.evaluate(() => { const r = document.getElementById('cine-hero'); const s = r.querySelector('.cine-stage'); return {top: r.getBoundingClientRect().top + window.scrollY, travel: r.offsetHeight - s.offsetHeight} })
 
@@ -94,14 +96,15 @@ for (const vp of VIEWPORTS) {
         const step = () => {
           frames += 1
           if (root.dataset.cineTarget) expected = Number(root.dataset.cineTarget)
-          const done = root.dataset.cineMode === 'static' || Math.abs((video?.currentTime || 0) - expected) < 0.05 || frames > 240
+          const current = video ? (video.currentTime || 0) : Number(root.dataset.cineTime || 0)
+          const done = root.dataset.cineMode === 'static' || Math.abs(current - expected) < (video ? 0.05 : 0.004) || frames > 240
           if (done) resolve(); else requestAnimationFrame(step)
         }
         requestAnimationFrame(step)
       })
       const scenes = [...document.querySelectorAll('.cine-scene')].map(s => ({id: s.dataset.cue, o: Number(getComputedStyle(s).opacity), active: !s.hasAttribute('inert')}))
       const stage = ['--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--la'].map(n => root.style.getPropertyValue(n)).join('|')
-      return {expected, currentTime: video?.currentTime ?? null, readyState: video?.readyState ?? null, frames, p: root.style.getPropertyValue('--p'), scenes, stage, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth}
+      return {expected, currentTime: video ? video.currentTime : Number(root.dataset.cineTime || 0), readyState: video?.readyState ?? null, frames, p: root.style.getPropertyValue('--p'), scenes, stage, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth}
     }, p)
     await sleep(120)
     // Dead-scroll check: one small step further, something visible must have changed.
@@ -109,8 +112,8 @@ for (const vp of VIEWPORTS) {
     if (!vp.reduced && p < 0.72) {
       await page.evaluate(y => window.scrollTo({top: y, behavior: 'instant'}), top + runway.travel * 0.01)
       await page.evaluate(() => new Promise(r => { let n = 0; const s = () => (++n > 12 ? r() : requestAnimationFrame(s)); requestAnimationFrame(s) }))
-      const after = await page.evaluate(() => { const root = document.getElementById('cine-hero'); const video = document.querySelector('video.cine-video'); return {t: video?.currentTime ?? 0, stage: ['--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--la'].map(n => root.style.getPropertyValue(n)).join('|'), scenes: [...document.querySelectorAll('.cine-scene')].map(s => getComputedStyle(s).opacity).join(',')} })
-      settled.dead = after.stage === settled.stage && after.scenes === settled.scenes.map(s => s.o).join(',') && Math.abs(after.t - (settled.currentTime ?? 0)) < 0.02
+      const after = await page.evaluate(() => { const root = document.getElementById('cine-hero'); const video = document.querySelector('video.cine-video'); return {t: video ? (video.currentTime || 0) : Number(root.dataset.cineTime || 0), tol: video ? 0.02 : 0.001, stage: ['--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--la'].map(n => root.style.getPropertyValue(n)).join('|'), scenes: [...document.querySelectorAll('.cine-scene')].map(s => getComputedStyle(s).opacity).join(',')} })
+      settled.dead = after.stage === settled.stage && after.scenes === settled.scenes.map(s => s.o).join(',') && Math.abs(after.t - (settled.currentTime ?? 0)) < after.tol
       await page.evaluate(y => window.scrollTo({top: y, behavior: 'instant'}), top)
       await sleep(80)
     }
@@ -145,14 +148,16 @@ for (const vp of VIEWPORTS) {
   if (vp.reduced) {
     if (record.mode !== 'static') problem(vp.name, `reduced motion should be static, got ${record.mode}`)
     if (mp4Requests.length) problem(vp.name, `reduced motion requested ${mp4Requests.length} mp4(s)`)
+    if (plateRequests.length) problem(vp.name, `reduced motion requested ${plateRequests.length} plate(s)`)
   } else {
     const expectedMode = vp.mobile ? 'mobile' : 'desktop'
     if (record.mode !== expectedMode) problem(vp.name, `expected mode ${expectedMode}, got ${record.mode} (video ${record.video})`)
     const fwd = record.positions.filter(x => x.label === 'fwd').map(x => x.currentTime)
     const back = record.positions.filter(x => x.label === 'back').map(x => x.currentTime)
-    for (let i = 1; i < fwd.length; i += 1) if (fwd[i] < fwd[i - 1] - 0.05) problem(vp.name, `film went backwards while scrolling down: ${fwd[i - 1].toFixed(2)} -> ${fwd[i].toFixed(2)}`)
-    for (let i = 1; i < back.length; i += 1) if (back[i] > back[i - 1] + 0.05) problem(vp.name, `film went forwards while scrolling up: ${back[i - 1].toFixed(2)} -> ${back[i].toFixed(2)}`)
-    const tolerance = vp.mobile ? 0.5 : 0.35
+    const slack = record.hasVideo ? 0.05 : 0.002
+    for (let i = 1; i < fwd.length; i += 1) if (fwd[i] < fwd[i - 1] - slack) problem(vp.name, `film went backwards while scrolling down: ${fwd[i - 1].toFixed(2)} -> ${fwd[i].toFixed(2)}`)
+    for (let i = 1; i < back.length; i += 1) if (back[i] > back[i - 1] + slack) problem(vp.name, `film went forwards while scrolling up: ${back[i - 1].toFixed(2)} -> ${back[i].toFixed(2)}`)
+    const tolerance = record.hasVideo ? (vp.mobile ? 0.5 : 0.35) : 0.03
     for (const pos of record.positions) {
       if (pos.currentTime !== null && Math.abs(pos.currentTime - pos.expected) > tolerance) problem(vp.name, `p=${pos.p || pos.p === 0 ? pos.p : '?'} film at ${pos.currentTime?.toFixed(2)}s, expected ${pos.expected.toFixed(2)}s`)
       const bright = pos.scenes.filter(s => s.o > 0.9).length
