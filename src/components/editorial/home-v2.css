@@ -42,63 +42,58 @@
 
 /* Plan table (inside the free section, replaces the feature list) */
 .editorial-site .plan-table { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
-/* The two plans answer the pointer and the keyboard: the card lifts a little,
-   its edge takes the brand's mint, and a soft light rises behind it. The Pro
-   card gets one extra move, a mint sheen that sweeps its face once. All of it
-   is transform and opacity on a pseudo-element, so it costs no JavaScript, no
-   repaint of the text, and nothing at all to a visitor who asked for less
-   motion. The cards are not links: they lead nowhere the page does not already
-   offer, and a card that only pretends to be clickable is worse than a still
-   one. */
+/* The two plans answer the pointer and the keyboard. The first attempt swept a
+   band of light across the Pro card; sampled frame by frame it crossed in the
+   first 170 ms and then crawled off-screen for another second, so it read as a
+   flash and then nothing. This does the opposite: the card lifts and takes the
+   brand's mint edge, and the value list lights up in sequence down the card,
+   which is also the direction we want the eye to travel. Only transform and
+   opacity move, box-shadow is never transitioned, and a visitor who asked for
+   less motion gets the colour and none of the movement. The cards are not
+   links: they lead nowhere the page does not already offer, and a card that
+   only pretends to be clickable is worse than a still one. */
 .editorial-site .plan-column {
   position: relative;
-  isolation: isolate;
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 20px 22px;
-  transition: transform .45s cubic-bezier(.2, .7, .2, 1), border-color .45s ease, box-shadow .45s ease;
+  box-shadow: 0 26px 50px -30px #0000;
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1), border-color .5s ease;
 }
 .editorial-site .plan-column.plan-pro { background: #123c31; }
+.editorial-site .plan-column > * { position: relative; z-index: 1; }
 .editorial-site .plan-column::before {
   content: '';
   position: absolute;
-  inset: -1px;
-  z-index: -1;
+  inset: 0;
+  z-index: 0;
   border-radius: inherit;
-  background: radial-gradient(120% 90% at 50% 0%, #bff4ce38, #bff4ce00 62%);
+  background: radial-gradient(90% 70% at 50% -10%, #bff4ce2e, #bff4ce00 70%);
   opacity: 0;
-  transition: opacity .45s ease;
+  transition: opacity .5s ease;
 }
 .editorial-site .plan-column:hover,
-.editorial-site .plan-column:focus-within {
-  transform: translateY(-4px);
-  border-color: #bff4ce66;
-  box-shadow: 0 26px 50px -28px #00000099;
-}
+.editorial-site .plan-column:focus-within { transform: translateY(-4px); border-color: #bff4ce5c; }
 .editorial-site .plan-column:hover::before,
 .editorial-site .plan-column:focus-within::before { opacity: 1; }
 
-/* The sweep: a narrow mint band that crosses the Pro card once on approach. */
-.editorial-site .plan-pro::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  overflow: hidden;
-  background: linear-gradient(105deg, #bff4ce00 42%, #bff4ce26 50%, #bff4ce00 58%);
-  transform: translateX(-115%);
-  transition: transform 1.05s cubic-bezier(.25, .8, .3, 1);
+/* The list lights up on the way down: each dot swells and brightens a beat
+   after the one above it. `--i` is set on the item in the markup. */
+.editorial-site .plan-table li::before { transition: transform .32s ease, box-shadow .32s ease; }
+.editorial-site .plan-column:hover li::before,
+.editorial-site .plan-column:focus-within li::before {
+  transform: scale(1.55);
+  box-shadow: 0 0 10px 1px #bff4ce7a;
+  transition-delay: calc(var(--i, 0) * 38ms);
 }
-.editorial-site .plan-pro:hover::after,
-.editorial-site .plan-pro:focus-within::after { transform: translateX(115%); }
 
 @media (prefers-reduced-motion: reduce) {
   .editorial-site .plan-column,
   .editorial-site .plan-column::before,
-  .editorial-site .plan-pro::after { transition: none; }
+  .editorial-site .plan-table li::before { transition: none; }
   .editorial-site .plan-column:hover, .editorial-site .plan-column:focus-within { transform: none; }
-  .editorial-site .plan-pro:hover::after, .editorial-site .plan-pro:focus-within::after { transform: translateX(-115%); }
+  .editorial-site .plan-column:hover li::before,
+  .editorial-site .plan-column:focus-within li::before { transform: none; box-shadow: none; }
 }
 .editorial-site .plan-head { display: flex; flex-direction: column; gap: 4px; padding-bottom: 14px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
 .editorial-site .plan-head span:first-child { font-size: 22px; font-weight: 800; letter-spacing: -.03em; }
