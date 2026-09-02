@@ -1,0 +1,53 @@
+{
+  "generated": "2026-09-02T20:41:57.859Z",
+  "variants": {
+    "a": {
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\tone-test\\p1-a-photoreal.png",
+      "width": 941,
+      "height": 1672,
+      "desktop": {
+        "file": "p1-a.webp",
+        "bytes": 94156,
+        "sha1": "d7313f252d64ca9f42d70a1a18fdc5d94df8e056"
+      },
+      "mobile": {
+        "file": "p1-a-m.webp",
+        "bytes": 34844,
+        "sha1": "570f28ece8ecf03b5d48bc4c1aa2fd21cb328253"
+      },
+      "poster": 44730
+    },
+    "b": {
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\tone-test\\p1-b-illustration.png",
+      "width": 941,
+      "height": 1672,
+      "desktop": {
+        "file": "p1-b.webp",
+        "bytes": 148342,
+        "sha1": "e07e5f57db5e7891bb44a53811a7f3a7a270d042"
+      },
+      "mobile": {
+        "file": "p1-b-m.webp",
+        "bytes": 51860,
+        "sha1": "e867b80a5def8aeae05d2e14bc7a91b0eb32c5f6"
+      },
+      "poster": 52210
+    },
+    "c": {
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\tone-test\\p1-c-studio.png",
+      "width": 941,
+      "height": 1672,
+      "desktop": {
+        "file": "p1-c.webp",
+        "bytes": 55890,
+        "sha1": "db4d51cf4b3251113a5e5cde90734050241f0720"
+      },
+      "mobile": {
+        "file": "p1-c-m.webp",
+        "bytes": 19404,
+        "sha1": "960fcdd30444a10ff79d6723643f257be0eb9c0f"
+      },
+      "poster": 25774
+    }
+  }
+}
