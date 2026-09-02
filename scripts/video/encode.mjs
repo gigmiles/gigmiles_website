@@ -29,8 +29,12 @@ for (let i = 2; i < process.argv.length; i += 1) {
   else { args.set(a.slice(2), next); i += 1 }
 }
 
-const inputs = String(args.get('in') || '').split(',').map(s => s.trim()).filter(Boolean)
-if (inputs.length === 0) { console.error('encode: --in <file[,file,...]> is required'); process.exit(2) }
+// --in accepts "file[@start-end]" items; the optional @start-end trims that clip (seconds, re-encoded).
+const inputs = String(args.get('in') || '').split(',').map(s => s.trim()).filter(Boolean).map(item => {
+  const m = item.match(/^(.*)@([\d.]+)-([\d.]+)$/)
+  return m ? {file: m[1], start: Number(m[2]), end: Number(m[3])} : {file: item}
+})
+if (inputs.length === 0) { console.error('encode: --in <file[@start-end][,file,...]> is required'); process.exit(2) }
 const OUT = path.resolve(String(args.get('out') || 'public/cinematic'))
 const SRC_DIR = path.resolve('.video-src')
 const CRF = Number(args.get('crf') || 22)
@@ -63,16 +67,19 @@ function bytes(file) { return fs.statSync(file).size }
 
 // 1. Copy the sources next to the repo (OneDrive files hydrate on read) and probe them.
 const sources = inputs.map((src, i) => {
-  const abs = path.resolve(src)
+  const abs = path.resolve(src.file)
   if (!fs.existsSync(abs)) { console.error(`encode: missing input ${abs}`); process.exit(2) }
   const local = path.join(SRC_DIR, `src-${i}${path.extname(abs).toLowerCase() || '.mp4'}`)
   fs.copyFileSync(abs, local)
-  return {src: abs, local, ...probe(local)}
+  const info = probe(local)
+  const start = src.start ?? 0
+  const end = src.end !== undefined ? Math.min(src.end, info.duration) : info.duration
+  return {src: abs, local, ...info, start, end, duration: Math.max(0, end - start), trimmed: src.start !== undefined || src.end !== undefined}
 })
 const portrait = sources[0].height > sources[0].width
 const totalDuration = sources.reduce((sum, s) => sum + s.duration, 0)
 console.log(`encode: ${sources.length} source(s), ${portrait ? 'portrait' : 'landscape'}, ${totalDuration.toFixed(2)}s total`)
-for (const s of sources) console.log(`  ${path.basename(s.src)} ${s.width}x${s.height} ${s.fps.toFixed(2)}fps ${s.duration.toFixed(2)}s`)
+for (const s of sources) console.log(`  ${path.basename(s.src)} ${s.width}x${s.height} ${s.fps.toFixed(2)}fps ${s.duration.toFixed(2)}s${s.trimmed ? ` (trim ${s.start}-${s.end})` : ''}`)
 
 // 2. Master: one clean 30fps intermediate, sources normalised to a common frame.
 const masterW = portrait ? 1080 : 1920
@@ -81,7 +88,7 @@ const master = path.join(SRC_DIR, 'master.mp4')
 const chains = sources.map((_, i) => `[${i}:v]fps=30,scale=${masterW}:${masterH}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${masterW}:${masterH}:(ow-iw)/2:(oh-ih)/2,setsar=1,format=yuv420p[v${i}]`)
 const concat = sources.length > 1 ? `${sources.map((_, i) => `[v${i}]`).join('')}concat=n=${sources.length}:v=1:a=0[v]` : null
 const filter = concat ? `${chains.join(';')};${concat}` : chains[0].replace('[v0]', '[v]')
-run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', ...sources.flatMap(s => ['-i', s.local]), '-filter_complex', filter, '-map', '[v]', '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', '-an', master], 'master')
+run('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error', ...sources.flatMap(s => [...(s.trimmed ? ['-ss', String(s.start), '-t', String(s.duration)] : []), '-i', s.local]), '-filter_complex', filter, '-map', '[v]', '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', '-an', master], 'master')
 const masterInfo = probe(master)
 console.log(`encode: master ${masterInfo.width}x${masterInfo.height} ${masterInfo.duration.toFixed(2)}s`)
 
@@ -122,7 +129,7 @@ if (SHEET_OUT) {
 const d = probe(desktop), m = probe(mobile)
 const manifest = {
   generated: new Date().toISOString(),
-  sources: sources.map(s => ({file: s.src, width: s.width, height: s.height, fps: Number(s.fps.toFixed(3)), duration: Number(s.duration.toFixed(3))})),
+  sources: sources.map(s => ({file: s.src, width: s.width, height: s.height, fps: Number(s.fps.toFixed(3)), duration: Number(s.duration.toFixed(3)), ...(s.trimmed ? {trim: [s.start, s.end]} : {})})),
   orientation: portrait ? 'portrait' : 'landscape',
   duration: Number(masterInfo.duration.toFixed(3)),
   fps: 30,

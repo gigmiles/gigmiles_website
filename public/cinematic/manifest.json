@@ -1,58 +1,83 @@
 {
-  "generated": "2026-09-02T08:53:14.903Z",
+  "generated": "2026-09-02T16:06:03.521Z",
   "sources": [
     {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-08-01\\film\\marcus\\s1.mp4",
-      "width": 1076,
-      "height": 1924,
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat1-recognition.mp4",
+      "width": 2160,
+      "height": 3836,
       "fps": 24,
-      "duration": 5.042
+      "duration": 4.042
     },
     {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-08-01\\film\\marcus\\s2.mp4",
-      "width": 1076,
-      "height": 1924,
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat2-tension.mp4",
+      "width": 2160,
+      "height": 3836,
       "fps": 24,
-      "duration": 5.042
+      "duration": 4.042
     },
     {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-08-01\\film\\marcus\\s3.mp4",
-      "width": 1076,
-      "height": 1924,
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat3-turn.mp4",
+      "width": 2160,
+      "height": 3836,
       "fps": 24,
-      "duration": 5.042
+      "duration": 6.042
+    },
+    {
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat4-substance.mp4",
+      "width": 2160,
+      "height": 3836,
+      "fps": 24,
+      "duration": 4,
+      "trim": [
+        0,
+        4
+      ]
+    },
+    {
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat5a-bookend.mp4",
+      "width": 2160,
+      "height": 3836,
+      "fps": 24,
+      "duration": 4.042
+    },
+    {
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat5b-departure.mp4",
+      "width": 2160,
+      "height": 3836,
+      "fps": 24,
+      "duration": 4.042
     }
   ],
   "orientation": "portrait",
-  "duration": 15.1,
+  "duration": 26.167,
   "fps": 30,
   "desktop": {
     "file": "hero-desktop.mp4",
     "width": 720,
     "height": 1280,
-    "bytes": 3946508,
-    "crf": 22,
+    "bytes": 6485890,
+    "crf": 27,
     "gop": 8,
-    "sha1": "f81ea02171edde26683d3b216716f099c5cea4c6"
+    "sha1": "e3b86819ef537d820f14d9fc462e2b7b4d500e8c"
   },
   "mobile": {
     "file": "hero-mobile.mp4",
     "width": 540,
     "height": 960,
-    "bytes": 2304313,
-    "crf": 27,
+    "bytes": 2458269,
+    "crf": 34,
     "gop": 4,
-    "sha1": "631e72789ed17e8e93c7926ea8287879270fcb73"
+    "sha1": "3b8623768dc905177bf262887a61d2f47bec1fef"
   },
   "posters": {
     "desktop": {
       "file": "hero-poster.webp",
-      "bytes": 32156,
+      "bytes": 47882,
       "quality": 82
     },
     "mobile": {
       "file": "hero-poster-mobile.webp",
-      "bytes": 19710,
+      "bytes": 20168,
       "quality": 82
     }
   }

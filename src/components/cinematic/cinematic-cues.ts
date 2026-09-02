@@ -2,7 +2,7 @@ import {progressAtFraction, type CueSpec} from './cinematic-controller'
 
 // Bump when the encoded files change so cached copies are never scrubbed
 // against an old cue table.
-export const CINEMATIC_VERSION = '2026-09-02a'
+export const CINEMATIC_VERSION = '2026-09-02b'
 
 /** Page progress at which the film reaches its last frame (the rest is the hold). */
 export const END_AT = 0.74
@@ -12,8 +12,8 @@ export const CINEMATIC_ASSETS = {
   mobile: `/cinematic/hero-mobile.mp4?v=${CINEMATIC_VERSION}`,
   poster: '/cinematic/hero-poster.webp',
   posterMobile: '/cinematic/hero-poster-mobile.webp',
-  /** Encoded from three silent segments of the Marcus film (pump story, 2026-08-01). */
-  duration: 15.1,
+  /** Painted edition: six operator-made clips (painted_production/clips), beat 4 trimmed to 4.0 s. */
+  duration: 26.21,
 }
 
 export interface SceneSpec {
@@ -32,8 +32,9 @@ export interface SceneSpec {
   moment: string
 }
 
-// Copy uses approved brand phrases only, no figures. The film cuts at 1/3 and
-// 2/3: s1 tired at the wheel, s2 windscreen in the rain, s3 profile looking out.
+// Copy uses approved brand phrases only, no figures. The painted film has six
+// clips, one per beat (beat 5 in two): boundaries at 0.154 / 0.308 / 0.539 /
+// 0.691 / 0.846 of the film.
 // Scenes abut through their ramps (the next one enters while the previous one
 // exits) so no scroll position is ever empty; validateCues() and the tests
 // guard both the coverage and the never-two-bright rule.
@@ -42,38 +43,38 @@ export const CINEMATIC_SCENES: SceneSpec[] = [
     id: 'gross',
     headline: ['The screen', 'shows *gross*.'],
     support: 'It never shows what the drive cost you.',
-    filmFrom: 0, filmTo: 0.2,
+    filmFrom: 0, filmTo: 0.17,
     rampIn: 0, stagger: 0,
-    moment: 's1, eyes rubbed and the hand lowers (0 to 3.0 s); fully visible at load',
+    moment: 'beat 1: night, the phone glow, the hand rubbing an eye (0 to 4.0 s); fully visible at load',
   },
   {
     id: 'net',
     headline: ['Gross is', 'not *net*.'],
     support: 'Fuel, wear and an estimated tax set-aside come out first.',
-    filmFrom: 0.16, filmTo: 0.4,
-    moment: 's1 lowers the hand and looks ahead, cut to the s2 windscreen (2.4 to 6.0 s)',
+    filmFrom: 0.14, filmTo: 0.33,
+    moment: 'beat 2: pump nozzle, the open trunk with bags and boxes, red light in the wet (4.0 to 8.1 s)',
   },
   {
     id: 'number',
     headline: ['See the', '*real number*.'],
     support: 'Your vehicle, your state, your day job, in the estimate.',
-    filmFrom: 0.36, filmTo: 0.66,
-    moment: 's2 rain on the glass, hands settle on the wheel (5.4 to 10.0 s); the peak, widest span',
+    filmFrom: 0.30, filmTo: 0.56,
+    moment: 'beat 3: the close portrait, the glow warms, the face opens (8.1 to 14.1 s); the peak, widest span',
   },
   {
     id: 'inputs',
     headline: ['Built around', 'what you *enter*.'],
     support: 'Miles, hours and earnings. Optional W-2 context.',
-    filmFrom: 0.62, filmTo: 0.86,
-    moment: 's2 end into the s3 profile, the glance out of the side window (9.4 to 13.0 s)',
+    filmFrom: 0.53, filmTo: 0.72,
+    moment: 'beat 4: the e-bike courier clicks the battery in and pushes off (14.1 to 18.1 s)',
   },
   {
     id: 'yours',
     headline: ['What is', 'actually *yours*.'],
     support: 'Free core. No card. No ads. Estimates for planning. Not tax advice.',
-    filmFrom: 0.82, filmTo: 1,
+    filmFrom: 0.69, filmTo: 1,
     hold: true,
-    moment: 's3 exhale, holds through the paper hand-off (12.4 s to the end)',
+    moment: 'beat 5: the bookend at first light, then the car pulling away; holds through the paper hand-off (18.1 s to the end)',
   },
 ]
 
