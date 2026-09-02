@@ -1,6 +1,8 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import type {ReactNode} from 'react'
+import {NavMenu} from './NavMenu'
 import './editorial.css'
+import './responsive.css'
 export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:boolean}){return <div className={'editorial-site'+(paper?' paper-page':'')}>
 <header className="nav wrap">
 <a className="brand" href="/" aria-label="GigMiles home">
@@ -16,7 +18,7 @@ export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:b
 </span>
 </span>
 </a>
-<nav aria-label="Main navigation">
+<NavMenu>
 <a href="/#details">
 {"How it works"}
 </a>
@@ -29,8 +31,8 @@ export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:b
 <a href="/blog">
 {"Blog"}
 </a>
-</nav>
-<DownloadButton className="nav-cta">
+</NavMenu>
+<DownloadButton className="nav-cta" data-cta-placement="nav">
 {"Get the app "}
 <span aria-hidden="true">
 {"↗"}

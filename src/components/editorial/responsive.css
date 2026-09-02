@@ -1,0 +1,63 @@
+/* Responsive layer on top of editorial.css (loaded after it):
+   - mobile: single-row header with a toggle menu instead of a second link row
+   - tablet 721–980px: single-column layouts (the ≤720 rules never fired here
+     and the sticky scroll story only starts at 981px)
+   - ≥1800px: a slightly wider container and larger display type */
+
+.editorial-site .nav-menu { display: flex; align-items: center; gap: 35px; }
+.editorial-site .nav-toggle { display: none; }
+
+@media (max-width: 720px) {
+  .editorial-site .nav { position: relative; height: 64px; gap: 10px; }
+  .editorial-site .nav-menu { order: 3; gap: 0; }
+  .editorial-site .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; min-width: 44px; padding: 0 12px;
+    font: inherit; font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink); background: transparent; border: 1px solid #acc4b751; border-radius: 5px; cursor: pointer;
+  }
+  .editorial-site .nav-toggle[aria-expanded="true"] { background: #e5f2e314; }
+  .editorial-site .nav-toggle:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
+  .editorial-site .nav-menu nav { display: none; }
+  .editorial-site .nav-menu[data-menu-open="true"] nav {
+    display: flex; flex-direction: column; gap: 0;
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
+    padding: 6px 0 12px; background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  .editorial-site .nav-menu nav a {
+    display: flex; align-items: center; min-height: 44px; padding: 12px 0;
+    font-size: 15px; color: var(--ink); border-top: 1px solid var(--line);
+  }
+  .editorial-site .nav-menu nav a:first-child { border-top: 0; }
+}
+
+@media (min-width: 721px) and (max-width: 980px) {
+  .editorial-site .nav { gap: 16px; }
+  .editorial-site .nav-menu { gap: 16px; }
+  .editorial-site .nav nav { gap: 16px; font-size: 12px; }
+  .editorial-site .nav-cta { font-size: 12px; padding: 9px 13px; }
+  .editorial-site .nav-cta span { margin-left: 10px; }
+  .editorial-site .hero { display: block; padding-top: 44px; padding-bottom: 48px; }
+  .editorial-site .intro, .editorial-site .story { max-width: 640px; }
+  .editorial-site .intro h1 { font-size: clamp(56px, 8.5vw, 76px); }
+  .editorial-site .story { margin-top: 36px; }
+  .editorial-site .stage { height: min(560px, 62svh); }
+  .editorial-site .details, .editorial-site .home-details.details { display: block; }
+  .editorial-site .section-heading > p:last-child { margin-bottom: 28px; }
+  .editorial-site .calculator-entry { max-width: none; margin-bottom: 28px; }
+  .editorial-site .product-layout { display: flex; flex-direction: column; padding-top: 56px; padding-bottom: 56px; }
+  .editorial-site .product-visual { align-self: center; width: min(100%, 348px); margin-top: 16px; }
+  .editorial-site .product-next { align-self: center; text-align: center; padding-top: 28px; }
+  .editorial-site .free-section, .editorial-site .records-inner, .editorial-site .onward { display: block; }
+  .editorial-site .plan-details { margin-top: 36px; }
+  .editorial-site .home-faq .faq-list { grid-template-columns: minmax(0, 1fr); }
+  .editorial-site .reading-layout { display: block; }
+  .editorial-site .contents { position: static; border-bottom: 1px solid #8caa804b; margin-bottom: 30px; padding: 10px 0 22px; }
+  .editorial-site .calculator-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 1800px) {
+  .editorial-site .wrap { max-width: 1520px; }
+  .editorial-site .intro h1 { font-size: clamp(88px, 5.6vw, 108px); }
+  .editorial-site .scene h2 { font-size: 56px; }
+}

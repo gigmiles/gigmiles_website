@@ -4,17 +4,38 @@
 .editorial-site .hero-scroll .chapters button { min-height: 44px; white-space: normal; padding: 8px 4px; line-height: 1.2; }
 .editorial-site .hero-scroll .scene { animation-duration: .18s; }
 /* Progressive enhancement: no extra scroll runway without working JS. Narrow,
-   short and reduced-motion viewports use the four manual chapters instead. */
+   short and reduced-motion viewports use the four manual chapters instead.
+
+   Geometry: the hero is one viewport plus a fixed runway. Each column is a
+   sticky pin box exactly one viewport tall (minus the 24px frame) with its
+   content vertically centred, so the pinned pair always fills the screen —
+   no empty band under the story on tall displays. Sticky travel equals the
+   runway, which is also the controller's travel (hero height − story height
+   − 48px), so chapter progress reaches 1 exactly when the pin releases and
+   the next section scrolls in. The stage grows with the viewport up to a cap
+   instead of staying at 560px. */
 @media(min-width:981px) and (min-height:660px) and (prefers-reduced-motion:no-preference) {
   .editorial-site .hero-scroll[data-scroll-enabled="true"] {
-    min-height: calc(100svh + 480px);
+    --story-runway: 720px; /* scene thresholds .25/.5/.8 → 180 / 180 / 216 / 144px of scroll */
+    min-height: calc(100svh + var(--story-runway));
     padding-top: 24px;
     padding-bottom: 24px;
     align-items: start;
   }
   .editorial-site .hero-scroll[data-scroll-enabled="true"] > .intro,
-  .editorial-site .hero-scroll[data-scroll-enabled="true"] > .story { position: sticky; top: 24px; }
-  .editorial-site .hero-scroll[data-scroll-enabled="true"] .stage { height: min(560px,calc(100svh - 140px)); }
+  .editorial-site .hero-scroll[data-scroll-enabled="true"] > .story {
+    position: sticky;
+    top: 24px;
+    height: calc(100svh - 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .editorial-site .hero-scroll[data-scroll-enabled="true"] .stage {
+    height: min(clamp(480px, 62svh, 760px), calc(100svh - 190px));
+    flex-shrink: 0;
+  }
+  .editorial-site .hero-scroll[data-scroll-enabled="true"] .finish { justify-content: center; }
 }
 @media(max-width:540px) {
   .editorial-site .hero-scroll .chapters { grid-template-columns: repeat(2,minmax(0,1fr)); }

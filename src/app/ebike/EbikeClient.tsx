@@ -41,9 +41,9 @@ function readUrlState(): typeof DEFAULTS {
 }
 
 const inputCls =
-  'w-full bg-[#0A3C3C] border border-white/[0.12] text-white text-[20px] font-semibold tracking-[-0.02em] font-[family-name:var(--font-space-grotesk)] px-4 py-3 outline-none focus:border-[#5EEAD4]/60 transition-colors tabular-nums'
+  'w-full bg-[#0A3C3C] border border-white/[0.12] text-white text-[20px] font-semibold tracking-[-0.02em] font-[family-name:var(--font-outfit)] px-4 py-3 outline-none focus:border-[#5EEAD4]/60 transition-colors tabular-nums'
 const labelCls =
-  'text-white/60 text-[11px] tracking-[0.15em] uppercase font-[family-name:var(--font-space-grotesk)]'
+  'text-white/60 text-[11px] tracking-[0.15em] uppercase font-[family-name:var(--font-outfit)]'
 
 export function EbikeClient() {
   const [miles, setMiles] = useState<number>(DEFAULTS.miles)
@@ -92,7 +92,7 @@ export function EbikeClient() {
       <label className={labelCls}>{label}</label>
       <div className="relative">
         {opts.prefix && (
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-[18px] font-[family-name:var(--font-space-grotesk)]">{opts.prefix}</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-[18px] font-[family-name:var(--font-outfit)]">{opts.prefix}</span>
         )}
         <input
           type="number"
@@ -105,7 +105,7 @@ export function EbikeClient() {
           className={`${inputCls} ${opts.prefix ? 'pl-9' : ''}`}
         />
         {opts.suffix && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/45 text-[13px] font-[family-name:var(--font-dm-sans)]">{opts.suffix}</span>
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/45 text-[13px] font-[family-name:var(--font-inter)]">{opts.suffix}</span>
         )}
       </div>
     </div>
@@ -119,7 +119,7 @@ export function EbikeClient() {
         {numField('Your electricity price', kwhPrice, setKwhPrice, { step: '0.01', prefix: '$', suffix: '/kWh' })}
 
         <div className="h-px bg-white/[0.08]" />
-        <p className="text-white/45 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)] -mb-1">
+        <p className="text-white/45 text-[11px] leading-relaxed font-[family-name:var(--font-inter)] -mb-1">
           Tune these to your bike — defaults are a realistic delivery e-bike.
         </p>
         {numField('Efficiency', efficiency, setEfficiency, { suffix: 'mi/kWh' })}
@@ -130,17 +130,17 @@ export function EbikeClient() {
       {/* ── Results ── */}
       <div className="bg-[#0E4F4F] px-5 py-7 sm:px-8 sm:py-9 flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <span className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-space-grotesk)]">
+          <span className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase font-[family-name:var(--font-outfit)]">
             Real operating cost
           </span>
           <div
-            className="text-[#5EEAD4] font-bold tracking-[-0.05em] leading-none font-[family-name:var(--font-space-grotesk)] tabular-nums"
+            className="text-[#5EEAD4] font-bold tracking-[-0.05em] leading-none font-[family-name:var(--font-outfit)] tabular-nums"
             style={{ fontSize: 'clamp(56px, 14vw, 88px)' }}
             aria-live="polite"
           >
             {fmtMoney(r.total)}
           </div>
-          <div className="flex gap-5 text-[14px] font-[family-name:var(--font-dm-sans)] tabular-nums">
+          <div className="flex gap-5 text-[14px] font-[family-name:var(--font-inter)] tabular-nums">
             <span className="text-white/85">
               {r.perMile.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 3, maximumFractionDigits: 3 })}
               <span className="text-white/55">/mi</span>
@@ -157,13 +157,13 @@ export function EbikeClient() {
             { l: 'Mechanical', v: fmtMoney(mechR), c: 'text-[#E11D48]' },
           ].map(item => (
             <div key={item.l} className="bg-[#0A3C3C] px-3 py-4 flex flex-col gap-1">
-              <span className="text-[10px] text-white/55 tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)] leading-tight">{item.l}</span>
-              <span className={`text-[15px] sm:text-[17px] font-semibold tracking-[-0.02em] font-[family-name:var(--font-space-grotesk)] tabular-nums ${item.c}`}>{item.v}</span>
+              <span className="text-[10px] text-white/55 tracking-[0.08em] uppercase font-[family-name:var(--font-outfit)] leading-tight">{item.l}</span>
+              <span className={`text-[15px] sm:text-[17px] font-semibold tracking-[-0.02em] font-[family-name:var(--font-outfit)] tabular-nums ${item.c}`}>{item.v}</span>
             </div>
           ))}
         </div>
 
-        <p className="text-white/55 text-[12px] leading-relaxed font-[family-name:var(--font-dm-sans)]">
+        <p className="text-white/55 text-[12px] leading-relaxed font-[family-name:var(--font-inter)]">
           The invisible costs (battery + wear) usually dwarf the electricity bill —
           the part you never get billed for is the part that matters at tax time.
         </p>

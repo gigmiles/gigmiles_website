@@ -75,7 +75,7 @@ export default function EbikePage() {
         </Link>
         <Link
           href="/download"
-          className="text-white/60 text-[13px] tracking-[0.04em] border border-white/[0.14] px-4 py-2 hover:border-white/30 hover:text-white/85 transition-all font-[family-name:var(--font-space-grotesk)]"
+          className="text-white/60 text-[13px] tracking-[0.04em] border border-white/[0.14] px-4 py-2 hover:border-white/30 hover:text-white/85 transition-all font-[family-name:var(--font-outfit)]"
         >
           Get the app
         </Link>
@@ -83,14 +83,14 @@ export default function EbikePage() {
 
       <div className="max-w-4xl mx-auto px-5 md:px-8 py-10 md:py-16">
         {/* H1 + intro */}
-        <p className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-space-grotesk)] flex items-center gap-3">
+        <p className="text-[#5EEAD4] text-[12px] tracking-[0.18em] uppercase mb-4 font-[family-name:var(--font-outfit)] flex items-center gap-3">
           <span className="w-5 h-px bg-[#5EEAD4] opacity-60 inline-block" />
           E-bike cost calculator
         </p>
-        <h1 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,5vw,46px)] mb-3 max-w-2xl">
+        <h1 className="text-white font-[family-name:var(--font-outfit)] font-semibold tracking-[-0.03em] leading-[1.08] text-[clamp(28px,5vw,46px)] mb-3 max-w-2xl">
           What an e-bike really costs per mile
         </h1>
-        <p className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-10 max-w-xl font-[family-name:var(--font-dm-sans)]">
+        <p className="text-[#94A3B8] text-[14px] leading-relaxed mb-8 sm:mb-10 max-w-xl font-[family-name:var(--font-inter)]">
           You can’t claim the IRS standard mileage rate on a bike — couriers deduct
           actual expenses. Estimate yours across the three buckets that matter:
           electricity, battery wear, and mechanical wear.
@@ -99,10 +99,10 @@ export default function EbikePage() {
         {/* Quotable, self-contained answer up top — the "pre-digested" format AI
             answer engines lift. Tax-safe. */}
         <div className="mb-8 sm:mb-10 border-l-2 border-[#5EEAD4]/70 bg-[#0C4646]/60 px-5 py-4">
-          <p className="text-[#5EEAD4] text-[11px] tracking-[0.18em] uppercase mb-2 font-[family-name:var(--font-space-grotesk)]">
+          <p className="text-[#5EEAD4] text-[11px] tracking-[0.18em] uppercase mb-2 font-[family-name:var(--font-outfit)]">
             The short answer
           </p>
-          <p className="text-white/85 text-[14px] leading-relaxed font-[family-name:var(--font-dm-sans)] max-w-2xl">
+          <p className="text-white/85 text-[14px] leading-relaxed font-[family-name:var(--font-inter)] max-w-2xl">
             No — you can&apos;t use the IRS standard mileage rate on an e-bike; that
             rate is only for cars, vans, and trucks. E-bike couriers deduct actual
             expenses instead — electricity, battery wear, and mechanical wear — which
@@ -122,15 +122,15 @@ export default function EbikePage() {
             { t: 'Mechanical', d: 'Tires, brake pads, chain, tune-ups — a daily loaded delivery bike eats them far faster than a weekend bike. Deductible under actual expenses if you keep the receipts.' },
           ].map(b => (
             <div key={b.t} className="bg-[#0C4646] px-5 py-6 flex flex-col gap-2">
-              <h3 className="text-[#5EEAD4] text-[13px] tracking-[0.08em] uppercase font-[family-name:var(--font-space-grotesk)]">{b.t}</h3>
-              <p className="text-[#94A3B8] text-[13px] leading-relaxed font-[family-name:var(--font-dm-sans)]">{b.d}</p>
+              <h3 className="text-[#5EEAD4] text-[13px] tracking-[0.08em] uppercase font-[family-name:var(--font-outfit)]">{b.t}</h3>
+              <p className="text-[#94A3B8] text-[13px] leading-relaxed font-[family-name:var(--font-inter)]">{b.d}</p>
             </div>
           ))}
         </section>
 
         {/* CTA */}
         <div className="mt-8 flex flex-col items-center gap-4 border border-white/[0.07] bg-[#0C4646] px-6 py-8 text-center">
-          <p className="text-white/85 text-[15px] font-[family-name:var(--font-dm-sans)] max-w-md">
+          <p className="text-white/85 text-[15px] font-[family-name:var(--font-inter)] max-w-md">
             GigMiles tracks all three buckets automatically — car or e-bike — and keeps
             tax-season records for you. Free forever, no card.
           </p>
@@ -140,7 +140,7 @@ export default function EbikePage() {
         </div>
 
         {/* Fine print */}
-        <p className="mt-6 text-white/40 text-[11px] leading-relaxed font-[family-name:var(--font-dm-sans)] italic max-w-2xl">
+        <p className="mt-6 text-white/40 text-[11px] leading-relaxed font-[family-name:var(--font-inter)] italic max-w-2xl">
           Estimates for planning and record-keeping only — not tax advice and not
           earnings claims. The IRS standard mileage rate does not apply to bicycles or
           e-bikes; figures here use the actual-expense method. Defaults model a delivery
@@ -151,27 +151,27 @@ export default function EbikePage() {
 
         {/* FAQ */}
         <section className="mt-14" aria-label="Frequently asked questions">
-          <h2 className="text-white font-[family-name:var(--font-space-grotesk)] font-semibold tracking-[-0.02em] text-[clamp(20px,3vw,28px)] mb-6">
+          <h2 className="text-white font-[family-name:var(--font-outfit)] font-semibold tracking-[-0.02em] text-[clamp(20px,3vw,28px)] mb-6">
             Common questions
           </h2>
           <div className="flex flex-col">
             {FAQS.map(f => (
               <details key={f.q} className="group border-b border-white/[0.07]">
-                <summary className="flex items-start justify-between gap-4 py-5 cursor-pointer list-none text-white/75 text-[14px] leading-snug hover:text-white transition-colors font-[family-name:var(--font-space-grotesk)]">
+                <summary className="flex items-start justify-between gap-4 py-5 cursor-pointer list-none text-white/75 text-[14px] leading-snug hover:text-white transition-colors font-[family-name:var(--font-outfit)]">
                   {f.q}
                   <span className="text-white/50 text-base leading-none mt-0.5 flex-shrink-0 transition-transform duration-300 group-open:rotate-45">+</span>
                 </summary>
-                <p className="text-[#94A3B8] text-[13px] leading-relaxed pb-5 max-w-2xl font-[family-name:var(--font-dm-sans)]">{f.a}</p>
+                <p className="text-[#94A3B8] text-[13px] leading-relaxed pb-5 max-w-2xl font-[family-name:var(--font-inter)]">{f.a}</p>
               </details>
             ))}
           </div>
         </section>
 
         <p className="mt-10 text-center flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          <Link href="/calculator" className="text-[#5EEAD4] text-[13px] font-[family-name:var(--font-space-grotesk)] hover:opacity-80 transition-opacity">
+          <Link href="/calculator" className="text-[#5EEAD4] text-[13px] font-[family-name:var(--font-outfit)] hover:opacity-80 transition-opacity">
             Car driver? Use the net-income calculator →
           </Link>
-          <Link href="/" className="text-white/45 text-[13px] font-[family-name:var(--font-space-grotesk)] hover:opacity-80 transition-opacity">
+          <Link href="/" className="text-white/45 text-[13px] font-[family-name:var(--font-outfit)] hover:opacity-80 transition-opacity">
             gigmiles.app
           </Link>
         </p>

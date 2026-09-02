@@ -56,6 +56,8 @@ export function ProductShowcase() {
             ? <p className="product-image-error" role="status">This app preview couldn’t load. Choose another screen or try again later.</p>
             : <img key={current.id} className="product-screen-image"
                 src={`/editorial/${current.image}`} alt={current.alt}
+                srcSet={`/editorial/${current.image.replace(/\.webp$/, '-390.webp')} 390w, /editorial/${current.image} 780w`}
+                sizes="(max-width: 720px) 340px, 348px"
                 width={780} height={1560} loading="lazy" decoding="async"
                 onError={() => setFailed(current.id)}/>}
         </div>

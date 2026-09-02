@@ -28,7 +28,7 @@ describe('approved website transplant',()=>{
   expect(html).toContain('FOR GIG DRIVERS')
   expect(html).not.toMatch(/FOR US GIG|IN THE UNITED STATES|LOCAL SITE|LOCAL REVIEW|127\.0\.0\.1|\$235|\$175/)
   expect((html.match(/class="brand-trademark"/g)||[])).toHaveLength(2)
-  expect((html.match(/data-cta-placement=/g)||[])).toHaveLength(4)
+  expect([...html.matchAll(/data-cta-placement="([^"]+)"/g)].map(m=>m[1]).sort()).toEqual(['closing','free-core','hero','nav','records'])
   expect(html).toContain('Optional Pro upgrades.')
   expect(html).toContain('Estimates for planning. Not tax advice.')
   const {container}=render(<ApprovedHome/>)

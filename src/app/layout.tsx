@@ -1,14 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { SiteBeacon } from "@/components/analytics/SiteBeacon";
 import { RedditPixel } from "@/components/analytics/RedditPixel";
 import { LocalDesignReview } from "@/components/editorial/LocalDesignReview";
 
+// Inter is only used by the legacy Tailwind pages (/ebike, /cheatsheet,
+// /getgigmiles, callbacks). Every indexed editorial page renders Outfit, so
+// Inter is not preloaded on them.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const outfit = Outfit({
@@ -17,21 +21,14 @@ const outfit = Outfit({
   display: "swap",
 });
 
-// Brand consolidation: the codebase still references --font-space-grotesk and
-// --font-dm-sans in ~220 places. Map those variables to the brand fonts
-// (Outfit display / Inter body) so every usage renders compliant type with no
-// per-call edit. Space Grotesk + DM Sans are no longer loaded.
-const outfitAlias = Outfit({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const interAlias = Inter({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
+// viewport-fit=cover makes env(safe-area-inset-*) real on notched phones;
+// themeColor lives here (Next 16 warns when it sits in metadata).
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0b302b",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://gigmiles.app"),
@@ -48,7 +45,6 @@ export const metadata: Metadata = {
     "delivery driver app",
   ],
   manifest: "/manifest.json",
-  themeColor: "#0E4F4F",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -90,7 +86,7 @@ export default function RootLayout({
   const localReview = process.env.LOCAL_DESIGN_REVIEW === '1' && process.env.NODE_ENV !== 'production';
   return (
     <html lang="en" className="antialiased dark">
-      <body className={`${inter.variable} ${outfit.variable} ${outfitAlias.variable} ${interAlias.variable} font-sans`}>
+      <body className={`${inter.variable} ${outfit.variable} font-sans`}>
         {!localReview && <SiteBeacon />}
         {!localReview && <RedditPixel />}
         <LocalDesignReview enabled={localReview}>{children}</LocalDesignReview>

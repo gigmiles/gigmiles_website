@@ -107,7 +107,7 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 
 <section className="scene state photo-scene" id="scene-1" aria-labelledby="state-title" hidden={true}>
 
-<img className="context-photo" src="/editorial/state.webp" alt="Illustrative AI-generated American city at dusk, not a specific state" width="1000" height="1250" decoding="async" loading="lazy" />
+<img className="context-photo" src="/editorial/state.webp" alt="Illustrative AI-generated American city at dusk, not a specific state" width="1000" height="1250" decoding="async" loading="eager" fetchPriority="low" />
 <div className="context-shade">
 
 </div>
@@ -164,7 +164,7 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 
 <section className="scene job photo-scene" id="scene-2" aria-labelledby="job-title" hidden={true}>
 
-<img className="context-photo" src="/editorial/day-job.webp" alt="Illustrative AI-generated closed work laptop beside a clearly visible insulated food delivery bag, blank badge and keys" width="1000" height="667" decoding="async" loading="lazy" />
+<img className="context-photo" src="/editorial/day-job.webp" alt="Illustrative AI-generated closed work laptop beside a clearly visible insulated food delivery bag, blank badge and keys" width="1000" height="667" decoding="async" loading="eager" fetchPriority="low" />
 <div className="context-shade">
 
 </div>
@@ -196,7 +196,7 @@ export function ApprovedHome({heroMode='timed'}:{heroMode?:'timed'|'scroll'}){re
 </p>
 
 <div className="widget">
-<img src="/editorial/w2.webp" width="460" height="1128" alt="Archived GigMiles Flutter component: Other Income (Optional), with Yes, No and Skip choices" decoding="async" loading="lazy" />
+<img src="/editorial/w2.webp" width="460" height="130" alt="Archived GigMiles Flutter component: Other Income (Optional), with Yes, No and Skip choices" decoding="async" loading="lazy" />
 </div>
 
 <p className="scene-footnote">
