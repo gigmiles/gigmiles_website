@@ -60,6 +60,9 @@ const SNAPSHOT = `(function (root, options) {
       if (p === 'background-color' && v === 'rgba(0, 0, 0, 0)') continue
       if (p === 'font-family') v = mapFont(v)
       if (p === 'position' && v === 'sticky') v = 'relative'
+      // A fixed bar has no viewport inside a static artboard: pin it to the frame instead.
+      if (p === 'position' && v === 'fixed') v = 'absolute'
+      if (p === 'top' && cs.position === 'fixed') continue
       if ((p === 'top' || p === 'left' || p === 'right' || p === 'bottom') && (cs.position === 'static' || cs.position === 'sticky')) continue
       if (p === 'display' && el && el.tagName === 'LI' && v === 'list-item') v = 'block'
       if (p === 'gap' && v === 'normal') continue
