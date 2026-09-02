@@ -15,7 +15,7 @@ import './home-v2.css'
 // until the canonical fixture captures are approved, so placeholders render.
 export const TOUR_PREVIEW_SCREENS: TourScreen[] = [
   {id:'home',tag:'FREE',title:'Today’s number, after costs',body:'Net after vehicle costs and an estimated tax set-aside, for today and this week.'},
-  {id:'shifts',tag:'FREE',title:'Each shift, on record',body:'Hours, miles and earnings by day. Edit a shift, add one you forgot, undo a delete.'},
+  {id:'shifts',tag:'FREE',title:'Each shift, on record',body:'Hours and miles by day, with what you earned. Edit a shift, add one you forgot, undo a delete.'},
   {id:'tax',tag:'FREE · EXPORT IS PRO',title:'Tax center, on screen',body:'Self-employment, federal and state estimates with a Schedule C worksheet. PDF and CSV export for your tax professional is Pro.'},
   {id:'insights',tag:'PRO',title:'Insights by platform',body:'Dollars per hour and per mile by platform, trend charts and a what-if mileage simulator.'},
   {id:'widget',tag:'FREE [VERIFY]',title:'A shift on your Lock Screen',body:'Home-screen widget on iOS and Android, and a Live Activity while you drive on iPhone.'},
