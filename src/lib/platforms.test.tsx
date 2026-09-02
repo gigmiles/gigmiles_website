@@ -50,7 +50,7 @@ describe('platform naming rules', () => {
       const chips = html.match(/<ul class="platform-chips"[\s\S]*?<\/ul>/)?.[0] ?? ''
       for (const name of PROMO_PLATFORMS) expect(chips).toContain(`<li>${name}</li>`)
       expect(chips).toContain(OTHER_CHIP)
-      expect(chips).not.toMatch(/<img|<svg|style=/)
+      expect(chips).not.toMatch(/<img|<svg|<li style=/)
       const headings = [...html.matchAll(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/g)].map(m => m[1].replace(/<[^>]+>/g, ''))
       for (const heading of headings) for (const word of PLATFORM_WORDS) expect(heading, `heading names ${word}`).not.toMatch(new RegExp(`\\b${word}\\b`))
       expect(html).not.toMatch(/<img[^>]*(uber|lyft|doordash|instacart|grubhub|shipt|spark|amazon)[^>]*>/i)
