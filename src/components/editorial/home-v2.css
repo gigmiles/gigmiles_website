@@ -75,6 +75,9 @@
 .editorial-site .tour-step p { font-size: 16px; line-height: 1.55; color: var(--muted); max-width: 420px; margin: 0; }
 .editorial-site .tour-step-device { display: none; }
 
+/* Platforms line under the trust facts: body size, never a heading */
+.editorial-site .trust-platforms { margin: 18px 0 0; max-width: 72ch; font-size: 14px; line-height: 1.55; color: #b9d2c1; }
+
 /* Sticky mobile CTA */
 .editorial-site .sticky-cta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: none; align-items: center; justify-content: space-between; gap: 12px; padding: 10px max(6%, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(6%, env(safe-area-inset-left)); background: #0b302bf2; border-top: 1px solid var(--line); backdrop-filter: blur(8px); transform: translateY(110%); transition: transform .25s ease; }
 .editorial-site .sticky-cta[data-visible="true"] { transform: none; }

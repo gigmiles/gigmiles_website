@@ -6,6 +6,7 @@ import {TrustStrip} from './TrustStrip'
 import {EstimateProof} from './EstimateProof'
 import {PlanTable} from './PlanTable'
 import {FeatureTour,type TourScreen} from './FeatureTour'
+import {PLATFORMS_FAQ} from '@/lib/platforms'
 import {StickyCta} from './StickyCta'
 import {RevealObserver} from './RevealObserver'
 import {ArrowUpRight, ArrowDown} from './Glyph'
@@ -578,6 +579,16 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 <p>
 {"Analytics and ad measurement are consent-gated. Receipt scan runs on your phone. You can delete your account in the app, and personal data is permanently deleted within 30 days."}
 </p>
+</details>
+<details>
+<summary>
+{PLATFORMS_FAQ.question}
+<span aria-hidden="true">
+{"+"}
+</span>
+</summary>
+<p>{PLATFORMS_FAQ.answer[0]}</p>
+<p>{PLATFORMS_FAQ.answer[1]}</p>
 </details>
 </>}
 </div>

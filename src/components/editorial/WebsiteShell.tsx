@@ -1,6 +1,7 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import type {ReactNode} from 'react'
 import {NavMenu} from './NavMenu'
+import {PLATFORM_NOTICE} from '@/lib/platforms'
 import {ArrowUpRight} from './Glyph'
 import './editorial.css'
 import './responsive.css'
@@ -71,4 +72,5 @@ export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:b
 {"Terms"}
 </a>
 </nav>
+<p className="site-footer-notice">{PLATFORM_NOTICE}</p>
 </footer></div>}

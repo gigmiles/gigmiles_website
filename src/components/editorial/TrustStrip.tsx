@@ -1,4 +1,5 @@
 import {StoreBadges} from '@/components/ui/StoreBadges'
+import {PLATFORMS_LINE} from '@/lib/platforms'
 
 // Verifiable facts only (PRODUCT_FACTS + privacy policy wording). No counts,
 // stars, press logos or testimonials: the site has none it can honestly show.
@@ -18,6 +19,7 @@ export function TrustStrip() {
     <ul className="trust-facts">
       {TRUST_FACTS.map((fact, i) => <li key={fact} data-reveal="" style={{'--d': `${i * 70}ms`} as React.CSSProperties}>{fact}</li>)}
     </ul>
+    <p className="trust-platforms" data-reveal="" style={{'--d': '330ms'} as React.CSSProperties}>{PLATFORMS_LINE}</p>
     <div className="store-choices trust-stores" data-reveal="" style={{'--d': '380ms'} as React.CSSProperties} aria-label="Available on the App Store and Google Play">
       <StoreBadges/>
     </div>
