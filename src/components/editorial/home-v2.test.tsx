@@ -125,7 +125,14 @@ describe('home v2 (local preview only)',()=>{
     for(const f of FREE_FEATURES)expect(free).toContain(f)
     for(const f of PRO_FEATURES){expect(pro).toContain(f);expect(free).not.toContain(f)}
     expect(free).not.toMatch(/GPS|export|AI/i)
-    expect(pro).toMatch(/Pro has a 10-day free trial/)
+    // The rule this guards is placement, not phrasing: the ten days are stated
+    // inside the Pro column, under Pro's price, and the free column never
+    // mentions a trial. Leading with the trial once taught real drivers the app
+    // was a subscription (PRODUCT_FACTS, corrected 2026-07-16).
+    expect(pro).toMatch(/10 days/)
+    expect(free).not.toMatch(/trial|10 days/i)
+    const footnote = container.querySelector('.plan-footnote')!.textContent!
+    expect(footnote).not.toMatch(/trial|10 days/i)
     expect(container.textContent).toContain('$9.99/mo or $99.99/yr')
     expect(renderToStaticMarkup(<PlanTable/>)).not.toMatch(BANNED)
   })
