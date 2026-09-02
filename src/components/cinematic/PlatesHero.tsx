@@ -1,11 +1,11 @@
 'use client'
 
-import {useEffect, useRef, type CSSProperties} from 'react'
+import {useEffect, useMemo, useRef, type CSSProperties} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import {ArrowUpRight} from '@/components/editorial/Glyph'
 import {installCinematic} from './cinematic-controller'
 import {createPlateDriver, type FilmDriver} from './plate-engine'
-import {PLATE_ASSETS, PLATE_BEATS, PLATE_CUES, PLATE_LIGHTS, PLATE_SCENES, PLATE_TINTS, PLATES, PLATES_END_AT, SEAMS} from './plate-cues'
+import {PLATE_ASSETS, PLATE_BEATS, PLATE_CUES, PLATE_LIGHTS, PLATE_SCENES, PLATE_TINTS, PLATES_END_AT, SEAMS, platesFor, postersFor, type P1Variant} from './plate-cues'
 import {Statement} from './Statement'
 
 // The plate stage (film v3). Same server-rendered contract as the film stage:
@@ -17,7 +17,9 @@ import {Statement} from './Statement'
 
 const ANCHORS = ['lead', 'middle', 'middle', 'trail', 'lead'] as const
 
-export function PlatesHero({driver}: {driver?: FilmDriver}) {
+export function PlatesHero({driver, variant}: {driver?: FilmDriver; variant?: P1Variant}) {
+  const plates = useMemo(() => platesFor(variant), [variant])
+  const posters = postersFor(variant)
   const rootRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -25,7 +27,7 @@ export function PlatesHero({driver}: {driver?: FilmDriver}) {
     const root = rootRef.current
     const canvas = canvasRef.current
     if (!root || !canvas) return
-    const film = driver ?? createPlateDriver(canvas, {plates: PLATES, seams: SEAMS, screenSrc: PLATE_ASSETS.screen})
+    const film = driver ?? createPlateDriver(canvas, {plates, seams: SEAMS, screenSrc: PLATE_ASSETS.screen})
     return installCinematic(root, null, {
       cues: PLATE_CUES,
       driver: film,
@@ -34,9 +36,9 @@ export function PlatesHero({driver}: {driver?: FilmDriver}) {
       lights: PLATE_LIGHTS,
       defaults: {endAt: PLATES_END_AT, snap: 0.0004, dwell: 0.3},
     })
-  }, [driver])
+  }, [driver, plates])
 
-  return <section id="cine-hero" className="cine-hero" data-cine-mode="static" data-layout="portrait" data-cine-render="plates" ref={rootRef} aria-labelledby="headline">
+  return <section id="cine-hero" className="cine-hero" data-cine-mode="static" data-layout="portrait" data-cine-render="plates" data-plate-variant={variant} ref={rootRef} aria-labelledby="headline">
     <div className="cine-stage">
       <div className="wrap cine-frame">
         <div className="cine-copy">
@@ -59,8 +61,8 @@ export function PlatesHero({driver}: {driver?: FilmDriver}) {
         </div>
         <div className="cine-media" aria-hidden="true">
           <picture>
-            <source media="(max-width: 980px)" srcSet={PLATE_ASSETS.posterMobile}/>
-            <img className="cine-poster" src={PLATE_ASSETS.poster} alt="" width={720} height={1280} loading="eager" fetchPriority="high" decoding="async"/>
+            <source media="(max-width: 980px)" srcSet={posters.posterMobile}/>
+            <img className="cine-poster" src={posters.poster} alt="" width={720} height={1280} loading="eager" fetchPriority="high" decoding="async"/>
           </picture>
           <canvas className="cine-canvas" ref={canvasRef} width={9} height={16} aria-hidden="true"/>
           <div className="cine-light" aria-hidden="true"/>

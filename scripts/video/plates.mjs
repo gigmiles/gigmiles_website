@@ -127,6 +127,26 @@ async function encodePlate(id, input, {alpha = false} = {}) {
   return {desktop: {file: path.basename(desktop), bytes: bytes(desktop), sha1: sha1(desktop)}, mobile: {file: path.basename(mobile), bytes: bytes(mobile), sha1: sha1(mobile)}}
 }
 
+// --tone-test <dir>: p1-a.*, p1-b.*, p1-c.* become p1-<x>.webp, p1-<x>-m.webp and poster-<x>(-m).webp for the ?p1= switch.
+if (args.get('tone-test')) {
+  const dir = path.resolve(String(args.get('tone-test')))
+  const result = {generated: new Date().toISOString(), variants: {}}
+  for (const v of ['a', 'b', 'c']) {
+    const file = fs.readdirSync(dir).find(f => f.toLowerCase().startsWith(`p1-${v}`) && /\.(png|jpe?g|webp)$/i.test(f))
+    if (!file) continue
+    const src = path.join(dir, file)
+    const meta = await sharp(src).metadata()
+    const enc = await encodePlate(`p1-${v}`, src)
+    const poster = path.join(OUT, `poster-${v}.webp`)
+    for (const q of [80, 72, 64]) { await sharp(path.join(OUT, `p1-${v}.webp`)).resize(720, 1280).webp({quality: q}).toFile(poster); if (bytes(poster) <= LIMITS.poster) break }
+    await sharp(path.join(OUT, `p1-${v}.webp`)).resize(390, 693).webp({quality: 78}).toFile(path.join(OUT, `poster-${v}-m.webp`))
+    result.variants[v] = {source: src, width: meta.width, height: meta.height, ...enc, poster: bytes(poster)}
+    console.log(`[plates] tone test ${v}: ${file} ${meta.width}×${meta.height} → ${enc.desktop.bytes} B desktop, ${enc.mobile.bytes} B mobile, poster ${bytes(poster)} B`)
+  }
+  fs.writeFileSync(path.join(OUT, 'tone-test.json'), JSON.stringify(result, null, 2))
+  process.exit(0)
+}
+
 const manifest = {generated: new Date().toISOString(), mode: args.get('placeholders') ? 'placeholders' : 'plates', plates: {}, layers: {}}
 const sources = {}
 
@@ -141,14 +161,21 @@ if (args.get('placeholders')) {
 } else if (args.get('plates')) {
   const dir = path.resolve(String(args.get('plates')))
   const find = prefix => fs.readdirSync(dir).find(f => f.toLowerCase().startsWith(prefix) && /\.(png|jpe?g|webp)$/i.test(f))
+  // Plates the operator has not delivered yet fall back to the placeholder cut, so a partial set still encodes.
+  const fallback = {p1: path.join(CLIPS, 'beat1-recognition-frames/frame-05-2.00s.png'), p2: path.join(CLIPS, 'beat2-tension-frames/frame-04-1.50s.png'), p5: path.join(CLIPS, 'beat5b-departure-frames/frame-05-2.00s.png')}
+  const missing = []
   for (const id of ['p1', 'p2', 'p3', 'p4', 'p5']) {
     const file = find(`${id}-`) || find(id)
-    if (!file) { console.error(`plates: ${id} not found in ${dir}`); process.exit(2) }
-    sources[id] = path.join(dir, file)
+    if (file) { sources[id] = path.join(dir, file); continue }
+    missing.push(id)
+    sources[id] = id === 'p3' || id === 'p4' ? await synthPlate(id) : fallback[id]
   }
   const l1 = find('p4b'), l2 = find('p4c'), base = find('p4a')
   if (base) sources.p4 = path.join(dir, base)
   if (l1 && l2) manifest.layers.p4 = [await encodePlate('p4-l1', path.join(dir, l1), {alpha: true}), await encodePlate('p4-l2', path.join(dir, l2), {alpha: true})]
+  else if (missing.includes('p4')) manifest.layers.p4 = [await encodePlate('p4-l1', await svgLayer(planRoutesSvg()), {alpha: true}), await encodePlate('p4-l2', await svgLayer(planObjectsSvg()), {alpha: true})]
+  manifest.missing = missing
+  if (missing.length) console.log(`[plates] placeholders kept for: ${missing.join(', ')}`)
 } else {
   console.error('plates: --placeholders or --plates <dir> is required')
   process.exit(2)

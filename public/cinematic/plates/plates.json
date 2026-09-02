@@ -1,20 +1,20 @@
 {
-  "generated": "2026-09-02T17:43:15.369Z",
-  "mode": "placeholders",
+  "generated": "2026-09-02T20:45:02.190Z",
+  "mode": "plates",
   "plates": {
     "p1": {
-      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat1-recognition-frames\\frame-05-2.00s.png",
-      "width": 2160,
-      "height": 3836,
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\p1-night-cargo.png",
+      "width": 941,
+      "height": 1672,
       "desktop": {
         "file": "p1.webp",
-        "bytes": 86508,
-        "sha1": "1c1a4f887ee613e416731c069d09582ca2f30f95"
+        "bytes": 148342,
+        "sha1": "e07e5f57db5e7891bb44a53811a7f3a7a270d042"
       },
       "mobile": {
         "file": "p1-m.webp",
-        "bytes": 33104,
-        "sha1": "208ca4221acb2401cc783a3d2585366dbd9aedc8"
+        "bytes": 51860,
+        "sha1": "e867b80a5def8aeae05d2e14bc7a91b0eb32c5f6"
       }
     },
     "p2": {
@@ -106,18 +106,24 @@
       }
     ]
   },
+  "missing": [
+    "p2",
+    "p3",
+    "p4",
+    "p5"
+  ],
   "poster": {
     "file": "poster.webp",
-    "bytes": 42002,
-    "sha1": "bc7f96d43b4d1a43c10f7b7530fc12aaac03fd9b"
+    "bytes": 52210,
+    "sha1": "743aabc21207d8793aef267744f07d042e044d24"
   },
   "posterMobile": {
     "file": "poster-m.webp",
-    "bytes": 16216,
-    "sha1": "18766e9495737c18a832af4bb084756ffcc99ad7"
+    "bytes": 27066,
+    "sha1": "01a08fbaf3fea20a421bd640836e2e40bbdac9f2"
   },
   "total": {
-    "desktop": 348036,
-    "mobile": 131432
+    "desktop": 409870,
+    "mobile": 150188
   }
 }

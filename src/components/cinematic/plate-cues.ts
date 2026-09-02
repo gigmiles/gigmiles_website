@@ -110,6 +110,19 @@ export const PLATE_SCENES: SceneSpec[] = [
   },
 ]
 
+/** Tone test: plate 1 (and its poster) swapped for one of the operator's registers, a / b / c. */
+export const P1_VARIANTS = ['a', 'b', 'c'] as const
+export type P1Variant = typeof P1_VARIANTS[number]
+export const isP1Variant = (v: unknown): v is P1Variant => typeof v === 'string' && (P1_VARIANTS as readonly string[]).includes(v)
+export function platesFor(variant?: P1Variant): PlateSpec[] {
+  if (!variant) return PLATES
+  return PLATES.map((p, i) => (i === 0 ? {...p, src: {desktop: plate(`p1-${variant}`), mobile: plate(`p1-${variant}-m`)}} : p))
+}
+export function postersFor(variant?: P1Variant) {
+  if (!variant) return {poster: PLATE_ASSETS.poster, posterMobile: PLATE_ASSETS.posterMobile}
+  return {poster: `/cinematic/plates/poster-${variant}.webp`, posterMobile: `/cinematic/plates/poster-${variant}-m.webp`}
+}
+
 export const PLATE_CUES: CueSpec[] = PLATE_SCENES.map(scene => ({
   id: scene.id,
   from: progressAtFraction(scene.filmFrom, PLATES_END_AT),
