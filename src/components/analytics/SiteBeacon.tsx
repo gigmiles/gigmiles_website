@@ -128,7 +128,8 @@ export function SiteBeacon() {
       if (window.location.pathname.startsWith('/getgigmiles')) return
       const href = anchor.getAttribute('href') || ''
       const store = storeFromHref(href)
-      const common = { page: window.location.pathname, ...attributionRef.current }
+      const placement = (anchor as HTMLElement).dataset?.ctaPlacement
+      const common = { page: window.location.pathname, ...(placement ? { placement: placement.slice(0, 40) } : {}), ...attributionRef.current }
       if (store) {
         // Direct store link (e.g. the /download desktop badges). Decorate the
         // href with the visitor's campaign context (ct= for iOS, install

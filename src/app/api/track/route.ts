@@ -63,6 +63,10 @@ export async function POST(req: NextRequest) {
         // referrer, so a web session can be joined to an install once the app
         // reads the referrer and stamps it on the profile.
         cid: s(b.cid, 64),
+        // Which CTA fired (DownloadButton data-cta-placement / anchor
+        // data-cta-placement): hero, nav, records, free-core, closing,
+        // sticky-bar. Column added 2026-09 (supabase_campaign_events_placement.sql).
+        placement: s(b.placement, 40),
       }
       await fetch(`${SUPABASE_URL}/rest/v1/campaign_events`, {
         method: 'POST',

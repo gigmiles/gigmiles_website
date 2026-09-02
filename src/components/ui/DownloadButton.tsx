@@ -32,7 +32,9 @@ function getStoreUrl(): 'desktop' | { store: 'ios' | 'android'; url: string } {
 // (the visitor is going to /download, not a store) and no download_click
 // (SiteBeacon only listens for anchor clicks). `download_click` therefore had
 // zero rows in campaign_events despite being fully wired server-side.
-function beaconIntent(event: 'store_click' | 'download_click', store?: 'ios' | 'android') {
+// `placement` names which CTA fired (hero, nav, records, free-core, closing,
+// sticky-bar) so conversions can be attributed to a position on the page.
+function beaconIntent(event: 'store_click' | 'download_click', store?: 'ios' | 'android', placement?: string) {
   try {
     let utm: Record<string, string> = {}
     const stored = sessionStorage.getItem('gm_attribution')
@@ -44,6 +46,7 @@ function beaconIntent(event: 'store_click' | 'download_click', store?: 'ios' | '
       ts: Date.now(),
       platform: visitorDevice(),
       ...(store ? { store } : {}),
+      ...(placement ? { placement: placement.slice(0, 40) } : {}),
       page: window.location.pathname,
       ...(cid ? { cid } : {}),
       ...utm,
@@ -69,11 +72,11 @@ export function DownloadButton({ className, style, children, 'data-cta-placement
     if (target === 'desktop') {
       // Desktop heads to the /download smart page — that is download intent,
       // not a store handoff, so it is a download_click.
-      beaconIntent('download_click')
+      beaconIntent('download_click', undefined, placement)
       window.location.href = DOWNLOAD_URL
       return
     }
-    beaconIntent('store_click', target.store)
+    beaconIntent('store_click', target.store, placement)
     window.location.href = target.url
   }
 
