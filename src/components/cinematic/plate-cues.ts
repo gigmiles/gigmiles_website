@@ -9,7 +9,7 @@ import type {PlateSpec, SeamSpec} from './plate-engine'
 // --placeholders); the seams, cameras and cues are the real ones.
 
 // Bump when the encoded plates change so cached copies never meet an old seam table.
-export const PLATES_VERSION = '2026-09-02p1'
+export const PLATES_VERSION = '2026-09-03p2'
 
 /** Page progress at which the film reaches its last frame (the rest is the hold). */
 export const PLATES_END_AT = 0.74
@@ -23,25 +23,23 @@ export const PLATE_ASSETS = {
   screen: '/editorial/tour-home.webp',
 }
 
-/** Every plate keeps its key object at the anchor (50 % across, 48 % down); the seams are composed around that point. */
+// The operator's stills (2026-09-02, late): P1 night cargo and P2 the pump in
+// the illustration register, P3 the ledger and P4 the plan on paper, P5 the
+// seat at first light. Anchors measured on the delivered files
+// (scripts/video/plates-measure.mjs and a 5 % grid): P1 label 0.30–0.42 ×
+// 0.44–0.54, P3 tape 0.415–0.52, P4 route at 0.38, P5 phone 0.445–0.57 ×
+// 0.447–0.597. The plan came as one drawing, so P4 has no parallax layers.
 export const PLATES: PlateSpec[] = [
-  {id: 'p1', src: {desktop: plate('p1'), mobile: plate('p1-m')}, anchor: [0.5, 0.48], cam: {from: {zoom: 1, x: 0, y: 0}, to: {zoom: 1.1, x: 0.01, y: -0.015}}},
-  {id: 'p2', src: {desktop: plate('p2'), mobile: plate('p2-m')}, anchor: [0.5, 0.48], cam: {from: {zoom: 1.08, x: -0.01, y: -0.03}, to: {zoom: 1, x: 0, y: 0.02}}},
-  {id: 'p3', src: {desktop: plate('p3'), mobile: plate('p3-m')}, anchor: [0.5, 0.48], cam: {from: {zoom: 1.03, x: 0, y: 0}, to: {zoom: 1, x: 0, y: 0}}},
-  {
-    id: 'p4', src: {desktop: plate('p4'), mobile: plate('p4-m')}, anchor: [0.5, 0.48],
-    layers: [
-      {desktop: plate('p4-l1'), mobile: plate('p4-l1-m'), parallax: 1.35},
-      {desktop: plate('p4-l2'), mobile: plate('p4-l2-m'), parallax: 1.8},
-    ],
-    cam: {from: {zoom: 1.14, x: -0.045, y: 0.01}, to: {zoom: 1.04, x: 0.035, y: -0.01}},
-  },
-  {id: 'p5', src: {desktop: plate('p5'), mobile: plate('p5-m')}, anchor: [0.5, 0.48], screen: [0.33, 0.29, 0.34, 0.3825], cam: {from: {zoom: 1.04, x: 0, y: 0}, to: {zoom: 1, x: 0, y: 0}}},
+  {id: 'p1', src: {desktop: plate('p1'), mobile: plate('p1-m')}, anchor: [0.36, 0.49], cam: {from: {zoom: 1, x: 0, y: 0}, to: {zoom: 1.08, x: -0.02, y: -0.01}}},
+  {id: 'p2', src: {desktop: plate('p2'), mobile: plate('p2-m')}, anchor: [0.55, 0.42], cam: {from: {zoom: 1.08, x: -0.02, y: -0.02}, to: {zoom: 1, x: 0, y: 0.02}}},
+  {id: 'p3', src: {desktop: plate('p3'), mobile: plate('p3-m')}, anchor: [0.5, 0.52], cam: {from: {zoom: 1.03, x: 0, y: 0}, to: {zoom: 1, x: 0, y: 0}}},
+  {id: 'p4', src: {desktop: plate('p4'), mobile: plate('p4-m')}, anchor: [0.5, 0.38], cam: {from: {zoom: 1.14, x: -0.04, y: -0.06}, to: {zoom: 1.05, x: 0.03, y: -0.024}}},
+  {id: 'p5', src: {desktop: plate('p5'), mobile: plate('p5-m')}, anchor: [0.5075, 0.522], screen: [0.445, 0.447, 0.125, 0.15], cam: {from: {zoom: 1, x: 0, y: 0}, to: {zoom: 2, x: 0.0075, y: 0.022}}},
 ]
 
-/** Film fractions of the four seams. Burn: into the receipt, then the paper burns from the lower left. */
+/** Film fractions of the four seams. Burn: into the receipt label on the top bag, then the paper burns from the lower left. */
 export const SEAMS: SeamSpec[] = [
-  {mode: 'burn', from: 0.18, to: 0.27, origin: [0.2, 0.86], rect: [0.34, 0.3, 0.32, 0.3]},
+  {mode: 'burn', from: 0.18, to: 0.27, origin: [0.2, 0.86], rect: [0.28, 0.41, 0.17, 0.16]},
   {mode: 'paper', from: 0.4, to: 0.47},
   {mode: 'draw', from: 0.58, to: 0.64},
   {mode: 'resolve', from: 0.8, to: 0.9},

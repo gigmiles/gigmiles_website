@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-02T20:45:02.190Z",
+  "generated": "2026-09-02T20:56:17.533Z",
   "mode": "plates",
   "plates": {
     "p1": {
@@ -18,100 +18,68 @@
       }
     },
     "p2": {
-      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat2-tension-frames\\frame-04-1.50s.png",
-      "width": 2160,
-      "height": 3836,
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\p2-pump.png",
+      "width": 941,
+      "height": 1672,
       "desktop": {
         "file": "p2.webp",
-        "bytes": 101560,
-        "sha1": "8cf8703d7756a1474167b61e3ab17eef68cc7705"
+        "bytes": 147134,
+        "sha1": "ed49b935879922e870113e72338ec2b7d2c70caf"
       },
       "mobile": {
         "file": "p2-m.webp",
-        "bytes": 38410,
-        "sha1": "c2844aaa465060459b7765e671ff1bcb4b73995e"
+        "bytes": 45990,
+        "sha1": "a4d157eafd3abb18d7bc072fbbb4b17bf6a3d1fa"
       }
     },
     "p3": {
-      "source": "synthesised",
-      "width": 1080,
-      "height": 1920,
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\p3-ledger.png",
+      "width": 941,
+      "height": 1672,
       "desktop": {
         "file": "p3.webp",
-        "bytes": 9714,
-        "sha1": "15b4a04d8a9dbaf1733544b293a5b3682e462eec"
+        "bytes": 101626,
+        "sha1": "351a709b929b44a7e955d978359ea37f0c58a8ef"
       },
       "mobile": {
         "file": "p3-m.webp",
-        "bytes": 2986,
-        "sha1": "721f08c7a1ffe344382788f1d84655001f72d741"
+        "bytes": 15300,
+        "sha1": "affa6a8151a3311d4ffaa981c056d42c8b42dd26"
       }
     },
     "p4": {
-      "source": "synthesised",
-      "width": 1080,
-      "height": 1920,
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\p4-plan.png",
+      "width": 941,
+      "height": 1672,
       "desktop": {
         "file": "p4.webp",
-        "bytes": 13684,
-        "sha1": "6ea672f971bc38b575c0f046bd6fdd6cc0bc980f"
+        "bytes": 111382,
+        "sha1": "d3dea8eb509ce36b513cc7f9d81ed30b2003449d"
       },
       "mobile": {
         "file": "p4-m.webp",
-        "bytes": 4962,
-        "sha1": "8b34a883d248231a87c3b2e4e875160269a9443a"
+        "bytes": 22122,
+        "sha1": "a0b6de9545e750262c10836be2718c3cc2a5b23d"
       }
     },
     "p5": {
-      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat5b-departure-frames\\frame-05-2.00s.png",
-      "width": 2160,
-      "height": 3836,
+      "source": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\plates\\p5-first-light.png",
+      "width": 941,
+      "height": 1672,
       "desktop": {
         "file": "p5.webp",
-        "bytes": 115296,
-        "sha1": "a8c5d3543d7eeed80efe916a2bcae68878e04ad4"
+        "bytes": 213584,
+        "sha1": "8d92f208a2af3f9d00367a0b919161a4cae64a63"
       },
       "mobile": {
         "file": "p5-m.webp",
-        "bytes": 35632,
-        "sha1": "c125e27070f95a33ca8f63402b53e28208b9df5c"
+        "bytes": 42740,
+        "sha1": "72beb406c0d6ec3d65f55d2c70eb9ccc964db8e3"
       }
     }
   },
-  "layers": {
-    "p4": [
-      {
-        "desktop": {
-          "file": "p4-l1.webp",
-          "bytes": 11506,
-          "sha1": "a189c04d6337edf17206c04d8a9f66d40c12635b"
-        },
-        "mobile": {
-          "file": "p4-l1-m.webp",
-          "bytes": 10546,
-          "sha1": "8b76a88b5f66ff48143e291962c79aa48f0bbe4d"
-        }
-      },
-      {
-        "desktop": {
-          "file": "p4-l2.webp",
-          "bytes": 9768,
-          "sha1": "c4de7d24a57603cbd850cffdccdd830b5a111a29"
-        },
-        "mobile": {
-          "file": "p4-l2-m.webp",
-          "bytes": 5792,
-          "sha1": "935139fe4c295a8f18c8a54cb82fc5d30f7ba665"
-        }
-      }
-    ]
-  },
-  "missing": [
-    "p2",
-    "p3",
-    "p4",
-    "p5"
-  ],
+  "layers": {},
+  "missing": [],
   "poster": {
     "file": "poster.webp",
     "bytes": 52210,
@@ -123,7 +91,7 @@
     "sha1": "01a08fbaf3fea20a421bd640836e2e40bbdac9f2"
   },
   "total": {
-    "desktop": 409870,
-    "mobile": 150188
+    "desktop": 722068,
+    "mobile": 178012
   }
 }
