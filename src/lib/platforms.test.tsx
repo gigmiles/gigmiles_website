@@ -29,7 +29,8 @@ describe('platform naming rules', () => {
 
   it('carries the first-mention symbols the owners ask for and the Amazon sentence', () => {
     expect(PLATFORMS_LINE).toContain('Instacart®')
-    expect(PLATFORMS_LINE).toContain('Spark Driver™')
+    expect(PLATFORMS_LINE).not.toContain('Spark Driver')
+    expect(PLATFORMS_FAQ.answer[0]).toContain('Spark Driver™')
     expect(PLATFORM_NOTICE).toContain('not affiliated with, endorsed by or sponsored by')
     expect(PLATFORM_NOTICE).toContain('this app was not created or endorsed by Amazon')
     expect(PLATFORM_NOTICE).toContain('Uber Technologies, Inc.')
