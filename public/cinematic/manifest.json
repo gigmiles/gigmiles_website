@@ -1,91 +1,46 @@
 {
-  "generated": "2026-09-02T16:20:34.338Z",
+  "generated": "2026-09-02T22:37:36.951Z",
   "sources": [
     {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat1-recognition.mp4",
-      "width": 2160,
-      "height": 3836,
+      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-03\\website_cinematic\\continuous_paper_film_v5\\continuous-paper-film-v5.mp4",
+      "width": 1078,
+      "height": 1920,
       "fps": 24,
-      "duration": 4.042
-    },
-    {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat2-tension.mp4",
-      "width": 2160,
-      "height": 3836,
-      "fps": 24,
-      "duration": 4.042
-    },
-    {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat3-turn.mp4",
-      "width": 2160,
-      "height": 3836,
-      "fps": 24,
-      "duration": 6.042
-    },
-    {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat4-substance.mp4",
-      "width": 2160,
-      "height": 3836,
-      "fps": 24,
-      "duration": 4,
-      "trim": [
-        0,
-        4
-      ]
-    },
-    {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat5a-bookend.mp4",
-      "width": 2160,
-      "height": 3836,
-      "fps": 24,
-      "duration": 4.042
-    },
-    {
-      "file": "C:\\Users\\LENOVO\\OneDrive\\Masaüstü\\ajans\\outputs\\2026-09-02\\website_cinematic\\painted_production\\clips\\beat5b-departure.mp4",
-      "width": 2160,
-      "height": 3836,
-      "fps": 24,
-      "duration": 4.042
+      "duration": 30.042
     }
   ],
   "orientation": "portrait",
-  "xfade": 0.6,
-  "beats": [
-    0.1612,
-    0.3095,
-    0.544,
-    0.6905,
-    0.8388
-  ],
-  "duration": 23.2,
+  "xfade": 0,
+  "beats": [],
+  "duration": 30.033,
   "fps": 30,
   "desktop": {
     "file": "hero-desktop.mp4",
     "width": 720,
     "height": 1280,
-    "bytes": 5688178,
-    "crf": 27,
+    "bytes": 5999454,
+    "crf": 28,
     "gop": 8,
-    "sha1": "03d5d4190cc1d08cfdb0a00b10094bd47e9e021c"
+    "sha1": "6c20f5e9739725b37e8f001e346628808ee94562"
   },
   "mobile": {
     "file": "hero-mobile.mp4",
     "width": 540,
     "height": 960,
-    "bytes": 2149840,
-    "crf": 34,
+    "bytes": 2153912,
+    "crf": 36,
     "gop": 4,
-    "sha1": "3e176675209e1fe75924f93c953450d96cc448e8"
+    "sha1": "6e46fea9eb637eb8f26b0aa871bd37b3104dc60d"
   },
   "posters": {
     "desktop": {
       "file": "hero-poster.webp",
-      "bytes": 48166,
-      "quality": 82
+      "bytes": 59954,
+      "quality": 74
     },
     "mobile": {
       "file": "hero-poster-mobile.webp",
-      "bytes": 19870,
+      "bytes": 27898,
       "quality": 82
     }
   }

@@ -2,7 +2,7 @@ import {progressAtFraction, type CueSpec, type LightSpec, type Rgb} from './cine
 
 // Bump when the encoded files change so cached copies are never scrubbed
 // against an old cue table.
-export const CINEMATIC_VERSION = '2026-09-02c'
+export const CINEMATIC_VERSION = '2026-09-03f5'
 
 /** Page progress at which the film reaches its last frame (the rest is the hold). */
 export const END_AT = 0.74
@@ -12,31 +12,35 @@ export const CINEMATIC_ASSETS = {
   mobile: `/cinematic/hero-mobile.mp4?v=${CINEMATIC_VERSION}`,
   poster: '/cinematic/hero-poster.webp',
   posterMobile: '/cinematic/hero-poster-mobile.webp',
-  /** Painted edition: six operator-made clips joined with 0.6 s dissolves (beat 4 trimmed to 4.0 s). */
-  duration: 23.21,
+  /** Continuous paper film v5: one native 30 s generation, no cuts, no stitch. */
+  duration: 30.0417,
 }
 
-/** Dissolve centres between the six clips, as fractions of the film (clip lengths 4.04 / 4.04 / 6.04 / 4.0 / 4.04 / 4.04, minus five 0.6 s overlaps). */
-export const CINEMATIC_BEATS = [0.161, 0.310, 0.544, 0.690, 0.839]
+// The film is one unbroken camera move, so these are not cut points: they are
+// the six moments the journey passes through, and they only tell the stage
+// where to breathe, repaint the ground and move the light. Boundaries come
+// from the film's own production timeline (manifest.json beside the source):
+// 4.5 / 8.5 / 13.5 / 16.5 / 25.5 s of 30.0417 s.
+export const CINEMATIC_BEATS = [0.1498, 0.2829, 0.4494, 0.5493, 0.8488]
 
-/** Ground behind the film per clip: warm night, cold rain, the lamp, pre-dawn slate, first light. All stay inside the brand's green family. */
+/** Ground behind the film per moment: the car at night, the wet road, the pump's cold canopy, the lamp on paper, the paper city, first light. */
 export const BEAT_TINTS: Rgb[] = [
-  {r: 26, g: 38, b: 28},
-  {r: 9, g: 40, b: 46},
-  {r: 40, g: 36, b: 22},
-  {r: 18, g: 36, b: 52},
-  {r: 42, g: 60, b: 50},
-  {r: 42, g: 60, b: 50},
+  {r: 20, g: 34, b: 34},
+  {r: 14, g: 30, b: 40},
+  {r: 16, g: 36, b: 44},
+  {r: 44, g: 44, b: 34},
+  {r: 38, g: 42, b: 36},
+  {r: 34, g: 48, b: 44},
 ]
 
-/** The film's light per clip: the phone glow low and warm, none in the rain, the lamp on the face, a cold streetlight high, first light broad and pale. */
+/** The film's own light per moment: the phone on the seat, a streetlight, the canopy, the desk lamp, the city's lamps, the dawn window. */
 export const BEAT_LIGHTS: LightSpec[] = [
-  {x: 42, y: 60, size: 30, alpha: 0.22},
-  {x: 30, y: 25, size: 26, alpha: 0.08},
-  {x: 50, y: 48, size: 46, alpha: 0.34},
-  {x: 62, y: 18, size: 30, alpha: 0.14},
-  {x: 50, y: 12, size: 70, alpha: 0.18},
-  {x: 50, y: 0, size: 90, alpha: 0.26},
+  {x: 35, y: 62, size: 30, alpha: 0.18},
+  {x: 60, y: 20, size: 34, alpha: 0.10},
+  {x: 50, y: 16, size: 40, alpha: 0.20},
+  {x: 28, y: 12, size: 60, alpha: 0.22},
+  {x: 50, y: 45, size: 55, alpha: 0.16},
+  {x: 50, y: 8, size: 80, alpha: 0.20},
 ]
 
 export interface SceneSpec {
@@ -44,7 +48,7 @@ export interface SceneSpec {
   /** One entry per masked line; nine words at most across the headline. `*word*` marks the driver's word (set in 800 weight, Mint). */
   headline: string[]
   support: string
-  /** Fractions of the film's duration this message belongs to (authored from the contact sheet). */
+  /** Fractions of the film's duration this message belongs to (authored from the film's own timeline). */
   filmFrom: number
   filmTo: number
   /** Override the default entry ramp / line stagger (the first scene is on screen at load, no entrance). */
@@ -55,47 +59,47 @@ export interface SceneSpec {
   moment: string
 }
 
-// Copy uses approved brand phrases only, no figures. Scenes sit on the six
-// painted clips (beat 5 in two) and abut through their ramps so no scroll
-// position is ever empty; validateCues() and the tests guard both the
-// coverage and the never-two-bright rule.
+// Copy uses approved brand phrases only, no figures. Each line is on screen
+// while its own subject is: the words never describe something the film is not
+// showing. validateCues() and the tests guard the coverage and the
+// never-two-bright rule.
 export const CINEMATIC_SCENES: SceneSpec[] = [
   {
     id: 'gross',
     headline: ['The screen', 'shows *gross*.'],
     support: 'It never shows what the drive cost you.',
-    filmFrom: 0, filmTo: 0.18,
+    filmFrom: 0, filmTo: 0.17,
     rampIn: 0, stagger: 0,
-    moment: 'clip 1: night, the phone glow, the hand rubbing an eye (0 to 3.7 s); fully visible at load',
+    moment: 'the passenger seat at night: the phone glowing, the insulated bag, the meal bag and the drink (0 to 5.1 s); fully visible at load',
   },
   {
     id: 'net',
     headline: ['Gross is', 'not *net*.'],
     support: 'Fuel, wear and an estimated tax set-aside come out first.',
-    filmFrom: 0.15, filmTo: 0.34,
-    moment: 'clip 2: pump nozzle, the open trunk with bags and boxes, red light in the wet (3.7 to 7.2 s)',
+    filmFrom: 0.14, filmTo: 0.46,
+    moment: 'the camera leaves the car, passes the wet tyre and reaches the pump; the blank receipt slides out and fills the frame (4.2 to 13.8 s)',
   },
   {
     id: 'number',
     headline: ['See the', '*real number*.'],
     support: 'Your vehicle, your state, your day job, in the estimate.',
-    filmFrom: 0.31, filmTo: 0.57,
-    moment: 'clip 3: the close portrait, the glow warms, the face opens (7.2 to 12.6 s); the peak, widest span',
+    filmFrom: 0.43, filmTo: 0.57,
+    moment: 'the receipt becomes a ruled ledger under the lamp and the green route draws itself down it (12.9 to 17.1 s)',
   },
   {
     id: 'inputs',
     headline: ['Built around', 'what you *enter*.'],
     support: 'Miles, hours and earnings. Optional W-2 context.',
-    filmFrom: 0.54, filmTo: 0.72,
-    moment: 'clip 4: the e-bike courier clicks the battery in and pushes off (12.6 to 16.0 s)',
+    filmFrom: 0.55, filmTo: 0.87,
+    moment: 'the ledger grid rises into a paper city and the camera travels the route through it (16.5 to 26.1 s); the longest moment, the peak',
   },
   {
     id: 'yours',
     headline: ['What is', 'actually *yours*.'],
     support: 'Free core. No card. No ads. Estimates for planning. Not tax advice.',
-    filmFrom: 0.69, filmTo: 1,
+    filmFrom: 0.85, filmTo: 1,
     hold: true,
-    moment: 'clips 5a and 5b: the bookend at first light, then the car pulling away; holds through the paper hand-off (16.0 s to the end)',
+    moment: 'the route reaches the same car at first light and becomes the seat seam: the dawn bookend (25.5 s to the end); holds through the paper hand-off',
   },
 ]
 

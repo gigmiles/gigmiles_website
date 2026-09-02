@@ -1,7 +1,6 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import {TOUR_SCREENS} from '@/components/editorial/ApprovedHome'
 import {EstimateProof} from '@/components/editorial/EstimateProof'
-import {FeatureTour} from '@/components/editorial/FeatureTour'
 import {ArrowUpRight} from '@/components/editorial/Glyph'
 import {PlanTable} from '@/components/editorial/PlanTable'
 import {RevealObserver} from '@/components/editorial/RevealObserver'
@@ -10,8 +9,10 @@ import {TrustStrip} from '@/components/editorial/TrustStrip'
 import '@/components/editorial/home-v2.css'
 import '@/components/editorial/home-flow.css'
 import './cinematic.css'
+import './deck.css'
 import {CinematicHero} from './CinematicHero'
 import {PlatesHero} from './PlatesHero'
+import {TourDeck} from './TourDeck'
 import type {P1Variant} from './plate-cues'
 
 // Cinematic home: the film stage, then the paper hand-off, then the live
@@ -35,7 +36,7 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
 
     <EstimateProof interactive/>
 
-    <FeatureTour screens={TOUR_SCREENS} heading={<>See it on your phone.<br/><span>Before you download.</span></>}/>
+    <TourDeck screens={TOUR_SCREENS} heading={<>See it on your phone.<br/><span>Before you download.</span></>}/>
 
     <section className="free-section wrap" id="free" aria-labelledby="free-title">
       <div className="free-heading">

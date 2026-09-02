@@ -162,7 +162,8 @@ html:has(.cine-page) { scroll-behavior: auto; }
 
 /* ---- mobile / narrow: full-bleed film, captions in the lower third ---- */
 @media (max-width: 980px) {
-  .editorial-site .cine-page { --cine-runway: 260svh; --cine-overlap: 40svh; }
+  /* The film's production note asks for about 380vh on the phone so the 30 s journey is not rushed. */
+  .editorial-site .cine-page { --cine-runway: 380svh; --cine-overlap: 40svh; }
   .editorial-site .cine-underline path { stroke-width: 2; }
   .editorial-site .cine-page .cine-frame { display: block; width: 100%; max-width: none; }
   .editorial-site .cine-hero[data-cine-mode="mobile"] .cine-media,

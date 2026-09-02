@@ -58,7 +58,7 @@ describe('cinematic home markup', () => {
   })
 
   it('reuses the approved sections in order', () => {
-    const order = ['cine-hero', 'cine-after', 'estimate-proof', 'feature-tour', 'id="free"', 'id="download"', 'sticky-cta']
+    const order = ['cine-hero', 'cine-after', 'estimate-proof', 'class="deck"', 'id="free"', 'id="download"', 'sticky-cta']
     let last = -1
     for (const marker of order) { const at = html.indexOf(marker); expect(at, marker).toBeGreaterThan(last); last = at }
   })
