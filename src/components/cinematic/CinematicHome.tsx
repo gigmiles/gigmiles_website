@@ -30,7 +30,7 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
           <h2 id="cine-after-title">Know what<br/><span>you actually keep.</span></h2>
           <p className="cine-after-lead">Earnings, vehicle costs and estimated taxes.<br/>A clearer picture of your work.</p>
         </div>
-        <TrustStrip/>
+        <TrustStrip tone="product"/>
       </div>
     </section>
 

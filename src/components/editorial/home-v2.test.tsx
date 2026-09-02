@@ -164,3 +164,30 @@ describe('home v2 (local preview only)',()=>{
     expect(bar.textContent).toContain('Free core · No card · No ads')
   })
 })
+
+describe('the reveal flag survives a re-render', () => {
+  it('keeps a revealed estimate card visible after the vehicle changes', () => {
+    // Regression: the observer used to add a class, and React rewrote
+    // className on the same element while the card was calculating, so the
+    // card dropped to opacity 0 and the observer had already unhooked it.
+    const {container} = render(<EstimateProof interactive/>)
+    const card = container.querySelector('.estimate-card') as HTMLElement
+    expect(card).toBeTruthy()
+    card.setAttribute('data-shown', '')
+    const ebike = container.querySelectorAll('.estimate-vehicle input')[1] as HTMLInputElement
+    fireEvent.click(ebike)
+    expect(card.className).toContain('estimate-card')
+    expect(card.hasAttribute('data-shown'), 'the reveal flag was wiped by a re-render').toBe(true)
+  })
+
+  it('marks the reveal with an attribute React does not own, never a class', () => {
+    const observer = readFileSync('src/components/editorial/RevealObserver.tsx', 'utf8')
+    expect(observer).toContain("setAttribute('data-shown'")
+    // The <html> flag may stay a class; what must never be a class is the
+    // per-element mark, because React owns className on the elements it renders.
+    expect(observer).not.toMatch(/entry\.target\.classList/)
+    const css = readFileSync('src/components/editorial/home-v2.css', 'utf8')
+    expect(css).toContain('[data-reveal][data-shown]')
+    expect(css).not.toContain('[data-reveal].is-visible')
+  })
+})

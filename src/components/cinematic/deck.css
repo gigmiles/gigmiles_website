@@ -79,7 +79,13 @@
 .editorial-site .deck-figure { margin: 0; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .editorial-site .deck-figure strong { font-size: clamp(28px, 3vw, 44px); font-weight: 800; letter-spacing: -.04em; color: var(--mint); }
 .editorial-site .deck-figure span { font-size: 13px; color: var(--muted); }
-.editorial-site .deck-cta { margin-top: 4px; min-height: 46px; opacity: var(--front, 1); transition: opacity .35s ease; }
+.editorial-site .deck-figures { display: flex; gap: clamp(1.4rem, 3vw, 2.8rem); flex-wrap: wrap; }
+.editorial-site .deck-figure strong i { font-style: normal; font-size: .48em; font-weight: 600; letter-spacing: 0; margin-left: 2px; }
+.editorial-site .deck-figure { flex-direction: column; align-items: flex-start; gap: 0; }
+.editorial-site .deck-bullets { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 7px; }
+.editorial-site .deck-bullets li { position: relative; padding-left: 18px; font-size: clamp(13px, 1vw, 15px); font-weight: 300; line-height: 1.4; color: #cfe0d3; }
+.editorial-site .deck-bullets li::before { content: ''; position: absolute; left: 0; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--mint); opacity: .8; }
+.editorial-site .deck-cta { margin-top: 6px; min-height: 46px; opacity: var(--front, 1); transition: opacity .35s ease; }
 
 /* The capture rises out of the card and is cut by its lower edge. */
 .editorial-site .deck-media { position: relative; align-self: stretch; height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; }

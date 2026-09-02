@@ -67,4 +67,5 @@
 .editorial-site .glyph svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Independence and trademark notice: small, quiet, on every page */
-.editorial-site .site-footer-notice { width: 100%; margin: 14px 0 0; max-width: 88ch; font-size: 11px; line-height: 1.55; color: #8eae9a; }
+.editorial-site .site-footer-privacy { width: 100%; margin: 14px 0 0; max-width: 88ch; font-size: 11px; line-height: 1.55; color: #8eae9a; }
+.editorial-site .site-footer-notice { width: 100%; margin: 6px 0 0; max-width: 88ch; font-size: 11px; line-height: 1.55; color: #8eae9a; }

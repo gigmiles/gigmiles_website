@@ -110,12 +110,17 @@ html:has(.cine-page) { scroll-behavior: auto; }
 }
 .editorial-site .cine-proof-row span { font-weight: 300; color: #47614f; }
 .editorial-site .cine-proof-row b { font-weight: 600; font-variant-numeric: tabular-nums; }
+/* The film's green route runs down the middle of the paper and crosses here.
+   A ledger rules a line above its total anyway, so the two rules meet on
+   purpose rather than by accident. */
 .editorial-site .cine-proof-net {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 14px;
-  margin: 16px 0 0;
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1.5px solid #22392e4d;
   opacity: var(--pr-net, 1);
   transform: translate3d(0, calc((1 - var(--pr-net, 1)) * 12px), 0);
 }
@@ -184,7 +189,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
   padding: clamp(4rem, 12vh, 8rem) 0 clamp(2.5rem, 7vh, 4.5rem);
   box-shadow: 0 -30px 80px -40px #00000080;
 }
-.editorial-site .cine-after-inner { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 8%; align-items: end; }
+.editorial-site .cine-after-inner { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 8%; align-items: start; }
 .editorial-site .cine-after h2 { margin: 0; font-size: clamp(40px, 4.6vw, 72px); font-weight: 800; line-height: 1.02; letter-spacing: -.04em; color: #0b302b; }
 .editorial-site .cine-after h2 span { color: #4f7a5c; }
 .editorial-site .cine-after-lead { margin: 22px 0 0; max-width: 40ch; font-size: clamp(17px, 1.3vw, 21px); line-height: 1.45; color: #2f5a48; }
@@ -194,6 +199,38 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-after .trust-platforms { color: #3f6a55; }
 .editorial-site .cine-after .platform-chips li { border-color: #4f7a5c66; color: #1f4a3a; }
 .editorial-site .cine-after .platform-chips .platform-chip-other { color: #4f7a5c; }
+/* The paper screen after the film leads with the product, in two columns, so
+   the first thing past the hero is what the app does rather than a column of
+   disclaimers. The handling and consent lines live in the footer now. */
+.editorial-site .cine-after .trust-strip[data-tone="product"] { padding: 0; border: 0; }
+.editorial-site .cine-after .trust-strip[data-tone="product"] .trust-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 28px;
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+}
+.editorial-site .cine-after .trust-strip[data-tone="product"] .trust-facts li {
+  position: relative;
+  padding-left: 20px;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.4;
+  color: #2f5a48;
+}
+.editorial-site .cine-after .trust-strip[data-tone="product"] .trust-facts li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .62em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4f7a5c;
+}
+@media (max-width: 720px) {
+  .editorial-site .cine-after .trust-strip[data-tone="product"] .trust-facts { grid-template-columns: 1fr; }
+}
 .editorial-site .cine-page .feature-tour .eyebrow { display: none; }
 
 /* sections after the film keep the live rhythm; only the ground alternates */

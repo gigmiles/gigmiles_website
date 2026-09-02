@@ -88,6 +88,10 @@ export interface SceneSpec {
   moment: string
 }
 
+// Each scene starts exactly one ramp-width before the previous one ends
+// (0.045 of page progress is 0.061 of the film), so the outgoing and incoming
+// opacities sum to one: the column crossfades instead of going dim between
+// statements, and no two are ever both bright.
 // Copy uses approved brand phrases only, no figures. Each line is on screen
 // while its own subject is: the words never describe something the film is not
 // showing. validateCues() and the tests guard the coverage and the
@@ -105,28 +109,28 @@ export const CINEMATIC_SCENES: SceneSpec[] = [
     id: 'net',
     headline: ['Gross is', 'not *net*.'],
     support: 'Fuel, wear and an estimated tax set-aside come out first.',
-    filmFrom: 0.14, filmTo: 0.46,
+    filmFrom: 0.109, filmTo: 0.46,
     moment: 'the camera leaves the car, passes the wet tyre and reaches the pump; the blank receipt slides out and fills the frame (4.2 to 13.8 s)',
   },
   {
     id: 'number',
     headline: ['See the', '*real number*.'],
     support: 'Your vehicle, your state, your day job, in the estimate.',
-    filmFrom: 0.43, filmTo: 0.57,
+    filmFrom: 0.399, filmTo: 0.57,
     moment: 'the receipt becomes a ruled ledger under the lamp and the green route draws itself down it (12.9 to 17.1 s)',
   },
   {
     id: 'inputs',
     headline: ['Built around', 'what you *enter*.'],
     support: 'Miles, hours and earnings. Optional W-2 context.',
-    filmFrom: 0.55, filmTo: 0.87,
+    filmFrom: 0.509, filmTo: 0.87,
     moment: 'the ledger grid rises into a paper city and the camera travels the route through it (16.5 to 26.1 s); the longest moment, the peak',
   },
   {
     id: 'yours',
     headline: ['What is', 'actually *yours*.'],
     support: 'Free core. No card. No ads. Estimates for planning. Not tax advice.',
-    filmFrom: 0.85, filmTo: 1,
+    filmFrom: 0.809, filmTo: 1,
     hold: true,
     moment: 'the route reaches the same car at first light and becomes the seat seam: the dawn bookend (25.5 s to the end); holds through the paper hand-off',
   },
