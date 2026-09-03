@@ -34,7 +34,10 @@ export const PRO_FEATURES = [
 ] as const
 
 export function PlanTable() {
-  return <div className="plan-table" role="table" aria-label="Free and Pro features">
+  // The footnote sits beside the table, not inside it: inside, it was a third
+  // slide in the phone's swipe row, and it was never a row of the table anyway.
+  return <>
+  <div className="plan-table" role="table" aria-label="Free and Pro features">
     <div className="plan-column" role="rowgroup" data-reveal="">
       <div className="plan-head" role="row"><span role="columnheader">Free</span><span>No card. No ads.</span></div>
       <ul>{FREE_FEATURES.map((f, i) => <li key={f} role="row" style={{'--i': i} as React.CSSProperties}>{f}</li>)}</ul>
@@ -48,6 +51,7 @@ export function PlanTable() {
       <ul>{PRO_FEATURES.map((f, i) => <li key={f} role="row" style={{'--i': i} as React.CSSProperties}>{f}</li>)}</ul>
       <p className="plan-trial">No card for the trial either, and the ten days do not start until you log your first trip. Invite a driver and Pro stays open another seven days, up to two invites.</p>
     </div>
-    <p className="plan-footnote">Pro is an option, not the starting line. The free core stays free.</p>
   </div>
+  <p className="plan-footnote">Pro is an option, not the starting line. The free core stays free.</p>
+  </>
 }

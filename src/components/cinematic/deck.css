@@ -135,11 +135,12 @@
   }
   .editorial-site .deck-body { grid-template-columns: 1fr; align-items: start; flex: 1 1 auto; }
   .editorial-site .deck-copy { gap: 10px; }
-  /* The capture is cropped to its top, where the figure the card is talking
-     about actually is, so a card fits one screen and the swipe is the only
-     gesture the section asks for. */
-  .editorial-site .deck-media { justify-content: flex-start; margin-top: 2px; flex: 0 0 auto; }
-  .editorial-site .deck-media img { width: 100%; max-width: 300px; height: clamp(160px, 25svh, 205px); object-fit: cover; object-position: top center; border-radius: 16px 16px 8px 8px; }
+  /* The section promises "see it on your phone", so on a phone the screen
+     comes first and whole: the capture leads the card at its own aspect, the
+     way a store listing shows screenshots, and the words follow it. A cropped
+     strip of the top of the screen read as a fragment, not as the app. */
+  .editorial-site .deck-media { order: -1; justify-content: center; margin: 0; flex: 0 0 auto; height: auto; }
+  .editorial-site .deck-media img { width: clamp(184px, 56vw, 232px); max-width: 100%; height: auto; object-fit: contain; border-radius: 18px; box-shadow: 0 22px 44px -24px #000000b3; }
   .editorial-site .deck-bullets li { font-size: 13px; }
   .editorial-site .deck-card { padding: 1rem 1.05rem; gap: 9px; }
   .editorial-site .deck-title { font-size: 22px; }

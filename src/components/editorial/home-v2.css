@@ -107,7 +107,9 @@
 .editorial-site .plan-table li::before { content: ''; position: absolute; left: 0; top: 1.05em; width: 7px; height: 7px; border-radius: 50%; background: var(--mint); }
 .editorial-site .plan-pro li::before { background: #c9e8bd; }
 .editorial-site .plan-trial { font-size: 13px; color: #cde7c9; margin: 16px 0 0; }
-.editorial-site .plan-footnote { grid-column: 1 / -1; font-size: 12px; color: #9ab6a4; margin: 4px 0 0; }
+/* Sits under the table, outside it, so on a phone it is not a third slide in
+   the row and on a desktop it still runs the full width beneath both plans. */
+.editorial-site .plan-footnote { font-size: 12px; color: #9ab6a4; margin: 18px 0 0; }
 
 /* On a phone the two plans used to stack, seventeen rows deep, and the section
    became another long scroll right after the deck. They lie in a row and snap
@@ -131,7 +133,6 @@
      opacity and take the peeking edge with it, the one thing telling anyone
      there is a second card. In the row the cards are simply present. */
   .reveal-ready .editorial-site .plan-column[data-reveal] { opacity: 1; transform: none; }
-  .editorial-site .plan-footnote { flex: 0 0 100%; order: 9; }
   .editorial-site .plan-table li { font-size: 13.5px; padding: 7px 0 7px 17px; }
   .editorial-site .plan-trial { font-size: 12.5px; margin-top: 13px; }
 }

@@ -40,7 +40,11 @@
     margin-top: 16px; padding-top: 18px; border-top: 1px solid var(--line);
   }
   .editorial-site .nav-menu-cta .button { justify-content: center; min-height: 50px; }
-  .editorial-site .nav-menu-cta span { font-size: 12px; color: var(--muted); text-align: center; }
+  /* Only the note under the button. The button's own label is spans too
+     ("Get", the wordmark, "— free"), and a bare `span` selector here once
+     turned all of them 12px and muted on the mint, which is why the button
+     read as empty. */
+  .editorial-site .nav-menu-cta > span { font-size: 12px; color: var(--muted); text-align: center; }
   .editorial-site .nav-toggle { border-radius: 999px; }
 }
 
