@@ -32,14 +32,17 @@ describe('approved bounded scroll story',()=>{
   it('maps finite progress to four readable chapters and clamps endpoints',()=>{
     expect([-.2,0,.249,.25,.499,.5,.799,.8,1,2,NaN].map(sceneAtProgress)).toEqual([0,0,0,1,1,2,2,3,3,3,0])
   })
-  it('publishes the scroll story at root while retaining the optional timed component',()=>{
+  it('keeps the bounded scroll story working now that the film has the root',()=>{
+    // The home page is the film (src/app/page.tsx, 2026-09-03). The story is
+    // still the hero of ApprovedHome, which /preview/home-v2 renders, and is
+    // still bounded and reversible; the tests below exercise it directly.
+    // Root must not carry it, and must not leak the local review chrome.
+    expect(renderToStaticMarkup(<ApprovedHome heroMode="scroll"/>)).toContain('data-scene="3"')
     expect(renderToStaticMarkup(<ApprovedHome/>)).toContain('id="play"')
     const html=renderToStaticMarkup(<LandingPage/>)
+    expect(html).not.toContain('data-scene="3"')
     expect(html).not.toContain('id="play"')
-    expect(html).toContain('data-scene="3"')
-    expect(html).toContain('/editorial/day-job.webp')
-    expect(html).toContain('hero-scroll')
-    expect(html).toContain('product-earnings-complete.webp')
+    expect(html).toContain('cine-hero')
     expect(html).not.toContain('Local preview ·')
   })
   it('advances and reverses with native scroll without scheduling an idle animation loop',()=>{

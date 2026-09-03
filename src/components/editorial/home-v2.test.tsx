@@ -48,10 +48,12 @@ const SCREENS:TourScreen[]=[
 ]
 
 describe('home v2 (local preview only)',()=>{
-  it('ships the approved Tier 2 sections on the live home page with real captures only',()=>{
+  it('ships the film home with the approved sections and real captures only',()=>{
     const html=renderToStaticMarkup(<LandingPage/>)
-    for(const cls of ['trust-strip','estimate-proof','feature-tour','plan-table','sticky-cta'])expect(html).toContain(cls)
-    expect(html).toContain('NET PROFIT TRACKER FOR GIG DRIVERS')
+    // The root is the film home as of 2026-09-03. The sections that carried the
+    // argument came with it; the feature tour became the stacked deck.
+    for(const cls of ['cine-hero','trust-strip','estimate-proof','class="deck"','plan-table','home-faq','sticky-cta'])expect(html).toContain(cls)
+    expect(html).toContain('id="headline"')
     expect(html).not.toMatch(/pending approval|\[VERIFY\]|tour-placeholder/)
     expect(html).not.toMatch(BANNED_PAGE)
     expect(renderToStaticMarkup(<ApprovedHome heroMode="scroll"/>)).not.toMatch(SECTIONS)
@@ -71,7 +73,11 @@ describe('home v2 (local preview only)',()=>{
     // the wording around them is free to change with the capture.
     expect(html).toMatch(/alt="Example GigMiles home screen[^"]*Net Income \$192/)
     expect(html).toContain('type="range"')
-    expect(html).toContain('tour-figure')
+    // The deck states its own proofs, and the film writes the canonical shift
+    // onto the paper it is handed blank.
+    expect(html).toContain('deck-figure')
+    expect(html).toContain('cine-proof')
+    expect(html).toContain('Example shift')
   })
   it('renders the v2 sections only behind the local review flag and never in production',()=>{
     vi.stubEnv('LOCAL_DESIGN_REVIEW','');expect(()=>HomeV2Preview()).toThrow('NOT_FOUND')

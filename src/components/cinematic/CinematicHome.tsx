@@ -3,6 +3,7 @@ import {CtaLabel} from '@/components/ui/CtaLabel'
 import {TOUR_SCREENS} from '@/components/editorial/ApprovedHome'
 import {EstimateProof} from '@/components/editorial/EstimateProof'
 import {PlanTable} from '@/components/editorial/PlanTable'
+import {HomeFaq} from '@/components/editorial/HomeFaq'
 import {RevealObserver} from '@/components/editorial/RevealObserver'
 import {StickyCta} from '@/components/editorial/StickyCta'
 import {TrustStrip} from '@/components/editorial/TrustStrip'
@@ -47,6 +48,10 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
       </div>
       <PlanTable/>
     </section>
+
+    {/* The approved questions ride along: the film hero is shorter than the
+        page it replaces, and these are the answers search actually reads. */}
+    <HomeFaq variant="v2"/>
 
     <section className="download conversion-close" id="download">
       <div className="wrap" data-reveal="">

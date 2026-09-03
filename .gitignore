@@ -79,8 +79,11 @@ tmp_*.ts
 gradle_output*.txt
 *.output
 
-# cinematic hero prototype: scrub videos stay out of git until the go-live decision
-/public/cinematic/*.mp4
+# The hero film ships with the site: it is the home page now, and Vercel builds
+# from the repository, so the encoded scrub files have to be tracked. 8.2 MB
+# between the two, written once per re-encode.
+# The plate prototype's stills stay out: /preview/plates is local-only.
+
 # film v3 plates (WebP from the operator paintings or the placeholder cut) stay out of git too
 /public/cinematic/plates/*.webp
 /public/cinematic/plates/*.png
