@@ -27,6 +27,15 @@ export const DECK = {
   parkRot: -26,
   /** Viewport heights of scroll the pinned deck consumes. */
   runway: 6.5,
+  /** On a phone the cards lie in a row the vertical scroll drives. Each card
+      owns an equal share of this runway (in viewport heights, beyond the
+      stage's own screen): first the words under its screen scroll up into
+      view, then the row slides to the next screen. */
+  rowRunway: 3,
+  /** Share of a card's segment spent bringing its words up. */
+  rowRead: 0.5,
+  /** Where in the segment the slide to the next card is complete; the rest is a hold. */
+  rowSlideEnd: 0.85,
 }
 
 export type DeckDefaults = typeof DECK
@@ -74,6 +83,45 @@ export function cardState(progress: number, count: number, i: number, d: DeckDef
   return {y: -50 + (behind - e) * d.yOffset, rot: 0, scale: 1 - (behind - e) * d.scaleStep, z, front: behind === 1 ? e : 0}
 }
 
+export interface RowState {
+  /** The card whose segment this is: being read, or leaving. */
+  seg: number
+  /** How far its words have come up, 0..1. Cards before `seg` are fully read, cards after are not yet. */
+  reveal: number
+  /** How many cards the row has moved left, continuous: 0 is the first card, 3 the fourth. */
+  x: number
+  /** The card that is nearest the reader, for `inert` on the others. */
+  index: number
+}
+
+/**
+ * The phone's row at a deck progress of 0..1: screen, its words, slide,
+ * screen, its words, slide. The last card reads and then holds; the section
+ * lets go after it.
+ */
+export function rowState(progress: number, count: number, d: DeckDefaults = DECK): RowState {
+  if (count < 1) return {seg: 0, reveal: 0, x: 0, index: 0}
+  const p = clamp01(progress)
+  const segLen = 1 / count
+  const seg = Math.min(Math.floor(p / segLen), count - 1)
+  const t = (p - seg * segLen) / segLen
+  const last = seg === count - 1
+  const readEnd = last ? Math.min(1, d.rowRead + 0.15) : d.rowRead
+  const reveal = easeInOut(t / readEnd)
+  const slide = last ? 0 : easeInOut((t - readEnd) / (d.rowSlideEnd - readEnd))
+  const x = seg + slide
+  return {seg, reveal, x, index: Math.round(x)}
+}
+
+export type DeckMode = 'on' | 'row' | 'static'
+
+/** Which grammar fits the viewport: the deck wide, the row on a phone, a list otherwise. */
+export function modeFor(q: {reduced: boolean; wide: boolean; tall: boolean}): DeckMode {
+  if (q.reduced) return 'static'
+  if (q.wide) return 'on'
+  return q.tall ? 'row' : 'static'
+}
+
 /**
  * Wires a deck: `root` is the tall section, `.deck-stage` the sticky child and
  * `.deck-card` the cards in front-to-back order. Returns the teardown.
@@ -85,9 +133,20 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
   const cards = Array.from(root.querySelectorAll<HTMLElement>('.deck-card'))
   const reduced = matchMedia('(prefers-reduced-motion: reduce)')
   const wide = matchMedia('(min-width: 981px)')
+  // Below this the pinned row cannot show a screen at a readable size, so the
+  // phone keeps the swipeable list instead.
+  const tall = matchMedia('(min-height: 560px)')
   let frame = 0
   let lastP = -1
-  let live = false
+  let mode: DeckMode = 'static'
+  // How far each card's column overflows its box on this viewport: the
+  // distance its words travel up. Measured, not guessed, because it depends
+  // on the copy, the capture's aspect and the screen.
+  let over: number[] = []
+
+  const measure = () => {
+    over = cards.map(card => Math.max(0, card.scrollHeight - card.clientHeight))
+  }
 
   const progress = () => {
     const rect = root.getBoundingClientRect()
@@ -96,6 +155,17 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
   }
 
   const write = (p: number) => {
+    if (mode === 'row') {
+      const r = rowState(p, cards.length, d)
+      root.style.setProperty('--row-i', r.x.toFixed(4))
+      cards.forEach((card, i) => {
+        const y = i < r.seg ? 1 : i === r.seg ? r.reveal : 0
+        card.style.setProperty('--card-y', `${(-(over[i] ?? 0) * y).toFixed(1)}px`)
+        card.toggleAttribute('inert', i !== r.index)
+      })
+      root.style.setProperty('--deck-p', p.toFixed(4))
+      return
+    }
     cards.forEach((card, i) => {
       const s = cardState(p, cards.length, i, d)
       card.style.setProperty('--y', `${s.y.toFixed(2)}%`)
@@ -114,6 +184,7 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
       card.removeAttribute('inert')
     }
     root.style.removeProperty('--deck-p')
+    root.style.removeProperty('--row-i')
   }
 
   const tick = () => {
@@ -125,17 +196,19 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
   }
 
   const schedule = () => {
-    if (frame || !live || document.hidden) return
+    if (frame || mode === 'static' || document.hidden) return
     frame = requestAnimationFrame(tick)
   }
 
   const configure = () => {
-    const next = !reduced.matches && wide.matches
-    if (next === live) { if (live) { lastP = -1; schedule() } return }
-    live = next
-    root.dataset.deck = live ? 'on' : 'static'
+    const next = modeFor({reduced: reduced.matches, wide: wide.matches, tall: tall.matches})
+    if (next === mode) { if (mode !== 'static') { if (mode === 'row') measure(); lastP = -1; schedule() } return }
+    mode = next
     if (frame) { cancelAnimationFrame(frame); frame = 0 }
-    if (!live) { clear(); return }
+    clear()
+    root.dataset.deck = mode
+    if (mode === 'static') return
+    if (mode === 'row') measure()
     lastP = -1
     schedule()
   }
@@ -145,6 +218,7 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
   document.addEventListener('visibilitychange', () => { if (document.hidden) { if (frame) cancelAnimationFrame(frame); frame = 0 } else schedule() }, {signal})
   reduced.addEventListener('change', configure, {signal})
   wide.addEventListener('change', configure, {signal})
+  tall.addEventListener('change', configure, {signal})
   configure()
 
   return () => {

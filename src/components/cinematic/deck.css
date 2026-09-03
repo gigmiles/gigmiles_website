@@ -147,6 +147,79 @@
   .editorial-site .deck-text { font-size: 14px; }
 }
 
+/* ---- phone, scroll-driven: the row rides the vertical scroll ------------
+   The operator's order: the first screen, then the words under it, then the
+   row slides to the second screen, its words, the third, and so on; after the
+   fourth the page moves on. The section pins for `rowRunway` screens of
+   scroll. The controller writes two numbers: `--row-i`, how many cards the row
+   has moved left, and per card `--card-y`, how far its column has scrolled up
+   inside its box to bring the words into view. Each card is a box one stage
+   tall with its capture at the top, whole and at its own aspect, and the copy
+   below it; the box clips, the column moves. The native swipe row above stays
+   the fallback for reduced motion, very short viewports and no JavaScript. */
+.editorial-site .deck[data-deck="row"] { height: 400svh; }
+.editorial-site .deck[data-deck="row"] .deck-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  isolation: isolate;
+}
+.editorial-site .deck[data-deck="row"] .deck-inner {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(.9rem, 2.4vh, 1.4rem) 0 clamp(.7rem, 2vh, 1rem);
+}
+.editorial-site .deck[data-deck="row"] .deck-heading { margin: 0 0 clamp(.7rem, 2vh, 1rem); font-size: clamp(24px, 6.4vw, 30px); max-width: 100%; }
+.editorial-site .deck[data-deck="row"] .deck-cards {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  gap: 14px;
+  overflow: visible;
+  scroll-snap-type: none;
+  padding-bottom: 0;
+  transform: translate3d(calc(var(--row-i, 0) * (-88% - 14px)), 0, 0);
+  will-change: transform;
+}
+.editorial-site .deck[data-deck="row"] .deck-card {
+  flex: 0 0 88%;
+  scroll-snap-align: none;
+  display: block;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+/* The column that scrolls inside the box: head, capture, words. */
+.editorial-site .deck[data-deck="row"] .deck-head { padding: .9rem 1rem 0; }
+.editorial-site .deck[data-deck="row"] .deck-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: .6rem 1rem 1rem;
+  transform: translate3d(0, var(--card-y, 0px), 0);
+  will-change: transform;
+}
+.editorial-site .deck[data-deck="row"] .deck-media { order: -1; flex: 0 0 auto; height: auto; display: flex; align-items: flex-start; justify-content: center; margin: 0; }
+.editorial-site .deck[data-deck="row"] .deck-media img { width: 100%; max-width: 100%; height: auto; object-fit: contain; border-radius: 16px; }
+.editorial-site .deck[data-deck="row"] .deck-copy { flex: 0 0 auto; gap: 8px; padding-bottom: 0; }
+.editorial-site .deck[data-deck="row"] .deck-title { font-size: 21px; }
+.editorial-site .deck[data-deck="row"] .deck-text { font-size: 14px; line-height: 1.45; }
+.editorial-site .deck[data-deck="row"] .deck-figure strong { font-size: 28px; }
+.editorial-site .deck[data-deck="row"] .deck-bullets { gap: 5px; }
+.editorial-site .deck[data-deck="row"] .deck-bullets li { font-size: 13px; }
+.editorial-site .deck[data-deck="row"] .deck-cta { min-height: 44px; margin-top: 4px; }
+.editorial-site .deck[data-deck="row"] .deck-note { margin: clamp(.6rem, 1.6vh, .9rem) 0 0; font-size: 11px; }
+/* The card in the row still needs the head to stay put while the column
+   moves under it; the head is outside the column. */
+.editorial-site .deck[data-deck="row"] .deck-head + .deck-body { margin-top: 0; }
+
 @media (prefers-reduced-motion: reduce) {
   .editorial-site .deck-cta { transition: none; }
 }
