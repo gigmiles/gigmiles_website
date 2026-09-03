@@ -85,7 +85,11 @@
 .editorial-site .deck-bullets { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 7px; }
 .editorial-site .deck-bullets li { position: relative; padding-left: 18px; font-size: clamp(13px, 1vw, 15px); font-weight: 300; line-height: 1.4; color: #cfe0d3; }
 .editorial-site .deck-bullets li::before { content: ''; position: absolute; left: 0; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--mint); opacity: .8; }
-.editorial-site .deck-cta { margin-top: 6px; min-height: 46px; opacity: var(--front, 1); transition: opacity .35s ease; }
+/* The CTA used to fade with `--front`, which meant that through every hand-over
+   the only button on screen sat at about half opacity and read as disabled.
+   The cards behind are occluded by the front one and the controller marks them
+   `inert`, so nothing is gained by dimming the action as well. */
+.editorial-site .deck-cta { margin-top: 6px; min-height: 46px; }
 
 /* The capture rises out of the card and is cut by its lower edge. */
 .editorial-site .deck-media { position: relative; align-self: stretch; height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; }
@@ -105,6 +109,10 @@
    on the container. The pinned desktop deck is untouched; it only ever runs
    above 981px. */
 @media (max-width: 980px) {
+  /* The section's desktop breathing room pushed the first card's foot past the
+     fold; on a phone the heading needs far less air above it. */
+  .editorial-site .deck-stage { padding: clamp(2.2rem, 6vh, 3.4rem) 0 clamp(1.6rem, 4vh, 2.4rem); }
+  .editorial-site .deck-heading { margin-bottom: clamp(1.1rem, 3vh, 1.8rem); font-size: clamp(30px, 7.6vw, 38px); }
   .editorial-site .deck-cards {
     display: flex;
     gap: 14px;
@@ -126,14 +134,14 @@
     gap: 14px;
   }
   .editorial-site .deck-body { grid-template-columns: 1fr; align-items: start; flex: 1 1 auto; }
-  .editorial-site .deck-copy { gap: 12px; }
+  .editorial-site .deck-copy { gap: 10px; }
   /* The capture is cropped to its top, where the figure the card is talking
      about actually is, so a card fits one screen and the swipe is the only
      gesture the section asks for. */
   .editorial-site .deck-media { justify-content: flex-start; margin-top: 2px; flex: 0 0 auto; }
-  .editorial-site .deck-media img { width: 100%; max-width: 260px; height: 148px; object-fit: cover; object-position: top center; border-radius: 16px 16px 8px 8px; }
+  .editorial-site .deck-media img { width: 100%; max-width: 300px; height: clamp(160px, 25svh, 205px); object-fit: cover; object-position: top center; border-radius: 16px 16px 8px 8px; }
   .editorial-site .deck-bullets li { font-size: 13px; }
-  .editorial-site .deck-card { padding: 1.05rem 1.1rem; gap: 11px; }
+  .editorial-site .deck-card { padding: 1rem 1.05rem; gap: 9px; }
   .editorial-site .deck-title { font-size: 22px; }
   .editorial-site .deck-text { font-size: 14px; }
 }
