@@ -1,4 +1,5 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
+import {CtaLabel} from '@/components/ui/CtaLabel'
 import {PersonalizationStory} from './PersonalizationStory'
 import {ProductShowcase} from './ProductShowcase'
 import {CalculatorEntry} from './CalculatorEntry'
@@ -53,8 +54,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 </p>
 <div className="actions">
 <DownloadButton className="button conversion-cta" data-cta-placement="hero">
-{"Get GigMiles — free "}
-<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
+<CtaLabel/>
 </DownloadButton>
 <a className="text-link" href="#details">
 {"See how it works "}
@@ -445,8 +445,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 {"Pro is an option, not the starting line."}
 </p>
 <DownloadButton className="button conversion-cta" data-cta-placement="free-core">
-{"Get GigMiles — free "}
-<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
+<CtaLabel/>
 </DownloadButton>
 <p className="confidence">
 {"No card. No ads."}
@@ -618,8 +617,7 @@ export function ApprovedHome({heroMode='timed',variant='live'}:{heroMode?:'timed
 {"Bring your earnings, costs and records together."}
 </p>
 <DownloadButton className="button conversion-cta on-paper" data-cta-placement="closing">
-{"Get GigMiles — free "}
-<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
+<CtaLabel/>
 </DownloadButton>
 <p className="close-trust">
 {"Free core · No card · No ads"}

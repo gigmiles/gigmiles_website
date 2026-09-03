@@ -3,7 +3,7 @@
 import {useEffect, useRef} from 'react'
 import type {TourScreen} from '@/components/editorial/FeatureTour'
 import {DownloadButton} from '@/components/ui/DownloadButton'
-import {ArrowUpRight} from '@/components/editorial/Glyph'
+import {CtaLabel} from '@/components/ui/CtaLabel'
 import {installDeck} from './deck'
 
 // The four approved captures as a pinned deck. Server-rendered complete: on a
@@ -75,9 +75,7 @@ export function TourDeck({screens, heading}: {screens: TourScreen[]; heading: Re
                 {EXTRAS[screen.id] && <ul className="deck-bullets">
                   {EXTRAS[screen.id].bullets.map(b => <li key={b}>{b}</li>)}
                 </ul>}
-                <DownloadButton className="button conversion-cta deck-cta" data-cta-placement={`deck-${screen.id}`}>
-                  Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
-                </DownloadButton>
+                <DownloadButton className="button conversion-cta deck-cta" data-cta-placement={`deck-${screen.id}`}><CtaLabel/></DownloadButton>
               </div>
               <div className="deck-media">
                 {screen.image

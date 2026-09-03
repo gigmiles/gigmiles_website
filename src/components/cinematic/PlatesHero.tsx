@@ -2,7 +2,7 @@
 
 import {useEffect, useMemo, useRef, type CSSProperties} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
-import {ArrowUpRight} from '@/components/editorial/Glyph'
+import {CtaLabel} from '@/components/ui/CtaLabel'
 import {installCinematic} from './cinematic-controller'
 import {createPlateDriver, type FilmDriver} from './plate-engine'
 import {PLATE_ASSETS, PLATE_BEATS, PLATE_CUES, PLATE_LIGHTS, PLATE_SCENES, PLATE_TINTS, PLATES_END_AT, SEAMS, platesFor, postersFor, type P1Variant} from './plate-cues'
@@ -53,9 +53,7 @@ export function PlatesHero({driver, variant}: {driver?: FilmDriver; variant?: P1
             </article>)}
           </div>
           <div className="cine-cta">
-            <DownloadButton className="button conversion-cta" data-cta-placement="cinematic-stage">
-              Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
-            </DownloadButton>
+            <DownloadButton className="button conversion-cta" data-cta-placement="cinematic-stage"><CtaLabel/></DownloadButton>
             <p className="cine-cta-note">Free core. No card. No ads.</p>
           </div>
         </div>

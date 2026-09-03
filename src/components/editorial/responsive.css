@@ -69,3 +69,13 @@
 /* Independence and trademark notice: small, quiet, on every page */
 .editorial-site .site-footer-privacy { width: 100%; margin: 14px 0 0; max-width: 88ch; font-size: 11px; line-height: 1.55; color: #8eae9a; }
 .editorial-site .site-footer-notice { width: 100%; margin: 6px 0 0; max-width: 88ch; font-size: 11px; line-height: 1.55; color: #8eae9a; }
+
+/* Touch targets in the header. The brand lockup and the nav button were 28 and
+   34 px tall on a phone, under the 44 px a thumb needs; the audit flagged them
+   on every phone width. The type and padding are unchanged, only the box the
+   finger can hit. */
+@media (max-width: 980px) {
+  .editorial-site .brand,
+  .editorial-site .nav-cta,
+  .editorial-site .site-footer nav a { min-height: 44px; display: inline-flex; align-items: center; }
+}

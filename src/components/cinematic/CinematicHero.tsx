@@ -2,7 +2,7 @@
 
 import {useEffect, useRef, type CSSProperties} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
-import {ArrowUpRight} from '@/components/editorial/Glyph'
+import {CtaLabel} from '@/components/ui/CtaLabel'
 import {installCinematic} from './cinematic-controller'
 import {BEAT_LIGHTS, BEAT_TINTS, CINEMATIC_ASSETS, CINEMATIC_BEATS, CINEMATIC_CUES, CINEMATIC_SCENES, PROOF} from './cinematic-cues'
 import {Statement} from './Statement'
@@ -43,9 +43,7 @@ export function CinematicHero({layout = 'portrait'}: {layout?: 'portrait' | 'lan
             </article>)}
           </div>
           <div className="cine-cta">
-            <DownloadButton className="button conversion-cta" data-cta-placement="cinematic-stage">
-              Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
-            </DownloadButton>
+            <DownloadButton className="button conversion-cta" data-cta-placement="cinematic-stage"><CtaLabel/></DownloadButton>
             <p className="cine-cta-note">Free core. No card. No ads.</p>
           </div>
         </div>

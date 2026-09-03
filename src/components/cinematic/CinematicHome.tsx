@@ -1,7 +1,7 @@
 import {DownloadButton} from '@/components/ui/DownloadButton'
+import {CtaLabel} from '@/components/ui/CtaLabel'
 import {TOUR_SCREENS} from '@/components/editorial/ApprovedHome'
 import {EstimateProof} from '@/components/editorial/EstimateProof'
-import {ArrowUpRight} from '@/components/editorial/Glyph'
 import {PlanTable} from '@/components/editorial/PlanTable'
 import {RevealObserver} from '@/components/editorial/RevealObserver'
 import {StickyCta} from '@/components/editorial/StickyCta'
@@ -42,9 +42,7 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
       <div className="free-heading">
         <h2 id="free-title">Free to start.<br/><em>Free to keep using.</em></h2>
         <p>The core stays free.<br/>Pro is an option, not the starting line.</p>
-        <DownloadButton className="button conversion-cta" data-cta-placement="cinematic-free">
-          Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
-        </DownloadButton>
+        <DownloadButton className="button conversion-cta" data-cta-placement="cinematic-free"><CtaLabel/></DownloadButton>
         <p className="confidence">No card. No ads.</p>
       </div>
       <PlanTable/>
@@ -54,9 +52,7 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
       <div className="wrap" data-reveal="">
         <h2>Stop guessing.<br/><em>Start with your next shift.</em></h2>
         <p>Bring your earnings, costs and records together.</p>
-        <DownloadButton className="button conversion-cta on-paper" data-cta-placement="cinematic-closing">
-          Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
-        </DownloadButton>
+        <DownloadButton className="button conversion-cta on-paper" data-cta-placement="cinematic-closing"><CtaLabel/></DownloadButton>
         <p className="close-trust">Free core · No card · No ads</p>
         <p className="close-small">Optional Pro upgrades. Estimates for planning, not tax advice.</p>
       </div>

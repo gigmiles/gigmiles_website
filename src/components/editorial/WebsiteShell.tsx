@@ -40,7 +40,7 @@ export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:b
 <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
 </DownloadButton>
 </header><main id="main-content">{children}</main><footer className="wrap site-footer">
-<a href="/" aria-label="GigMiles home">
+<a className="brand" href="/" aria-label="GigMiles home">
 <span className="brand-lockup" aria-hidden="true">
 <img className="brand-icon" src="/brand/icons/icon-180.png" width="32" height="32" alt="" />
 <span className="brand-name">

@@ -27,7 +27,14 @@ describe('approved website transplant',()=>{
   const html=renderToStaticMarkup(<WebsiteShell><ApprovedHome/></WebsiteShell>)
   expect(html).toContain('NET PROFIT TRACKER FOR GIG DRIVERS')
   expect(html).not.toMatch(/FOR US GIG|IN THE UNITED STATES|LOCAL SITE|LOCAL REVIEW|127\.0\.0\.1|\$235|\$175/)
-  expect((html.match(/class="brand-trademark"/g)||[])).toHaveLength(2)
+  // The lockup itself still appears exactly twice, in the header and the
+  // footer. The trademark now also rides along inside every get-the-app
+  // button, because the CTA sets the brand rather than spelling it.
+  expect((html.match(/class="brand-lockup"/g)||[])).toHaveLength(2)
+  // Three of the five buttons carry the "Get GigMiles — free" label and so set
+  // the brand; the nav and records buttons say something else.
+  expect((html.match(/class="cta-wordmark"/g)||[])).toHaveLength(3)
+  expect((html.match(/class="brand-trademark"/g)||[])).toHaveLength(5)
   expect([...html.matchAll(/data-cta-placement="([^"]+)"/g)].map(m=>m[1]).sort()).toEqual(['closing','free-core','hero','nav','records'])
   expect(html).toContain('Optional Pro upgrades.')
   expect(html).toContain('Estimates for planning. Not tax advice.')

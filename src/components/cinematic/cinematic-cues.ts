@@ -55,19 +55,22 @@ export const BEAT_LIGHTS: LightSpec[] = [
 // time, so the words and the picture describe the same thing.
 export interface ProofRow { id: string; label: string; amount: string; at: number }
 export const PROOF = {
-  /** Film fractions: the paper fills the frame at about 0.44 and the city starts rising at 0.60. */
-  from: 0.435,
+  /** Film fractions. It used to open at 0.435, while the pump was still on
+      screen: dark ink on a dark frame, unreadable on a phone. The paper only
+      fills the frame at about 0.466, so nothing is written before then, and
+      the city starts rising at 0.60. */
+  from: 0.468,
   to: 0.60,
-  fade: 0.03,
+  fade: 0.022,
   /** How long a row takes to arrive, in film fractions. */
-  step: 0.016,
+  step: 0.014,
   rows: [
-    {id: 'gross', label: 'Gross', amount: '$235', at: 0.452},
-    {id: 'fuel', label: 'Fuel', amount: '−$17', at: 0.482},
-    {id: 'wear', label: 'Wear and tear', amount: '−$26', at: 0.512},
+    {id: 'gross', label: 'Gross', amount: '$235', at: 0.484},
+    {id: 'fuel', label: 'Fuel', amount: '−$17', at: 0.506},
+    {id: 'wear', label: 'Wear and tear', amount: '−$26', at: 0.528},
   ] as ProofRow[],
   /** The kept figure and the shift line under it. */
-  netAt: 0.545,
+  netAt: 0.552,
   net: {label: 'Net income', amount: '$192', foot: '8 hours · 105.0 miles · $24/hr'},
   eyebrow: 'Example shift',
 }

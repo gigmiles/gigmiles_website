@@ -1,8 +1,8 @@
 'use client'
 
-import {ArrowUpRight} from './Glyph'
 import {useEffect, useState} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
+import {CtaLabel} from '@/components/ui/CtaLabel'
 
 // Mobile-only bar (CSS hides it from 721px up). Visible once the hero headline
 // has scrolled out of view and hidden again while the closing download section
@@ -30,8 +30,6 @@ export function StickyCta({heroSelector = '#headline', endSelector = '#download'
   const visible = heroGone && !endVisible
   return <div className="sticky-cta" data-visible={visible ? 'true' : 'false'} role="region" aria-label="Get the app" aria-hidden={!visible}>
     <p>Free core · No card · No ads</p>
-    <DownloadButton className="button conversion-cta" data-cta-placement="sticky-bar">
-      Get GigMiles — free <span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
-    </DownloadButton>
+    <DownloadButton className="button conversion-cta" data-cta-placement="sticky-bar"><CtaLabel/></DownloadButton>
   </div>
 }
