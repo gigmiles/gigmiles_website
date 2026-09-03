@@ -25,8 +25,10 @@ const EXTRAS: Record<string, DeckExtra> = {
   home: {bullets: ['Today and this week, after costs', 'Live fuel prices for your state', 'Home-screen widget on iOS and Android']},
   shifts: {bullets: ['Timer shifts or manual entry', 'Edit a shift, add one you forgot, undo a delete', 'Day and week history']},
   tax: {bullets: ['Self-employment, federal and state, worked separately', 'Schedule C worksheet on screen', 'PDF and CSV export for your tax professional (Pro)']},
+  // No figures on this card: the trend charts show monthly rates, and quoting
+  // the dashboard's per-day $24/hr beside them would contradict the picture.
+  // The proofs carry it instead.
   insights: {
-    figures: [{value: '$24', unit: '/hr', caption: 'Profit per hour'}, {value: '$1.8', unit: '/mi', caption: 'Profit per mile'}],
     bullets: ['Earnings, hours, miles and net for every platform you work', 'Trend charts by week, month and quarter', 'What-if mileage simulator', 'Standard mileage against actual expenses, side by side'],
   },
 }

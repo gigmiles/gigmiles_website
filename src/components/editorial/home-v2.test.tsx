@@ -67,7 +67,9 @@ describe('home v2 (local preview only)',()=>{
       }
     }
     expect(hashes.size).toBe(8)
-    expect(html).toMatch(/alt="Example GigMiles home screen: Net Income \$192/)
+    // The home capture's alt has to name the screen and the net figure it shows;
+    // the wording around them is free to change with the capture.
+    expect(html).toMatch(/alt="Example GigMiles home screen[^"]*Net Income \$192/)
     expect(html).toContain('type="range"')
     expect(html).toContain('tour-figure')
   })
