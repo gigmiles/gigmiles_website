@@ -178,11 +178,19 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
     root.style.setProperty('--deck-p', p.toFixed(4))
   }
 
+  // Remove only what this controller wrote. The cards' inline style also
+  // carries `--ground`, the card's own colour, which React set at render and
+  // will not set again without a re-render: wiping the whole attribute left
+  // every card transparent and the four texts stacked on top of each other.
+  // `--z` is shared, so it is put back to the resting order rather than
+  // removed.
+  const OWNED = ['--y', '--rot', '--s', '--front', '--card-y']
   const clear = () => {
-    for (const card of cards) {
-      card.removeAttribute('style')
+    cards.forEach((card, i) => {
+      for (const prop of OWNED) card.style.removeProperty(prop)
+      card.style.setProperty('--z', String(cards.length - i))
       card.removeAttribute('inert')
-    }
+    })
     root.style.removeProperty('--deck-p')
     root.style.removeProperty('--row-i')
   }
