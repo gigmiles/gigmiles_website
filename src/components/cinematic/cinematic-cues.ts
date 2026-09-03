@@ -76,21 +76,31 @@ export const PROOF = {
 }
 
 // The sign-off. The film ends on the phone lying dark on the seat; while the
-// last frame is held and the paper section slides up, its glass wakes and the
-// app's mark is on it. Measured off the real last frame on a 5 % grid: the
-// phone's screen centres at 26.2 % across and 56.0 % down and lies tilted about
-// 17 degrees anticlockwise. The mark is square, so a rotation is enough and no
-// perspective is needed at this size. This is the only place on the page where
-// the logo is doing narrative work rather than decorating.
+// last frame is held and the paper section slides up, its glass wakes.
+//
+// The first attempt put the app's icon tile on the glass and it read as a
+// sticker, for two reasons worth keeping written down: the phone's screen is a
+// large portrait quad seen at an angle, so a small square in the middle of it
+// is not what a waking phone looks like, and a 2-D rotation cannot sit on a
+// foreshortened plane. What is drawn now is the screen itself. The four corners
+// below were read off the real last frame on a 5 % grid and are percentages of
+// the media panel, clockwise from the phone's top-left; the light inside them
+// needs no perspective of its own, and the spill under it is the screen
+// lighting the seat rather than a glow drawn around a badge.
 export const SIGNOFF = {
   /** Page progress, not film fraction: the film is already held by here. */
   from: 0.76,
   to: 0.88,
-  x: 26.2,
-  y: 56.0,
-  /** Fraction of the panel's width. */
-  size: 6.6,
-  tilt: -17,
+  /** The phone's glass, clockwise from its top-left corner. */
+  screen: [
+    [16.4, 52.1],
+    [27.2, 50.6],
+    [37.6, 59.5],
+    [26.5, 61.2],
+  ] as Array<[number, number]>,
+  /** Centre of the glass, where the light comes from. */
+  cx: 27.0,
+  cy: 56.6,
 }
 
 export interface SceneSpec {

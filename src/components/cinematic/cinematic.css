@@ -78,27 +78,45 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-hero[data-cine-painted="true"] .cine-media .cine-canvas { opacity: 1; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-media .cine-canvas { display: none; }
 
-/* The sign-off: the app's mark on the phone's glass in the held last frame.
-   It rides the same camera transform as the film so it sits on the phone, and
-   the glow under it is the screen waking rather than a badge pasted on top.
-   Hidden in static mode, where there is no held frame to sit on. */
-.editorial-site .cine-signoff {
+/* The sign-off: the phone's own glass waking in the held last frame.
+   Both layers cover the whole panel and ride the same camera transform as the
+   film, so they sit on the phone rather than floating over the picture. The
+   screen is clipped to the four corners measured off the real frame, which is
+   why it needs no perspective of its own: the shape is already the phone's.
+   The spill is the screen lighting the seat around it, screened over the
+   footage so it adds light instead of painting a shape on top of it.
+   Both are hidden in static mode and under reduced motion, where there is no
+   held frame to sit on. */
+.editorial-site .cine-signoff,
+.editorial-site .cine-signoff-spill {
   position: absolute;
-  z-index: 4;
-  left: var(--sx, 50%);
-  top: var(--sy, 50%);
-  width: var(--ss, 6%);
-  height: auto;
-  aspect-ratio: 1;
-  border-radius: 22%;
+  inset: 0;
   opacity: var(--signoff, 0);
-  transform: translate3d(var(--cam-x, 0px), var(--cam-y, 0px), 0) scale(var(--cam-s, 1)) translate(-50%, -50%) rotate(var(--st, 0deg)) scale(calc(.72 + .28 * var(--signoff, 0)));
-  transform-origin: 0 0;
-  box-shadow: 0 0 0 1px #0e4f4f55, 0 0 calc(var(--signoff, 0) * 26px) calc(var(--signoff, 0) * 6px) #5eead44d;
+  transform: translate3d(var(--cam-x, 0px), var(--cam-y, 0px), 0) scale(var(--cam-s, 1));
+  transform-origin: 50% 50%;
   pointer-events: none;
 }
-.editorial-site .cine-hero[data-cine-mode="static"] .cine-signoff { display: none; }
-@media (prefers-reduced-motion: reduce) { .editorial-site .cine-signoff { display: none; } }
+.editorial-site .cine-signoff-spill {
+  z-index: 3;
+  background: radial-gradient(circle at var(--cx, 27%) var(--cy, 57%), #5eead436 0%, #5eead41a 22%, transparent 56%);
+  mix-blend-mode: screen;
+}
+/* Screened, not painted. An opaque fill covered the glass's own reflection and
+   the bezel highlight with it, and a screen that loses its reflection stops
+   being glass. Blending adds light to what the film already shot, so the
+   surface keeps its texture and only gets brighter. */
+.editorial-site .cine-signoff {
+  z-index: 4;
+  clip-path: polygon(var(--screen));
+  mix-blend-mode: screen;
+  background: radial-gradient(ellipse 78% 70% at var(--cx, 27%) var(--cy, 57%), #1f5a50 0%, #123833 48%, #081a19 100%);
+}
+.editorial-site .cine-hero[data-cine-mode="static"] .cine-signoff,
+.editorial-site .cine-hero[data-cine-mode="static"] .cine-signoff-spill { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .editorial-site .cine-signoff,
+  .editorial-site .cine-signoff-spill { display: none; }
+}
 
 /* ---- the proof layer: the film's blank paper, filled in code ----------
    The receipt and the ledger arrive empty from the model on purpose. These are

@@ -54,16 +54,21 @@ export function CinematicHero({layout = 'portrait'}: {layout?: 'portrait' | 'lan
           </picture>
           <video className="cine-video" ref={videoRef} muted playsInline preload="none" poster={CINEMATIC_ASSETS.poster} disablePictureInPicture disableRemotePlayback tabIndex={-1}/>
           <div className="cine-light" aria-hidden="true"/>
-          {/* The film's last frame holds on the phone; here its glass wakes. */}
-          <img
-            className="cine-signoff"
-            src="/brand/icons/icon-180.png"
-            alt=""
+          {/* The film's last frame holds on the phone; here its glass wakes.
+              The quad is the real screen, measured off that frame. */}
+          <div
+            className="cine-signoff-spill"
             aria-hidden="true"
-            width={180}
-            height={180}
-            decoding="async"
-            style={{'--sx': `${SIGNOFF.x}%`, '--sy': `${SIGNOFF.y}%`, '--ss': `${SIGNOFF.size}%`, '--st': `${SIGNOFF.tilt}deg`} as CSSProperties}
+            style={{'--cx': `${SIGNOFF.cx}%`, '--cy': `${SIGNOFF.cy}%`} as CSSProperties}
+          />
+          <div
+            className="cine-signoff"
+            aria-hidden="true"
+            style={{
+              '--screen': SIGNOFF.screen.map(([x, y]) => `${x}% ${y}%`).join(', '),
+              '--cx': `${SIGNOFF.cx}%`,
+              '--cy': `${SIGNOFF.cy}%`,
+            } as CSSProperties}
           />
           {/* The film's blank receipt and ledger, filled in code. Canonical
               figures only; the model never draws a number. In static mode this
