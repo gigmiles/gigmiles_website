@@ -75,6 +75,24 @@ export const PROOF = {
   eyebrow: 'Example shift',
 }
 
+// The sign-off. The film ends on the phone lying dark on the seat; while the
+// last frame is held and the paper section slides up, its glass wakes and the
+// app's mark is on it. Measured off the real last frame on a 5 % grid: the
+// phone's screen centres at 26.2 % across and 56.0 % down and lies tilted about
+// 17 degrees anticlockwise. The mark is square, so a rotation is enough and no
+// perspective is needed at this size. This is the only place on the page where
+// the logo is doing narrative work rather than decorating.
+export const SIGNOFF = {
+  /** Page progress, not film fraction: the film is already held by here. */
+  from: 0.76,
+  to: 0.88,
+  x: 26.2,
+  y: 56.0,
+  /** Fraction of the panel's width. */
+  size: 6.6,
+  tilt: -17,
+}
+
 export interface SceneSpec {
   id: string
   /** One entry per masked line; nine words at most across the headline. `*word*` marks the driver's word (set in 800 weight, Mint). */

@@ -78,6 +78,28 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-hero[data-cine-painted="true"] .cine-media .cine-canvas { opacity: 1; }
 .editorial-site .cine-hero[data-cine-mode="static"] .cine-media .cine-canvas { display: none; }
 
+/* The sign-off: the app's mark on the phone's glass in the held last frame.
+   It rides the same camera transform as the film so it sits on the phone, and
+   the glow under it is the screen waking rather than a badge pasted on top.
+   Hidden in static mode, where there is no held frame to sit on. */
+.editorial-site .cine-signoff {
+  position: absolute;
+  z-index: 4;
+  left: var(--sx, 50%);
+  top: var(--sy, 50%);
+  width: var(--ss, 6%);
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 22%;
+  opacity: var(--signoff, 0);
+  transform: translate3d(var(--cam-x, 0px), var(--cam-y, 0px), 0) scale(var(--cam-s, 1)) translate(-50%, -50%) rotate(var(--st, 0deg)) scale(calc(.72 + .28 * var(--signoff, 0)));
+  transform-origin: 0 0;
+  box-shadow: 0 0 0 1px #0e4f4f55, 0 0 calc(var(--signoff, 0) * 26px) calc(var(--signoff, 0) * 6px) #5eead44d;
+  pointer-events: none;
+}
+.editorial-site .cine-hero[data-cine-mode="static"] .cine-signoff { display: none; }
+@media (prefers-reduced-motion: reduce) { .editorial-site .cine-signoff { display: none; } }
+
 /* ---- the proof layer: the film's blank paper, filled in code ----------
    The receipt and the ledger arrive empty from the model on purpose. These are
    the canonical figures, set in the brand face, drifting with the camera so
