@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { DownloadButton } from '@/components/ui/DownloadButton'
+import { CtaLabel } from '@/components/ui/CtaLabel'
 
 const DESKTOP = '(min-width: 721px)'
 
@@ -48,6 +50,16 @@ export function NavMenu({ children }: { children: ReactNode }) {
         onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setOpen(false) }}
       >
         {children}
+        {/* The header's own button leaves the phone, so the menu carries the
+            real one: opening the menu is the moment a visitor is deciding, and
+            this is the only thing in the panel that is not navigation. It is
+            hidden above 720px, where the header still has its button. */}
+        <div className="nav-menu-cta">
+          <DownloadButton className="button conversion-cta" data-cta-placement="nav-menu">
+            <CtaLabel/>
+          </DownloadButton>
+          <span>No card. No ads.</span>
+        </div>
       </nav>
     </div>
   )

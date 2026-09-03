@@ -96,11 +96,46 @@
 .editorial-site .deck-note { margin: clamp(1.6rem, 4vh, 2.4rem) 0 0; font-size: 12px; color: var(--muted); }
 .editorial-site .deck[data-deck="on"] .deck-note { position: absolute; bottom: clamp(1rem, 4vh, 2rem); left: 0; margin: 0; z-index: 10; }
 
-/* ---- narrow: the plain list the markup already is ---------------------- */
+/* ---- narrow: the deck lies down and is swiped ---------------------------
+   Stacked, the four cards ran for several screens and the section became the
+   longest scroll on the phone. Here they lie in a row that snaps, so the
+   section costs one screen and the next card's edge shows that there is more.
+   Native horizontal scrolling only: nothing is hijacked, and because every
+   card holds its own button, tabbing walks the row without a second tab stop
+   on the container. The pinned desktop deck is untouched; it only ever runs
+   above 981px. */
 @media (max-width: 980px) {
-  .editorial-site .deck-body { grid-template-columns: 1fr; align-items: start; }
-  .editorial-site .deck-media { justify-content: flex-start; margin-top: 4px; }
-  .editorial-site .deck-media img { width: min(100%, 240px); height: auto; }
+  .editorial-site .deck-cards {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 0;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .editorial-site .deck-cards::-webkit-scrollbar { display: none; }
+  .editorial-site .deck-card {
+    flex: 0 0 88%;
+    scroll-snap-align: start;
+    scroll-margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .editorial-site .deck-body { grid-template-columns: 1fr; align-items: start; flex: 1 1 auto; }
+  .editorial-site .deck-copy { gap: 12px; }
+  /* The capture is cropped to its top, where the figure the card is talking
+     about actually is, so a card fits one screen and the swipe is the only
+     gesture the section asks for. */
+  .editorial-site .deck-media { justify-content: flex-start; margin-top: 2px; flex: 0 0 auto; }
+  .editorial-site .deck-media img { width: 100%; max-width: 260px; height: 148px; object-fit: cover; object-position: top center; border-radius: 16px 16px 8px 8px; }
+  .editorial-site .deck-bullets li { font-size: 13px; }
+  .editorial-site .deck-card { padding: 1.05rem 1.1rem; gap: 11px; }
+  .editorial-site .deck-title { font-size: 22px; }
+  .editorial-site .deck-text { font-size: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

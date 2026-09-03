@@ -3,7 +3,6 @@ import type {ReactNode} from 'react'
 import {NavMenu} from './NavMenu'
 import {PRIVACY_FACTS} from '@/components/editorial/TrustStrip'
 import {PLATFORM_NOTICE} from '@/lib/platforms'
-import {ArrowUpRight} from './Glyph'
 import './editorial.css'
 import './responsive.css'
 export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:boolean}){return <div className={'editorial-site'+(paper?' paper-page':'')}>
@@ -36,8 +35,7 @@ export function WebsiteShell({children,paper=false}:{children:ReactNode;paper?:b
 </a>
 </NavMenu>
 <DownloadButton className="nav-cta" data-cta-placement="nav">
-{"Get the app "}
-<span aria-hidden="true" className="glyph"><ArrowUpRight/></span>
+{"Get the app"}
 </DownloadButton>
 </header><main id="main-content">{children}</main><footer className="wrap site-footer">
 <a className="brand" href="/" aria-label="GigMiles home">

@@ -18,17 +18,30 @@
   }
   .editorial-site .nav-toggle[aria-expanded="true"] { background: #e5f2e314; }
   .editorial-site .nav-toggle:focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; }
+  /* The panel is a sheet, not a bare list: its own raised surface, the page's
+     own side margin so the rows line up with the content behind it, rows a
+     thumb's height with the type the page uses, and the offer at the foot. */
   .editorial-site .nav-menu nav { display: none; }
   .editorial-site .nav-menu[data-menu-open="true"] nav {
     display: flex; flex-direction: column; gap: 0;
-    position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
-    padding: 6px 0 12px; background: var(--bg); border-bottom: 1px solid var(--line);
+    position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 20;
+    padding: 6px 6% 20px; background: var(--deep);
+    border: 1px solid var(--line); border-radius: 0 0 20px 20px; border-top: 0;
+    box-shadow: 0 30px 60px -30px #000000cc;
   }
   .editorial-site .nav-menu nav a {
-    display: flex; align-items: center; min-height: 44px; padding: 12px 0;
-    font-size: 15px; color: var(--ink); border-top: 1px solid var(--line);
+    display: flex; align-items: center; min-height: 52px; padding: 14px 0;
+    font-size: 17px; letter-spacing: -.01em; color: var(--ink);
+    border-top: 1px solid var(--line);
   }
   .editorial-site .nav-menu nav a:first-child { border-top: 0; }
+  .editorial-site .nav-menu-cta {
+    display: flex; flex-direction: column; align-items: stretch; gap: 8px;
+    margin-top: 16px; padding-top: 18px; border-top: 1px solid var(--line);
+  }
+  .editorial-site .nav-menu-cta .button { justify-content: center; min-height: 50px; }
+  .editorial-site .nav-menu-cta span { font-size: 12px; color: var(--muted); text-align: center; }
+  .editorial-site .nav-toggle { border-radius: 999px; }
 }
 
 @media (min-width: 721px) and (max-width: 980px) {
@@ -79,3 +92,16 @@
   .editorial-site .nav-cta,
   .editorial-site .site-footer nav a { min-height: 44px; display: inline-flex; align-items: center; }
 }
+
+/* The header's own button leaves the phone. The first screen already carries
+   the full CTA, and the bottom bar carries one at every scroll position after
+   it, so this was a third copy competing for a header that has room for the
+   brand and the menu and little else. It stays on wider screens, where there
+   is no bottom bar. */
+@media (max-width: 720px) {
+  .editorial-site .nav .nav-cta { display: none; }
+}
+
+/* The panel is only ever a phone thing; above 720px the header carries its own
+   button and the links sit inline. */
+@media (min-width: 721px) { .editorial-site .nav-menu-cta { display: none; } }

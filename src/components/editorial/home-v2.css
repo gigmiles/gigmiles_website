@@ -109,6 +109,33 @@
 .editorial-site .plan-trial { font-size: 13px; color: #cde7c9; margin: 16px 0 0; }
 .editorial-site .plan-footnote { grid-column: 1 / -1; font-size: 12px; color: #9ab6a4; margin: 4px 0 0; }
 
+/* On a phone the two plans used to stack, seventeen rows deep, and the section
+   became another long scroll right after the deck. They lie in a row and snap
+   instead, the same gesture the deck above just taught, so comparing the plans
+   is a swipe rather than a scroll past one and back. The desktop grid is
+   untouched. */
+@media (max-width: 720px) {
+  .editorial-site .plan-table {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .editorial-site .plan-table::-webkit-scrollbar { display: none; }
+  .editorial-site .plan-column { flex: 0 0 86%; scroll-snap-align: start; }
+  /* The reveal observer waits for an element to enter the viewport, which for
+     the second card now means waiting for a swipe: it would sit at zero
+     opacity and take the peeking edge with it, the one thing telling anyone
+     there is a second card. In the row the cards are simply present. */
+  .reveal-ready .editorial-site .plan-column[data-reveal] { opacity: 1; transform: none; }
+  .editorial-site .plan-footnote { flex: 0 0 100%; order: 9; }
+  .editorial-site .plan-table li { font-size: 13.5px; padding: 7px 0 7px 17px; }
+  .editorial-site .plan-trial { font-size: 12.5px; margin-top: 13px; }
+}
+
 /* Feature tour (dark section) */
 .editorial-site .feature-tour { padding: 70px 0 40px; border-top: 1px solid var(--line); }
 .editorial-site .tour-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 8%; align-items: start; }
@@ -168,8 +195,8 @@
   .editorial-site .estimate-card { padding: 20px; }
   .editorial-site .estimate-lines dd { font-size: 16px; }
   .editorial-site .estimate-lines .estimate-total dd { font-size: 26px; }
-  .editorial-site .plan-table { display: block; }
-  .editorial-site .plan-column + .plan-column { margin-top: 14px; }
+  /* The plans are a snapping row on phones now (see the block above); the old
+     stacking rules that used to live here would have overridden it. */
   .editorial-site .feature-tour { padding: 46px 0 20px; }
   .editorial-site .tour-heading h2 { font-size: 38px; }
   .editorial-site .tour-step h3 { font-size: 26px; }
