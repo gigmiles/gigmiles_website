@@ -364,9 +364,19 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-bookend-copy .close-trust { margin: 16px 0 0; font-size: 14px; color: #3f6a55; }
 .editorial-site .cine-bookend-copy .close-small { margin: 6px 0 0; font-size: 12px; color: #5f8570; }
 @media (max-width: 980px) {
-  .editorial-site .cine-bookend-inner { grid-template-columns: 1fr; row-gap: 2rem; }
-  .editorial-site .cine-bookend-frame { justify-self: center; width: min(62%, 300px); }
-  .editorial-site .cine-bookend-copy { text-align: center; }
-  .editorial-site .cine-bookend-copy > p { margin-left: auto; margin-right: auto; }
+  /* The ending is one screen on a phone: the seat and the phone as a wide
+     band, cropped to where the phone lies, then the statement and the button.
+     Stacked at full height the picture alone took a screen and the last thing
+     anyone saw was the footer. */
+  .editorial-site .cine-bookend { padding: clamp(2.6rem, 8vh, 4rem) 0 clamp(2.4rem, 7vh, 3.4rem); }
+  .editorial-site .cine-bookend-inner { grid-template-columns: 1fr; row-gap: 1.3rem; }
+  .editorial-site .cine-bookend-frame { justify-self: stretch; width: 100%; }
+  .editorial-site .cine-bookend-frame img { aspect-ratio: 4 / 3; object-position: 50% 64%; border-radius: 18px; }
+  .editorial-site .cine-bookend h2 { font-size: clamp(30px, 8vw, 40px); }
+  .editorial-site .cine-bookend-copy > p { margin-top: 12px; font-size: 16px; }
+  .editorial-site .cine-bookend-copy .button { margin-top: 18px; }
   .editorial-site .cine-essay p { max-width: 30ch; font-size: clamp(22px, 6.2vw, 28px); }
+  /* The pinned deck lets go and the plans began on the same dark ground with
+     no seam, so the last card and the next heading read as one thing. */
+  .editorial-site .cine-page .free-section { margin-top: clamp(1.2rem, 4vh, 2.2rem); padding-top: clamp(3.2rem, 9vh, 5rem); border-top: 1px solid var(--line); }
 }

@@ -329,10 +329,21 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
   let gestureArmed = false
   let rendered = -1
 
+  let metadataHook: (() => void) | null = null
+  // `?cinedebug=1` draws the controller's state in a corner. It exists so a
+  // phone in someone's hand can report what headless Chrome cannot see.
+  const debugEl = typeof location !== 'undefined' && /[?&]cinedebug=1\b/.test(location.search)
+    ? (() => { const el = document.createElement('pre'); el.className = 'cine-debug'; el.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;margin:0;padding:6px 8px;font:11px/1.35 ui-monospace,monospace;color:#bff4ce;background:#0b302bd9;border-radius:6px;pointer-events:none;white-space:pre-wrap;max-width:70vw'; root.append(el); return el })()
+    : null
+  const debugWrite = () => {
+    if (!debugEl) return
+    debugEl.textContent = `mode ${mode} · ${videoState} · readyState ${video?.readyState ?? '-'} · t ${(video?.currentTime ?? 0).toFixed(2)}s · src ${video?.src ? 'set' : 'none'} · ${navigator.userAgent.includes('iPhone') ? 'iPhone' : 'other'}`
+  }
   const setState = (state: VideoState) => {
     videoState = state
     root.dataset.cineVideo = state
     opts.onState?.(state)
+    debugWrite()
   }
 
   const canPlay = () => (opts.driver ? true : Boolean(video) && typeof video!.canPlayType === 'function' && video!.canPlayType('video/mp4; codecs="avc1.640028"') !== '')
@@ -483,6 +494,12 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
         video.playsInline = true
         video.preload = 'auto'
         video.src = objectUrl
+        // iOS Safari does not fetch metadata for an element that began life
+        // with preload="none" just because src was assigned. Without this
+        // call `loadedmetadata` never fires there, the state sits at
+        // `loading`, and the film never shows a frame while the copy scrubs
+        // over the poster: what the operator saw on a real iPhone.
+        try { video.load() } catch { /* jsdom */ }
       })
       .catch(() => {
         if (signal.aborted) return
@@ -498,6 +515,8 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
     const p = progress()
     if (Math.abs(p - lastP) > 0.0005) { lastP = p; writeCues(p) }
     if (mode === 'static') return
+    // iOS can hold the metadata and still never fire the event we wait for.
+    if (videoState === 'loading' && video && video.src && video.readyState >= 1) metadataHook?.()
     target = filmTarget(p)
     root.dataset.cineTarget = target.toFixed(opts.driver ? 4 : 3)
     playhead = lerpStep(playhead, target, mode === 'mobile' ? d.lerpMobile : d.lerpDesktop, dt, d.snap)
@@ -531,6 +550,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
       primeTicksLeft -= 1
       if (primeTicksLeft <= 0) releasePrime()
     }
+    debugWrite()
     if (Math.abs(target - playhead) > d.snap || video.seeking || priming) schedule()
   }
 
@@ -547,7 +567,10 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
   }
 
   if (video) {
-  video.addEventListener('loadedmetadata', () => {
+  // One path from "the metadata is here" to ready, whichever way we learn it:
+  // the event, the later canplay, or a tick that finds readyState already up.
+  const onMetadata = () => {
+    if (videoState !== 'loading') return
     setState('ready')
     const p = progress()
     target = filmTarget(p)
@@ -555,7 +578,10 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
     // Force one seek even at p=0 so the poster hand-off has a painted frame to wait for.
     try { video.currentTime = Math.max(target, 0.001) } catch { /* ignore */ }
     startPrime()
-  }, {signal})
+  }
+  metadataHook = onMetadata
+  video.addEventListener('loadedmetadata', onMetadata, {signal})
+  video.addEventListener('canplay', onMetadata, {signal})
   video.addEventListener('seeked', () => {
     root.dataset.cinePainted = 'true'
     root.dataset.cineTime = (video.currentTime || 0).toFixed(3)

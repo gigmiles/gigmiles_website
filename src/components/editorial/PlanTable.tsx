@@ -33,7 +33,11 @@ export const PRO_FEATURES = [
   'AI Today’s Brief and Burnout Meter',
 ] as const
 
-const sentence = (items: readonly string[]) => items.join('. ') + '.'
+// Each feature is its own span: prose on a wide screen, where the spans run
+// together as sentences, and one feature per line on a phone, where a run of
+// ten sentences at 15 px was a wall nobody read.
+const sentence = (items: readonly string[]) =>
+  items.map((t, i) => <span key={t} className="plan-item">{t}.{i < items.length - 1 ? ' ' : ''}</span>)
 
 export function PlanTable() {
   // Free is the spine and Pro is a note beside it, which is the shape of the

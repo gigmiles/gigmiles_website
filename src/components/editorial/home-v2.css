@@ -66,6 +66,12 @@
 @media (max-width: 720px) {
   .editorial-site .plan-table { max-width: none; }
   .editorial-site .plan-prose { font-size: 15px; }
+  /* One feature per line, no bullet, a hairline between: readable at a
+     glance, still not a list. */
+  .editorial-site .plan-item { display: block; padding: 9px 0; border-top: 1px solid #e5f2e314; }
+  .editorial-site .plan-item:first-child { border-top: 0; padding-top: 0; }
+  .editorial-site .plan-pro .plan-prose strong { display: block; margin-bottom: 6px; }
+  .editorial-site .plan-pro .plan-prose strong + .plan-item { border-top: 0; padding-top: 0; }
 }
 
 /* Feature tour (dark section) */

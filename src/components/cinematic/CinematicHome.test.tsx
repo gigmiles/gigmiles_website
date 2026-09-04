@@ -154,9 +154,39 @@ describe('cinematic controller in the document', () => {
     Object.defineProperty(video, 'currentTime', {get: () => current, set: (v: number) => { current = v }, configurable: true})
     video.play = vi.fn(() => Promise.resolve())
     video.pause = vi.fn()
+    video.load = vi.fn()
     const setProgress = (p: number) => vi.spyOn(root, 'getBoundingClientRect').mockReturnValue({top: -4000 * p, height: 5000} as DOMRect)
     return {...utils, root, video, setProgress, time: () => current}
   }
+
+  it('asks the element to load once the film is a blob, because iOS will not fetch metadata on its own', async () => {
+    const {video} = mount()
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve() })
+    expect(video.src).toBe('blob:film')
+    expect(video.load).toHaveBeenCalledTimes(1)
+  })
+
+  it('still scrubs when play() is refused, as it is under Low Power Mode', async () => {
+    const {root, video, setProgress, time} = mount()
+    video.play = vi.fn(() => Promise.reject(new Error('NotAllowedError')))
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve() })
+    setProgress(0)
+    await act(async () => { video.dispatchEvent(new Event('loadedmetadata')); await Promise.resolve(); await Promise.resolve() })
+    expect(root.dataset.cineVideo).toBe('ready')
+    expect(root.dataset.cineMode).toBe('desktop')
+    setProgress(0.5)
+    act(() => { window.dispatchEvent(new Event('scroll')); flush(120) })
+    expect(time()).toBeGreaterThan(1)
+  })
+
+  it('promotes a stalled load itself when the metadata is there but the event never came', async () => {
+    const {root, setProgress} = mount()
+    await act(async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve() })
+    expect(root.dataset.cineVideo).toBe('loading')
+    setProgress(0.2)
+    act(() => { window.dispatchEvent(new Event('scroll')); flush(3) })
+    expect(['ready', 'primed']).toContain(root.dataset.cineVideo)
+  })
 
   it('upgrades to the desktop film, scrubs both ways and keeps one active scene', async () => {
     const {root, video, setProgress, time, unmount} = mount()

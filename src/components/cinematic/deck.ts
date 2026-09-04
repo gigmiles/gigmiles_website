@@ -35,7 +35,12 @@ export const DECK = {
   /** Share of a card's segment spent bringing its words up. */
   rowRead: 0.5,
   /** Where in the segment the slide to the next card is complete; the rest is a hold. */
-  rowSlideEnd: 0.85,
+  rowSlideEnd: 0.9,
+  /** Per-frame share of the distance the drawn row moves toward its target. A
+      thumb's scroll arrives in steps; drawn raw, a sideways slide jitters. */
+  rowLerp: 0.16,
+  /** Below this the drawn value snaps to the target and the frames stop. */
+  rowSnap: 0.0015,
 }
 
 export type DeckDefaults = typeof DECK
@@ -88,6 +93,8 @@ export interface RowState {
   seg: number
   /** How far its words have come up, 0..1. Cards before `seg` are fully read, cards after are not yet. */
   reveal: number
+  /** How far the slide to the next card has gone, 0..1; 0 on the last card. */
+  slide: number
   /** How many cards the row has moved left, continuous: 0 is the first card, 3 the fourth. */
   x: number
   /** The card that is nearest the reader, for `inert` on the others. */
@@ -100,7 +107,7 @@ export interface RowState {
  * lets go after it.
  */
 export function rowState(progress: number, count: number, d: DeckDefaults = DECK): RowState {
-  if (count < 1) return {seg: 0, reveal: 0, x: 0, index: 0}
+  if (count < 1) return {seg: 0, reveal: 0, slide: 0, x: 0, index: 0}
   const p = clamp01(progress)
   const segLen = 1 / count
   const seg = Math.min(Math.floor(p / segLen), count - 1)
@@ -110,7 +117,7 @@ export function rowState(progress: number, count: number, d: DeckDefaults = DECK
   const reveal = easeInOut(t / readEnd)
   const slide = last ? 0 : easeInOut((t - readEnd) / (d.rowSlideEnd - readEnd))
   const x = seg + slide
-  return {seg, reveal, x, index: Math.round(x)}
+  return {seg, reveal, slide, x, index: Math.round(x)}
 }
 
 export type DeckMode = 'on' | 'row' | 'static'
@@ -154,18 +161,60 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
     return clamp01(-rect.top / travel)
   }
 
-  const write = (p: number) => {
-    if (mode === 'row') {
-      const r = rowState(p, cards.length, d)
-      root.style.setProperty('--row-i', r.x.toFixed(4))
-      cards.forEach((card, i) => {
-        const y = i < r.seg ? 1 : i === r.seg ? r.reveal : 0
-        card.style.setProperty('--card-y', `${(-(over[i] ?? 0) * y).toFixed(1)}px`)
-        card.toggleAttribute('inert', i !== r.index)
-      })
-      root.style.setProperty('--deck-p', p.toFixed(4))
-      return
+  // The row is drawn from smoothed values, not raw scroll. A thumb's scroll
+  // arrives in steps, and steps on a sideways slide read as jitter; each frame
+  // moves the drawn values a fraction toward their targets and keeps drawing
+  // until they settle, then stops. Frames only while something moves, no
+  // timers. The leaving card fades and shrinks a little as it goes and the
+  // arriving one does the reverse, so the hand-over reads as one motion.
+  const rowTarget = {x: 0, y: [] as number[], vis: [] as number[]}
+  const rowCur = {x: 0, y: [] as number[], vis: [] as number[]}
+  let rowSettled = true
+  let lastTick = 0
+  const setRowTargets = (p: number) => {
+    const r = rowState(p, cards.length, d)
+    rowTarget.x = r.x
+    cards.forEach((_, i) => {
+      const y = i < r.seg ? 1 : i === r.seg ? r.reveal : 0
+      rowTarget.y[i] = -(over[i] ?? 0) * y
+      rowTarget.vis[i] = i === r.seg ? 1 - r.slide : i === r.seg + 1 ? r.slide : 0
+    })
+    root.style.setProperty('--deck-p', p.toFixed(4))
+  }
+  const applyRow = () => {
+    root.style.setProperty('--row-i', rowCur.x.toFixed(4))
+    const index = Math.round(rowCur.x)
+    cards.forEach((card, i) => {
+      card.style.setProperty('--card-y', `${(rowCur.y[i] ?? 0).toFixed(1)}px`)
+      card.style.setProperty('--row-vis', (rowCur.vis[i] ?? 1).toFixed(3))
+      card.toggleAttribute('inert', i !== index)
+    })
+  }
+  const settleRow = (dt: number) => {
+    const k = 1 - Math.pow(1 - d.rowLerp, dt / 16.7)
+    let moving = false
+    const step = (cur: number, tgt: number, snap: number) => {
+      if (Math.abs(tgt - cur) <= snap) return tgt
+      moving = true
+      return cur + (tgt - cur) * k
     }
+    rowCur.x = step(rowCur.x, rowTarget.x, d.rowSnap)
+    cards.forEach((_, i) => {
+      rowCur.y[i] = step(rowCur.y[i] ?? rowTarget.y[i], rowTarget.y[i], 0.25)
+      rowCur.vis[i] = step(rowCur.vis[i] ?? rowTarget.vis[i], rowTarget.vis[i], d.rowSnap)
+    })
+    rowSettled = !moving
+  }
+  const restRow = () => {
+    setRowTargets(progress())
+    rowCur.x = rowTarget.x
+    rowCur.y = [...rowTarget.y]
+    rowCur.vis = [...rowTarget.vis]
+    rowSettled = true
+    applyRow()
+  }
+
+  const write = (p: number) => {
     cards.forEach((card, i) => {
       const s = cardState(p, cards.length, i, d)
       card.style.setProperty('--y', `${s.y.toFixed(2)}%`)
@@ -184,7 +233,7 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
   // every card transparent and the four texts stacked on top of each other.
   // `--z` is shared, so it is put back to the resting order rather than
   // removed.
-  const OWNED = ['--y', '--rot', '--s', '--front', '--card-y']
+  const OWNED = ['--y', '--rot', '--s', '--front', '--card-y', '--row-vis']
   const clear = () => {
     cards.forEach((card, i) => {
       for (const prop of OWNED) card.style.removeProperty(prop)
@@ -195,9 +244,19 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
     root.style.removeProperty('--row-i')
   }
 
-  const tick = () => {
+  const tick = (now: number) => {
     frame = 0
     const p = progress()
+    if (mode === 'row') {
+      const dt = lastTick ? Math.min(64, now - lastTick) : 16.7
+      lastTick = now
+      if (Math.abs(p - lastP) > 0.0002) { lastP = p; setRowTargets(p) }
+      settleRow(dt)
+      applyRow()
+      if (rowSettled) lastTick = 0
+      else schedule()
+      return
+    }
     if (Math.abs(p - lastP) < 0.0004) return
     lastP = p
     write(p)
@@ -216,7 +275,7 @@ export function installDeck(root: HTMLElement, d: DeckDefaults = DECK) {
     clear()
     root.dataset.deck = mode
     if (mode === 'static') return
-    if (mode === 'row') measure()
+    if (mode === 'row') { measure(); restRow() }
     lastP = -1
     schedule()
   }

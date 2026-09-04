@@ -191,6 +191,12 @@
   min-height: 0;
   padding: 0;
   overflow: hidden;
+  /* `--row-vis` is 1 for the card being read and falls as it leaves; the
+     arriving card rises from 0. The values are smoothed by the controller. */
+  opacity: calc(.3 + .7 * var(--row-vis, 1));
+  transform: scale(calc(.965 + .035 * var(--row-vis, 1)));
+  transform-origin: 50% 45%;
+  will-change: transform, opacity;
 }
 /* The column that scrolls inside the box: head, capture, words. */
 .editorial-site .deck[data-deck="row"] .deck-head { padding: .9rem 1rem 0; }

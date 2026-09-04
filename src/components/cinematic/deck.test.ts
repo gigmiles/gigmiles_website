@@ -7,7 +7,7 @@ const COUNT = 4
 
 describe('stacked-card deck maths', () => {
   it('reproduces the reference spec constants, and the phone row keeps its own beside them', () => {
-    expect(DECK).toEqual({yOffset: 9, scaleStep: 0.06, exitY: -215, exitRot: -26, exitScale: 1.03, parkY: -260, parkRot: -26, runway: 6.5, rowRunway: 3, rowRead: 0.5, rowSlideEnd: 0.85})
+    expect(DECK).toEqual({yOffset: 9, scaleStep: 0.06, exitY: -215, exitRot: -26, exitScale: 1.03, parkY: -260, parkRot: -26, runway: 6.5, rowRunway: 3, rowRead: 0.5, rowSlideEnd: 0.9, rowLerp: 0.16, rowSnap: 0.0015})
   })
 
   it('easeInOut is power2.inOut: clamped, symmetric and monotonic', () => {
@@ -116,7 +116,7 @@ describe('stacked-card deck maths', () => {
 describe('the phone row', () => {
   it('goes screen, words, slide; screen, words, slide; and holds on the last', () => {
     // The first screen whole, nothing read yet, the row at rest.
-    expect(rowState(0, COUNT)).toEqual({seg: 0, reveal: 0, x: 0, index: 0})
+    expect(rowState(0, COUNT)).toEqual({seg: 0, reveal: 0, slide: 0, x: 0, index: 0})
     // Half way through the first card's share the words are fully up and the
     // row has not moved.
     const read = rowState(0.125, COUNT)
@@ -127,14 +127,14 @@ describe('the phone row', () => {
     const slid = rowState(0.25 * DECK.rowSlideEnd, COUNT)
     expect(slid.x).toBeCloseTo(1, 6)
     expect(slid.index).toBe(1)
-    expect(rowState(0.25, COUNT)).toEqual({seg: 1, reveal: 0, x: 1, index: 1})
+    expect(rowState(0.25, COUNT)).toEqual({seg: 1, reveal: 0, slide: 0, x: 1, index: 1})
     // The last card reads, then holds; the row never runs past it.
     const end = rowState(1, COUNT)
     expect(end.seg).toBe(COUNT - 1)
     expect(end.reveal).toBe(1)
     expect(end.x).toBe(COUNT - 1)
     expect(rowState(2, COUNT).x).toBe(COUNT - 1)
-    expect(rowState(NaN, COUNT)).toEqual({seg: 0, reveal: 0, x: 0, index: 0})
+    expect(rowState(NaN, COUNT)).toEqual({seg: 0, reveal: 0, slide: 0, x: 0, index: 0})
   })
 
   it('never slides while a card is still being read, and never moves back', () => {
