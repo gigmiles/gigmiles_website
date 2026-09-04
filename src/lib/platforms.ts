@@ -24,6 +24,11 @@ export const PLATFORMS_LINE =
  *  conditions even compatibility statements on written consent, so the promotional strip leaves it out. */
 export const PROMO_PLATFORMS = ['Uber', 'Uber Eats', 'Lyft', 'DoorDash', 'Instacart®', 'Amazon Flex', 'Grubhub', 'Shipt'] as const
 export const OTHER_CHIP = 'any other app, by name'
+/** The same platforms as one sentence, for the film home, where a row of chips
+ *  was one of eleven pill shapes on the page. Same list, same symbols, same
+ *  rule: Spark Driver™ stays out of promotional copy. */
+export const PLATFORMS_SENTENCE =
+  `Built for drivers, couriers and shoppers, in a car or on an e-bike: ${PROMO_PLATFORMS.join(', ')}, and any other app you work for, logged by name.`
 
 export const PLATFORMS_FAQ = {
   question: 'Which platforms does GigMiles work with?',

@@ -13,25 +13,14 @@ import {installDeck} from './deck'
 
 const GROUNDS = ['#0f3b30', '#174a3b', '#205a46', '#2a6b52']
 
-// What each card adds beyond the capture. The deck is where the product is
-// argued, so every card carries its own proofs and the Pro card carries the
-// most: it is the one asking for money. Every line is verifiable in
-// GIGMILES_PRODUCT_FACTS.md, and the two Insights figures are the approved
-// WEB-TOUR-1 outputs ($24 per hour, $1.8 per mile) from the same example shift
-// the rest of the page uses. No per-platform figures are shown: the app
-// compares platforms, but we have no approved numbers for individual ones.
-interface DeckExtra { figures?: Array<{value: string; unit?: string; caption: string}>; bullets: string[] }
-const EXTRAS: Record<string, DeckExtra> = {
-  home: {bullets: ['Today and this week, after costs', 'Live fuel prices for your state', 'Home-screen widget on iOS and Android']},
-  shifts: {bullets: ['Timer shifts or manual entry', 'Edit a shift, add one you forgot, undo a delete', 'Day and week history']},
-  tax: {bullets: ['Self-employment, federal and state, worked separately', 'Schedule C worksheet on screen', 'PDF and CSV export for your tax professional (Pro)']},
-  // No figures on this card: the trend charts show monthly rates, and quoting
-  // the dashboard's per-day $24/hr beside them would contradict the picture.
-  // The proofs carry it instead.
-  insights: {
-    bullets: ['Earnings, hours, miles and net for every platform you work', 'Trend charts by week, month and quarter', 'What-if mileage simulator', 'Standard mileage against actual expenses, side by side'],
-  },
-}
+// The cards carry the capture, a title, one sentence and, where one is
+// approved, a figure. They used to carry three or four proof bullets each as
+// well; with the plan table's seventeen the page ran to forty-six bullet
+// points below the film and read as a feature grid. The proofs live in the
+// captures now, which is where a visitor looks anyway. The figures hook stays
+// for a card that earns one later.
+interface DeckExtra { figures?: Array<{value: string; unit?: string; caption: string}> }
+const EXTRAS: Record<string, DeckExtra> = {}
 
 export function TourDeck({screens, heading}: {screens: TourScreen[]; heading: React.ReactNode}) {
   const rootRef = useRef<HTMLElement>(null)
@@ -72,9 +61,6 @@ export function TourDeck({screens, heading}: {screens: TourScreen[]; heading: Re
                       <strong>{screen.figure.prefix ?? ''}{screen.figure.value.toLocaleString('en-US', {minimumFractionDigits: screen.figure.decimals ?? 0, maximumFractionDigits: screen.figure.decimals ?? 0})}{screen.figure.suffix ?? ''}</strong>
                       <span>{screen.figure.caption}</span>
                     </p>}
-                {EXTRAS[screen.id] && <ul className="deck-bullets">
-                  {EXTRAS[screen.id].bullets.map(b => <li key={b}>{b}</li>)}
-                </ul>}
                 <DownloadButton className="button conversion-cta deck-cta" data-cta-placement={`deck-${screen.id}`}><CtaLabel/></DownloadButton>
               </div>
               <div className="deck-media">

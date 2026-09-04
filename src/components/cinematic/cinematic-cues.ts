@@ -12,6 +12,8 @@ export const CINEMATIC_ASSETS = {
   mobile: `/cinematic/hero-mobile.mp4?v=${CINEMATIC_VERSION}`,
   poster: '/cinematic/hero-poster.webp',
   posterMobile: '/cinematic/hero-poster-mobile.webp',
+  /** The film's last frame, for the page's closing section: it ends where the film ended. */
+  last: '/cinematic/hero-last.webp',
   /** Continuous paper film v5: one native 30 s generation, no cuts, no stitch. */
   duration: 30.0417,
 }

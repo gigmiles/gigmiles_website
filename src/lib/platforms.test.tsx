@@ -3,7 +3,7 @@ import {renderToStaticMarkup} from 'react-dom/server'
 import {ApprovedHome} from '@/components/editorial/ApprovedHome'
 import {WebsiteShell} from '@/components/editorial/WebsiteShell'
 import {CinematicHome} from '@/components/cinematic/CinematicHome'
-import {OTHER_CHIP, PLATFORMS_FAQ, PLATFORMS_LINE, PLATFORM_NOTICE, PLATFORM_WORDS, PROMO_PLATFORMS, QUICK_PICK_PLATFORMS} from './platforms'
+import {OTHER_CHIP, PLATFORMS_FAQ, PLATFORMS_LINE, PLATFORMS_SENTENCE, PLATFORM_NOTICE, PLATFORM_WORDS, PROMO_PLATFORMS, QUICK_PICK_PLATFORMS} from './platforms'
 
 // The naming rules from outputs/2026-09-02/website_platforms/TRADEMARK_NOTES.md,
 // as tests: plain text, adjectives of a generic noun, never a heading, never
@@ -12,7 +12,7 @@ const RELATIONSHIP = /\b(official|partner|partnership|partnered|integrated with|
 const POSSESSIVE = /\b(Uber|Lyft|DoorDash|Instacart|Amazon|Grubhub|Shipt|Spark Driver|Roadie|Veho|Gopuff|Favor|Curri)(’s|'s|s\b)/
 const BARE_WORKS_WITH = /works with (Uber|Lyft|DoorDash|Instacart|Amazon|Grubhub|Shipt|Spark)/i
 
-const copy = [PLATFORMS_LINE, PLATFORMS_FAQ.question, ...PLATFORMS_FAQ.answer]
+const copy = [PLATFORMS_LINE, PLATFORMS_SENTENCE, PLATFORMS_FAQ.question, ...PLATFORMS_FAQ.answer]
 const everything = [...copy, PLATFORM_NOTICE]
 
 describe('platform naming rules', () => {
@@ -44,13 +44,26 @@ describe('platform naming rules', () => {
   })
 
   it('appears on the live home and the cinematic page, once each, outside every heading', () => {
-    for (const html of [renderToStaticMarkup(<WebsiteShell><ApprovedHome heroMode="scroll" variant="v2"/></WebsiteShell>), renderToStaticMarkup(<WebsiteShell><CinematicHome/></WebsiteShell>)]) {
-      expect(html.split(PLATFORMS_LINE).length - 1).toBe(1)
+    const pages = [
+      {html: renderToStaticMarkup(<WebsiteShell><ApprovedHome heroMode="scroll" variant="v2"/></WebsiteShell>), chips: true},
+      // The film home names the platforms in one sentence: same list, same
+      // symbols, no chip row.
+      {html: renderToStaticMarkup(<WebsiteShell><CinematicHome/></WebsiteShell>), chips: false},
+    ]
+    for (const {html, chips: hasChips} of pages) {
       expect(html.split(PLATFORM_NOTICE).length - 1).toBe(1)
-      const chips = html.match(/<ul class="platform-chips"[\s\S]*?<\/ul>/)?.[0] ?? ''
-      for (const name of PROMO_PLATFORMS) expect(chips).toContain(`<li>${name}</li>`)
-      expect(chips).toContain(OTHER_CHIP)
-      expect(chips).not.toMatch(/<img|<svg|<li style=/)
+      if (hasChips) {
+        expect(html.split(PLATFORMS_LINE).length - 1).toBe(1)
+        const chips = html.match(/<ul class="platform-chips"[\s\S]*?<\/ul>/)?.[0] ?? ''
+        for (const name of PROMO_PLATFORMS) expect(chips).toContain(`<li>${name}</li>`)
+        expect(chips).toContain(OTHER_CHIP)
+        expect(chips).not.toMatch(/<img|<svg|<li style=/)
+      } else {
+        expect(html.split(PLATFORMS_SENTENCE).length - 1).toBe(1)
+        expect(html).not.toContain('platform-chips')
+        for (const name of PROMO_PLATFORMS) expect(PLATFORMS_SENTENCE).toContain(name)
+        expect(PLATFORMS_SENTENCE).toContain('any other app you work for')
+      }
       const headings = [...html.matchAll(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/g)].map(m => m[1].replace(/<[^>]+>/g, ''))
       for (const heading of headings) for (const word of PLATFORM_WORDS) expect(heading, `heading names ${word}`).not.toMatch(new RegExp(`\\b${word}\\b`))
       expect(html).not.toMatch(/<img[^>]*(uber|lyft|doordash|instacart|grubhub|shipt|spark|amazon)[^>]*>/i)

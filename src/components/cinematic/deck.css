@@ -82,9 +82,6 @@
 .editorial-site .deck-figures { display: flex; gap: clamp(1.4rem, 3vw, 2.8rem); flex-wrap: wrap; }
 .editorial-site .deck-figure strong i { font-style: normal; font-size: .48em; font-weight: 600; letter-spacing: 0; margin-left: 2px; }
 .editorial-site .deck-figure { flex-direction: column; align-items: flex-start; gap: 0; }
-.editorial-site .deck-bullets { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 7px; }
-.editorial-site .deck-bullets li { position: relative; padding-left: 18px; font-size: clamp(13px, 1vw, 15px); font-weight: 300; line-height: 1.4; color: #cfe0d3; }
-.editorial-site .deck-bullets li::before { content: ''; position: absolute; left: 0; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--mint); opacity: .8; }
 /* The CTA used to fade with `--front`, which meant that through every hand-over
    the only button on screen sat at about half opacity and read as disabled.
    The cards behind are occluded by the front one and the controller marks them
@@ -141,7 +138,6 @@
      strip of the top of the screen read as a fragment, not as the app. */
   .editorial-site .deck-media { order: -1; justify-content: center; margin: 0; flex: 0 0 auto; height: auto; }
   .editorial-site .deck-media img { width: clamp(184px, 56vw, 232px); max-width: 100%; height: auto; object-fit: contain; border-radius: 18px; box-shadow: 0 22px 44px -24px #000000b3; }
-  .editorial-site .deck-bullets li { font-size: 13px; }
   .editorial-site .deck-card { padding: 1rem 1.05rem; gap: 9px; }
   .editorial-site .deck-title { font-size: 22px; }
   .editorial-site .deck-text { font-size: 14px; }
@@ -212,8 +208,6 @@
 .editorial-site .deck[data-deck="row"] .deck-title { font-size: 21px; }
 .editorial-site .deck[data-deck="row"] .deck-text { font-size: 14px; line-height: 1.45; }
 .editorial-site .deck[data-deck="row"] .deck-figure strong { font-size: 28px; }
-.editorial-site .deck[data-deck="row"] .deck-bullets { gap: 5px; }
-.editorial-site .deck[data-deck="row"] .deck-bullets li { font-size: 13px; }
 .editorial-site .deck[data-deck="row"] .deck-cta { min-height: 44px; margin-top: 4px; }
 .editorial-site .deck[data-deck="row"] .deck-note { margin: clamp(.6rem, 1.6vh, .9rem) 0 0; font-size: 11px; }
 /* The card in the row still needs the head to stay put while the column

@@ -72,9 +72,21 @@ describe('cinematic home markup', () => {
   })
 
   it('reuses the approved sections in order', () => {
-    const order = ['cine-hero', 'cine-after', 'estimate-proof', 'class="deck"', 'id="free"', 'id="download"', 'sticky-cta']
+    const order = ['cine-hero', 'cine-after', 'estimate-proof', 'cine-essay', 'class="deck"', 'id="free"', 'cine-bookend', 'id="download"', 'sticky-cta']
     let last = -1
     for (const marker of order) { const at = html.indexOf(marker); expect(at, marker).toBeGreaterThan(last); last = at }
+  })
+
+  it('reads as prose below the film: a handful of list items, no chips, no badges', () => {
+    // Forty-six bullet points and eleven pill shapes is what this page had on
+    // 2026-09-04. What remains: the trust strip's four facts and the film
+    // stage's own short list. No feature list anywhere.
+    expect((html.match(/<li[\s>]/g) ?? []).length).toBeLessThanOrEqual(8)
+    expect(html).not.toContain('platform-chips')
+    expect(html).not.toContain('deck-bullets')
+    expect(html).not.toContain('plan-badge')
+    // and it ends where the film ended
+    expect(html).toContain('/cinematic/hero-last.webp')
   })
 })
 

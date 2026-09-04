@@ -309,3 +309,64 @@ html:has(.cine-page) { scroll-behavior: auto; }
   .editorial-site .cine-media .cine-canvas { transition: none; }
   .editorial-site .cine-line-inner { transform: none; opacity: 1; }
 }
+
+/* ---- the essay: one paragraph on paper between the calculator and the deck.
+   No card, no eyebrow, one measure. It is the film's argument set in prose,
+   so the page below the film has one section that is only words. */
+.editorial-site .cine-essay {
+  background: var(--paper);
+  color: var(--deep);
+  padding: clamp(4rem, 12vh, 8rem) 0;
+}
+.editorial-site .cine-essay p {
+  margin: 0;
+  max-width: 40ch;
+  font-size: clamp(23px, 2.4vw, 36px);
+  font-weight: 400;
+  line-height: 1.28;
+  letter-spacing: -.024em;
+  color: #2f5a48;
+}
+.editorial-site .cine-essay strong { font-weight: 700; color: #0b302b; }
+
+/* ---- the bookend: the page ends on the film's last frame ------------------
+   Same paper, same rounded top edge and shadow as the section that first slid
+   over the film, so the ending rhymes with the beginning. The frame is the
+   film's own last frame, still, with the offer beside it. */
+.editorial-site .cine-bookend {
+  position: relative;
+  background: var(--paper);
+  color: var(--deep);
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -30px 80px -40px #00000080;
+  padding: clamp(4rem, 12vh, 8rem) 0 clamp(4rem, 10vh, 6rem);
+}
+.editorial-site .cine-bookend-inner {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  column-gap: clamp(2rem, 7vw, 6rem);
+  align-items: center;
+}
+.editorial-site .cine-bookend-frame { margin: 0; justify-self: end; width: min(100%, 360px); }
+.editorial-site .cine-bookend-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 900 / 1603;
+  object-fit: cover;
+  border-radius: 22px;
+  box-shadow: 0 40px 80px -40px #0b302b99;
+}
+.editorial-site .cine-bookend h2 { margin: 0; font-size: clamp(40px, 4.6vw, 72px); font-weight: 800; line-height: 1.02; letter-spacing: -.04em; color: #0b302b; }
+.editorial-site .cine-bookend h2 em { font-style: normal; color: #4f7a5c; }
+.editorial-site .cine-bookend-copy > p { margin: 20px 0 0; max-width: 40ch; font-size: clamp(17px, 1.3vw, 21px); line-height: 1.45; color: #2f5a48; }
+.editorial-site .cine-bookend-copy .button { margin-top: 28px; }
+.editorial-site .cine-bookend-copy .close-trust { margin: 16px 0 0; font-size: 14px; color: #3f6a55; }
+.editorial-site .cine-bookend-copy .close-small { margin: 6px 0 0; font-size: 12px; color: #5f8570; }
+@media (max-width: 980px) {
+  .editorial-site .cine-bookend-inner { grid-template-columns: 1fr; row-gap: 2rem; }
+  .editorial-site .cine-bookend-frame { justify-self: center; width: min(62%, 300px); }
+  .editorial-site .cine-bookend-copy { text-align: center; }
+  .editorial-site .cine-bookend-copy > p { margin-left: auto; margin-right: auto; }
+  .editorial-site .cine-essay p { max-width: 30ch; font-size: clamp(22px, 6.2vw, 28px); }
+}

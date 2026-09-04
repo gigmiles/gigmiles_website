@@ -41,100 +41,31 @@
 .editorial-site .estimate-controls input[type="range"] { width: 100%; accent-color: var(--mint); }
 
 /* Plan table (inside the free section, replaces the feature list) */
-.editorial-site .plan-table { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
-/* The two plans answer the pointer and the keyboard. The first attempt swept a
-   band of light across the Pro card; sampled frame by frame it crossed in the
-   first 170 ms and then crawled off-screen for another second, so it read as a
-   flash and then nothing. This does the opposite: the card lifts and takes the
-   brand's mint edge, and the value list lights up in sequence down the card,
-   which is also the direction we want the eye to travel. Only transform and
-   opacity move, box-shadow is never transitioned, and a visitor who asked for
-   less motion gets the colour and none of the movement. The cards are not
-   links: they lead nowhere the page does not already offer, and a card that
-   only pretends to be clickable is worse than a still one. */
-.editorial-site .plan-column {
-  position: relative;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 20px 22px;
-  box-shadow: 0 26px 50px -30px #0000;
-  transition: transform .5s cubic-bezier(.2, .7, .2, 1), border-color .5s ease;
-}
-.editorial-site .plan-column.plan-pro { background: #123c31; }
-.editorial-site .plan-column > * { position: relative; z-index: 1; }
-.editorial-site .plan-column::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  background: radial-gradient(90% 70% at 50% -10%, #bff4ce2e, #bff4ce00 70%);
-  opacity: 0;
-  transition: opacity .5s ease;
-}
-.editorial-site .plan-column:hover,
-.editorial-site .plan-column:focus-within { transform: translateY(-4px); border-color: #bff4ce5c; }
-.editorial-site .plan-column:hover::before,
-.editorial-site .plan-column:focus-within::before { opacity: 1; }
-
-/* The list lights up on the way down: each dot swells and brightens a beat
-   after the one above it. `--i` is set on the item in the markup. */
-.editorial-site .plan-table li::before { transition: transform .32s ease, box-shadow .32s ease; }
-.editorial-site .plan-column:hover li::before,
-.editorial-site .plan-column:focus-within li::before {
-  transform: scale(1.55);
-  box-shadow: 0 0 10px 1px #bff4ce7a;
-  transition-delay: calc(var(--i, 0) * 38ms);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .editorial-site .plan-column,
-  .editorial-site .plan-column::before,
-  .editorial-site .plan-table li::before { transition: none; }
-  .editorial-site .plan-column:hover, .editorial-site .plan-column:focus-within { transform: none; }
-  .editorial-site .plan-column:hover li::before,
-  .editorial-site .plan-column:focus-within li::before { transform: none; box-shadow: none; }
-}
-.editorial-site .plan-head { display: flex; flex-direction: column; gap: 4px; padding-bottom: 14px; margin-bottom: 8px; border-bottom: 1px solid var(--line); }
-.editorial-site .plan-head span:first-child { font-size: 22px; font-weight: 800; letter-spacing: -.03em; }
-.editorial-site .plan-head span:nth-child(2) { font-size: 12px; color: #a3bfab; }
+/* Free is the spine, Pro is a note beside it: the shape of the offer, drawn.
+   The features are running prose, not two lists: with the deck's proofs the
+   page had reached forty-six bullet points below the film and read as a
+   feature grid. Nothing here moves on hover; the cards led nowhere, and a
+   card that only pretends to be clickable is worse than a still one. */
+/* One column at every width. The section already splits heading | plans, so
+   a second split inside it left Pro a fifth of the page wide and its prose
+   ran to twenty short lines. Pro sits under Free as a note, the same measure. */
+.editorial-site .plan-table { display: block; max-width: 58ch; }
+.editorial-site .plan-column { position: relative; }
+.editorial-site .plan-column.plan-pro { margin-top: 26px; background: #123c31; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; }
+.editorial-site .plan-head { display: flex; flex-direction: column; gap: 4px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
+.editorial-site .plan-head span:first-child { font-size: 26px; font-weight: 800; letter-spacing: -.03em; }
+.editorial-site .plan-head span:nth-child(2) { font-size: 13px; color: #a3bfab; }
+.editorial-site .plan-prose { margin: 0; max-width: 58ch; font-size: 16px; line-height: 1.65; font-weight: 300; color: #d6e4d8; }
+.editorial-site .plan-pro .plan-prose { font-size: 14.5px; color: #cfe0d3; }
+.editorial-site .plan-prose strong { font-weight: 600; color: var(--mint); }
 /* The trial lives here and only here: inside Pro, under Pro's price, so it
    reads as something extra rather than as the terms of the app. */
-.editorial-site .plan-badge { align-self: flex-start; margin-top: 8px; padding: 5px 11px; border-radius: 999px; background: #bff4ce1f; border: 1px solid #bff4ce4d; color: var(--mint); font-size: 11.5px; font-weight: 600; letter-spacing: .01em; }
-.editorial-site .plan-table ul { list-style: none; margin: 0; padding: 0; }
-.editorial-site .plan-table li { font-size: 14px; line-height: 1.45; padding: 9px 0 9px 18px; position: relative; border-top: 1px solid #e5f2e314; }
-.editorial-site .plan-table li:first-child { border-top: 0; }
-.editorial-site .plan-table li::before { content: ''; position: absolute; left: 0; top: 1.05em; width: 7px; height: 7px; border-radius: 50%; background: var(--mint); }
-.editorial-site .plan-pro li::before { background: #c9e8bd; }
-.editorial-site .plan-trial { font-size: 13px; color: #cde7c9; margin: 16px 0 0; }
-/* Sits under the table, outside it, so on a phone it is not a third slide in
-   the row and on a desktop it still runs the full width beneath both plans. */
+.editorial-site .plan-trial { font-size: 13px; color: #cde7c9; margin: 14px 0 0; line-height: 1.5; }
+/* Sits under the table, outside it, so it runs the full width beneath both. */
 .editorial-site .plan-footnote { font-size: 12px; color: #9ab6a4; margin: 18px 0 0; }
-
-/* On a phone the two plans used to stack, seventeen rows deep, and the section
-   became another long scroll right after the deck. They lie in a row and snap
-   instead, the same gesture the deck above just taught, so comparing the plans
-   is a swipe rather than a scroll past one and back. The desktop grid is
-   untouched. */
 @media (max-width: 720px) {
-  .editorial-site .plan-table {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 6px;
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
-  }
-  .editorial-site .plan-table::-webkit-scrollbar { display: none; }
-  .editorial-site .plan-column { flex: 0 0 86%; scroll-snap-align: start; }
-  /* The reveal observer waits for an element to enter the viewport, which for
-     the second card now means waiting for a swipe: it would sit at zero
-     opacity and take the peeking edge with it, the one thing telling anyone
-     there is a second card. In the row the cards are simply present. */
-  .reveal-ready .editorial-site .plan-column[data-reveal] { opacity: 1; transform: none; }
-  .editorial-site .plan-table li { font-size: 13.5px; padding: 7px 0 7px 17px; }
-  .editorial-site .plan-trial { font-size: 12.5px; margin-top: 13px; }
+  .editorial-site .plan-table { max-width: none; }
+  .editorial-site .plan-prose { font-size: 15px; }
 }
 
 /* Feature tour (dark section) */
