@@ -44,7 +44,9 @@ export function TourDeck({screens, heading}: {screens: TourScreen[]; heading: Re
           >
             <div className="deck-head">
               <span className="deck-index">{String(i + 1).padStart(2, '0')}</span>
-              <span className="deck-tag">{screen.tag}</span>
+              {/* "FREE" is not a feature of a card; the offer was made on the
+                  first screen. Only a Pro note is worth a label here. */}
+              {screen.tag.replace(/^FREE(\s*·\s*)?/, '') && <span className="deck-tag">{screen.tag.replace(/^FREE(\s*·\s*)?/, '')}</span>}
             </div>
             <div className="deck-body">
               <div className="deck-copy">
@@ -61,7 +63,7 @@ export function TourDeck({screens, heading}: {screens: TourScreen[]; heading: Re
                       <strong>{screen.figure.prefix ?? ''}{screen.figure.value.toLocaleString('en-US', {minimumFractionDigits: screen.figure.decimals ?? 0, maximumFractionDigits: screen.figure.decimals ?? 0})}{screen.figure.suffix ?? ''}</strong>
                       <span>{screen.figure.caption}</span>
                     </p>}
-                <DownloadButton className="button conversion-cta deck-cta" data-cta-placement={`deck-${screen.id}`}><CtaLabel/></DownloadButton>
+                <DownloadButton className="button conversion-cta deck-cta" data-cta-placement={`deck-${screen.id}`}><CtaLabel label={null}/></DownloadButton>
               </div>
               <div className="deck-media">
                 {screen.image

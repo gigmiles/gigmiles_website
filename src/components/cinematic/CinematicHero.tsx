@@ -44,7 +44,7 @@ export function CinematicHero({layout = 'portrait'}: {layout?: 'portrait' | 'lan
           </div>
           <div className="cine-cta">
             <DownloadButton className="button conversion-cta" data-cta-placement="cinematic-stage"><CtaLabel/></DownloadButton>
-            <p className="cine-cta-note">Free core. No card. No ads.</p>
+            <p className="cine-cta-note">No card. No ads.</p>
           </div>
         </div>
         <div className="cine-media" aria-hidden="true">

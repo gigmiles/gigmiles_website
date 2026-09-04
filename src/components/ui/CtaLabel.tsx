@@ -12,12 +12,16 @@
 //
 // No arrow. An arrow pointing up and to the right is the web's sign for
 // "leaves this page"; on a download button it promises the wrong thing.
-export function CtaLabel({label = 'free'}: {label?: string}) {
-  return <span className="cta-label" aria-label={`Get GigMiles — ${label}`}>
+// `label` is the offer after the dash. Pass `null` for a button that only names
+// the app: the offer is made once, on the first screen, and a page that says
+// "free" on every button reads as if it were trying to convince itself. The
+// accessible name follows the visible words either way.
+export function CtaLabel({label = 'free'}: {label?: string | null}) {
+  return <span className="cta-label" aria-label={label ? `Get GigMiles — ${label}` : 'Get GigMiles'}>
     <span aria-hidden="true">Get</span>
     <span className="cta-wordmark" aria-hidden="true">
       <span className="brand-wordmark">gigmiles</span><sup className="brand-trademark">™</sup>
     </span>
-    <span aria-hidden="true"> — {label}</span>
+    {label && <span aria-hidden="true"> — {label}</span>}
   </span>
 }

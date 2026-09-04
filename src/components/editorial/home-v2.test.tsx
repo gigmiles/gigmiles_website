@@ -176,7 +176,7 @@ describe('home v2 (local preview only)',()=>{
     expect(bar).toHaveAttribute('data-visible','true')
     act(()=>observers[1].callback([{isIntersecting:true,boundingClientRect:{top:10} as DOMRectReadOnly}]))
     expect(bar).toHaveAttribute('data-visible','false')
-    expect(bar.textContent).toContain('Free core · No card · No ads')
+    expect(bar.textContent).toContain('No card · No ads')
   })
 })
 

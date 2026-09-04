@@ -21,7 +21,7 @@ export const TRUST_FACTS = [
 // wording stays on the page twice regardless, in the film's closing statement
 // and in the closing section.
 export const PRODUCT_FACTS = [
-  'Free core. No card. No ads.',
+  'No card. No ads.',
   'Your vehicle’s real cost per mile, not a flat guess.',
   'Built for a car or an e-bike.',
   'Your state and an optional day job, in the math.',

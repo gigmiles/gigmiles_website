@@ -58,6 +58,6 @@ export function PlanTable() {
       <p className="plan-trial">No card for the trial either, and the ten days do not start until you log your first trip. Invite a driver and Pro stays open another seven days, up to two invites.</p>
     </aside>
   </div>
-  <p className="plan-footnote">Pro is an option, not the starting line. The free core stays free.</p>
+  <p className="plan-footnote">Pro is an option, not the starting line.</p>
   </>
 }

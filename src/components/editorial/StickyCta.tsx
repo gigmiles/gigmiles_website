@@ -29,7 +29,7 @@ export function StickyCta({heroSelector = '#headline', endSelector = '#download'
 
   const visible = heroGone && !endVisible
   return <div className="sticky-cta" data-visible={visible ? 'true' : 'false'} role="region" aria-label="Get the app" aria-hidden={!visible}>
-    <p>Free core · No card · No ads</p>
-    <DownloadButton className="button conversion-cta" data-cta-placement="sticky-bar"><CtaLabel/></DownloadButton>
+    <p>No card · No ads</p>
+    <DownloadButton className="button conversion-cta" data-cta-placement="sticky-bar"><CtaLabel label={null}/></DownloadButton>
   </div>
 }

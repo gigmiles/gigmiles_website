@@ -88,6 +88,21 @@ describe('cinematic home markup', () => {
     // and it ends where the film ended
     expect(html).toContain('/cinematic/hero-last.webp')
   })
+
+  it('makes the offer once and then stops saying free', () => {
+    // Twenty-eight on 2026-09-04, one every 36 words, and the operator read it
+    // as a page trying to convince itself. Eleven now: the first screen's own
+    // statement and button, the plan section's heading and its one plain
+    // line, the ten days inside Pro, the calculator, the FAQ, the nav label.
+    // Every button after the first screen only names the app.
+    const text = html.replace(/<[^>]+>/g, ' ')
+    expect((text.match(/free/gi) ?? []).length).toBeLessThanOrEqual(12)
+    const buttons = [...html.matchAll(/data-cta-placement="([^"]+)"[\s\S]*?aria-label="([^"]+)"/g)].map(m => [m[1], m[2]])
+    for (const [placement, name] of buttons) {
+      if (placement === 'cinematic-stage') expect(name).toBe('Get GigMiles — free')
+      else expect(name, placement).toBe('Get GigMiles')
+    }
+  })
 })
 
 describe('cinematic css discipline', () => {

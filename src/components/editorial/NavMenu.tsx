@@ -56,7 +56,7 @@ export function NavMenu({ children }: { children: ReactNode }) {
             hidden above 720px, where the header still has its button. */}
         <div className="nav-menu-cta">
           <DownloadButton className="button conversion-cta" data-cta-placement="nav-menu">
-            <CtaLabel/>
+            <CtaLabel label={null}/>
           </DownloadButton>
           <span>No card. No ads.</span>
         </div>
