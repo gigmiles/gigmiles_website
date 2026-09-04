@@ -10,10 +10,16 @@ export const END_AT = 0.74
 export const CINEMATIC_ASSETS = {
   desktop: `/cinematic/hero-desktop.mp4?v=${CINEMATIC_VERSION}`,
   mobile: `/cinematic/hero-mobile.mp4?v=${CINEMATIC_VERSION}`,
-  poster: '/cinematic/hero-poster.webp',
-  posterMobile: '/cinematic/hero-poster-mobile.webp',
+  // Every file under /cinematic/ is served with a one-year immutable cache
+  // header (next.config), so each URL has to change when the file does. The
+  // videos always carried the version; the posters did not, and a browser
+  // that had seen the prototype kept the old poster for a year: on every
+  // refresh it showed a frame from the Marcus film until the real first frame
+  // painted over it.
+  poster: `/cinematic/hero-poster.webp?v=${CINEMATIC_VERSION}`,
+  posterMobile: `/cinematic/hero-poster-mobile.webp?v=${CINEMATIC_VERSION}`,
   /** The film's last frame, for the page's closing section: it ends where the film ended. */
-  last: '/cinematic/hero-last.webp',
+  last: `/cinematic/hero-last.webp?v=${CINEMATIC_VERSION}`,
   /** Continuous paper film v5: one native 30 s generation, no cuts, no stitch. */
   duration: 30.0417,
 }

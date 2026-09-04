@@ -5,7 +5,7 @@ import {renderToStaticMarkup} from 'react-dom/server'
 import {act, render} from '@testing-library/react'
 import {CinematicHome} from './CinematicHome'
 import {CinematicHero} from './CinematicHero'
-import {CINEMATIC_SCENES} from './cinematic-cues'
+import {CINEMATIC_ASSETS, CINEMATIC_SCENES} from './cinematic-cues'
 
 const BANNED_PAGE = /what you owe|file your taxes|guaranteed|audit-proof|maximize your refund|\d+\s*(drivers|users|downloads)|★/i
 // The film's blank paper is filled with the canonical shift, so the hero is no
@@ -31,7 +31,7 @@ describe('cinematic home markup', () => {
     expect(html).toContain('data-cine-mode="static"')
     expect(html).toMatch(/<video[^>]*playsinline/i)
     expect(html).toMatch(/<video[^>]*preload="none"/i)
-    expect(html).toMatch(/<video[^>]*poster="\/cinematic\/hero-poster\.webp"/i)
+    expect(html).toMatch(/<video[^>]*poster="\/cinematic\/hero-poster\.webp\?v=[^"]+"/i)
     expect(html).not.toMatch(/<video[^>]*(autoplay|controls|loop)/i)
     expect(html).not.toContain('<canvas')
     expect(html.match(/<h1/g)).toHaveLength(1)
@@ -87,6 +87,15 @@ describe('cinematic home markup', () => {
     expect(html).not.toContain('plan-badge')
     // and it ends where the film ended
     expect(html).toContain('/cinematic/hero-last.webp')
+  })
+
+  it('versions every file it serves from the immutable cinematic path', () => {
+    // /cinematic/* is cached for a year as immutable. A URL that does not
+    // change with the file is a frame from an old film on someone's screen.
+    for (const [key, value] of Object.entries(CINEMATIC_ASSETS)) {
+      if (typeof value !== 'string' || !value.startsWith('/cinematic/')) continue
+      expect(value, key).toMatch(/\?v=[\w.-]+$/)
+    }
   })
 
   it('makes the offer once and then stops saying free', () => {
