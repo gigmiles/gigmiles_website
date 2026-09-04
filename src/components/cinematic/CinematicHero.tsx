@@ -4,7 +4,7 @@ import {useEffect, useRef, type CSSProperties} from 'react'
 import {DownloadButton} from '@/components/ui/DownloadButton'
 import {CtaLabel} from '@/components/ui/CtaLabel'
 import {installCinematic} from './cinematic-controller'
-import {BEAT_LIGHTS, BEAT_TINTS, CINEMATIC_ASSETS, CINEMATIC_BEATS, CINEMATIC_CUES, CINEMATIC_SCENES, PROOF, SIGNOFF} from './cinematic-cues'
+import {BEAT_LIGHTS, BEAT_TINTS, CINEMATIC_ASSETS, CINEMATIC_BEATS, CINEMATIC_CUES, CINEMATIC_SCENES, PROOF} from './cinematic-cues'
 import {Statement} from './Statement'
 
 // Server-rendered film stage. The markup is complete without JavaScript: the
@@ -25,7 +25,7 @@ export function CinematicHero({layout = 'portrait'}: {layout?: 'portrait' | 'lan
     const root = rootRef.current
     const video = videoRef.current
     if (!root || !video) return
-    return installCinematic(root, video, {cues: CINEMATIC_CUES, src: {desktop: CINEMATIC_ASSETS.desktop, mobile: CINEMATIC_ASSETS.mobile}, beats: CINEMATIC_BEATS, tints: BEAT_TINTS, lights: BEAT_LIGHTS, proof: PROOF, signoff: SIGNOFF})
+    return installCinematic(root, video, {cues: CINEMATIC_CUES, src: {desktop: CINEMATIC_ASSETS.desktop, mobile: CINEMATIC_ASSETS.mobile}, beats: CINEMATIC_BEATS, tints: BEAT_TINTS, lights: BEAT_LIGHTS, proof: PROOF})
   }, [])
 
   return <section id="cine-hero" className="cine-hero" data-cine-mode="static" data-layout={layout} ref={rootRef} aria-labelledby="headline">
@@ -54,22 +54,7 @@ export function CinematicHero({layout = 'portrait'}: {layout?: 'portrait' | 'lan
           </picture>
           <video className="cine-video" ref={videoRef} muted playsInline preload="none" poster={CINEMATIC_ASSETS.poster} disablePictureInPicture disableRemotePlayback tabIndex={-1}/>
           <div className="cine-light" aria-hidden="true"/>
-          {/* The film's last frame holds on the phone; here its glass wakes.
-              The quad is the real screen, measured off that frame. */}
-          <div
-            className="cine-signoff-spill"
-            aria-hidden="true"
-            style={{'--cx': `${SIGNOFF.cx}%`, '--cy': `${SIGNOFF.cy}%`} as CSSProperties}
-          />
-          <div
-            className="cine-signoff"
-            aria-hidden="true"
-            style={{
-              '--screen': SIGNOFF.screen.map(([x, y]) => `${x}% ${y}%`).join(', '),
-              '--cx': `${SIGNOFF.cx}%`,
-              '--cy': `${SIGNOFF.cy}%`,
-            } as CSSProperties}
-          />
+
           {/* The film's blank receipt and ledger, filled in code. Canonical
               figures only; the model never draws a number. In static mode this
               is a plain block under the scenes. */}

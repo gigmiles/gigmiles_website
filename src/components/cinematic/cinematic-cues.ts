@@ -75,33 +75,15 @@ export const PROOF = {
   eyebrow: 'Example shift',
 }
 
-// The sign-off. The film ends on the phone lying dark on the seat; while the
-// last frame is held and the paper section slides up, its glass wakes.
-//
-// The first attempt put the app's icon tile on the glass and it read as a
-// sticker, for two reasons worth keeping written down: the phone's screen is a
-// large portrait quad seen at an angle, so a small square in the middle of it
-// is not what a waking phone looks like, and a 2-D rotation cannot sit on a
-// foreshortened plane. What is drawn now is the screen itself. The four corners
-// below were read off the real last frame on a 5 % grid and are percentages of
-// the media panel, clockwise from the phone's top-left; the light inside them
-// needs no perspective of its own, and the spill under it is the screen
-// lighting the seat rather than a glow drawn around a badge.
-export const SIGNOFF = {
-  /** Page progress, not film fraction: the film is already held by here. */
-  from: 0.76,
-  to: 0.88,
-  /** The phone's glass, clockwise from its top-left corner. */
-  screen: [
-    [16.4, 52.1],
-    [27.2, 50.6],
-    [37.6, 59.5],
-    [26.5, 61.2],
-  ] as Array<[number, number]>,
-  /** Centre of the glass, where the light comes from. */
-  cx: 27.0,
-  cy: 56.6,
-}
+// There is no sign-off on the phone in the held last frame, and the reason is
+// worth keeping so it is not tried a fourth time. The phone's glass renders
+// 52x88 px at 1440, 62x105 at 1920 and 44x85 on a phone. An app icon laid on it
+// read as a sticker; a lit screen clipped to the glass either overhung its edge
+// or failed to fill it, because corners read off a 1078x1920 frame cannot be
+// placed that precisely at this size. Every pass fixed one artefact and
+// introduced another. The film now ends on a dark phone, which is what the last
+// frame actually shows, and the brand is set by the CTA below it at a size that
+// can be read.
 
 export interface SceneSpec {
   id: string

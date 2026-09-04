@@ -294,8 +294,6 @@ export interface InstallOptions {
   lights?: LightSpec[]
   /** The code-drawn figures written onto the film's blank paper, in film fractions. */
   proof?: ProofSpec
-  /** Page progress over which the phone in the held last frame wakes. */
-  signoff?: {from: number; to: number}
   onState?: (state: VideoState) => void
   fetchImpl?: typeof fetch
   defaults?: Partial<Defaults>
@@ -363,7 +361,6 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
     root.style.setProperty('--cam-s', cam.scale.toFixed(4))
     root.style.setProperty('--cam-x', `${cam.x.toFixed(2)}px`)
     root.style.setProperty('--cam-y', `${cam.y.toFixed(2)}px`)
-    if (opts.signoff) root.style.setProperty('--signoff', smoothstep(opts.signoff.from, opts.signoff.to, p).toFixed(3))
     if (opts.proof) {
       const proof = proofAt(f, opts.proof)
       root.style.setProperty('--proof', proof.on.toFixed(3))
@@ -400,7 +397,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
   }
 
   const clearCues = () => {
-    for (const name of ['--p', '--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--ly', '--ls', '--la', '--proof', '--pr-net', '--pr0', '--pr1', '--pr2', '--pr3', '--signoff']) root.style.removeProperty(name)
+    for (const name of ['--p', '--cam-s', '--cam-x', '--cam-y', '--ground', '--lx', '--ly', '--ls', '--la', '--proof', '--pr-net', '--pr0', '--pr1', '--pr2', '--pr3']) root.style.removeProperty(name)
     scenes.forEach(scene => {
       scene.removeAttribute('style')
       scene.removeAttribute('data-scene-active')
