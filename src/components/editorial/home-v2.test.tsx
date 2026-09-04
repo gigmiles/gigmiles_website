@@ -6,7 +6,7 @@ import {createHash} from 'node:crypto'
 import {ApprovedHome} from './ApprovedHome'
 import {TrustStrip,TRUST_FACTS} from './TrustStrip'
 import {EstimateProof} from './EstimateProof'
-import {PlanTable,FREE_FEATURES,PRO_FEATURES} from './PlanTable'
+import {PlanTable,FREE_FEATURES,PRO_FEATURES, FREE_GROUPS, PRO_GROUPS} from './PlanTable'
 import {FeatureTour,type TourScreen} from './FeatureTour'
 import {StickyCta} from './StickyCta'
 import LandingPage from '@/app/page'
@@ -143,6 +143,14 @@ describe('home v2 (local preview only)',()=>{
     expect(footnote).not.toMatch(/trial|10 days/i)
     expect(container.textContent).toContain('$9.99/mo or $99.99/yr')
     expect(renderToStaticMarkup(<PlanTable/>)).not.toMatch(BANNED)
+  })
+  it('sets every feature in exactly one family, and the free leads stay free',()=>{
+    for(const [groups,features] of [[FREE_GROUPS,FREE_FEATURES],[PRO_GROUPS,PRO_FEATURES]] as const){
+      const seen=groups.flatMap(g=>[...g.items])
+      expect([...seen].sort((a,b)=>a-b)).toEqual(features.map((_,i)=>i))
+    }
+    for(const g of FREE_GROUPS)expect(g.lead).not.toMatch(/GPS|export|AI|trial|10 days|free/i)
+    for(const g of [...FREE_GROUPS,...PRO_GROUPS])expect(g.lead.split(' ').length).toBeLessThanOrEqual(3)
   })
   it('feature tour follows the observed step on wide viewports and stacks otherwise',()=>{
     const view=render(<FeatureTour screens={SCREENS} heading="Tour"/>)

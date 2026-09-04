@@ -42,36 +42,47 @@
 
 /* Plan table (inside the free section, replaces the feature list) */
 /* Free is the spine, Pro is a note beside it: the shape of the offer, drawn.
-   The features are running prose, not two lists: with the deck's proofs the
-   page had reached forty-six bullet points below the film and read as a
-   feature grid. Nothing here moves on hover; the cards led nowhere, and a
-   card that only pretends to be clickable is worse than a still one. */
-/* One column at every width. The section already splits heading | plans, so
-   a second split inside it left Pro a fifth of the page wide and its prose
-   ran to twenty short lines. Pro sits under Free as a note, the same measure. */
+   The features are three small chapters, a bold lead and the sentences run on
+   after it. Nothing here moves on hover; the cards led nowhere, and a card
+   that only pretends to be clickable is worse than a still one. */
 .editorial-site .plan-table { display: block; max-width: 58ch; }
 .editorial-site .plan-column { position: relative; }
 .editorial-site .plan-column.plan-pro { margin-top: 26px; background: #123c31; border: 1px solid var(--line); border-radius: 10px; padding: 22px 24px; }
 .editorial-site .plan-head { display: flex; flex-direction: column; gap: 4px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
 .editorial-site .plan-head span:first-child { font-size: 26px; font-weight: 800; letter-spacing: -.03em; }
 .editorial-site .plan-head span:nth-child(2) { font-size: 13px; color: #a3bfab; }
-.editorial-site .plan-prose { margin: 0; max-width: 58ch; font-size: 16px; line-height: 1.65; font-weight: 300; color: #d6e4d8; }
-.editorial-site .plan-pro .plan-prose { font-size: 14.5px; color: #cfe0d3; }
-.editorial-site .plan-prose strong { font-weight: 600; color: var(--mint); }
+.editorial-site .plan-group { margin: 0 0 14px; font-size: 16px; line-height: 1.65; font-weight: 300; color: #d6e4d8; }
+.editorial-site .plan-group:last-of-type { margin-bottom: 0; }
+.editorial-site .plan-lead { font-weight: 700; color: var(--ink); margin-right: .3em; }
+.editorial-site .plan-pro .plan-group { font-size: 14.5px; color: #cfe0d3; }
 /* The trial lives here and only here: inside Pro, under Pro's price, so it
    reads as something extra rather than as the terms of the app. */
+.editorial-site .plan-ten { margin: 0 0 12px; font-size: 15px; }
+.editorial-site .plan-ten strong { font-weight: 600; color: var(--mint); }
 .editorial-site .plan-trial { font-size: 13px; color: #cde7c9; margin: 14px 0 0; line-height: 1.5; }
 /* Sits under the table, outside it, so it runs the full width beneath both. */
 .editorial-site .plan-footnote { font-size: 12px; color: #9ab6a4; margin: 18px 0 0; }
+
+/* On a phone the section is one column with a rhythm: the heading and its
+   one line, then the three chapters with their leads set as small headings,
+   then Pro as its own object, and the button last, after what it asks for.
+   `display: contents` lets the heading block's children take their place in
+   that order without touching the markup the desktop grid relies on. */
 @media (max-width: 720px) {
-  .editorial-site .plan-table { max-width: none; }
-  .editorial-site .plan-prose { font-size: 15px; }
-  /* One feature per line, no bullet, a hairline between: readable at a
-     glance, still not a list. */
-  .editorial-site .plan-item { display: block; padding: 9px 0; border-top: 1px solid #e5f2e314; }
-  .editorial-site .plan-item:first-child { border-top: 0; padding-top: 0; }
-  .editorial-site .plan-pro .plan-prose strong { display: block; margin-bottom: 6px; }
-  .editorial-site .plan-pro .plan-prose strong + .plan-item { border-top: 0; padding-top: 0; }
+  .editorial-site .cine-page .free-section { display: flex; flex-direction: column; }
+  .editorial-site .cine-page .free-heading { display: contents; }
+  .editorial-site .cine-page .free-heading > h2 { order: 1; margin-bottom: 14px; }
+  .editorial-site .cine-page .free-heading > p:not(.confidence) { order: 2; margin-bottom: 26px; }
+  .editorial-site .cine-page .free-section .plan-table { order: 3; max-width: none; }
+  .editorial-site .cine-page .free-section .plan-footnote { order: 4; }
+  .editorial-site .cine-page .free-heading > .button { order: 5; align-self: flex-start; margin-top: 30px; }
+  .editorial-site .cine-page .free-heading > .confidence { order: 6; margin-top: 10px; }
+  .editorial-site .plan-column:not(.plan-pro) .plan-head { display: none; }
+  .editorial-site .plan-group { margin: 0 0 22px; font-size: 15.5px; line-height: 1.6; }
+  .editorial-site .plan-lead { display: block; margin: 0 0 5px; font-size: 20px; font-weight: 800; letter-spacing: -.025em; line-height: 1.1; }
+  .editorial-site .plan-column.plan-pro { margin-top: 30px; padding: 20px 20px 22px; }
+  .editorial-site .plan-pro .plan-lead { font-size: 17px; }
+  .editorial-site .plan-pro .plan-group { font-size: 14.5px; margin-bottom: 16px; }
 }
 
 /* Feature tour (dark section) */
