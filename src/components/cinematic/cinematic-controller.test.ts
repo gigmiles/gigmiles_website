@@ -2,7 +2,7 @@ import {describe, expect, it} from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
 import {
-  DEFAULTS, cameraAt, clamp01, cueState, dwellEase, filmFractionAtProgress, groundAt, lerpStep, lightAt, progressAtFraction, resolveMode, sceneAtProgress, shouldSeek, smoothstep, timeAtProgress, validateCues,
+  DEFAULTS, cameraAt, clamp01, cueState, dwellEase, filmFractionAtProgress, groundAt, lerpStep, lightAt, progressAtFraction, rateLimitStep, resolveMode, sceneAtProgress, shouldSeek, smoothstep, timeAtProgress, validateCues,
   type CueSpec,
 } from './cinematic-controller'
 import {BEAT_LIGHTS, BEAT_TINTS, CINEMATIC_BEATS, CINEMATIC_CUES, CINEMATIC_SCENES, END_AT} from './cinematic-cues'
@@ -69,6 +69,24 @@ describe('cinematic controller math', () => {
     const twoHalfFrames = lerpStep(lerpStep(0, 10, 0.18, 8.35), 10, 0.18, 8.35)
     expect(Math.abs(oneFrame - twoHalfFrames)).toBeLessThan(1e-3)
     expect(lerpStep(9.999, 10, 0.18)).toBe(10)
+  })
+
+  it('rateLimitStep caps progress per second, snaps within reach and scales with frame time', () => {
+    // A deliberate scroll (0.08/s) sits under the desktop ceiling: no pacing.
+    expect(rateLimitStep(0.5, 0.5 + 0.08 * 0.0167, DEFAULTS.maxRateDesktop, 16.7)).toBeCloseTo(0.5 + 0.08 * 0.0167, 9)
+    // A fling from 0 to 0.5 advances one frame's worth only, in either direction.
+    expect(rateLimitStep(0, 0.5, 0.22, 16.7)).toBeCloseTo(0.22 * 0.0167, 6)
+    expect(rateLimitStep(0.5, 0, 0.22, 16.7)).toBeCloseTo(0.5 - 0.22 * 0.0167, 6)
+    // 120 Hz takes half-steps: two 8.35 ms frames equal one 16.7 ms frame.
+    expect(rateLimitStep(rateLimitStep(0, 1, 0.22, 8.35), 1, 0.22, 8.35)).toBeCloseTo(rateLimitStep(0, 1, 0.22, 16.7), 9)
+    // Within one step of the target it lands exactly; dt = 0 never moves.
+    expect(rateLimitStep(0.999, 1, 0.22, 16.7)).toBe(1)
+    expect(rateLimitStep(0.3, 0.9, 0.22, 0)).toBe(0.3)
+    // The whole film segment (endAt) is crossed in about 3.4 s on desktop at 60 Hz.
+    let p = 0; let frames = 0
+    while (p < DEFAULTS.endAt && frames < 1000) { p = rateLimitStep(p, 1, DEFAULTS.maxRateDesktop, 16.7); frames += 1 }
+    expect(frames * 16.7 / 1000).toBeGreaterThan(3)
+    expect(frames * 16.7 / 1000).toBeLessThan(4)
   })
 
   it('shouldSeek respects the deadband and a busy decoder', () => {

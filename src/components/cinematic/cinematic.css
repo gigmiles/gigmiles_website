@@ -2,7 +2,9 @@
    Tokens come from editorial.css (--bg --ink --mint --muted --line --paper --deep).
    Only transform, opacity and clip-path move; no keyframes; svh units only. */
 
-.editorial-site .cine-page { --cine-runway: 500svh; --cine-overlap: 100svh; }
+/* Runway 620svh (520svh of travel): the 30 s film scrubs across ~385svh so a
+   flick of the wheel moves it by seconds, not by scenes. */
+.editorial-site .cine-page { --cine-runway: 620svh; --cine-overlap: 100svh; }
 html:has(.cine-page) { scroll-behavior: auto; }
 
 /* ---- stage ---------------------------------------------------------- */
@@ -244,8 +246,10 @@ html:has(.cine-page) { scroll-behavior: auto; }
 
 /* ---- mobile / narrow: full-bleed film, captions in the lower third ---- */
 @media (max-width: 980px) {
-  /* The film's production note asks for about 380vh on the phone so the 30 s journey is not rushed. */
-  .editorial-site .cine-page { --cine-runway: 380svh; --cine-overlap: 40svh; }
+  /* The film's production note asked for about 380vh on the phone; a thumb
+     fling still skipped whole beats, so the runway is 450svh (350svh of travel)
+     and the controller paces fast scrolls (maxRateMobile). */
+  .editorial-site .cine-page { --cine-runway: 450svh; --cine-overlap: 40svh; }
   .editorial-site .cine-underline path { stroke-width: 2; }
   .editorial-site .cine-page .cine-frame { display: block; width: 100%; max-width: none; }
   .editorial-site .cine-hero[data-cine-mode="mobile"] .cine-media,

@@ -61,10 +61,19 @@ export type CineMode = 'static' | 'desktop' | 'mobile'
 export type VideoState = 'idle' | 'loading' | 'ready' | 'primed' | 'failed'
 
 export const DEFAULTS = {
-  lerpDesktop: 0.18,
+  lerpDesktop: 0.14,
   lerpMobile: 0.28,
   deadbandDesktop: 0.008,
   deadbandMobile: 0.02,
+  /**
+   * Ceiling on how fast page progress may advance, in progress per second.
+   * A deliberate scroll (the whole runway in 8–15 s ≈ 0.05–0.10/s) never
+   * touches it; a fast fling does, so the film glides through its beats
+   * instead of teleporting past them. Cues and film share this clock, so
+   * the headlines can never run ahead of the picture.
+   */
+  maxRateDesktop: 0.22,
+  maxRateMobile: 0.30,
   /** Page progress at which the film reaches its last frame; the rest is the hold. */
   endAt: 0.74,
   snap: 0.002,
@@ -147,6 +156,13 @@ export function lerpStep(current: number, target: number, k: number, dtMs = 16.7
   const perFrame = 1 - Math.pow(1 - rate, Math.max(0, dtMs) / 16.7)
   const next = current + (target - current) * perFrame
   return Math.abs(target - next) < snap ? target : next
+}
+
+/** Advance `current` toward `target` by at most `maxRate` per second; snaps when within reach. */
+export function rateLimitStep(current: number, target: number, maxRate: number, dtMs = 16.7) {
+  const step = Math.max(0, maxRate) * Math.max(0, dtMs) / 1000
+  const delta = target - current
+  return Math.abs(delta) <= step ? target : current + Math.sign(delta) * step
 }
 
 export function shouldSeek(playhead: number, current: number, seeking: boolean, deadband: number) {
@@ -317,6 +333,9 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
   let frame = 0
   let lastTick = 0
   let lastP = -1
+  // Rate-limited page progress: the single clock for both cues and film.
+  // -1 = unseeded; the next tick adopts the real scroll position without a glide.
+  let smoothP = -1
   let playhead = 0
   let target = 0
   let stuck = 0
@@ -513,12 +532,20 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
     const dt = lastTick ? Math.min(64, now - lastTick) : 16.7
     lastTick = now
     const p = progress()
-    if (Math.abs(p - lastP) > 0.0005) { lastP = p; writeCues(p) }
+    // Static mode has no motion to pace; otherwise progress may only advance
+    // at maxRate, so a fling plays the film through instead of skipping it.
+    const sp = mode === 'static' || smoothP < 0
+      ? p
+      : rateLimitStep(smoothP, p, mode === 'mobile' ? d.maxRateMobile : d.maxRateDesktop, dt)
+    smoothP = sp
+    if (Math.abs(sp - lastP) > 0.0005) { lastP = sp; writeCues(sp) }
     if (mode === 'static') return
     // iOS can hold the metadata and still never fire the event we wait for.
     if (videoState === 'loading' && video && video.src && video.readyState >= 1) metadataHook?.()
-    target = filmTarget(p)
+    target = filmTarget(sp)
     root.dataset.cineTarget = target.toFixed(opts.driver ? 4 : 3)
+    root.dataset.cineSmooth = sp.toFixed(3)
+    const pacing = Math.abs(p - sp) > d.snap
     playhead = lerpStep(playhead, target, mode === 'mobile' ? d.lerpMobile : d.lerpDesktop, dt, d.snap)
     if (opts.driver) {
       if (videoState === 'primed' && Math.abs(playhead - rendered) > 0.0003) {
@@ -527,7 +554,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
         root.dataset.cineTime = playhead.toFixed(4)
         root.dataset.cinePainted = 'true'
       }
-      if (Math.abs(target - playhead) > d.snap) schedule()
+      if (pacing || Math.abs(target - playhead) > d.snap) schedule()
       return
     }
     if (!video) return
@@ -551,7 +578,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
       if (primeTicksLeft <= 0) releasePrime()
     }
     debugWrite()
-    if (Math.abs(target - playhead) > d.snap || video.seeking || priming) schedule()
+    if (pacing || Math.abs(target - playhead) > d.snap || video.seeking || priming) schedule()
   }
 
   function configure() {
@@ -559,6 +586,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
     mode = next
     root.dataset.cineMode = next
     lastP = -1
+    smoothP = -1
     if (frame) { cancelAnimationFrame(frame); frame = 0 }
     if (next === 'static') { clearCues(); return }
     load()
@@ -572,7 +600,7 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
   const onMetadata = () => {
     if (videoState !== 'loading') return
     setState('ready')
-    const p = progress()
+    const p = smoothP >= 0 ? smoothP : progress()
     target = filmTarget(p)
     playhead = target
     // Force one seek even at p=0 so the poster hand-off has a painted frame to wait for.
@@ -614,5 +642,6 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
     delete root.dataset.cinePainted
     delete root.dataset.cineTime
     delete root.dataset.cineTarget
+    delete root.dataset.cineSmooth
   }
 }
