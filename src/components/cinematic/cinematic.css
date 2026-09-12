@@ -333,10 +333,11 @@ html:has(.cine-page) { scroll-behavior: auto; }
 }
 .editorial-site .cine-essay strong { font-weight: 700; color: #0b302b; }
 
-/* ---- the bookend: the page ends on the film's last frame ------------------
+/* ---- the bookend: the page ends at dawn, with the phone on -----------------
    Same paper, same rounded top edge and shadow as the section that first slid
    over the film, so the ending rhymes with the beginning. The frame is the
-   film's own last frame, still, with the offer beside it. */
+   closing scene: the real Home screen in a driver's hand, trunk and e-bike
+   behind it, in the film's dawn light. */
 .editorial-site .cine-bookend {
   position: relative;
   background: var(--paper);
@@ -356,7 +357,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 900 / 1603;
+  aspect-ratio: 941 / 1672;
   object-fit: cover;
   border-radius: 22px;
   box-shadow: 0 40px 80px -40px #0b302b99;
@@ -368,14 +369,14 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-bookend-copy .close-trust { margin: 16px 0 0; font-size: 14px; color: #3f6a55; }
 .editorial-site .cine-bookend-copy .close-small { margin: 6px 0 0; font-size: 12px; color: #5f8570; }
 @media (max-width: 980px) {
-  /* The ending is one screen on a phone: the seat and the phone as a wide
-     band, cropped to where the phone lies, then the statement and the button.
-     Stacked at full height the picture alone took a screen and the last thing
-     anyone saw was the footer. */
+  /* The ending is one screen on a phone: the scene as a wide band, cropped to
+     where the phone is held (its screen spans 36–69% of the frame height),
+     then the statement and the button. Stacked at full height the picture
+     alone took a screen and the last thing anyone saw was the footer. */
   .editorial-site .cine-bookend { padding: clamp(2.6rem, 8vh, 4rem) 0 clamp(2.4rem, 7vh, 3.4rem); }
   .editorial-site .cine-bookend-inner { grid-template-columns: 1fr; row-gap: 1.3rem; }
   .editorial-site .cine-bookend-frame { justify-self: stretch; width: 100%; }
-  .editorial-site .cine-bookend-frame img { aspect-ratio: 4 / 3; object-position: 50% 64%; border-radius: 18px; }
+  .editorial-site .cine-bookend-frame img { aspect-ratio: 4 / 3; object-position: 50% 52%; border-radius: 18px; }
   .editorial-site .cine-bookend h2 { font-size: clamp(30px, 8vw, 40px); }
   .editorial-site .cine-bookend-copy > p { margin-top: 12px; font-size: 16px; }
   .editorial-site .cine-bookend-copy .button { margin-top: 18px; }

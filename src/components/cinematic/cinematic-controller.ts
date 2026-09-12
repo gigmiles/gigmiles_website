@@ -538,7 +538,10 @@ export function installCinematic(root: HTMLElement, video: HTMLVideoElement | nu
       ? p
       : rateLimitStep(smoothP, p, mode === 'mobile' ? d.maxRateMobile : d.maxRateDesktop, dt)
     smoothP = sp
-    if (Math.abs(sp - lastP) > 0.0005) { lastP = sp; writeCues(sp) }
+    // Skip sub-threshold jitter, but never skip the settling write: when the
+    // paced value lands exactly on the real position the cues must show it,
+    // however small the last step was.
+    if (Math.abs(sp - lastP) > 0.0005 || (sp === p && sp !== lastP)) { lastP = sp; writeCues(sp) }
     if (mode === 'static') return
     // iOS can hold the metadata and still never fire the event we wait for.
     if (videoState === 'loading' && video && video.src && video.readyState >= 1) metadataHook?.()

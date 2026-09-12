@@ -88,3 +88,6 @@ gradle_output*.txt
 /public/cinematic/plates/*.webp
 /public/cinematic/plates/*.png
 /.video-src/
+
+# Closing-scene photo sources (re-composited locally; only the .webp ships)
+public/cinematic/*-source.png

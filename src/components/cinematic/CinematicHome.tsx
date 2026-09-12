@@ -64,12 +64,14 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
         page it replaces, and these are the answers search actually reads. */}
     <HomeFaq variant="v2"/>
 
-    {/* The page ends where the film ended: the same rear seat at dawn, the
-        same dark phone, with the offer beside it. */}
+    {/* The page ends at dawn again, but now the phone is on: the real Home
+        screen (rendered from the app source) in a driver's hand, between an
+        open trunk of deliveries and an e-bike. Same light as the film's last
+        frame, so the ending still rhymes with it. */}
     <section className="cine-bookend" id="download" aria-labelledby="bookend-title">
       <div className="wrap cine-bookend-inner">
         <figure className="cine-bookend-frame" data-reveal="">
-          <img src={CINEMATIC_ASSETS.last} width={900} height={1603} alt="The rear seat at dawn, from the end of the film: the delivery bag, a key, a receipt and a phone." loading="lazy" decoding="async"/>
+          <img src={CINEMATIC_ASSETS.scene} width={941} height={1672} alt="A driver at dawn holding a phone showing the GigMiles Home screen: Net income $192 today from $235 gross and $43 costs, 105.0 miles, 8 hours, $24 per hour. Behind the phone, a sedan with its trunk open holding a delivery bag and parcels, and an e-bike with a delivery box. Example inputs, not a customer’s earnings." loading="lazy" decoding="async"/>
         </figure>
         <div className="cine-bookend-copy" data-reveal="" style={{'--d': '120ms'} as React.CSSProperties}>
           <h2 id="bookend-title">Stop guessing.<br/><em>Start with your next shift.</em></h2>
