@@ -15,6 +15,7 @@ import './deck.css'
 import {CinematicHero} from './CinematicHero'
 import {PlatesHero} from './PlatesHero'
 import {TourDeck} from './TourDeck'
+import {OnlyGigMiles} from './OnlyGigMiles'
 import type {P1Variant} from './plate-cues'
 
 // Cinematic home: the film stage, then the paper hand-off, then the live
@@ -49,6 +50,10 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
     </section>
 
     <TourDeck screens={TOUR_SCREENS} heading={<>See it on your phone.<br/><span>Before you download.</span></>}/>
+
+    {/* After the tour has shown the app, the three claims only GigMiles can
+        make, each on the real screen that makes it. The plan leads. */}
+    <OnlyGigMiles/>
 
     <section className="free-section wrap" id="free" aria-labelledby="free-title">
       <div className="free-heading">
