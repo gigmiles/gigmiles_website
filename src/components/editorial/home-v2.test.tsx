@@ -58,9 +58,11 @@ describe('home v2 (local preview only)',()=>{
     expect(html).not.toMatch(BANNED_PAGE)
     expect(renderToStaticMarkup(<ApprovedHome heroMode="scroll"/>)).not.toMatch(SECTIONS)
     const tour=[...html.matchAll(/src="\/editorial\/(tour-[a-z]+)\.webp"/g)].map(m=>m[1])
-    expect(new Set(tour)).toEqual(new Set(['tour-home','tour-shifts','tour-tax','tour-insights']))
+    // Four real captures from the app source (1.1.0+29): Home, the split-by-
+    // platform sheet, Your plan and the Tax center.
+    expect(new Set(tour)).toEqual(new Set(['tour-home','tour-split','tour-plan','tour-tax']))
     const hashes=new Set<string>()
-    for(const name of ['tour-home','tour-shifts','tour-tax','tour-insights']){
+    for(const name of ['tour-home','tour-split','tour-plan','tour-tax']){
       for(const variant of [name,name+'-390']){
         const buffer=readFileSync(`public/editorial/${variant}.webp`)
         expect(buffer.length).toBeLessThan(60000)
