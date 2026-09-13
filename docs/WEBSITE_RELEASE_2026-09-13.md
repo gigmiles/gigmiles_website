@@ -1,5 +1,19 @@
 # Website release — 2026-09-13: real app screens, the closing scene, the pace of the film
 
+> **Rolled back the same day, on purpose.** The captures show app 1.1.0+29,
+> which is not in the App Store or Google Play yet (store build: 1.0.2+28).
+> The operator asked for the previous site until the app ships. `main` now
+> carries a rollback commit that restores `src/` and `public/` to a50eb82;
+> only the scroll pacing (5c64215 controller + runway 620/450svh) stays live,
+> since it shows nothing of the app. The full release is untouched on
+> `codex/website-cinematic` at cd2e86e.
+>
+> **To go live again once the app is in both stores:** on `main`,
+> `git revert <rollback commit>` (its subject starts with "revert(web): the
+> previous home page until the app ships"), push, and check gigmiles.app for
+> `tour-wrap.webp` and the "Only GigMiles does this" section. Nothing else is
+> needed; the assets are all in git.
+
 Operator approvals, in order: the scroll-pacing plan ("onaylıyorum"), removal of
 the old-UI captures and the closing photograph, the four-screen tour and the
 "Only GigMiles" section ("onaylıyorum"), and publication ("push"). Vocabulary rule

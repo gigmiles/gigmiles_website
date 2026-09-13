@@ -86,7 +86,7 @@ describe('cinematic home markup', () => {
     expect(html).not.toContain('deck-bullets')
     expect(html).not.toContain('plan-badge')
     // and it ends where the film ended
-    expect(html).toContain('/cinematic/closing-scene.webp')
+    expect(html).toContain('/cinematic/hero-last.webp')
   })
 
   it('versions every file it serves from the immutable cinematic path', () => {

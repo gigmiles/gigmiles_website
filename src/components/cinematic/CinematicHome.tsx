@@ -15,7 +15,6 @@ import './deck.css'
 import {CinematicHero} from './CinematicHero'
 import {PlatesHero} from './PlatesHero'
 import {TourDeck} from './TourDeck'
-import {OnlyGigMiles} from './OnlyGigMiles'
 import type {P1Variant} from './plate-cues'
 
 // Cinematic home: the film stage, then the paper hand-off, then the live
@@ -51,10 +50,6 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
 
     <TourDeck screens={TOUR_SCREENS} heading={<>See it on your phone.<br/><span>Before you download.</span></>}/>
 
-    {/* After the tour has shown the app, the three claims only GigMiles can
-        make, each on the real screen that makes it. The plan leads. */}
-    <OnlyGigMiles/>
-
     <section className="free-section wrap" id="free" aria-labelledby="free-title">
       <div className="free-heading">
         <h2 id="free-title">Free to start.<br/><em>Free to keep using.</em></h2>
@@ -69,14 +64,12 @@ export function CinematicHome({variant = 'film', plateVariant}: {variant?: 'film
         page it replaces, and these are the answers search actually reads. */}
     <HomeFaq variant="v2"/>
 
-    {/* The page ends at dawn again, but now the phone is on: the real Home
-        screen (rendered from the app source) in a driver's hand, between an
-        open trunk of deliveries and an e-bike. Same light as the film's last
-        frame, so the ending still rhymes with it. */}
+    {/* The page ends where the film ended: the same rear seat at dawn, the
+        same dark phone, with the offer beside it. */}
     <section className="cine-bookend" id="download" aria-labelledby="bookend-title">
       <div className="wrap cine-bookend-inner">
         <figure className="cine-bookend-frame" data-reveal="">
-          <img src={CINEMATIC_ASSETS.scene} width={941} height={1672} alt="A driver at dawn holding a phone showing the GigMiles Home screen: Net income $192 today from $235 gross and $43 costs, 105.0 miles, 8 hours, $24 per hour. Behind the phone, a sedan with its trunk open holding a delivery bag and parcels, and an e-bike with a delivery box. Example inputs, not a customer’s earnings." loading="lazy" decoding="async"/>
+          <img src={CINEMATIC_ASSETS.last} width={900} height={1603} alt="The rear seat at dawn, from the end of the film: the delivery bag, a key, a receipt and a phone." loading="lazy" decoding="async"/>
         </figure>
         <div className="cine-bookend-copy" data-reveal="" style={{'--d': '120ms'} as React.CSSProperties}>
           <h2 id="bookend-title">Stop guessing.<br/><em>Start with your next shift.</em></h2>

@@ -2,7 +2,7 @@ import {progressAtFraction, type CueSpec, type LightSpec, type Rgb} from './cine
 
 // Bump when the encoded files change so cached copies are never scrubbed
 // against an old cue table.
-export const CINEMATIC_VERSION = '2026-09-13a'
+export const CINEMATIC_VERSION = '2026-09-03f5'
 
 /** Page progress at which the film reaches its last frame (the rest is the hold). */
 export const END_AT = 0.74
@@ -18,17 +18,8 @@ export const CINEMATIC_ASSETS = {
   // painted over it.
   poster: `/cinematic/hero-poster.webp?v=${CINEMATIC_VERSION}`,
   posterMobile: `/cinematic/hero-poster-mobile.webp?v=${CINEMATIC_VERSION}`,
-  /** The film's last frame (kept on disk; no longer shown). */
+  /** The film's last frame, for the page's closing section: it ends where the film ended. */
   last: `/cinematic/hero-last.webp?v=${CINEMATIC_VERSION}`,
-  /**
-   * The closing scene: a driver at dawn between an open trunk of deliveries
-   * and an e-bike, holding the phone with the REAL Home screen composited on
-   * it (rendered from the app source, 1.1.0+29, canonical $235 → $192 shift).
-   * Source photo is public/cinematic/closing-scene-source.png (gitignored);
-   * re-composite with the scratch script when either the photo or the app
-   * screen changes.
-   */
-  scene: `/cinematic/closing-scene.webp?v=${CINEMATIC_VERSION}`,
   /** Continuous paper film v5: one native 30 s generation, no cuts, no stitch. */
   duration: 30.0417,
 }

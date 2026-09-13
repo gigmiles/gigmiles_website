@@ -333,68 +333,10 @@ html:has(.cine-page) { scroll-behavior: auto; }
 }
 .editorial-site .cine-essay strong { font-weight: 700; color: #0b302b; }
 
-/* ---- only GigMiles: three claims on the real screens -----------------------
-   Sits on the deck's dark ground between the tour and the plans. The plan
-   claim leads with two screens side by side; the other two share a row. Type
-   and card grammar follow the deck so the page keeps one voice. */
-.editorial-site .only { position: relative; background: var(--bg); color: var(--ink); padding: clamp(3.4rem, 10vh, 6.5rem) 0 clamp(2.6rem, 7vh, 4.2rem); }
-.editorial-site .only-heading { margin: 0; font-size: clamp(34px, 4vw, 60px); font-weight: 800; line-height: 1.02; letter-spacing: -.035em; max-width: 22ch; }
-.editorial-site .only-lead-line { margin: 14px 0 clamp(2rem, 5vh, 3.2rem); max-width: 48ch; font-size: clamp(16px, 1.25vw, 20px); font-weight: 300; line-height: 1.45; color: var(--mint); }
-.editorial-site .only-lead,
-.editorial-site .only-card {
-  position: relative;
-  background: #174a3b;
-  border-radius: 26px;
-  padding: clamp(1.2rem, 2.2vw, 1.9rem);
-  box-shadow: 0 40px 80px -40px #00000099;
-  overflow: hidden;
-  display: grid;
-  gap: clamp(1rem, 3vw, 2.6rem);
-  align-items: end;
-}
-.editorial-site .only-lead { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); margin-bottom: clamp(1.4rem, 4vh, 2.6rem); }
-/* The claim cards: one sentence, then a cut from the real screen, edge to
-   edge at the foot of the card — a band, not a phone. */
-.editorial-site .only-card { background: #205a46; grid-template-columns: 1fr; grid-template-rows: auto auto auto; gap: 10px; align-items: start; align-content: start; padding-bottom: 0; }
-.editorial-site .only-card .only-title { font-size: clamp(20px, 1.8vw, 26px); }
-.editorial-site .only-card .only-text { font-size: clamp(14px, 1.05vw, 16px); }
-.editorial-site .only-cut { margin: clamp(.8rem, 1.6vw, 1.3rem) calc(-1 * clamp(1.2rem, 2.2vw, 1.9rem)) 0; align-self: end; background: #eef2f6; border-radius: 18px 18px 0 0; overflow: hidden; }
-.editorial-site .only-cut img { display: block; width: 100%; height: auto; }
-/* Cards take their own height: a short cut does not inherit a tall one's
-   row, so no card carries dead space between its sentence and its picture. */
-.editorial-site .only-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.4rem, 4vh, 2.6rem); align-items: start; }
-.editorial-site .only-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding-bottom: clamp(.2rem, 2vh, 1rem); }
-.editorial-site .only-tag { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--muted); }
-.editorial-site .only-title { margin: 0; font-size: clamp(22px, 2.2vw, 34px); font-weight: 700; line-height: 1.06; letter-spacing: -.03em; }
-.editorial-site .only-lead .only-title { font-size: clamp(26px, 2.8vw, 42px); }
-.editorial-site .only-text { margin: 0; max-width: 42ch; font-size: clamp(15px, 1.15vw, 18px); font-weight: 300; line-height: 1.5; color: #d6e4d8; }
-.editorial-site .only-figure { margin: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
-.editorial-site .only-figure strong { font-size: clamp(28px, 3vw, 44px); font-weight: 800; letter-spacing: -.04em; color: var(--mint); }
-.editorial-site .only-figure span { font-size: 13px; color: var(--muted); }
-.editorial-site .only-media { display: flex; justify-content: center; align-items: flex-end; gap: clamp(.6rem, 1.5vw, 1.2rem); min-height: 0; }
-.editorial-site .only-media img { display: block; width: min(100%, 260px); height: auto; object-fit: contain; border-radius: 20px; box-shadow: 0 30px 60px -30px #000000aa; }
-.editorial-site .only-media-pair img { width: min(48%, 240px); }
-/* The capture rises out of the card and is cut by its lower edge, like the deck. */
-.editorial-site .only-media { margin-bottom: calc(-1 * clamp(1.2rem, 2.2vw, 1.9rem)); }
-.editorial-site .only-media img { clip-path: inset(0 0 0 0 round 20px 20px 0 0); }
-.editorial-site .only-note { margin: clamp(1.6rem, 4vh, 2.4rem) 0 0; font-size: 12px; color: var(--muted); }
-@media (max-width: 980px) {
-  .editorial-site .only { padding: clamp(2.4rem, 7vh, 3.6rem) 0 clamp(2rem, 6vh, 3rem); }
-  .editorial-site .only-heading { font-size: clamp(28px, 7.6vw, 38px); }
-  .editorial-site .only-lead, .editorial-site .only-card { grid-template-columns: 1fr; align-items: start; }
-  .editorial-site .only-grid { grid-template-columns: 1fr; }
-  .editorial-site .only-media img { width: clamp(184px, 56vw, 232px); }
-  /* Two screens do not fit a phone side by side at a readable size: the pair
-     lies in a row that snaps, like the deck's cards do on a phone. */
-  .editorial-site .only-media-pair { justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding-bottom: 4px; }
-  .editorial-site .only-media-pair img { flex: 0 0 auto; width: clamp(184px, 56vw, 232px); scroll-snap-align: start; }
-}
-
-/* ---- the bookend: the page ends at dawn, with the phone on -----------------
+/* ---- the bookend: the page ends on the film's last frame ------------------
    Same paper, same rounded top edge and shadow as the section that first slid
    over the film, so the ending rhymes with the beginning. The frame is the
-   closing scene: the real Home screen in a driver's hand, trunk and e-bike
-   behind it, in the film's dawn light. */
+   film's own last frame, still, with the offer beside it. */
 .editorial-site .cine-bookend {
   position: relative;
   background: var(--paper);
@@ -414,7 +356,7 @@ html:has(.cine-page) { scroll-behavior: auto; }
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 941 / 1672;
+  aspect-ratio: 900 / 1603;
   object-fit: cover;
   border-radius: 22px;
   box-shadow: 0 40px 80px -40px #0b302b99;
@@ -426,14 +368,14 @@ html:has(.cine-page) { scroll-behavior: auto; }
 .editorial-site .cine-bookend-copy .close-trust { margin: 16px 0 0; font-size: 14px; color: #3f6a55; }
 .editorial-site .cine-bookend-copy .close-small { margin: 6px 0 0; font-size: 12px; color: #5f8570; }
 @media (max-width: 980px) {
-  /* The ending is one screen on a phone: the scene as a wide band, cropped to
-     where the phone is held (its screen spans 36–69% of the frame height),
-     then the statement and the button. Stacked at full height the picture
-     alone took a screen and the last thing anyone saw was the footer. */
+  /* The ending is one screen on a phone: the seat and the phone as a wide
+     band, cropped to where the phone lies, then the statement and the button.
+     Stacked at full height the picture alone took a screen and the last thing
+     anyone saw was the footer. */
   .editorial-site .cine-bookend { padding: clamp(2.6rem, 8vh, 4rem) 0 clamp(2.4rem, 7vh, 3.4rem); }
   .editorial-site .cine-bookend-inner { grid-template-columns: 1fr; row-gap: 1.3rem; }
   .editorial-site .cine-bookend-frame { justify-self: stretch; width: 100%; }
-  .editorial-site .cine-bookend-frame img { aspect-ratio: 4 / 3; object-position: 50% 52%; border-radius: 18px; }
+  .editorial-site .cine-bookend-frame img { aspect-ratio: 4 / 3; object-position: 50% 64%; border-radius: 18px; }
   .editorial-site .cine-bookend h2 { font-size: clamp(30px, 8vw, 40px); }
   .editorial-site .cine-bookend-copy > p { margin-top: 12px; font-size: 16px; }
   .editorial-site .cine-bookend-copy .button { margin-top: 18px; }
