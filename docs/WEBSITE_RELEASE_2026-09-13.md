@@ -46,6 +46,21 @@ Instacart and the rest; **app** means GigMiles only.
   on Standard Mileage, RadRunner e-bike on Actual Expenses, same year). Copy
   passed the slopmonster linter 5/5 plus a hand pass; card grammar follows the
   deck; on a phone the two plan screens lie in a snapping row.
+- **Second pass, same day** (06cbee2, after "okey" on a local review). The
+  operator saw the section repeating the tour and asked that neither surface
+  drown the reader in text. Tour is now Home · Split · Wrap · Tax: the plan
+  card left the deck, and the wrap card shows the daily-wrap **share card**
+  (Steady Hustler · Sep 24, 2026 · What I kept $192 from $235 gross · 8h ·
+  105.0 mi · $43 · $24/hr · "Share my day") instead of the near-empty
+  StorySlide render. The section keeps the plan lead card the operator liked
+  and replaces the two full-screen claims with four one-sentence claims, each
+  carried by a detail cut from a real screen: state/filing status/W-2
+  (`only-w2.webp`), tax method per vehicle (`only-vehicle-methods.webp`),
+  miles per platform in one shift (`only-split-band.webp`), the capacity coach
+  (`only-capacity.webp`). Tall cuts sit in the top row so the 2×2 grid closes
+  up; cards size to content (`.only-grid { align-items: start }`). Heading is
+  only "Only GigMiles does this." plus one line on personalisation.
+  `only-vehicles.webp` and `tour-plan*.webp` removed.
 - No new dependencies. No image generator painted any product UI.
 
 ## How the captures are made (reproducible)
@@ -57,7 +72,9 @@ Instacart and the rest; **app** means GigMiles only.
 - Golden tests, modelled on the app's `test/palette_checkpoint_test.dart`:
   `site_home_golden_test.dart` (Home at 430×860 @2/@3 and 430×990 @3 for the
   photographed phone) and `site_screens_golden_test.dart` (split sheet, plan,
-  plan setup, plan this-week, vehicles, tax center). They live in the scratch
+  plan setup, plan this-week, vehicles, tax center, tax settings, capacity
+  panel, story slide, story share page). Detail cuts are cropped from those
+  goldens with `crop-compose.cjs` (scratch). They live in the scratch
   clone this release; **recommended: commit them to gigmiles-mobile under
   `test/site/` tagged `golden`** so the site can be re-shot after any UI change.
 - Render at 430 pt: at 390 pt the app truncates "2023 Toyota Prius" on the
@@ -86,7 +103,9 @@ Instacart and the rest; **app** means GigMiles only.
   tax), the three section captures, the closing scene at `?v=2026-09-13a` and
   the "Multi-platform shift" wording; `tour-split.webp` (30,864 B),
   `only-plan-setup.webp` (52,532 B), `only-vehicles.webp` (52,784 B) and
-  `closing-scene.webp` (69,506 B) all answer 200.
+  `closing-scene.webp` (69,506 B) all answer 200. After 06cbee2 the served
+  HTML was checked again for `tour-wrap.webp` and the four detail cuts (see
+  the second-pass note above).
 
 ## App nits found while rendering (for the app team)
 
