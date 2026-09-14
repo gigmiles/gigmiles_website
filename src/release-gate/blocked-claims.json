@@ -1,0 +1,15 @@
+{
+  "source": "C:/projects/ajans/data/GIGMILES_PRODUCT_RELEASE_STATUS.json (candidate.blocked_public_claim_patterns), copied 2026-09-14",
+  "candidateVersion": "1.1.0+29",
+  "publicClaimsAllowed": false,
+  "patterns": [
+    { "re": "\\bYour plan\\b", "flags": "", "why": "1.1.0 release gate: the Your plan feature is not public-store verified" },
+    { "re": "\\bmulti[- ](?:app|platform) shifts?\\b", "flags": "i", "why": "1.1.0 release gate: multi-platform shifts are not public-store verified" },
+    { "re": "\\bswitch(?:ing)? platforms? (?:during (?:your |the )?shift|mid[ -]?shift)\\b", "flags": "i", "why": "1.1.0 release gate: live platform switching is not public-store verified" },
+    { "re": "\\bplatform blocks?\\b", "flags": "i", "why": "1.1.0 release gate: platform blocks are not public-store verified" },
+    { "re": "\\b(?:split|re-split|resplit)(?:ting)? (?:a |your |the )?shift\\b", "flags": "i", "why": "1.1.0 release gate: shift split/re-split is not public-store verified" },
+    { "re": "\\bRecovery Center\\b", "flags": "i", "why": "1.1.0 release gate: Recovery Center is not public-store verified" },
+    { "re": "\\b(?:multiple vehicles?|multi[- ]vehicle)\\b", "flags": "i", "why": "1.1.0 release gate: multiple-vehicle support is not public-store verified" },
+    { "re": "\\bAdd Another Vehicle\\b", "flags": "i", "why": "1.1.0 release gate: adding another vehicle is not public-store verified" }
+  ]
+}
