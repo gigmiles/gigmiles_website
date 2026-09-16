@@ -1,7 +1,8 @@
 {
   "source": "C:/projects/ajans/data/GIGMILES_PRODUCT_RELEASE_STATUS.json (candidate.blocked_public_claim_patterns), copied 2026-09-14",
   "candidateVersion": "1.1.0+29",
-  "publicClaimsAllowed": false,
+  "publicClaimsAllowed": true,
+  "publicClaimsAllowedNote": "1.1.0 is live in the App Store and Google Play, confirmed by the founder on 2026-09-17. The patterns below stay on file for the next unreleased candidate.",
   "patterns": [
     { "re": "\\bYour plan\\b", "flags": "", "why": "1.1.0 release gate: the Your plan feature is not public-store verified" },
     { "re": "\\bmulti[- ](?:app|platform) shifts?\\b", "flags": "i", "why": "1.1.0 release gate: multi-platform shifts are not public-store verified" },
