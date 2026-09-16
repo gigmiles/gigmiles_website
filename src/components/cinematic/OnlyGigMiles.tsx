@@ -43,7 +43,7 @@ const CLAIMS: Claim[] = [
     id: 'split',
     title: 'Miles per platform, in one shift.',
     body: 'Switch mid-shift or split afterwards; time, miles and earnings land on the platform you were driving for.',
-    cut: {src: '/editorial/only-split-band.webp', width: 820, height: 320, alt: 'A shift timeline split into DoorDash, Uber Eats and Instacart blocks with two 10-minute stops marked, 9:00 AM to 5:00 PM, 105.0 miles, 8h 00m. Example inputs.'},
+    cut: {src: '/editorial/only-split-band.webp', width: 820, height: 320, alt: 'A shift timeline split into three platform blocks with two 10-minute stops marked, 9:00 AM to 5:00 PM, 105.0 miles, 8h 00m. Example inputs.'},
   },
   {
     id: 'coach',
